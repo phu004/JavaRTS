@@ -13,7 +13,7 @@ Some already implemented features:
 
 To do list:
 
-1. Send units to partol the base, so AI can deal with player's sneak attack eariler.
+1. Send units to partol the outer parameter of the base, so AI can deal with player's sneak attack eariler.
 2. When ecnounter a concentrated player static defences, either use long range units to eliminate the threat or find
    another way to attack the Player.
 3. Queue up and deploy static defences to protect base when the main AI army is out of position.

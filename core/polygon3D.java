@@ -49,7 +49,7 @@ public class polygon3D {
 	public solidObject parentObject;
 	
 	//A pool of vectors which will be used for vector arithmetic
-	public  vector 
+	public  static vector 
 		tempVector1 = new vector(0,0,0),
 		tempVector2 = new vector(0,0,0),
 		tempVector3 = new vector(0,0,0),
@@ -83,7 +83,7 @@ public class polygon3D {
 	public byte[] diffuse = new byte[3];
 	
 	//default light source
-	public vector lightDirection = sunLight.lightDirection;
+	public static vector lightDirection = sunLight.lightDirection;
 	
 	//the color of polygon if it is defined as soild 
 	public int color;

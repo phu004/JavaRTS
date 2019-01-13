@@ -107,6 +107,8 @@ public class defenseManagerAI {
 			}
 		}
 		
+		//go through all the player units on the mini map and deal with them accordingly
+		
 
 	}
 	

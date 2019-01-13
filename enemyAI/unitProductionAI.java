@@ -73,7 +73,7 @@ public class unitProductionAI {
 	public void processAI(){
 		frameAI++;
 		
-		//set the rally point to near the construction yard which is closest to the player's starting position
+		//set the rally point to near the construction yard which is closest to the AI player's starting position
 		float x = 0;
 		float z = 999999;
 		
@@ -81,7 +81,7 @@ public class unitProductionAI {
 		for(int i = 0; i < mainThread.theAssetManager.constructionYards.length; i++){
 			if(mainThread.theAssetManager.constructionYards[i] != null && mainThread.theAssetManager.constructionYards[i].currentHP > 0 &&  mainThread.theAssetManager.constructionYards[i].teamNo != 0){
 				index = i;
-				if(mainThread.theAssetManager.constructionYards[i].centre.z < z && mainThread.theAssetManager.constructionYards[i].centre.z > 5 && mainThread.theAssetManager.constructionYards[i].centre.x > 5){
+				if(mainThread.theAssetManager.constructionYards[i].centre.z < z && mainThread.theAssetManager.constructionYards[i].centre.z > 7 && mainThread.theAssetManager.constructionYards[i].centre.x > 7){
 					x = mainThread.theAssetManager.constructionYards[i].centre.x;
 					z = mainThread.theAssetManager.constructionYards[i].centre.z;
 				}

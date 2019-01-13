@@ -5,6 +5,7 @@ import core.baseInfo;
 import core.mainThread;
 import entity.goldMine;
 import entity.solidObject;
+import core.vector;
 
 //1. scan revealed area for player's units and building
 //2. keep track of player's units
@@ -55,6 +56,12 @@ public class mapAwarenessAI {
 	public int[] playerExpensionInfo;
 	public int numberOfplayerMiningBases;
 	
+	public vector mainPlayerForceLocation;
+	public vector mainPlayerForceDirection;
+	public int mainPlayerForceSize;
+	public vector[] playerForceLocations;
+	public vector[] playerForceDirections;
+	public int[] playerForceSize;
 	
 	public mapAwarenessAI(baseInfo theBaseInfo, boolean[] visionMap){
 		this.theBaseInfo = theBaseInfo;
@@ -67,6 +74,20 @@ public class mapAwarenessAI {
 		
 		goldMines = mainThread.theAssetManager.goldMines;
 		playerExpensionInfo = new int[goldMines.length];
+		
+		mainPlayerForceLocation = new vector(0,0,0);
+		mainPlayerForceDirection = new vector(0,0,0);
+		mainPlayerForceSize = 0;
+		playerForceLocations = new vector[3];
+		playerForceDirections = new vector[3];
+		playerForceSize = new int[3];
+		
+		for(int i = 0; i < 3; i++) {
+			playerForceLocations[i] = new vector(0,0,0);
+			playerForceDirections[i] = new vector(0,0,0);
+			playerForceSize[i] = 0;
+		}
+		
 	}
 	
 	public void processAI(){
@@ -386,6 +407,8 @@ public class mapAwarenessAI {
         
         
         findTheMostVulnerablePlayerBase();
+        
+        findPlayerForceLocation();
        
 	}
 	
@@ -509,6 +532,60 @@ public class mapAwarenessAI {
 		}
 		
 		return playexpensionDefenseScore;
+	}
+	
+	//find the center of the biggest cluster of player units that are visible on the minimap. It will tells the AI which area is in danger of being attacked.
+	public void findPlayerForceLocation(){
+		mainPlayerForceLocation.set(0,0,0);
+		mainPlayerForceDirection.set(0,0,0);
+		mainPlayerForceSize = 0;
+		
+		for(int i = 0; i < playerForceLocations.length; i++) {
+			playerForceLocations[i].set(0,0,0);
+			playerForceDirections[i].set(0,0,0);
+			playerForceSize[i] = 0;
+		}
+		
+		
+		if(numberOfPlayerUnitsOnMinimap < 5)
+			return;	
+		
+		for(int i = 0; i < playerUnitInMinimap.length; i++) {
+			if(playerUnitInMinimap[i] == null)
+				continue;
+			float xPos = playerUnitInMinimap[i].centre.x;
+			float zPos = playerUnitInMinimap[i].centre.z;
+
+			for(int j = 0; j < playerForceLocations.length; j++) {
+				//always add the player unit location to the empty list
+				if(playerForceLocations[j].x == 0) {
+					playerForceLocations[j].add(playerUnitInMinimap[i].centre);
+					playerForceSize[j]++;
+					playerForceDirections[j].add(playerUnitInMinimap[i].movement);
+					break;
+				} 
+				float centerX = playerForceLocations[j].x/playerForceSize[j];
+				float centerZ = playerForceLocations[j].z/playerForceSize[j];
+				float d = (centerX - xPos) * (centerX - xPos) + (centerZ - zPos) * (centerZ - zPos);
+				//if the player unit is close enough to the force center then add it to the list
+				if(d < 4) {
+					playerForceLocations[j].add(playerUnitInMinimap[i].centre);
+					playerForceSize[j]++;
+					playerForceDirections[j].add(playerUnitInMinimap[i].movement);
+					break;
+				}
+			}
+		}
+		
+		for(int i = 0; i < playerForceLocations.length; i++) {
+			if(playerForceSize[i] > mainPlayerForceSize) {
+				mainPlayerForceSize = playerForceSize[i];
+				mainPlayerForceLocation.set(playerForceLocations[i].x/mainPlayerForceSize,0,playerForceLocations[i].z/mainPlayerForceSize);
+				mainPlayerForceDirection.set(playerForceDirections[i].x/mainPlayerForceSize, 0, playerForceDirections[i].z/mainPlayerForceSize);
+			}
+		}
+		
+		System.out.println(mainPlayerForceSize  + "   "  + mainPlayerForceLocation + "    "  + mainPlayerForceDirection);
 	}
 
 	

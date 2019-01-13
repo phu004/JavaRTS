@@ -496,7 +496,7 @@ public class mainThread extends JFrame implements KeyListener, ActionListener, M
 		while(System.currentTimeMillis()-lastDraw<frameInterval){
 			try {
 				Thread.sleep(1);
-				sleepTime++;
+				sleepTime++; 
 			} catch (InterruptedException e1) {
 				// TODO Auto-generated catch block
 				e1.printStackTrace();

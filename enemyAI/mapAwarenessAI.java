@@ -550,6 +550,7 @@ public class mapAwarenessAI {
 		if(numberOfPlayerUnitsOnMinimap < 5)
 			return;	
 		
+		
 		for(int i = 0; i < playerUnitInMinimap.length; i++) {
 			if(playerUnitInMinimap[i] == null)
 				continue;

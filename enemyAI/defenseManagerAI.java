@@ -20,14 +20,24 @@ public class defenseManagerAI {
 	 
 	public solidObject[] stealthTanksControlledByCombatAI;
 	
+	public solidObject[] defenders;
+	
 	public vector direction;
+	
+	public vector minorThreatLocation;
+	public vector majorThreatLocation;
 	
 	public defenseManagerAI(baseInfo theBaseInfo){
 		this.theBaseInfo = theBaseInfo;
 		
 		observers = new solidObject[4];
 		
+		defenders = new solidObject[5];
+		
 		direction = new vector(0,0,0);
+		
+		minorThreatLocation = new vector(0,0,0);
+		majorThreatLocation = new vector(0,0,0);
 			
 	}
 	
@@ -107,10 +117,23 @@ public class defenseManagerAI {
 			}
 		}
 		
-		//go through all the player units on the mini map and deal with them accordingly
+		//send units to deal with minor threat on the map if there is any
+		vector mainPlayerForceLocation = mainThread.ec.theMapAwarenessAI.mainPlayerForceLocation;
+		vector mainPlayerForceDirection = mainThread.ec.theMapAwarenessAI.mainPlayerForceDirection;
+		int mainPlayerForceSize = mainThread.ec.theMapAwarenessAI.mainPlayerForceSize;
+		
+		minorThreatLocation.reset();
+		majorThreatLocation.reset();
+		
+		// if the size of the player unit cluster is less than 5, and no heavy tanks in the cluster, then borrow some unites from combatAI to deal with the threat
+		//if(mainPlayerForceSize < 5 && playerForceContainsNoHeavyTank(mainPlayerForceLocation) && playerForceIsNearBase(mainPlayerForceLocation)) {
+			
+		//}
 		
 
 	}
+	
+	
 	
 	public boolean evadePlayerUnit(int  observerIndex){
 		//scan for hostile unit

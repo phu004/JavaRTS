@@ -132,7 +132,7 @@ public class defenseManagerAI {
 			
 		//}
 		
-		System.out.println(playerForceContainsNoHeavyTank(mainPlayerForceLocation));
+		System.out.println(playerForceContainsNoHeavyTank(mainPlayerForceLocation) + "   " + mainThread.ec.theMapAwarenessAI.numOfAIStructures);
 		
 	}
 	

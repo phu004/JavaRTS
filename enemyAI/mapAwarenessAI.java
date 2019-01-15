@@ -50,6 +50,8 @@ public class mapAwarenessAI {
 	public solidObject[] playerUnitInMinimap;
 	public solidObject[] playerStaticDefenceInMinimap;
 	public solidObject[] playerStructures;
+	public int numOfAIStructures;
+	public solidObject[] AIStructures;
 	
 	public goldMine[] goldMines; 
 	public int targetPlayerExpension;
@@ -71,6 +73,7 @@ public class mapAwarenessAI {
 		playerUnitInMinimap = new solidObject[128];
 		playerStaticDefenceInMinimap = new solidObject[64];
 		playerStructures = new solidObject[256];
+		AIStructures = new solidObject[128];
 		
 		goldMines = mainThread.theAssetManager.goldMines;
 		playerExpensionInfo = new int[goldMines.length];
@@ -119,13 +122,16 @@ public class mapAwarenessAI {
 		numberOfStealthTanks_AI = 0;
 		numberOfHeavyTanks_AI = 0;
 		
-		//clear enemy info from previous frame
+		//clear info from previous frame
 		for(int i = 0; i < playerUnitInMinimap.length; i++)
 			playerUnitInMinimap[i] = null;
 		for(int i = 0; i < playerStaticDefenceInMinimap.length; i++)
 			playerStaticDefenceInMinimap[i] = null;
 		for(int i = 0; i < playerStructures.length; i++)
 			playerStructures[i] = null;
+		for(int i = 0; i < AIStructures.length; i++)
+			AIStructures[i] = null;
+		numOfAIStructures = 0;
 		
 		
 		for(int i = 0; i < theAssetManager.lightTanks.length; i++){
@@ -233,6 +239,9 @@ public class mapAwarenessAI {
 						mainThread.ec.theCombatManagerAI.offScreenPlayerForceStrength-=1;
 					}
 				}
+			}else if(theAssetManager.gunTurrets[i] != null && theAssetManager.gunTurrets[i].teamNo !=0) {
+				AIStructures[numOfAIStructures] = theAssetManager.gunTurrets[i];
+				numOfAIStructures++;
 			}
 		}
 		
@@ -244,6 +253,9 @@ public class mapAwarenessAI {
 						mainThread.ec.theCombatManagerAI.offScreenPlayerForceStrength-=2;
 					}
 				}
+			}else if(theAssetManager.missileTurrets[i] != null && theAssetManager.missileTurrets[i].teamNo !=0) {
+				AIStructures[numOfAIStructures] = theAssetManager.missileTurrets[i];
+				numOfAIStructures++;
 			}
 		}
 		
@@ -256,6 +268,9 @@ public class mapAwarenessAI {
 						break;
 					}
 				}
+			}else if(theAssetManager.factories[i] != null && theAssetManager.factories[i].teamNo !=0) {
+				AIStructures[numOfAIStructures] = theAssetManager.factories[i];
+				numOfAIStructures++;
 			}
 		}
 		
@@ -268,6 +283,9 @@ public class mapAwarenessAI {
 						break;
 					}
 				}
+			}else if(theAssetManager.refineries[i] != null && theAssetManager.refineries[i].teamNo !=0) {
+				AIStructures[numOfAIStructures] = theAssetManager.refineries[i];
+				numOfAIStructures++;
 			}
 		}
 		
@@ -281,6 +299,9 @@ public class mapAwarenessAI {
 						break;
 					}
 				}
+			}else if(theAssetManager.constructionYards[i] != null && theAssetManager.constructionYards[i].teamNo !=0) {
+				AIStructures[numOfAIStructures] = theAssetManager.constructionYards[i];
+				numOfAIStructures++;
 			}
 		}
 		
@@ -293,6 +314,9 @@ public class mapAwarenessAI {
 						break;
 					}
 				}
+			}else if(theAssetManager.communicationCenters[i] != null && theAssetManager.communicationCenters[i].teamNo !=0) {
+				AIStructures[numOfAIStructures] = theAssetManager.communicationCenters[i];
+				numOfAIStructures++;
 			}
 		}
 		
@@ -305,6 +329,9 @@ public class mapAwarenessAI {
 						break;
 					}
 				}
+			}else if(theAssetManager.techCenters[i] != null && theAssetManager.techCenters[i].teamNo !=0) {
+				AIStructures[numOfAIStructures] = theAssetManager.techCenters[i];
+				numOfAIStructures++;
 			}
 		}
 		
@@ -317,6 +344,9 @@ public class mapAwarenessAI {
 						break;
 					}
 				}
+			}else if(theAssetManager.powerPlants[i] != null && theAssetManager.powerPlants[i].teamNo !=0) {
+				AIStructures[numOfAIStructures] = theAssetManager.powerPlants[i];
+				numOfAIStructures++;
 			}
 		}
 		

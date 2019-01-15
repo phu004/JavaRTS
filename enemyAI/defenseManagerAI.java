@@ -21,6 +21,7 @@ public class defenseManagerAI {
 	public solidObject[] stealthTanksControlledByCombatAI;
 	
 	public solidObject[] defenders;
+	public int numOfDefenders;
 	
 	public vector direction;
 	
@@ -125,12 +126,53 @@ public class defenseManagerAI {
 		minorThreatLocation.reset();
 		majorThreatLocation.reset();
 		
+		
 		// if the size of the player unit cluster is less than 5, and no heavy tanks in the cluster, then borrow some unites from combatAI to deal with the threat
 		//if(mainPlayerForceSize < 5 && playerForceContainsNoHeavyTank(mainPlayerForceLocation) && playerForceIsNearBase(mainPlayerForceLocation)) {
 			
 		//}
 		
-
+		System.out.println(playerForceContainsNoHeavyTank(mainPlayerForceLocation));
+		
+	}
+	
+	public boolean playerForceIsNearBase(vector location) {
+		
+		
+		return false;
+	}
+	
+	public boolean playerForceContainsNoHeavyTank(vector location) {
+		solidObject o = null;
+		for(int i = 0; i < mainThread.ec.theMapAwarenessAI.playerUnitInMinimap.length; i++) {
+			o = mainThread.ec.theMapAwarenessAI.playerUnitInMinimap[i];
+			if(o !=null && o.currentHP > 0 && o.type == 7 && (o.centre.x - location.x)*(o.centre.x - location.x) + (o.centre.z - location.z)*(o.centre.z - location.z) < 4)
+				return false;
+		}
+		
+		return true;
+	}
+	
+	public void addUnitToDefenders(solidObject o) {
+		numOfDefenders = 0;
+		for(int i = 0; i < defenders.length; i++) {
+			if(defenders[i] != null && defenders[i].currentHP > 0)
+				numOfDefenders++;
+		}
+		
+		
+		if(numOfDefenders ==  defenders.length && minorThreatLocation.x == 0) {
+			for(int i = defenders.length - 1; i > 0; i--)
+				defenders[i] = defenders[i - 1];
+			defenders[0] = o;
+		}else {
+			for(int i = 0; i < defenders.length; i++) {
+				if(defenders[i] == null || defenders[i].currentHP <= 0) {
+					defenders[i] = o;
+					break;
+				}
+			}
+		}
 	}
 	
 	

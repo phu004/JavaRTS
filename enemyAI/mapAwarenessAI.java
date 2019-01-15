@@ -545,12 +545,7 @@ public class mapAwarenessAI {
 			playerForceDirections[i].set(0,0,0);
 			playerForceSize[i] = 0;
 		}
-		
-		
-		if(numberOfPlayerUnitsOnMinimap < 5)
-			return;	
-		
-		
+			
 		for(int i = 0; i < playerUnitInMinimap.length; i++) {
 			if(playerUnitInMinimap[i] == null)
 				continue;

@@ -164,8 +164,17 @@ public class scoutingManagerAI {
 				}
 				
 				
-				if(scout.type == 0)
+				if(scout.type == 0) {
+					if(mainThread.ec.theDefenseManagerAI.minorThreatLocation.x != 0 || mainThread.ec.theDefenseManagerAI.majorThreatLocation.x != 0) {
+						if(scout.currentHP > 0) {
+							mainThread.ec.theUnitProductionAI.addLightTank((lightTank)scout);
+							scout.moveTo(mainThread.ec.theUnitProductionAI.rallyPoint.x, mainThread.ec.theUnitProductionAI.rallyPoint.z);
+							scout.currentCommand = solidObject.attackMove;
+							scout.secondaryCommand = solidObject.attackMove;
+						}
+					}
 					return;
+				}
 				
 				//try to avoid collision with player units
 				int xPos_old = scout.boundary2D.x1;
@@ -220,9 +229,6 @@ public class scoutingManagerAI {
 				}
 				scout.boundary2D.setOrigin(xPos_old, yPos_old);
 			}
-			
-			
-			
 			
 		}
 
@@ -304,9 +310,9 @@ public class scoutingManagerAI {
 	
 	//build light tank as scout when stealth tank tech is locked
 	public boolean needLightTank(){
-		//if((scout == null ) && !theBaseInfo.canBuildStealthTank){
-		//	return true;
-		//}
+		if((scout == null ) && !theBaseInfo.canBuildStealthTank && mainThread.ec.theDefenseManagerAI.minorThreatLocation.x == 0 && mainThread.ec.theDefenseManagerAI.majorThreatLocation.x == 0){
+			return true;
+		}
 		
 		return false;
 	}

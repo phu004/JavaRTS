@@ -253,6 +253,7 @@ public class unitProductionAI {
 			if(lightTanksControlledByCombatAI[i] == null || (lightTanksControlledByCombatAI[i] != null && lightTanksControlledByCombatAI[i].currentHP <=0)){
 				lightTanksControlledByCombatAI[i] = o;
 				unitProduced++;
+				mainThread.ec.theDefenseManagerAI.addUnitToDefenders(o);
 				break;
 			}
 		}
@@ -293,6 +294,7 @@ public class unitProductionAI {
 			if(stealthTanksControlledByCombatAI[i] == null || (stealthTanksControlledByCombatAI[i] != null && stealthTanksControlledByCombatAI[i].currentHP <=0)){
 				stealthTanksControlledByCombatAI[i] = o;
 				unitProduced++;
+				mainThread.ec.theDefenseManagerAI.addUnitToDefenders(o);
 				break;
 			}
 		}

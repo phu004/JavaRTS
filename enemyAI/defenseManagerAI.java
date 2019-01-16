@@ -182,9 +182,9 @@ public class defenseManagerAI {
 			if(defenersInStandbyMode) {
 				giveBackControlOfDefendersToCombatAI();
 				
-				//move back to rally point
+				//move back to combat center
 				for(int i =0; i < defenders.length; i++) {
-					if(defenders[i] != null) {
+					if(defenders[i] != null && gameTime%20==0) {
 						defenders[i].moveTo(mainThread.ec.theUnitProductionAI.rallyPoint.x, mainThread.ec.theUnitProductionAI.rallyPoint.z);
 						defenders[i].currentCommand = solidObject.attackMove;
 						defenders[i].secondaryCommand = solidObject.attackMove;
@@ -287,6 +287,7 @@ public class defenseManagerAI {
 		
 		
 		if(numOfDefenders ==  defenders.length && minorThreatLocation.x == 0 && defenersInStandbyMode) {
+			giveBackControlOfDefendersToCombatAI();
 			for(int i = defenders.length - 1; i > 0; i--)
 				defenders[i] = defenders[i - 1];
 			defenders[0] = o;

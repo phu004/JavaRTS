@@ -34,7 +34,7 @@ public class unitProductionAI {
 	public final int produceHeavyTank = 3;
 	
 	public vector rallyPoint;
-	public int unitProduced;
+	//public int unitProduced;
 	public int numberOfCombatUnit;
 	public int numberOfUnitInCombatRadius;
 	public int numberOfUnitOutsideCombatRadius;
@@ -252,7 +252,6 @@ public class unitProductionAI {
 		for(int i = 0; i < lightTanksControlledByCombatAI.length; i++){
 			if(lightTanksControlledByCombatAI[i] == null || (lightTanksControlledByCombatAI[i] != null && lightTanksControlledByCombatAI[i].currentHP <=0)){
 				lightTanksControlledByCombatAI[i] = o;
-				unitProduced++;
 				mainThread.ec.theDefenseManagerAI.addUnitToDefenders(o);
 				break;
 			}
@@ -268,7 +267,6 @@ public class unitProductionAI {
 		for(int i = 0; i < rocketTanksControlledByCombatAI.length; i++){
 			if(rocketTanksControlledByCombatAI[i] == null || (rocketTanksControlledByCombatAI[i] != null && rocketTanksControlledByCombatAI[i].currentHP <=0)){
 				rocketTanksControlledByCombatAI[i] = o;
-				unitProduced++;
 				break;
 			}
 		}
@@ -293,7 +291,7 @@ public class unitProductionAI {
 		for(int i = 0; i < stealthTanksControlledByCombatAI.length; i++){
 			if(stealthTanksControlledByCombatAI[i] == null || (stealthTanksControlledByCombatAI[i] != null && stealthTanksControlledByCombatAI[i].currentHP <=0)){
 				stealthTanksControlledByCombatAI[i] = o;
-				unitProduced++;
+			
 				mainThread.ec.theDefenseManagerAI.addUnitToDefenders(o);
 				break;
 			}
@@ -305,7 +303,6 @@ public class unitProductionAI {
 		for(int i = 0; i < heavyTanksControlledByCombatAI.length; i++){
 			if(heavyTanksControlledByCombatAI[i] == null || (heavyTanksControlledByCombatAI[i] != null && heavyTanksControlledByCombatAI[i].currentHP <=0)){
 				heavyTanksControlledByCombatAI[i] = o;
-				unitProduced++;
 				break;
 			}
 		}

@@ -151,7 +151,7 @@ public class defenseManagerAI {
 				System.out.println("SOS!");
 			}
 		}else if(mainPlayerForceSize >= 5){
-			//if the size of player unit cluster is bigger or equal to 5 then inform combatAI about the threat
+			//if the size of player unit cluster is bigger or equal to 5 then check if the threat is a big one
 		}
 		
 		//take over controls of  defenders from combat AI to deal with minor threat
@@ -182,7 +182,7 @@ public class defenseManagerAI {
 			if(defenersInStandbyMode) {
 				giveBackControlOfDefendersToCombatAI();
 				
-				//move back to combat center
+				//move back to rally point
 				for(int i =0; i < defenders.length; i++) {
 					if(defenders[i] != null && gameTime%20==0) {
 						defenders[i].moveTo(mainThread.ec.theUnitProductionAI.rallyPoint.x, mainThread.ec.theUnitProductionAI.rallyPoint.z);
@@ -286,7 +286,7 @@ public class defenseManagerAI {
 		}
 		
 		
-		if(numOfDefenders ==  defenders.length && minorThreatLocation.x == 0 && defenersInStandbyMode) {
+		if(numOfDefenders ==  defenders.length && (minorThreatLocation.x == 0 && defenersInStandbyMode || minorThreatLocation.x != 0 && newUnitIsCloserToThreat(o))) {
 			giveBackControlOfDefendersToCombatAI();
 			for(int i = defenders.length - 1; i > 0; i--)
 				defenders[i] = defenders[i - 1];
@@ -300,6 +300,19 @@ public class defenseManagerAI {
 				}
 			}
 		}
+	}
+	
+	public boolean newUnitIsCloserToThreat(solidObject o) {
+		float d = (o.centre.x - minorThreatLocation.x)*(o.centre.x - minorThreatLocation.x) + (o.centre.z - minorThreatLocation.z)*(o.centre.z - minorThreatLocation.z);
+		for(int i = 0; i < defenders.length; i++) {
+			if(defenders[i] != null && defenders[i].currentHP > 0) {
+				if(d > (defenders[i].centre.x - minorThreatLocation.x)*(defenders[i].centre.x - minorThreatLocation.x) + (defenders[i].centre.z - minorThreatLocation.z)*(defenders[i].centre.z - minorThreatLocation.z)) {
+					return false;
+				}
+			}
+		}
+		
+		return true;
 	}
 	
 	

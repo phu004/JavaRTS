@@ -134,24 +134,32 @@ public class defenseManagerAI {
 		if(mainPlayerForceSize < 5 && mainPlayerForceSize>0) {
 			//check if base is attacked by long ranged units
 			boolean attackedByRocketTank = false;
-			for(int i = 0; i < mainThread.ec.theMapAwarenessAI.numOfAIStructures; i++) {
-				if(mainThread.ec.theMapAwarenessAI.AIStructures[i].underAttackCountDown > 0 &&
-				   mainThread.ec.theMapAwarenessAI.AIStructures[i].attacker != null &&
-				   mainThread.ec.theMapAwarenessAI.AIStructures[i].attacker.currentHP > 0 &&
-				   mainThread.ec.theMapAwarenessAI.AIStructures[i].attacker.type == 1) {
-					attackedByRocketTank = true;
-					minorThreatLocation.set(mainThread.ec.theMapAwarenessAI.AIStructures[i].attacker.centre);
-					break;
+			int numOfHeavyTanks = numOfHeavyTankAroundLocation(mainPlayerForceLocation);
+			if(numOfHeavyTanks < 1) {
+				for(int i = 0; i < mainThread.ec.theMapAwarenessAI.numOfAIStructures; i++) {
+					if(mainThread.ec.theMapAwarenessAI.AIStructures[i].underAttackCountDown > 0 &&
+					   mainThread.ec.theMapAwarenessAI.AIStructures[i].attacker != null &&
+					   mainThread.ec.theMapAwarenessAI.AIStructures[i].attacker.currentHP > 0 &&
+					   mainThread.ec.theMapAwarenessAI.AIStructures[i].attacker.type == 1) {
+						attackedByRocketTank = true;
+						minorThreatLocation.set(mainThread.ec.theMapAwarenessAI.AIStructures[i].attacker.centre);
+						break;
+					}
 				}
 			}
 			
-			if(!attackedByRocketTank && playerForceContainsNoHeavyTank(mainPlayerForceLocation) && playerForceIsNearBase(mainPlayerForceLocation)) {
-		
-				minorThreatLocation.set(mainPlayerForceLocation);
-				System.out.println("SOS!");
+			if(!attackedByRocketTank  && playerForceIsNearBase(mainPlayerForceLocation)) {
+				if(numOfHeavyTanks < 1)
+					minorThreatLocation.set(mainPlayerForceLocation);
+				else {
+					giveBackControlOfDefendersToCombatAI();
+					majorThreatLocation.set(mainPlayerForceLocation);
+				}
 			}
 		}else if(mainPlayerForceSize >= 5){
 			//if the size of player unit cluster is bigger or equal to 5 then check if the threat is a big one
+			//if(playerForceIsNearBase(mainPlayerForceLocation) || playerForceIsMovingTwoardsBase(mainPlayerForceLocation, mainPlayerForceDirection))
+			
 		}
 		
 		//take over controls of  defenders from combat AI to deal with minor threat
@@ -263,15 +271,16 @@ public class defenseManagerAI {
 		return false;
 	}
 	
-	public boolean playerForceContainsNoHeavyTank(vector location) {
+	public int numOfHeavyTankAroundLocation(vector location) {
 		solidObject o = null;
+		int numberOfHeaveyTankNearLocation = 0;
 		for(int i = 0; i < mainThread.ec.theMapAwarenessAI.playerUnitInMinimap.length; i++) {
 			o = mainThread.ec.theMapAwarenessAI.playerUnitInMinimap[i];
 			if(o !=null && o.currentHP > 0 && o.type == 7 && (o.centre.x - location.x)*(o.centre.x - location.x) + (o.centre.z - location.z)*(o.centre.z - location.z) < 4)
-				return false;
+				numberOfHeaveyTankNearLocation++;
 		}
 		
-		return true;
+		return numberOfHeaveyTankNearLocation;
 	}
 	
 	public void addUnitToDefenders(solidObject o) {

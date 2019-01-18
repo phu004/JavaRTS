@@ -26,9 +26,11 @@ public class defenseManagerAI {
 	public int numOfDefenders;
 	
 	public vector direction;
+	public vector threatToBaseDirection;
 	
 	public vector minorThreatLocation;
 	public vector majorThreatLocation;
+	
 	
 	public defenseManagerAI(baseInfo theBaseInfo){
 		this.theBaseInfo = theBaseInfo;
@@ -38,6 +40,7 @@ public class defenseManagerAI {
 		defenders = new solidObject[5];
 		
 		direction = new vector(0,0,0);
+		threatToBaseDirection = new vector(0,0,0);
 		
 		minorThreatLocation = new vector(0,0,0);
 		majorThreatLocation = new vector(0,0,0);
@@ -129,6 +132,7 @@ public class defenseManagerAI {
 		minorThreatLocation.reset();
 		majorThreatLocation.reset();
 		
+		System.out.println(playerForceIsMovingTwoardsBase(mainPlayerForceLocation, mainPlayerForceDirection));
 		
 		// if the size of the player unit cluster is less than 5, and no heavy tanks in the cluster, then borrow some unites from combatAI to deal with the threat
 		if(mainPlayerForceSize < 5 && mainPlayerForceSize>0) {
@@ -158,7 +162,17 @@ public class defenseManagerAI {
 			}
 		}else if(mainPlayerForceSize >= 5){
 			//if the size of player unit cluster is bigger or equal to 5 then check if the threat is a big one
-			//if(playerForceIsNearBase(mainPlayerForceLocation) || playerForceIsMovingTwoardsBase(mainPlayerForceLocation, mainPlayerForceDirection))
+			if(playerForceIsNearBase(mainPlayerForceLocation)) {
+				giveBackControlOfDefendersToCombatAI();
+				majorThreatLocation.set(mainPlayerForceLocation);
+			}else {
+				float d = playerForceIsMovingTwoardsBase(mainPlayerForceLocation, mainPlayerForceDirection);
+				if(d != -1) {
+					giveBackControlOfDefendersToCombatAI();
+					majorThreatLocation.set(mainPlayerForceLocation);
+					majorThreatLocation.add(mainPlayerForceDirection, d);
+				}
+			}
 			
 		}
 		
@@ -203,6 +217,25 @@ public class defenseManagerAI {
 		
 		//System.out.println(numOfDefenders + "   " + mainThread.ec.theMapAwarenessAI.numOfAIStructures);
 		
+	}
+	
+	public float playerForceIsMovingTwoardsBase(vector location, vector direction) {
+		for(int i = 0; i < mainThread.theAssetManager.refineries.length;i++) {
+			if(mainThread.theAssetManager.refineries[i] != null && mainThread.theAssetManager.refineries[i].teamNo != 0) {
+				float xPos = mainThread.theAssetManager.refineries[i].nearestGoldMine.centre.x;
+				float zPos = mainThread.theAssetManager.refineries[i].nearestGoldMine.centre.z;
+				
+				threatToBaseDirection.set(xPos - location.x, 0, zPos - location.z);
+				float d = threatToBaseDirection.getLength();
+				threatToBaseDirection.unit();
+				if(threatToBaseDirection.dot(direction) > 0.8) {
+				
+					return Math.max(3f, d - 3f);
+				}
+			}
+		}
+		
+		return -1;
 	}
 	
 	public void giveBackControlOfDefendersToCombatAI() {

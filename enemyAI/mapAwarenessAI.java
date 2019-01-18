@@ -611,6 +611,7 @@ public class mapAwarenessAI {
 			}
 		}
 		
+		mainPlayerForceDirection.unit();
 		//System.out.println(mainPlayerForceSize  + "   "  + mainPlayerForceLocation + "    "  + mainPlayerForceDirection);
 	}
 

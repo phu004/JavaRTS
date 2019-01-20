@@ -212,6 +212,15 @@ public class combatManagerAI {
 						}
 					}
 				}
+				
+				//check if defenceManager found a major threat
+				if(mainThread.ec.theDefenseManagerAI.majorThreatLocation.screenX != 0) {
+					currentState = aggressing;
+					attackDirection.set(mainThread.ec.theDefenseManagerAI.majorThreatLocation.x - combatCenterX, 0, mainThread.ec.theDefenseManagerAI.majorThreatLocation.z - combatCenterZ);
+					attackDirection.unit();
+					attackPosition.set(mainThread.ec.theDefenseManagerAI.majorThreatLocation);
+					return;
+				}
 			}
 			
 			if(currentState != aggressing) {

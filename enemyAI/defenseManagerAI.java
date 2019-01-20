@@ -30,6 +30,7 @@ public class defenseManagerAI {
 	
 	public vector minorThreatLocation;
 	public vector majorThreatLocation;
+	public int majorThreatCooldown; 
 	
 	
 	public defenseManagerAI(baseInfo theBaseInfo){
@@ -44,7 +45,7 @@ public class defenseManagerAI {
 		
 		minorThreatLocation = new vector(0,0,0);
 		majorThreatLocation = new vector(0,0,0);
-			
+		majorThreatCooldown = 20;	
 	}
 	
 	
@@ -54,6 +55,9 @@ public class defenseManagerAI {
 	
 	public void processAI(){
 		gameTime++;
+		
+		if(majorThreatCooldown > 0)
+			majorThreatCooldown --;
 		
 		currentState = mainThread.ec.theCombatManagerAI.currentState;
 		
@@ -95,12 +99,12 @@ public class defenseManagerAI {
 					
 					//if there is no player units in sight, return to patrol position
 					if(i == 0) {
-						if(gameTime%30 < 15) {
-							xPos = 19f;
+						if(gameTime%28 < 14) {
+							xPos = 20f;
 							zPos = 30.5f;
 						}else {
-							xPos = 19f;
-							zPos = 22.5f;
+							xPos = 20f;
+							zPos = 24.5f;
 						}
 							
 					}
@@ -130,12 +134,11 @@ public class defenseManagerAI {
 		int mainPlayerForceSize = mainThread.ec.theMapAwarenessAI.mainPlayerForceSize;
 		
 		minorThreatLocation.reset();
-		majorThreatLocation.reset();
-		
-		System.out.println(playerForceIsMovingTwoardsBase(mainPlayerForceLocation, mainPlayerForceDirection));
+		if(majorThreatCooldown == 0)
+			majorThreatLocation.reset();
 		
 		// if the size of the player unit cluster is less than 5, and no heavy tanks in the cluster, then borrow some unites from combatAI to deal with the threat
-		if(mainPlayerForceSize < 5 && mainPlayerForceSize>0) {
+		if(mainPlayerForceSize < 7 && mainPlayerForceSize>0) {
 			//check if base is attacked by long ranged units
 			boolean attackedByRocketTank = false;
 			int numOfHeavyTanks = numOfHeavyTankAroundLocation(mainPlayerForceLocation);
@@ -160,7 +163,7 @@ public class defenseManagerAI {
 					majorThreatLocation.set(mainPlayerForceLocation);
 				}
 			}
-		}else if(mainPlayerForceSize >= 5){
+		}else if(mainPlayerForceSize >= 7){
 			//if the size of player unit cluster is bigger or equal to 5 then check if the threat is a big one
 			if(playerForceIsNearBase(mainPlayerForceLocation)) {
 				giveBackControlOfDefendersToCombatAI();

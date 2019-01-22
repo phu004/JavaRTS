@@ -52,6 +52,8 @@ public class combatManagerAI {
 	
 	public float offScreenPlayerForceStrength;
 	
+	public boolean staticDefenseAhead;
+	
 	
 	public combatManagerAI(baseInfo theBaseInfo){
 		this.theBaseInfo = theBaseInfo;
@@ -301,9 +303,9 @@ public class combatManagerAI {
 			
 			
 			
-			//check if the troops has encountered a concentration of enemy static defense
-			
-			
+			//check if the troops is near a concentration of player's static defense.
+			//If true, then check if AI has enough troops to deal with the static defense.
+			staticDefenseAhead = false;
 
 			//send units to attack-move to target position
 			if(!playerHasBecomeStrongerThanAIDuringMarching && !frontalTroopIverwhelmed && (unNeutralizedEntity != null  || distanceToTarget > 2)){

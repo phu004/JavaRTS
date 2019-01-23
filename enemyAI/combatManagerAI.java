@@ -312,7 +312,7 @@ public class combatManagerAI {
 						float xPos = mainThread.ec.theMapAwarenessAI.playerStaticDefenseLocations[i].x;
 						float zPos = mainThread.ec.theMapAwarenessAI.playerStaticDefenseLocations[i].z;
 						float d = (xPos - combatCenterX)*(xPos - combatCenterX) + (zPos - combatCenterZ)*(zPos - combatCenterZ);
-						if(d < 25) {
+						if(d < 20.25) {
 							staticDefenseAhead = true;
 							break;
 						}

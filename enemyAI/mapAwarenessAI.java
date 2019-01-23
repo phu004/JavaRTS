@@ -65,6 +65,10 @@ public class mapAwarenessAI {
 	public vector[] playerForceDirections;
 	public int[] playerForceSize;
 	
+	public vector[] playerStaticDefenseLocations;
+	public int[] playerStaticDefenseSize;
+	public int[] playerStaticDefenseStrength;
+	
 	public mapAwarenessAI(baseInfo theBaseInfo, boolean[] visionMap){
 		this.theBaseInfo = theBaseInfo;
 		this.visionMap = visionMap;
@@ -85,12 +89,20 @@ public class mapAwarenessAI {
 		playerForceDirections = new vector[3];
 		playerForceSize = new int[3];
 		
-		for(int i = 0; i < 3; i++) {
+		for(int i = 0; i < playerForceLocations.length; i++) {
 			playerForceLocations[i] = new vector(0,0,0);
 			playerForceDirections[i] = new vector(0,0,0);
 			playerForceSize[i] = 0;
 		}
 		
+		playerStaticDefenseLocations = new vector[3];
+		playerStaticDefenseSize = new int[3];
+		playerStaticDefenseStrength = new int[3];
+		
+		for(int i = 0; i < playerStaticDefenseLocations.length; i++) {
+			playerStaticDefenseLocations[i] = new vector(0,0,0);
+			playerStaticDefenseSize[i] = 0;
+		}
 	}
 	
 	public void processAI(){
@@ -439,7 +451,9 @@ public class mapAwarenessAI {
         findTheMostVulnerablePlayerBase();
         
         findPlayerForceLocation();
-       
+        
+        findPlayerStaticDefense();
+         
 	}
 	
 	
@@ -564,6 +578,54 @@ public class mapAwarenessAI {
 		return playexpensionDefenseScore;
 	}
 	
+	//find the center of the clusters of player's static defenses. As well as the size of the clusters.
+	public void findPlayerStaticDefense() {
+		for(int i = 0; i < playerStaticDefenseLocations.length; i++) {
+			playerStaticDefenseLocations[i].set(0,0,0);
+			playerStaticDefenseSize[i] = 0;
+		}
+		
+		for(int i = 0; i < playerStaticDefenceInMinimap.length; i++) {
+			if(playerStaticDefenceInMinimap[i] == null)
+				continue;
+			float xPos = playerStaticDefenceInMinimap[i].centre.x;
+			float zPos = playerStaticDefenceInMinimap[i].centre.z;
+			
+			for(int j = 0; j < playerStaticDefenseLocations.length; j++) {
+				//always add the player static defense location to the empty list
+				if(playerStaticDefenseLocations[j].x == 0) {
+					playerStaticDefenseLocations[j].add(playerStaticDefenceInMinimap[i].centre);
+					playerStaticDefenseSize[j]++;
+					if(playerStaticDefenceInMinimap[j].type == 200)
+						playerStaticDefenseStrength[j]+=2;
+					if(playerStaticDefenceInMinimap[j].type == 199)
+						playerStaticDefenseStrength[j]+=5;
+					break;
+				} 
+				float centerX = playerStaticDefenseLocations[j].x/playerStaticDefenseSize[j];
+				float centerZ = playerStaticDefenseLocations[j].z/playerStaticDefenseSize[j];
+				float d = (centerX - xPos) * (centerX - xPos) + (centerZ - zPos) * (centerZ - zPos);
+				//if the player static defence is close enough to the cluster center then add it to the list
+				if(d < 4) {
+					playerStaticDefenseLocations[j].add(playerStaticDefenceInMinimap[i].centre);
+					playerStaticDefenseSize[j]++;
+					if(playerStaticDefenceInMinimap[j].type == 200)
+						playerStaticDefenseStrength[j]+=2;
+					if(playerStaticDefenceInMinimap[j].type == 199)
+						playerStaticDefenseStrength[j]+=5;
+					break;
+				}
+			}
+
+		}
+		
+		for(int i = 0; i < playerStaticDefenseLocations.length; i++) {
+			if(playerStaticDefenseSize[i] > 0)
+				playerStaticDefenseLocations[i].set(playerStaticDefenseLocations[i].x/playerStaticDefenseSize[i], 0, playerStaticDefenseLocations[i].z/playerStaticDefenseSize[i]);
+		}
+		
+	}
+	
 	//find the center of the biggest cluster of player units that are visible on the minimap. It will tells the AI which area is in danger of being attacked.
 	public void findPlayerForceLocation(){
 		mainPlayerForceLocation.set(0,0,0);
@@ -612,7 +674,6 @@ public class mapAwarenessAI {
 		}
 		
 		mainPlayerForceDirection.unit();
-		//System.out.println(mainPlayerForceSize  + "   "  + mainPlayerForceLocation + "    "  + mainPlayerForceDirection);
 	}
 
 	

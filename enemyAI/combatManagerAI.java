@@ -306,6 +306,22 @@ public class combatManagerAI {
 			//check if the troops is near a concentration of player's static defense.
 			//If true, then check if AI has enough troops to deal with the static defense.
 			staticDefenseAhead = false;
+			for(int i = 0; i < mainThread.ec.theMapAwarenessAI.playerStaticDefenseLocations.length; i++) {
+				if(mainThread.ec.theMapAwarenessAI.playerStaticDefenseSize[i] > 0) {
+					if(mainThread.ec.theMapAwarenessAI.playerStaticDefenseStrength[i] > 5) {
+						float xPos = mainThread.ec.theMapAwarenessAI.playerStaticDefenseLocations[i].x;
+						float zPos = mainThread.ec.theMapAwarenessAI.playerStaticDefenseLocations[i].z;
+						float d = (xPos - combatCenterX)*(xPos - combatCenterX) + (zPos - combatCenterZ)*(zPos - combatCenterZ);
+						if(d < 25) {
+							staticDefenseAhead = true;
+							break;
+						}
+					}
+				}
+			}
+			
+			System.out.println(staticDefenseAhead);
+			
 
 			//send units to attack-move to target position
 			if(!playerHasBecomeStrongerThanAIDuringMarching && !frontalTroopIverwhelmed && (unNeutralizedEntity != null  || distanceToTarget > 2)){
@@ -475,15 +491,26 @@ public class combatManagerAI {
 					//marching forward
 					if((team[i].targetObject == null || team[i].targetObject.currentHP <=0) && !(team[i].currentMovementStatus ==  solidObject.hugRight || team[i].currentMovementStatus == solidObject.hugLeft)){
 				
-						double d = Math.sqrt((team[i].centre.x -  combatCenterX)*(team[i].centre.x -  combatCenterX) + (team[i].centre.z -  combatCenterZ)*(team[i].centre.z -  combatCenterZ))*3;
 						
-						if(d > teamRadius){
-							team[i].attackMoveTo(gatherPoint.x, gatherPoint.z); 
 						
-						}else{
-					
-							team[i].attackMoveTo(team[i].centre.x + attackDirection.x*teamRadius, team[i].centre.z + attackDirection.z*teamRadius); 
+						if(staticDefenseAhead) {
+							if(team[i].type == 1)
+								team[i].attackMoveTo(team[i].centre.x + attackDirection.x*teamRadius, team[i].centre.z + attackDirection.z*teamRadius); 
+							else
+								team[i].attackMoveTo(combatCenterX, combatCenterZ); 
+						}else {
+						
+							double d = Math.sqrt((team[i].centre.x -  combatCenterX)*(team[i].centre.x -  combatCenterX) + (team[i].centre.z -  combatCenterZ)*(team[i].centre.z -  combatCenterZ))*3;
 							
+							if(d > teamRadius){
+							
+								team[i].attackMoveTo(gatherPoint.x, gatherPoint.z); 
+								
+							}else{
+						
+								team[i].attackMoveTo(team[i].centre.x + attackDirection.x*teamRadius, team[i].centre.z + attackDirection.z*teamRadius); 
+								
+							}
 						}
 
 						team[i].currentCommand = solidObject.attackMove;

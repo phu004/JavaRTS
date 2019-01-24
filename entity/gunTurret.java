@@ -538,7 +538,7 @@ public class gunTurret extends solidObject{
 			tempInt[0] = teamNo;
 			tempInt[1] = boundary2D.x1/16;
 			tempInt[2] = 127 - boundary2D.y1/16;
-			tempInt[3] = 0;
+			tempInt[3] = 2;
 			if(teamNo == 0 && underAttackCountDown > 0)
 				tempInt[4] = 10001;
 			else{

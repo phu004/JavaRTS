@@ -320,8 +320,6 @@ public class combatManagerAI {
 				}
 			}
 			
-			System.out.println(staticDefenseAhead);
-			
 
 			//send units to attack-move to target position
 			if(!playerHasBecomeStrongerThanAIDuringMarching && !frontalTroopIverwhelmed && (unNeutralizedEntity != null  || distanceToTarget > 2)){

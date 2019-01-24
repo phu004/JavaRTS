@@ -102,6 +102,7 @@ public class mapAwarenessAI {
 		for(int i = 0; i < playerStaticDefenseLocations.length; i++) {
 			playerStaticDefenseLocations[i] = new vector(0,0,0);
 			playerStaticDefenseSize[i] = 0;
+			playerStaticDefenseStrength[i] = 0;
 		}
 	}
 	
@@ -583,6 +584,7 @@ public class mapAwarenessAI {
 		for(int i = 0; i < playerStaticDefenseLocations.length; i++) {
 			playerStaticDefenseLocations[i].set(0,0,0);
 			playerStaticDefenseSize[i] = 0;
+			playerStaticDefenseStrength[i] = 0;
 		}
 		
 		for(int i = 0; i < playerStaticDefenceInMinimap.length; i++) {
@@ -621,8 +623,9 @@ public class mapAwarenessAI {
 		
 		for(int i = 0; i < playerStaticDefenseLocations.length; i++) {
 			if(playerStaticDefenseSize[i] > 0)
-				playerStaticDefenseLocations[i].set(playerStaticDefenseLocations[i].x/playerStaticDefenseSize[i], 0, playerStaticDefenseLocations[i].z/playerStaticDefenseSize[i]);
+				playerStaticDefenseLocations[i].set(playerStaticDefenseLocations[i].x/playerStaticDefenseSize[i], 0, playerStaticDefenseLocations[i].z/playerStaticDefenseSize[i]);	
 		}
+		
 		
 	}
 	

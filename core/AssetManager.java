@@ -250,7 +250,7 @@ public class AssetManager {
 		
 		for(int i = 0; i < 10; i ++){
 			
-			for(int j = 0; j < 6; j++){
+			for(int j = 0; j < 6; j++){ 
 				stealthTank l = new stealthTank(new vector(i*0.25f+ 1.125f,-0.3f, 17.375f - 0.25f*j), 90, 0);
 				addStealthTank(l);
 				//l.hasMultiShotUpgrade = true;

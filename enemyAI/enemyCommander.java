@@ -84,7 +84,7 @@ public class enemyCommander {
 	
 	
 	public void thinkHardLikeHumanPlayer(){
-		
+		//the order is important!!
 		if(mainThread.frameIndex % 30 == 0){
 			theMapAwarenessAI.processAI();
 		}

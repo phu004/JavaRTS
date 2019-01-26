@@ -54,6 +54,8 @@ public class combatManagerAI {
 	
 	public boolean staticDefenseAhead;
 	
+	public boolean dealWithMajorThreat;
+	
 	
 	public combatManagerAI(baseInfo theBaseInfo){
 		this.theBaseInfo = theBaseInfo;
@@ -237,6 +239,24 @@ public class combatManagerAI {
 				}
 			}
 		}else if(currentState == aggressing){
+			
+			//check if a major threat is found other than the current attack position
+			if(mainThread.ec.theDefenseManagerAI.majorThreatLocation.x != 0){
+				float xPos = mainThread.ec.theDefenseManagerAI.majorThreatLocation.x;
+				float zPos = mainThread.ec.theDefenseManagerAI.majorThreatLocation.z;
+				float d1 = (attackPosition.x - combatCenterX)*(attackPosition.x - combatCenterX) + (attackPosition.z - combatCenterZ)*(attackPosition.z - combatCenterZ);
+				float d2 = (xPos - combatCenterX)*(xPos - combatCenterX) + (zPos - combatCenterZ)*(zPos - combatCenterZ);
+				if(d2 <= d1) {
+					attackPosition.set(xPos, 0, zPos);
+				}
+				dealWithMajorThreat = true;
+			}else {
+				if(dealWithMajorThreat == true) {
+					currentState = booming;
+					dealWithMajorThreat = false;
+					return;
+				}
+			}
 			
 			
 			attackDirection.set(attackPosition.x - combatCenterX, 0, attackPosition.z - combatCenterZ);

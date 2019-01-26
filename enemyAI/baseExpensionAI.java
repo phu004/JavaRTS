@@ -69,6 +69,7 @@ public class baseExpensionAI {
 		
 		expensionGoldMine = goldMines[expensionPiorityList[targetExpension]];
 		
+		
 		//produce a total of 3  scout units, check if there are any stealth tank in the production
 		numberOfActiveScout = 0;
 		numberOfStealthTankScout = 0;
@@ -159,6 +160,11 @@ public class baseExpensionAI {
 		
 		//move mcv to the next expension location
 		if(myMCV != null){
+			if(frameAI > 400 && frameAI < 550) {
+				mainThread.ec.theUnitProductionAI.rallyPoint.set(expensionGoldMine.centre.x, 0, expensionGoldMine.centre.z - 1.5f);
+			}
+			
+			
 			isExpanding = true;
 			if(myMCV.getDistance(expensionGoldMine) > 2 && !(myMCV.destinationX == expensionGoldMine.centre.x && myMCV.destinationY == expensionGoldMine.centre.z)){
 				myMCV.moveTo(expensionGoldMine.centre.x, expensionGoldMine.centre.z); 

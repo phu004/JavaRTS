@@ -167,11 +167,13 @@ public class defenseManagerAI {
 			//if the size of player unit cluster is bigger or equal to 5 then check if the threat is a big one
 			if(playerForceIsNearBase(mainPlayerForceLocation)) {
 				giveBackControlOfDefendersToCombatAI();
+				majorThreatCooldown = 20;
 				majorThreatLocation.set(mainPlayerForceLocation);
 			}else {
 				float d = playerForceIsMovingTwoardsBase(mainPlayerForceLocation, mainPlayerForceDirection);
 				if(d != -1) {
 					giveBackControlOfDefendersToCombatAI();
+					majorThreatCooldown = 20;
 					majorThreatLocation.set(mainPlayerForceLocation);
 					majorThreatLocation.add(mainPlayerForceDirection, d);
 				}

@@ -196,6 +196,17 @@ public class combatManagerAI {
 				}
 			}else {
 				
+				//if the player is attacking and  AI doesn't have enough unit to deal with it for the time being, hold attacks until AI has gathered enough force
+				if(mainThread.ec.theDefenseManagerAI.majorThreatLocation.x != 0) {
+					int numberOfLightTanks_AI = mainThread.ec.theUnitProductionAI.numberOfLightTanksControlledByCombatAI;
+					int numberOfRocketTanks_AI = mainThread.ec.theUnitProductionAI.numberOfRocketTanksControlledByCombatAI;
+					int numberOfStealthTanks_AI = mainThread.ec.theUnitProductionAI.numberOfStealthTanksControlledByCombatAI;
+					int numberOfHeavyTanks_AI = mainThread.ec.theUnitProductionAI.numberOfHeavyTanksControlledByCombatAI;
+					if(numberOfLightTanks_AI + numberOfRocketTanks_AI + numberOfStealthTanks_AI + numberOfHeavyTanks_AI < 7)
+						return;
+				}
+				
+				
 				//check if there are any player units/structures near the combat center
 				solidObject[] playerUnitInMinimap = mainThread.ec.theMapAwarenessAI.playerUnitInMinimap;
 				solidObject[] playerStructures = mainThread.ec.theMapAwarenessAI.playerStructures;

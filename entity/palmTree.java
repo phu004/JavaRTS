@@ -255,7 +255,7 @@ public class palmTree extends solidObject{
 		tempCentre.rotate_YZ(camera.YZ_angle); 
 		tempCentre.updateLocation();
 		
-		if(tempCentre.screenX > 918 || tempCentre.screenX < - 150 || tempCentre.screenY < - 150 || tempCentre.screenY > 662){
+		if(tempCentre.screenX > 918 || tempCentre.screenX < - 50 || tempCentre.screenY < - 125 || tempCentre.screenY > 662){
 			visible = false;
 			return;
 		}

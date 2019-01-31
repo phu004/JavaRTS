@@ -50,11 +50,14 @@ public class combatManagerAI {
 	boolean shouldDefenceAggressively;
 	
 	
-	public float offScreenPlayerForceStrength;
+	public float unrevealedPlayerForceStrength;
+	public int noPlayerActivityCountdown;
 	
 	public boolean staticDefenseAhead;
 	
 	public boolean dealWithMajorThreat;
+	
+	public boolean unitCountLow;
 	
 	
 	public combatManagerAI(baseInfo theBaseInfo){
@@ -80,14 +83,16 @@ public class combatManagerAI {
 	public void processAI(){
 		frameAI++;
 		
+		if(mainThread.ec.theMapAwarenessAI.numberOfPlayerUnitsOnMinimap != 0)
+			noPlayerActivityCountdown=150;
+		else if(noPlayerActivityCountdown > 0)
+			noPlayerActivityCountdown--;
+		
 		//assume player force gets stronger as time goes by
-		if(offScreenPlayerForceStrength < 0)
-			offScreenPlayerForceStrength = 0;
-		if(frameAI > 150)
-			offScreenPlayerForceStrength+=0.075f;
-		
-		
-		//checkIfAIHasBiggerForce(1);
+		if(unrevealedPlayerForceStrength < 0)
+			unrevealedPlayerForceStrength = 0;
+		if(noPlayerActivityCountdown > 0)
+			unrevealedPlayerForceStrength+=0.1f;
 		
 		if(withdrawUnitOutsideCombatRadiusCooldown > 0){
 			withdrawUnitOutsideCombatRadiusCooldown --;
@@ -127,6 +132,11 @@ public class combatManagerAI {
 			rallyPointChanged = true;
 		}
 		
+		int numberOfLightTanks_AI = mainThread.ec.theUnitProductionAI.numberOfLightTanksControlledByCombatAI;
+		int numberOfRocketTanks_AI = mainThread.ec.theUnitProductionAI.numberOfRocketTanksControlledByCombatAI;
+		int numberOfStealthTanks_AI = mainThread.ec.theUnitProductionAI.numberOfStealthTanksControlledByCombatAI;
+		int numberOfHeavyTanks_AI = mainThread.ec.theUnitProductionAI.numberOfHeavyTanksControlledByCombatAI;
+		unitCountLow = numberOfLightTanks_AI + numberOfRocketTanks_AI + numberOfStealthTanks_AI + numberOfHeavyTanks_AI * 2 < 9;
 		
 		if(currentState == booming){
 			
@@ -196,16 +206,18 @@ public class combatManagerAI {
 				}
 			}else {
 				
-				//if the player is attacking and  AI doesn't have enough unit to deal with it for the time being, hold attacks until AI has gathered enough force
-				if(mainThread.ec.theDefenseManagerAI.majorThreatLocation.x != 0) {
-					int numberOfLightTanks_AI = mainThread.ec.theUnitProductionAI.numberOfLightTanksControlledByCombatAI;
-					int numberOfRocketTanks_AI = mainThread.ec.theUnitProductionAI.numberOfRocketTanksControlledByCombatAI;
-					int numberOfStealthTanks_AI = mainThread.ec.theUnitProductionAI.numberOfStealthTanksControlledByCombatAI;
-					int numberOfHeavyTanks_AI = mainThread.ec.theUnitProductionAI.numberOfHeavyTanksControlledByCombatAI;
-					if(numberOfLightTanks_AI + numberOfRocketTanks_AI + numberOfStealthTanks_AI + numberOfHeavyTanks_AI < 7)
-						return;
-				}
 				
+				//check if defenceManager found a major threat
+				if(mainThread.ec.theDefenseManagerAI.majorThreatLocation.x != 0) {
+					if(unitCountLow)
+						return;
+					
+					currentState = aggressing;
+					attackDirection.set(mainThread.ec.theDefenseManagerAI.majorThreatLocation.x - combatCenterX, 0, mainThread.ec.theDefenseManagerAI.majorThreatLocation.z - combatCenterZ);
+					attackDirection.unit();
+					attackPosition.set(mainThread.ec.theDefenseManagerAI.majorThreatLocation);
+					return;
+				}
 				
 				//check if there are any player units/structures near the combat center
 				solidObject[] playerUnitInMinimap = mainThread.ec.theMapAwarenessAI.playerUnitInMinimap;
@@ -228,14 +240,7 @@ public class combatManagerAI {
 					}
 				}
 				
-				//check if defenceManager found a major threat
-				if(mainThread.ec.theDefenseManagerAI.majorThreatLocation.x != 0) {
-					currentState = aggressing;
-					attackDirection.set(mainThread.ec.theDefenseManagerAI.majorThreatLocation.x - combatCenterX, 0, mainThread.ec.theDefenseManagerAI.majorThreatLocation.z - combatCenterZ);
-					attackDirection.unit();
-					attackPosition.set(mainThread.ec.theDefenseManagerAI.majorThreatLocation);
-					return;
-				}
+				
 			}
 			
 			if(currentState != aggressing) {
@@ -328,7 +333,7 @@ public class combatManagerAI {
 			
 			//check if the player force has become stronger than the AI during the marching towards attack position
 			//System.out.println("distanceToTarget: "  + distanceToTarget);
-			if(checkIfAIHasBiggerForce(1) == false && distanceToTarget > 5){
+			if(checkIfAIHasBiggerForce(1.2f) == false && distanceToTarget > 5){
 				playerHasBecomeStrongerThanAIDuringMarching = true;
 			}
 			
@@ -505,7 +510,7 @@ public class combatManagerAI {
 					break;
 			}
 			
-			
+			boolean playerForceIsMuchWeakerThanAI = checkIfAIHasBiggerForce(0.2f);
 
 			for(int i = 0; i < mainThread.ec.theUnitProductionAI.numberOfCombatUnit; i++){
 				if(team[i] != null && team[i].currentHP > 0){
@@ -532,11 +537,12 @@ public class combatManagerAI {
 							double d = Math.sqrt((team[i].centre.x -  combatCenterX)*(team[i].centre.x -  combatCenterX) + (team[i].centre.z -  combatCenterZ)*(team[i].centre.z -  combatCenterZ))*3;
 							
 							if(d > teamRadius){
-							
-								team[i].attackMoveTo(gatherPoint.x, gatherPoint.z); 
+								if(!playerForceIsMuchWeakerThanAI || mainThread.ec.theMapAwarenessAI.playerAssetDestoryedCountDown == 0)
+									team[i].attackMoveTo(gatherPoint.x, gatherPoint.z); 
+								else
+									team[i].attackMoveTo(team[i].centre.x + attackDirection.x*teamRadius, team[i].centre.z + attackDirection.z*teamRadius); 
 								
 							}else{
-						
 								team[i].attackMoveTo(team[i].centre.x + attackDirection.x*teamRadius, team[i].centre.z + attackDirection.z*teamRadius); 
 								
 							}
@@ -642,10 +648,10 @@ public class combatManagerAI {
 		
 		double enemyAIForceStrength = m1*numberOfLightTanks_AI + 0.75f*numberOfRocketTanks_AI + m3*(numberOfStealthTanks_AI-mainThread.ec.theBaseExpentionAI.numberOfStealthTankScout) +  3* numberOfHeavyTanks_AI;
 		
-		double playerForceStrength = offScreenPlayerForceStrength + numberOfLightTanks_player + 0.75f*numberOfRocketTanks_player + 1.5*numberOfStealthTanks_player +  3* numberOfHeavyTanks_player;
+		double playerForceStrength = unrevealedPlayerForceStrength + numberOfLightTanks_player + 0.75f*numberOfRocketTanks_player + 1.5*numberOfStealthTanks_player +  3* numberOfHeavyTanks_player;
 		
-		//System.out.println("offScreenPlayerForceStrength" + offScreenPlayerForceStrength +  "    "  + "enemyAIForceStrength " + enemyAIForceStrength + "    "  + "playerForceStrength" + playerForceStrength);
-		
+		//System.out.println("unrevealedPlayerForceStrength" + unrevealedPlayerForceStrength +  "    "  + "enemyAIForceStrength " + enemyAIForceStrength + "    "  + "playerForceStrength" + playerForceStrength);
+			
 		return enemyAIForceStrength > 0 && playerForceStrength/enemyAIForceStrength < ratio;
 			
 		

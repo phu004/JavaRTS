@@ -77,9 +77,27 @@ public class unitProductionAI {
 		float x = 0;
 		float z = 999999;
 		
+		
+		int numberOfLightTanks_AI = mainThread.ec.theUnitProductionAI.numberOfLightTanksControlledByCombatAI;
+		int numberOfRocketTanks_AI = mainThread.ec.theUnitProductionAI.numberOfRocketTanksControlledByCombatAI;
+		int numberOfStealthTanks_AI = mainThread.ec.theUnitProductionAI.numberOfStealthTanksControlledByCombatAI;
+		int numberOfHeavyTanks_AI = mainThread.ec.theUnitProductionAI.numberOfHeavyTanksControlledByCombatAI;
+		boolean unitCountLow = mainThread.ec.theCombatManagerAI.unitCountLow;
+		
 		int index = 0;
 		for(int i = 0; i < mainThread.theAssetManager.constructionYards.length; i++){
 			if(mainThread.theAssetManager.constructionYards[i] != null && mainThread.theAssetManager.constructionYards[i].currentHP > 0 &&  mainThread.theAssetManager.constructionYards[i].teamNo != 0){
+				if(unitCountLow && mainThread.ec.theDefenseManagerAI.majorThreatLocation.x != 0) {
+					float xPos1 = mainThread.theAssetManager.constructionYards[i].centre.x;
+					float zPos1 = mainThread.theAssetManager.constructionYards[i].centre.z;
+					float xPos2 = mainThread.ec.theDefenseManagerAI.majorThreatLocation.x;
+					float zPos2 = mainThread.ec.theDefenseManagerAI.majorThreatLocation.z;
+					float d = (xPos1 - xPos2) * (xPos1 - xPos2) + (zPos1 - zPos2) * (zPos1 - zPos2);
+					if(d < 9) {
+						continue;
+					}
+				}
+				
 				index = i;
 				if(mainThread.theAssetManager.constructionYards[i].centre.z < z && mainThread.theAssetManager.constructionYards[i].centre.z > 7 && mainThread.theAssetManager.constructionYards[i].centre.x > 7){
 					x = mainThread.theAssetManager.constructionYards[i].centre.x;
@@ -93,7 +111,7 @@ public class unitProductionAI {
 			else
 				rallyPoint.set(x - 1.5f, 0, z - 1.5f);
 		}else {
-			if(mainThread.theAssetManager.constructionYards[index] != null)
+			if(mainThread.theAssetManager.constructionYards[index] != null && mainThread.theAssetManager.constructionYards[index].teamNo !=0)
 				rallyPoint.set(mainThread.theAssetManager.constructionYards[index].centre.x - 2.5f, 0,  mainThread.theAssetManager.constructionYards[index].centre.z -2.5f);
 		}
 		
@@ -120,11 +138,6 @@ public class unitProductionAI {
 		}
 		
 		//make decision on what unit to produce
-		int numberOfLightTanks_AI = mainThread.ec.theMapAwarenessAI.numberOfLightTanks_AI;
-		int numberOfRocketTanks_AI = mainThread.ec.theMapAwarenessAI.numberOfRocketTanks_AI;
-		int numberOfStealthTanks_AI = mainThread.ec.theMapAwarenessAI.numberOfStealthTanks_AI;
-		int numberOfHeavyTanks_AI = mainThread.ec.theMapAwarenessAI.numberOfHeavyTanks_AI;
-				
 		int numberOfPlayerTurrets=  mainThread.ec.theMapAwarenessAI.numberOfMissileTurret_player + mainThread.ec.theMapAwarenessAI.numberOfGunTurret_player;
 		int numberOfLightTanks_player = mainThread.ec.theMapAwarenessAI.numberOfLightTanks_player;
 		int numberOfRocketTanks_player = mainThread.ec.theMapAwarenessAI.numberOfRocketTanks_player;
@@ -422,11 +435,12 @@ public class unitProductionAI {
 			unitInCombactRadiusPercentage = (float)numberOfUnitInCombatRadius/(float)(numberOfUnitInCombatRadius + numberOfUnitOutsideCombatRadius);
 		
 		float unitInCombactRadiusPercentageThreshold = 0.7f;
+		if(mainThread.ec.theCombatManagerAI.currentState == mainThread.ec.theCombatManagerAI.aggressing) {
+			if(mainThread.ec.theCombatManagerAI.distanceToTarget < 6)
+				unitInCombactRadiusPercentageThreshold = 0.475f;
+		}
 		if(numberOfCombatUnitsUnderAttack > 0)
 			unitInCombactRadiusPercentageThreshold = 0.25f;
-		
-		//System.out.println(unitInCombactRadiusPercentage + "   :"  + unitInCombactRadiusPercentageThreshold);
-		
 		
 		//need to recalculate the center  if  there is a significant amount of combat unites that are outside of the combat radius 
 		if(unitInCombactRadiusPercentage < unitInCombactRadiusPercentageThreshold){

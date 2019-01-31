@@ -78,7 +78,7 @@ public class microManagementAI {
 					
 				}else {
 
-					float myRange= unitInCombatRadius[i].attackRange * unitInCombatRadius[i].attackRange;
+					float myRange= (unitInCombatRadius[i].attackRange+2f) * (unitInCombatRadius[i].attackRange+2f);
 					
 					//Prioritize searching for  targets among static defenses
 					boolean suitableTargertFound = false;

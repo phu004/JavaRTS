@@ -35,6 +35,10 @@ public class mapAwarenessAI {
 	
 	public int numberOfPlayerUnitDestroyed;
 	public int numberOfPlayerBuildingDestroyed;
+	public int numberOfPlayerUnitDestroyedInPreviousFrame;
+	public int numberOfPlayerBuildingDestroyedPreviousFrame;
+	public int playerAssetDestoryedCountDown;
+	
 	
 	public boolean playerHasMostlyLightTanks;
 	public boolean playerHasMostlyHeavyTanks;
@@ -146,6 +150,9 @@ public class mapAwarenessAI {
 			AIStructures[i] = null;
 		numOfAIStructures = 0;
 		
+		if(playerAssetDestoryedCountDown > 0)
+			playerAssetDestoryedCountDown = 0;
+		
 		
 		for(int i = 0; i < theAssetManager.lightTanks.length; i++){
 			if(theAssetManager.lightTanks[i] != null && theAssetManager.lightTanks[i].teamNo ==0){
@@ -154,7 +161,7 @@ public class mapAwarenessAI {
 					addPlayerUnitInMinimap(theAssetManager.lightTanks[i]);
 					if(mapAsset[theAssetManager.lightTanks[i].ID] == null) {
 						mapAsset[theAssetManager.lightTanks[i].ID] = theAssetManager.lightTanks[i];
-						mainThread.ec.theCombatManagerAI.offScreenPlayerForceStrength-=1;
+						mainThread.ec.theCombatManagerAI.unrevealedPlayerForceStrength-=1;
 					}
 				}
 			}else if(theAssetManager.lightTanks[i] != null && theAssetManager.lightTanks[i].teamNo !=0){
@@ -173,7 +180,7 @@ public class mapAwarenessAI {
 					addPlayerUnitInMinimap(theAssetManager.rocketTanks[i]);
 					if(mapAsset[theAssetManager.rocketTanks[i].ID] == null) {
 						mapAsset[theAssetManager.rocketTanks[i].ID] = theAssetManager.rocketTanks[i];
-						mainThread.ec.theCombatManagerAI.offScreenPlayerForceStrength-=1.5;
+						mainThread.ec.theCombatManagerAI.unrevealedPlayerForceStrength-=1.5;
 					}
 				}
 			}else if(theAssetManager.rocketTanks[i] != null && theAssetManager.rocketTanks[i].teamNo !=0){
@@ -192,7 +199,7 @@ public class mapAwarenessAI {
 					addPlayerUnitInMinimap(theAssetManager.stealthTanks[i]);
 					if(mapAsset[theAssetManager.stealthTanks[i].ID] == null) {
 						mapAsset[theAssetManager.stealthTanks[i].ID] = theAssetManager.stealthTanks[i];
-						mainThread.ec.theCombatManagerAI.offScreenPlayerForceStrength-=2;
+						mainThread.ec.theCombatManagerAI.unrevealedPlayerForceStrength-=2;
 					}
 				}
 			}else if(theAssetManager.stealthTanks[i] != null && theAssetManager.stealthTanks[i].teamNo !=0){
@@ -212,7 +219,7 @@ public class mapAwarenessAI {
 					addPlayerUnitInMinimap(theAssetManager.heavyTanks[i]);
 					if(mapAsset[theAssetManager.heavyTanks[i].ID] == null) {
 						mapAsset[theAssetManager.heavyTanks[i].ID] = theAssetManager.heavyTanks[i];
-						mainThread.ec.theCombatManagerAI.offScreenPlayerForceStrength-=3.5;
+						mainThread.ec.theCombatManagerAI.unrevealedPlayerForceStrength-=3.5;
 					}
 				}
 			}else if(theAssetManager.heavyTanks[i] != null && theAssetManager.heavyTanks[i].teamNo !=0){
@@ -227,7 +234,7 @@ public class mapAwarenessAI {
 		for(int i = 0; i < theAssetManager.harvesters.length; i++){
 			if(theAssetManager.harvesters[i] != null && theAssetManager.harvesters[i].teamNo ==0){
 				if(visionMap[theAssetManager.harvesters[i].occupiedTile0]){
-					addPlayerUnitInMinimap(theAssetManager.harvesters[i]);
+					//addPlayerUnitInMinimap(theAssetManager.harvesters[i]);
 					mapAsset[theAssetManager.harvesters[i].ID] = theAssetManager.harvesters[i];
 				}
 			}
@@ -236,7 +243,7 @@ public class mapAwarenessAI {
 		for(int i = 0; i < theAssetManager.constructionVehicles.length; i++){
 			if(theAssetManager.constructionVehicles[i] != null && theAssetManager.constructionVehicles[i].teamNo ==0){
 				if(visionMap[theAssetManager.constructionVehicles[i].occupiedTile0]){
-					addPlayerUnitInMinimap(theAssetManager.constructionVehicles[i]);
+					//addPlayerUnitInMinimap(theAssetManager.constructionVehicles[i]);
 					mapAsset[theAssetManager.constructionVehicles[i].ID] = theAssetManager.constructionVehicles[i];
 				}
 			}
@@ -249,7 +256,7 @@ public class mapAwarenessAI {
 				if(visionMap[theAssetManager.gunTurrets[i].tileIndex[0]]){
 					if(mapAsset[theAssetManager.gunTurrets[i].ID] == null) {
 						mapAsset[theAssetManager.gunTurrets[i].ID] = theAssetManager.gunTurrets[i];
-						mainThread.ec.theCombatManagerAI.offScreenPlayerForceStrength-=1;
+						mainThread.ec.theCombatManagerAI.unrevealedPlayerForceStrength-=1;
 					}
 				}
 			}else if(theAssetManager.gunTurrets[i] != null && theAssetManager.gunTurrets[i].teamNo !=0) {
@@ -263,7 +270,7 @@ public class mapAwarenessAI {
 				if(visionMap[theAssetManager.missileTurrets[i].tileIndex[0]]){
 					if(mapAsset[theAssetManager.missileTurrets[i].ID] == null) {
 						mapAsset[theAssetManager.missileTurrets[i].ID] = theAssetManager.missileTurrets[i];
-						mainThread.ec.theCombatManagerAI.offScreenPlayerForceStrength-=2;
+						mainThread.ec.theCombatManagerAI.unrevealedPlayerForceStrength-=2;
 					}
 				}
 			}else if(theAssetManager.missileTurrets[i] != null && theAssetManager.missileTurrets[i].teamNo !=0) {
@@ -366,6 +373,7 @@ public class mapAwarenessAI {
 		
 		numberOfPlayerUnitDestroyed = 0; 
 		numberOfPlayerBuildingDestroyed = 0;
+	
 		
 		for(int i = 0; i < mapAsset.length; i++){
 			if(mapAsset[i] != null && mapAsset[i].teamNo == 0){
@@ -409,15 +417,23 @@ public class mapAwarenessAI {
 						}
 					}
 				}else{
-					if(mapAsset[i].type < 100)
-						numberOfPlayerUnitDestroyed++;
-					else
-						numberOfPlayerBuildingDestroyed++;
+					if(mapAsset[i].attacker.teamNo != 0) {
+						if(mapAsset[i].type < 100)
+							numberOfPlayerUnitDestroyed++;
+						else
+							numberOfPlayerBuildingDestroyed++;
+					}
 				}
 			}
-			
 		}
 		
+		if(numberOfPlayerUnitDestroyed > numberOfPlayerUnitDestroyedInPreviousFrame || numberOfPlayerBuildingDestroyed > numberOfPlayerBuildingDestroyedPreviousFrame) {
+			playerAssetDestoryedCountDown = 30;
+		}
+		
+		numberOfPlayerUnitDestroyedInPreviousFrame = playerAssetDestoryedCountDown;
+		numberOfPlayerBuildingDestroyedPreviousFrame = numberOfPlayerBuildingDestroyed;
+	
 		//analyze the enemy units composition 
 		
 		float lightTankRatio = (float)(numberOfLightTanks_player)/(numberOfLightTanks_player + numberOfRocketTanks_player + numberOfStealthTanks_player + numberOfHeavyTanks_player + 1);
@@ -601,7 +617,7 @@ public class mapAwarenessAI {
 					if(playerStaticDefenceInMinimap[j].type == 200)
 						playerStaticDefenseStrength[j]+=2;
 					if(playerStaticDefenceInMinimap[j].type == 199)
-						playerStaticDefenseStrength[j]+=5;
+						playerStaticDefenseStrength[j]+=6;
 					break;
 				} 
 				float centerX = playerStaticDefenseLocations[j].x/playerStaticDefenseSize[j];
@@ -614,7 +630,7 @@ public class mapAwarenessAI {
 					if(playerStaticDefenceInMinimap[j].type == 200)
 						playerStaticDefenseStrength[j]+=2;
 					if(playerStaticDefenceInMinimap[j].type == 199)
-						playerStaticDefenseStrength[j]+=5;
+						playerStaticDefenseStrength[j]+=6;
 					break;
 				}
 			}
@@ -624,7 +640,9 @@ public class mapAwarenessAI {
 		for(int i = 0; i < playerStaticDefenseLocations.length; i++) {
 			if(playerStaticDefenseSize[i] > 0)
 				playerStaticDefenseLocations[i].set(playerStaticDefenseLocations[i].x/playerStaticDefenseSize[i], 0, playerStaticDefenseLocations[i].z/playerStaticDefenseSize[i]);	
+			
 		}
+		
 		
 		
 	}

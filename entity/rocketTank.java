@@ -40,8 +40,6 @@ public class rocketTank extends solidObject{
 	//destination angle
 	public int destinationAngle; 
 		
-
-	
 		
 	//whether light tank has ling of sight to its target
 	public boolean hasLineOfSightToTarget;
@@ -73,6 +71,7 @@ public class rocketTank extends solidObject{
 	public static int[] tileCheckList;
 	
 	public int damageMultiplier = 1;
+	public final static float damageAginstBuildingMulitplier = 1.25f;
 		
 		
 	public rocketTank(vector origin, int bodyAngle, int teamNo){
@@ -1035,7 +1034,7 @@ public class rocketTank extends solidObject{
 		float multiplier = 1; 
 		if(targetObject.type > 100){
 			multiplier = damageMultiplier;
-			multiplier*=1.25f;
+			multiplier*=damageAginstBuildingMulitplier;
 		}
 		
 		if(attackCoolDown == 0 && targetObject.currentHP >0 ){

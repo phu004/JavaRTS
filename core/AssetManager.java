@@ -233,9 +233,9 @@ public class AssetManager {
 			for(int j = 0; j < 10; j++){
 				
 				//if(i == 0) {
-					//rocketTank l = new rocketTank(new vector(j*0.25f+ 1.125f,-0.3f, 22.125f - i*0.25f), 90, 1);
+					rocketTank l = new rocketTank(new vector(j*0.25f+ 1.125f,-0.3f, 22.125f - i*0.25f), 90, 1);
 					//l.damageMultiplier =2;
-					//addRocketTank(l);
+					addRocketTank(l);
 				//techCenter.rocketTankResearched_enemy = true;
 				
 				//}else {
@@ -251,8 +251,8 @@ public class AssetManager {
 		for(int i = 0; i < 10; i ++){
 			
 			for(int j = 0; j < 6; j++){ 
-				stealthTank l = new stealthTank(new vector(i*0.25f+ 1.125f,-0.3f, 17.375f - 0.25f*j), 90, 0);
-				addStealthTank(l);
+				//lightTank l = new lightTank(new vector(i*0.25f+ 1.125f,-0.3f, 17.375f - 0.25f*j), 90, 0);
+				//addLightTank(l);
 				//l.hasMultiShotUpgrade = true;
 				//lightTank l = new lightTank(new vector(i*0.25f + 1.125f,-0.3f, 0.5f + 18.625f + j*0.25f), 90, 0);
 				
@@ -261,7 +261,7 @@ public class AssetManager {
 				//lightTank.tileCheckList_player = lightTank.generateTileCheckList(6);
 		
 				//addLightTank(l);
-				//addMissileTurret(new missileTurret(i*0.25f -0.125f + 1, -0.65f, 0.25f + 16.125f + j*0.25f, 0));
+				addGunTurret(new gunTurret(i*0.25f -0.125f + 13, -0.65f, 0.25f + 20.125f + j*0.25f, 0));
 			
 			}
 		}

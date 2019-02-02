@@ -510,7 +510,7 @@ public class combatManagerAI {
 					break;
 			}
 			
-			boolean playerForceIsMuchWeakerThanAI = checkIfAIHasBiggerForce(0.2f);
+			boolean playerForceIsMuchWeakerThanAI = checkIfAIHasBiggerForce(0.5f);
 
 			for(int i = 0; i < mainThread.ec.theUnitProductionAI.numberOfCombatUnit; i++){
 				if(team[i] != null && team[i].currentHP > 0){
@@ -554,7 +554,10 @@ public class combatManagerAI {
 					}	
 				}
 			}
+			System.out.println(!playerForceIsMuchWeakerThanAI + " " + mainThread.ec.theMapAwarenessAI.playerAssetDestoryedCountDown);
 		}
+		
+		
 		
 		//make sure idle units are send to attack unNeutralized target
 		if(unNeutralizedEntity  != null){

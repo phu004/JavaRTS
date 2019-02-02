@@ -151,7 +151,7 @@ public class mapAwarenessAI {
 		numOfAIStructures = 0;
 		
 		if(playerAssetDestoryedCountDown > 0)
-			playerAssetDestoryedCountDown = 0;
+			playerAssetDestoryedCountDown--;
 		
 		
 		for(int i = 0; i < theAssetManager.lightTanks.length; i++){
@@ -431,7 +431,7 @@ public class mapAwarenessAI {
 			playerAssetDestoryedCountDown = 30;
 		}
 		
-		numberOfPlayerUnitDestroyedInPreviousFrame = playerAssetDestoryedCountDown;
+		numberOfPlayerUnitDestroyedInPreviousFrame = numberOfPlayerUnitDestroyed;
 		numberOfPlayerBuildingDestroyedPreviousFrame = numberOfPlayerBuildingDestroyed;
 	
 		//analyze the enemy units composition 

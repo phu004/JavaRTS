@@ -4,6 +4,7 @@ import core.baseInfo;
 import core.mainThread;
 import entity.solidObject;
 import entity.techCenter;
+import entity.rocketTank;
 
 //micro manage the units on the battle field to trade units better against player
 
@@ -63,6 +64,44 @@ public class microManagementAI {
 			//micro  rocket tanks, so they don't overkill targets,
 			if(unitInCombatRadius[i].type == 1) {
 				
+				float myRange= (unitInCombatRadius[i].attackRange) * (unitInCombatRadius[i].attackRange);
+				float scanRange = (unitInCombatRadius[i].attackRange + 1.5f) * (unitInCombatRadius[i].attackRange+1.5f);
+				
+				//Prioritize searching for  targets among static defenses
+				boolean suitableTargertFound = false;
+				for(int j = 0; j < playerStaticDefenceInMinimap.length; j++) {
+					if(playerStaticDefenceInMinimap[j] != null && !playerStaticDefenceInMinimap[j].willDieFromIncomingAttack()){
+						x1 = playerStaticDefenceInMinimap[j].centre.x;
+						x2 = unitInCombatRadius[i].centre.x;
+						z1 = playerStaticDefenceInMinimap[j].centre.z;
+						z2 = unitInCombatRadius[i].centre.z;
+						float distanceToDesination = (x1 - x2)*(x1 - x2) +  (z1 - z2)*(z1 - z2);
+						if(distanceToDesination < scanRange){
+							unitInCombatRadius[i].attack(playerStaticDefenceInMinimap[j]);
+							
+							unitInCombatRadius[i].currentCommand = solidObject.attackCautiously;
+							unitInCombatRadius[i].secondaryCommand = solidObject.StandBy;
+							
+							suitableTargertFound = true;
+							
+							if(distanceToDesination < myRange) {
+								int myDamage = unitInCombatRadius[i].myDamage;
+								if(techCenter.rocketTankResearched_enemy) {
+									myDamage*=2;
+								}
+								myDamage = (int)(myDamage*rocketTank.damageAginstBuildingMulitplier);
+								
+								playerStaticDefenceInMinimap[j].incomingDamage+=myDamage*2;
+							}
+							break;
+						}
+					}
+				}
+				
+				if(suitableTargertFound)
+					continue;
+				
+				
 				//if rocket tank has no target or the target will die from incoming attack, find a new target
 				if(unitInCombatRadius[i].targetObject != null && !unitInCombatRadius[i].targetObject.willDieFromIncomingAttack()) {
 					
@@ -71,46 +110,14 @@ public class microManagementAI {
 						if(techCenter.rocketTankResearched_enemy) {
 							myDamage*=2;
 						}
-						myDamage = (int)(myDamage*1.25f);
+						myDamage = (int)(myDamage*rocketTank.damageAginstBuildingMulitplier);
 					}
 					
 					unitInCombatRadius[i].targetObject.incomingDamage+=myDamage*2;
 					
 				}else {
 
-					float myRange= (unitInCombatRadius[i].attackRange+2f) * (unitInCombatRadius[i].attackRange+2f);
 					
-					//Prioritize searching for  targets among static defenses
-					boolean suitableTargertFound = false;
-					for(int j = 0; j < playerStaticDefenceInMinimap.length; j++) {
-						if(playerStaticDefenceInMinimap[j] != null && !playerStaticDefenceInMinimap[j].willDieFromIncomingAttack()){
-							x1 = playerStaticDefenceInMinimap[j].centre.x;
-							x2 = unitInCombatRadius[i].centre.x;
-							z1 = playerStaticDefenceInMinimap[j].centre.z;
-							z2 = unitInCombatRadius[i].centre.z;
-							float distanceToDesination = (x1 - x2)*(x1 - x2) +  (z1 - z2)*(z1 - z2);
-							if(distanceToDesination < myRange){
-								unitInCombatRadius[i].attack(playerStaticDefenceInMinimap[j]);
-								
-								unitInCombatRadius[i].currentCommand = solidObject.attackCautiously;
-								
-								suitableTargertFound = true;
-								
-								
-								int myDamage = unitInCombatRadius[i].myDamage;
-								if(techCenter.rocketTankResearched_enemy) {
-									myDamage*=2;
-								}
-								myDamage = (int)(myDamage*1.25f);
-								
-								playerStaticDefenceInMinimap[j].incomingDamage+=myDamage*2;
-								break;
-							}
-						}
-					}
-					
-					if(suitableTargertFound)
-						continue;
 					
 					
 					//find targets among moving unites

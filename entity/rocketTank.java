@@ -694,6 +694,8 @@ public class rocketTank extends solidObject{
 	
 	//attack a single unit, ignore any hostile units it encounters
 	public void performAttackLogic(){
+		if(targetObject == null)
+			return;
 		
 		destinationX = targetObject.getRealCentre().x;
 		destinationY = targetObject.getRealCentre().z;

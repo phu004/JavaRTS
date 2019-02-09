@@ -234,7 +234,7 @@ public class AssetManager {
 				
 				//if(i == 0) {
 					rocketTank l = new rocketTank(new vector(j*0.25f+ 1.125f,-0.3f, 22.125f - i*0.25f), 90, 1);
-					//l.damageMultiplier =2;
+					l.damageMultiplier =2;
 					addRocketTank(l);
 				//techCenter.rocketTankResearched_enemy = true;
 				

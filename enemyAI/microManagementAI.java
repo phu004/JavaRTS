@@ -69,34 +69,43 @@ public class microManagementAI {
 				
 				//Prioritize searching for  targets among static defenses
 				boolean suitableTargertFound = false;
+				float distanceToDesination = 999;
+				solidObject target = null;
 				for(int j = 0; j < playerStaticDefenceInMinimap.length; j++) {
 					if(playerStaticDefenceInMinimap[j] != null && !playerStaticDefenceInMinimap[j].willDieFromIncomingAttack()){
 						x1 = playerStaticDefenceInMinimap[j].centre.x;
 						x2 = unitInCombatRadius[i].centre.x;
 						z1 = playerStaticDefenceInMinimap[j].centre.z;
 						z2 = unitInCombatRadius[i].centre.z;
-						float distanceToDesination = (x1 - x2)*(x1 - x2) +  (z1 - z2)*(z1 - z2);
-						if(distanceToDesination < scanRange){
-							unitInCombatRadius[i].attack(playerStaticDefenceInMinimap[j]);
+						float d = (x1 - x2)*(x1 - x2) +  (z1 - z2)*(z1 - z2);
+						if(d < scanRange && d < distanceToDesination){
+							distanceToDesination = d;
+							target = playerStaticDefenceInMinimap[j];
 							
-							unitInCombatRadius[i].currentCommand = solidObject.attackCautiously;
-							unitInCombatRadius[i].secondaryCommand = solidObject.StandBy;
-							
-							suitableTargertFound = true;
-							
-							if(distanceToDesination < myRange) {
-								int myDamage = unitInCombatRadius[i].myDamage;
-								if(techCenter.rocketTankResearched_enemy) {
-									myDamage*=2;
-								}
-								myDamage = (int)(myDamage*rocketTank.damageAginstBuildingMulitplier);
-								
-								playerStaticDefenceInMinimap[j].incomingDamage+=myDamage*2;
-							}
-							break;
 						}
 					}
 				}
+				
+				if(target != null) {
+					unitInCombatRadius[i].attack(target);
+					
+					unitInCombatRadius[i].currentCommand = solidObject.attackCautiously;
+					unitInCombatRadius[i].secondaryCommand = solidObject.StandBy;
+					
+					suitableTargertFound = true;
+					
+					if(distanceToDesination < myRange) {
+						int myDamage = unitInCombatRadius[i].myDamage;
+						if(techCenter.rocketTankResearched_enemy) {
+							myDamage*=2;
+						}
+						myDamage = (int)(myDamage*rocketTank.damageAginstBuildingMulitplier);
+						
+						target.incomingDamage+=myDamage*2;
+					}
+				}
+				
+				
 				
 				if(suitableTargertFound)
 					continue;
@@ -117,9 +126,6 @@ public class microManagementAI {
 					
 				}else {
 
-					
-					
-					
 					//find targets among moving unites
 					for(int j=0; j < numberOfPlayerUnitsOnMinimap; j++){  
 						if(playerUnitInMinimap[j] != null && !playerUnitInMinimap[j].willDieFromIncomingAttack()){
@@ -127,7 +133,7 @@ public class microManagementAI {
 							x2 = unitInCombatRadius[i].centre.x;
 							z1 = playerUnitInMinimap[j].centre.z;
 							z2 = unitInCombatRadius[i].centre.z;
-							float distanceToDesination = (x1 - x2)*(x1 - x2) +  (z1 - z2)*(z1 - z2);
+							distanceToDesination = (x1 - x2)*(x1 - x2) +  (z1 - z2)*(z1 - z2);
 							
 							if(distanceToDesination < myRange){
 								unitInCombatRadius[i].attack(playerUnitInMinimap[j]);

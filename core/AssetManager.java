@@ -233,9 +233,9 @@ public class AssetManager {
 			for(int j = 0; j < 10; j++){
 				
 				//if(i == 0) {
-					rocketTank l = new rocketTank(new vector(j*0.25f+ 1.125f,-0.3f, 22.125f - i*0.25f), 90, 1);
-					l.damageMultiplier =2;
-					addRocketTank(l);
+					//rocketTank l = new rocketTank(new vector(j*0.25f+ 1.125f,-0.3f, 22.125f - i*0.25f), 90, 1);
+					//l.damageMultiplier =2;
+					//addRocketTank(l);
 				//techCenter.rocketTankResearched_enemy = true;
 				
 				//}else {
@@ -261,7 +261,7 @@ public class AssetManager {
 				//lightTank.tileCheckList_player = lightTank.generateTileCheckList(6);
 		
 				//addLightTank(l);
-				addGunTurret(new gunTurret(i*0.25f -0.125f + 13, -0.65f, 0.25f + 20.125f + j*0.25f, 0));
+				//addGunTurret(new gunTurret(i*0.25f -0.125f + 13, -0.65f, 0.25f + 20.125f + j*0.25f, 0));
 			
 			}
 		}

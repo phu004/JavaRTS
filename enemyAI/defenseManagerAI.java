@@ -72,13 +72,25 @@ public class defenseManagerAI {
 						if(stealthTanksControlledByCombatAI[j] != null && stealthTanksControlledByCombatAI[j].currentHP == 80 && stealthTanksControlledByCombatAI[j].attackStatus != solidObject.isAttacking) {
 							observers[i] = stealthTanksControlledByCombatAI[j];
 							stealthTanksControlledByCombatAI[j] = null;
-							float xPos = 21f;
+							float xPos = 20f;
 							float zPos = 30.5f;
 							
 							if(i == 1) {
 								xPos = 30f;
 								zPos = 20f;
 							}
+							
+							
+							if(gameTime > 880) {
+								xPos = 0.25f;
+								zPos = 20.5f;
+								
+								if(i == 1) {
+									xPos = 18.75f;
+									zPos = 5f;
+								}
+							}
+							
 							observers[i].moveTo(xPos, zPos);
 							observers[i].currentCommand = solidObject.move;
 							observers[i].secondaryCommand = solidObject.StandBy;
@@ -106,6 +118,16 @@ public class defenseManagerAI {
 							xPos = 20f;
 							zPos = 24.5f;
 						}
+						
+						if(gameTime > 880) {
+							if(gameTime%18 < 9) {
+								xPos = 0.25f;
+								zPos = 20.5f;
+							}else {
+								xPos = 5f;
+							    zPos = 20.5f;
+							}
+						}
 							
 					}
 					
@@ -117,6 +139,16 @@ public class defenseManagerAI {
 						}else {
 							xPos = 26f;
 							zPos = 20f;
+						}
+						
+						if(gameTime > 880) {
+							if(gameTime%14 < 7) {
+								xPos = 18.75f;
+								zPos = 5f;
+							}else {
+								xPos = 18.75f;
+								zPos = 0.5f;
+							}
 						}
 						
 					}
@@ -181,6 +213,9 @@ public class defenseManagerAI {
 			
 		}
 		
+		
+		
+		
 		//take over controls of  defenders from combat AI to deal with minor threat
 		if(minorThreatLocation.x != 0 && numOfDefenders > 0) {
 			takeOverDefendersFromCombatAI();
@@ -220,7 +255,24 @@ public class defenseManagerAI {
 			}
 		}
 		
-		//System.out.println(numOfDefenders + "   " + mainThread.ec.theMapAwarenessAI.numOfAIStructures);
+		//check if AI needs to build static defenses
+		/*
+		  build a gun turret when any of the following conditions are met:
+		  	1. there is no threat detected and there are more than 1 construction yard, and there is no other gun turret being constructed at the same time
+		  	2. there are threat detected  and there is no other gun turret being constructed at the same time
+		  
+		  build a missile turret when any of the following conditions are met:
+		  	1. there is no threat detected and there are more than 1 construction yard, and there is no other missile turret being constructed at the same time
+		  	2. there are threat detected and there is no other missile turret being constructed at the same time
+		*/
+		
+		
+		
+		//check if AI needs to deploy static defense
+		/*
+		  Deploy gun turret if the threat location if
+		*/
+		
 		
 	}
 	

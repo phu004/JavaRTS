@@ -1718,23 +1718,7 @@ public class constructionYard extends solidObject{
 		
 	}
 	
-	public static int getPowerConsumption(int buildingType){
-		if(buildingType == 101)
-			return -500;
-		else if(buildingType == 102)
-			return 150;
-		else if(buildingType == 105)
-			return 200;
-		else if(buildingType == 106)
-			return 250;
-		else if(buildingType == 200)
-			return 100;
-		else if(buildingType == 199)
-			return 200;
-		else if(buildingType == 107)
-			return 400;
-		return 0;
-	}
+	
 	
 	
 	//draw the model

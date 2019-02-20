@@ -73,6 +73,8 @@ public class unitProductionAI {
 	public void processAI(){
 		frameAI++;
 		
+		System.out.println(frameAI);
+		
 		//set the rally point to near the construction yard which is closest to the AI player's starting position
 		float x = 0;
 		float z = 999999;
@@ -138,7 +140,8 @@ public class unitProductionAI {
 		}
 		
 		//make decision on what unit to produce
-		int numberOfPlayerTurrets=  mainThread.ec.theMapAwarenessAI.numberOfMissileTurret_player + mainThread.ec.theMapAwarenessAI.numberOfGunTurret_player;
+		int numberOfPlayerGunTurrets=   mainThread.ec.theMapAwarenessAI.numberOfGunTurret_player;
+		int numberOfPlayerMissileTurrets=  mainThread.ec.theMapAwarenessAI.numberOfMissileTurret_player;
 		int numberOfLightTanks_player = mainThread.ec.theMapAwarenessAI.numberOfLightTanks_player;
 		int numberOfRocketTanks_player = mainThread.ec.theMapAwarenessAI.numberOfRocketTanks_player;
 		int numberOfStealthTanks_player = mainThread.ec.theMapAwarenessAI.numberOfStealthTanks_player;
@@ -152,14 +155,14 @@ public class unitProductionAI {
 		boolean playerDoesntHaveMassHeavyTanks = mainThread.ec.theMapAwarenessAI.playerDoesntHaveMassHeavyTanks;
 		boolean playerHasManyLightTanksButNoHeavyTank = mainThread.ec.theMapAwarenessAI.playerHasManyLightTanksButNoHeavyTank;
 		
-		if(numberOfRocketTanks_AI < numberOfPlayerTurrets || (gameData.getRandom() > 925 && !playerHasMostlyLightTanks)){
+		if((numberOfRocketTanks_AI < 2 &&  frameAI > 300 ) || numberOfRocketTanks_AI < numberOfPlayerGunTurrets + numberOfPlayerMissileTurrets*1.5 || (gameData.getRandom() > 925 && !playerHasMostlyLightTanks)){
 			currentProductionOrder = produceRocketTank;
 		}else if(theBaseInfo.canBuildHeavyTank 
 				 && !playerHasManyLightTanksButNoHeavyTank
 				 && !playerHasMostlyLightTanks 
 				 && !(numberOfHeavyTanks_player == 0 && maxNumberOfStealthTanks_playerInLastFiveMinutes < 3 &&  mainThread.frameIndex/30 > 600)  
 				 && !(playerHasMostlyHeavyTanks && numberOfStealthTanks_player < numberOfHeavyTanks_AI*2) 
-				 && (playIsRushingHighTierUnits || gameData.getRandom() > 985 ||  maxNumberOfStealthTanks_playerInLastFiveMinutes*4 > numberOfHeavyTanks_AI  || (mainThread.frameIndex/30 > 400 && mainThread.frameIndex/30 < 600 &&  numberOfPlayerTurrets + numberOfLightTanks_player + numberOfRocketTanks_player + numberOfHeavyTanks_player*5 < 5))){
+				 && (playIsRushingHighTierUnits || gameData.getRandom() > 985 ||  maxNumberOfStealthTanks_playerInLastFiveMinutes*4 > numberOfHeavyTanks_AI  || (mainThread.frameIndex/30 > 400 && mainThread.frameIndex/30 < 600 &&  numberOfPlayerGunTurrets +  numberOfPlayerMissileTurrets+ numberOfLightTanks_player + numberOfRocketTanks_player + numberOfHeavyTanks_player*5 < 5))){
 			currentProductionOrder = produceHeavyTank; 
 		}else if(theBaseInfo.canBuildStealthTank && (playerHasMostlyLightTanks || playerLikelyCanNotProduceHighTierUnits || playerDoesntHaveMassHeavyTanks) && !playerHasMostlyHeavyTanks){
 			currentProductionOrder = produceStealthTank;
@@ -194,11 +197,11 @@ public class unitProductionAI {
 
 			//System.out.println("enemy light tank count: " + numberOfLightTanks_player +  " at "  + mainThread.frameIndex/30);
 			if(currentProductionOrder == produceStealthTank)
-				System.out.println("should make stealth tank now");
-			if(currentProductionOrder == produceHeavyTank){
+				System.out.println("should make stealth tank now--------------");
+			if(currentProductionOrder == produceHeavyTank)
 				System.out.println("should make Heavy tank now-----------------");
-			}
-			
+			if(currentProductionOrder == produceRocketTank)
+				System.out.println("should make Rocket tank now----------------");
 				
 			
 			if(numberOfRocketTanks_AI > 5 && theBaseInfo.currentCredit > 750){

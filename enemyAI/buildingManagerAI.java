@@ -59,7 +59,7 @@ public class buildingManagerAI {
 	public void addBuildingToQueue(int buildingType){
 		//if the additional building will result in a lower power, then build power plant first
 		if(buildingType != 101){
-			if(theBaseInfo.currentPowerLevel <= constructionYard.getPowerConsumption(buildingType) + theBaseInfo.currentPowerConsumption && !powerPlantUnderConstruction){
+			if(theBaseInfo.currentPowerLevel <= getPowerConsumption(buildingType) + theBaseInfo.currentPowerConsumption && !powerPlantUnderConstruction){
 				addBuildingToQueue(101);
 				return;
 			}
@@ -530,6 +530,27 @@ public class buildingManagerAI {
 		}
 		return numberOfFunctionalRefinery;
 		
+	}
+	
+	public int getPowerConsumption(int buildingType){
+		if(buildingType == 101)
+			return -500;
+		else if(buildingType == 102)
+			return 150;
+		else if(buildingType == 105)
+			return 200;
+		else if(buildingType == 106)
+			return 250;
+		else if(buildingType == 200)
+			return 100;
+		else if(buildingType == 199) {
+			if(communicationCenter.rapidfireResearched_enemy)
+				return 275;
+			else
+				return 200;
+		}else if(buildingType == 107)
+			return 400;
+		return 0;
 	}
 	
 	

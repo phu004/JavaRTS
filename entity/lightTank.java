@@ -249,7 +249,6 @@ public class lightTank extends solidObject{
 	
 	//update and draw model 
 	public void update(){
-	
 			
 		//check if tank has been destroyed
 		if(currentHP <= 0){

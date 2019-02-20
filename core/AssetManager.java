@@ -198,8 +198,8 @@ public class AssetManager {
 		goldMines[3] = new goldMine(26f,-0.515f, 3.5f, 40000);
 		goldMines[4] = new goldMine(29.75f,-0.515f, 30f, 30000);
 		goldMines[5] = new goldMine(22.5f,-0.515f, 25.5f, 30000);
-		goldMines[6] = new goldMine(15.5f,-0.515f, 17.75f, 45000);
-		goldMines[7] = new goldMine(16.5f,-0.515f, 12.5f, 45000);
+		goldMines[6] = new goldMine(15.5f,-0.515f, 17.75f, 50000);
+		goldMines[7] = new goldMine(16.5f,-0.515f, 12.5f, 50000);
 		
 		
 		//create trees from bitmap

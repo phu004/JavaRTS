@@ -243,7 +243,7 @@ public class mapAwarenessAI {
 		for(int i = 0; i < theAssetManager.constructionVehicles.length; i++){
 			if(theAssetManager.constructionVehicles[i] != null && theAssetManager.constructionVehicles[i].teamNo ==0){
 				if(visionMap[theAssetManager.constructionVehicles[i].occupiedTile0]){
-					//addPlayerUnitInMinimap(theAssetManager.constructionVehicles[i]);
+					addPlayerUnitInMinimap(theAssetManager.constructionVehicles[i]);
 					mapAsset[theAssetManager.constructionVehicles[i].ID] = theAssetManager.constructionVehicles[i];
 				}
 			}
@@ -417,7 +417,7 @@ public class mapAwarenessAI {
 						}
 					}
 				}else{
-					if(mapAsset[i].attacker.teamNo != 0) {
+					if(mapAsset[i].attacker != null && mapAsset[i].attacker.teamNo != 0) {
 						if(mapAsset[i].type < 100)
 							numberOfPlayerUnitDestroyed++;
 						else

@@ -70,6 +70,8 @@ public class baseExpensionAI {
 		expensionGoldMine = goldMines[expensionPiorityList[targetExpension]];
 		
 		
+		
+		
 		//produce a total of 3  scout units, check if there are any stealth tank in the production
 		numberOfActiveScout = 0;
 		numberOfStealthTankScout = 0;

@@ -240,6 +240,24 @@ public class combatManagerAI {
 					}
 				}
 				
+				for(int i = 0; i < playerStructures.length; i++) {
+					if(playerStructures[i] != null && playerStructures[i].currentHP > 0) {
+						double d = Math.sqrt((combatCenterX - playerStructures[i].centre.x)*(combatCenterX - playerStructures[i].centre.x) + (combatCenterZ - playerStructures[i].centre.z)*(combatCenterZ - playerStructures[i].centre.z));
+						if(d < 5){
+							currentState = aggressing;
+							attackDirection.set(playerStructures[i].centre.x - combatCenterX, 0, playerStructures[i].centre.z - combatCenterZ);
+							attackDirection.unit();
+							attackPosition.set(playerStructures[i].centre);
+							
+							if(shouldDefenceAggressively)
+								attackPosition.add(attackDirection);
+							
+							return;
+						}
+					}
+				}
+				
+				
 				
 			}
 			
@@ -446,7 +464,7 @@ public class combatManagerAI {
 		
 		float teamRadius = (float)Math.sqrt(mainThread.ec.theUnitProductionAI.numberOfCombatUnit)/2.5f;
 		
-		if(distanceToTarget < 3 + teamRadius  && unNeutralizedEntity != null){
+		if(distanceToTarget < 3 + teamRadius  && unNeutralizedEntity != null && !staticDefenseAhead){
 			//adjust the attack location for better engagement
 			playerForceCenter.set(0,0,0);
 			int numOfPlayerUnitsInMinimap = 0;
@@ -523,16 +541,17 @@ public class combatManagerAI {
 					}
 					
 					//marching forward
-					if((team[i].targetObject == null || team[i].targetObject.currentHP <=0) && !(team[i].currentMovementStatus ==  solidObject.hugRight || team[i].currentMovementStatus == solidObject.hugLeft)){
+					if(team[i].targetObject == null || team[i].targetObject.currentHP <=0){
 				
 						
 						
 						if(staticDefenseAhead) {
 							if(team[i].type == 1)
 								team[i].attackMoveTo(team[i].centre.x + attackDirection.x*teamRadius, team[i].centre.z + attackDirection.z*teamRadius); 
-							else
+							else 
 								team[i].attackMoveTo(combatCenterX, combatCenterZ); 
-						}else {
+							
+						}else if(!(team[i].currentMovementStatus ==  solidObject.hugRight || team[i].currentMovementStatus == solidObject.hugLeft)){
 						
 							double d = Math.sqrt((team[i].centre.x -  combatCenterX)*(team[i].centre.x -  combatCenterX) + (team[i].centre.z -  combatCenterZ)*(team[i].centre.z -  combatCenterZ))*3;
 							
@@ -554,7 +573,7 @@ public class combatManagerAI {
 					}	
 				}
 			}
-			System.out.println(!playerForceIsMuchWeakerThanAI + " " + mainThread.ec.theMapAwarenessAI.playerAssetDestoryedCountDown);
+			
 		}
 		
 		
@@ -562,7 +581,7 @@ public class combatManagerAI {
 		//make sure idle units are send to attack unNeutralized target
 		if(unNeutralizedEntity  != null){
 			for(int i = 0; i < mainThread.ec.theUnitProductionAI.numberOfCombatUnit; i++){
-				if(team[i] != null && team[i].currentHP > 0){
+				if(team[i] != null && team[i].currentHP > 0 && !(team[i].type!= 1 && staticDefenseAhead)){
 					if(team[i].currentCommand == solidObject.StandBy || (team[i].targetObject == null && (team[i].secondaryDestinationX != unNeutralizedEntity.centre.x || team[i].secondaryDestinationY != unNeutralizedEntity.centre.z))){
 						float d = (team[i].centre.x - attackPosition.x)*(team[i].centre.x - attackPosition.x) + (team[i].centre.z - attackPosition.z)*(team[i].centre.z - attackPosition.z);
 						if(d < 9){

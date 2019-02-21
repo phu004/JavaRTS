@@ -492,7 +492,7 @@ public class mainThread extends JFrame implements KeyListener, ActionListener, M
 			framePerSecond = (int)(1000/((thisTime - lastTime)/30));
 			lastTime = thisTime;
 		}
-		sleepTime = 0;
+		sleepTime = 0; 
 		/*while(System.currentTimeMillis()-lastDraw<frameInterval){
 			try {
 				Thread.sleep(1);

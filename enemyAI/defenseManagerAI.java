@@ -302,7 +302,7 @@ public class defenseManagerAI {
 					threatZ = minorThreatLocation.z;
 				}
 				
-				if(majorThreatLocation.x !=0) {
+				if(majorThreatLocation.x !=0) { 
 					distanceToThreat = (float)Math.sqrt((majorThreatLocation.x-constructionYards[i].centre.x)*(majorThreatLocation.x-constructionYards[i].centre.x) +
 															 (majorThreatLocation.z-constructionYards[i].centre.z)*(majorThreatLocation.z-constructionYards[i].centre.z));
 					threatX = majorThreatLocation.x;

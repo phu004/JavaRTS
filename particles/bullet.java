@@ -109,6 +109,7 @@ public class bullet {
 			movement.unit();
 			movement.scale(speed + distanceToTarget);
 			target.currentHP -=damage;
+			int previousUnderAttackCountDown = target.underAttackCountDown;
 			target.underAttackCountDown = 120;
 			target.attacker = attacker;
 			
@@ -126,10 +127,10 @@ public class bullet {
 				for(int j = 0; j < 4; j++){
 					if(tile[j] != null){
 						if(tile[j].teamNo == targetTeamNo && tile[j].teamNo!= attacker.teamNo && tile[j].attackStatus != solidObject.isAttacking && tile[j].currentCommand != solidObject.move && tile[j].isCloaked == false
-								&& 	tile[j].currentCommand != solidObject.attackCautiously && tile[j].currentCommand != solidObject.attackInNumbers){
+								&& 	previousUnderAttackCountDown <=30 && (tile[j].currentCommand == solidObject.StandBy || tile[j].secondaryCommand == solidObject.attackMove)){
 							if(tile[j].type < 100){								
 								tile[j].attack(attacker);
-								tile[j].currentCommand = solidObject.attackInNumbers; 
+								tile[j].currentCommand = solidObject.attackCautiously; 
 							}
 						}
 						

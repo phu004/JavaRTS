@@ -6,6 +6,7 @@ import core.vector;
 import entity.lightTank;
 import entity.solidObject;
 import entity.stealthTank;
+import entity.constructionYard;
 
 public class defenseManagerAI {
 	public baseInfo theBaseInfo;
@@ -32,6 +33,9 @@ public class defenseManagerAI {
 	public vector majorThreatLocation;
 	public int majorThreatCooldown; 
 	
+	public vector gunTurretDeployLocation;
+	public vector missileTurretDeployLocation;
+	
 	
 	public defenseManagerAI(baseInfo theBaseInfo){
 		this.theBaseInfo = theBaseInfo;
@@ -46,6 +50,9 @@ public class defenseManagerAI {
 		minorThreatLocation = new vector(0,0,0);
 		majorThreatLocation = new vector(0,0,0);
 		majorThreatCooldown = 20;	
+		
+		gunTurretDeployLocation = new vector(0,0,0);
+		missileTurretDeployLocation = new vector(0,0,0);	
 	}
 	
 	
@@ -266,13 +273,50 @@ public class defenseManagerAI {
 		  	2. there are threat detected and there is no other missile turret being constructed at the same time
 		*/
 		
+
 		
 		
 		//check if AI needs to deploy static defense
 		/*
-		  Deploy gun turret if the threat location if
-		*/
+		  Deploy gun turret if the minor/major threat is close enough to the construction yard
+		 */
 		
+		solidObject[] AIStructures = mainThread.ec.theMapAwarenessAI.AIStructures;
+		gunTurretDeployLocation.reset();
+		missileTurretDeployLocation.reset();
+		
+		constructionYard[] constructionYards = mainThread.theAssetManager.constructionYards;
+		for(int i = 0; i < constructionYards.length; i++){
+			if(constructionYards[i] != null && constructionYards[i].teamNo != 0 && constructionYards[i].currentHP >0) {
+				
+				float distanceToThreat = 999f;
+			
+				
+				float threatX = 0;
+				float threatZ = 0;
+				
+				if(minorThreatLocation.x !=0) {
+					distanceToThreat = (float)Math.sqrt((minorThreatLocation.x-constructionYards[i].centre.x)*(minorThreatLocation.x-constructionYards[i].centre.x) +
+															 (minorThreatLocation.z-constructionYards[i].centre.z)*(minorThreatLocation.z-constructionYards[i].centre.z));
+					threatX = minorThreatLocation.x;
+					threatZ = minorThreatLocation.z;
+				}
+				
+				if(majorThreatLocation.x !=0) {
+					distanceToThreat = (float)Math.sqrt((majorThreatLocation.x-constructionYards[i].centre.x)*(majorThreatLocation.x-constructionYards[i].centre.x) +
+															 (majorThreatLocation.z-constructionYards[i].centre.z)*(majorThreatLocation.z-constructionYards[i].centre.z));
+					threatX = majorThreatLocation.x;
+					threatZ = majorThreatLocation.z;
+				}
+				
+				//find deploy location of gun turret
+				if(threatX != 0 && distanceToThreat < 4.25) {
+					
+					//check the number of gun turrets that are already deployed near the threat location
+				}
+				
+			}
+		}
 		
 	}
 	

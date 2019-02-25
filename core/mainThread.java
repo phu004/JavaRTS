@@ -492,8 +492,13 @@ public class mainThread extends JFrame implements KeyListener, ActionListener, M
 			framePerSecond = (int)(1000/((thisTime - lastTime)/30));
 			lastTime = thisTime;
 		}
+<<<<<<< HEAD
 		sleepTime = 0;
 		while(System.currentTimeMillis()-lastDraw<frameInterval){
+=======
+		sleepTime = 0; 
+		/*while(System.currentTimeMillis()-lastDraw<frameInterval){
+>>>>>>> branch 'master' of https://github.com/phu004/JavaRTS.git
 			try {
 				Thread.sleep(1);
 				sleepTime++;

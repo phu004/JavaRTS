@@ -261,7 +261,8 @@ public class AssetManager {
 				//lightTank.tileCheckList_player = lightTank.generateTileCheckList(6);
 		
 				//addLightTank(l);
-				//addGunTurret(new gunTurret(i*0.25f -0.125f + 13, -0.65f, 0.25f + 20.125f + j*0.25f, 0));
+				//if(j == 0 && i == 0)
+				//addGunTurret(new gunTurret(i*0.25f -0.125f + 28, -0.65f, 0.25f + 28.125f + j*0.25f, 1));
 			
 			}
 		}

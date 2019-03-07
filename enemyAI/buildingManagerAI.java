@@ -100,6 +100,7 @@ public class buildingManagerAI {
 	public void processAI(){
 		frameIndex++;
 		
+		
 		powerPlantUnderConstruction = buildingUnderProduction(101);
 		
 		
@@ -108,11 +109,20 @@ public class buildingManagerAI {
 			addBuildingToQueue(101);
 		}
 		
+		//build a gun turret if there is a need for it
+		if(theBaseInfo.canBuildGunTurret && mainThread.ec.theDefenseManagerAI.needGunTurret) {
+			addBuildingToQueue(200);
+		}
+		
+		//build missile turret if there is a need for it
+		if(theBaseInfo.canBuildMissileTurret && mainThread.ec.theDefenseManagerAI.needMissileTurret) {
+			addBuildingToQueue(199);
+		}
+		
 		//build a refinery  center if there isn't any
 		if(theBaseInfo.numberOfRefinery == 0 && theBaseInfo.canBuildRefinery){
 			addBuildingToQueue(102);
 		}
-		
 		
 		
 		//build an additional refinery if there are more production building
@@ -221,12 +231,89 @@ public class buildingManagerAI {
 					}
 				}
 				
+				//deploy gun turret
+				if(constructionYards[i].gunTurretProgress == 240) {
+					float xPos = mainThread.ec.theDefenseManagerAI.gunTurretDeployLocation.x;
+					float zPos = mainThread.ec.theDefenseManagerAI.gunTurretDeployLocation.z;
+					int centerTile = (int)(xPos*64)/16 + (127 - (int)(zPos*64)/16)*128;
+					if(xPos != 0) {
+						if(hasRoomForPlacement(200, centerTile)) {
+							int y = 127 - placementTile/128;
+							int x = placementTile%128;
+							gunTurret o = new gunTurret(x*0.25f + 0.125f, -0.65f, y*0.25f + 0.125f, 1);
+							mainThread.theAssetManager.addGunTurret(o);
+							
+							constructionYards[i].finishDeployment();			
+						}
+					}
+				}
+				
+				//deploy missile turret
+				if(constructionYards[i].missileTurretProgress == 240) {
+					float xPos = mainThread.ec.theDefenseManagerAI.missileTurretDeployLocation.x;
+					float zPos = mainThread.ec.theDefenseManagerAI.missileTurretDeployLocation.z;
+					int centerTile = (int)(xPos*64)/16 + (127 - (int)(zPos*64)/16)*128;
+					if(xPos != 0) {
+						if(hasRoomForPlacement(200, centerTile)) {
+							int y = 127 - placementTile/128;
+							int x = placementTile%128;
+							missileTurret o = new missileTurret(x*0.25f + 0.125f, -0.65f, y*0.25f + 0.125f, 1);
+							mainThread.theAssetManager.addMissileTurret(o);
+							constructionYards[i].finishDeployment();			
+						}
+					}
+					
+				}
 			}
 		}
 		
 	}
 	
 	public boolean hasRoomForPlacement(int buildingType, int centerTile){
+		//check placement for turrets
+		if(buildingType == 199 || buildingType == 200) {
+			if(checkIfBlockIsFree(centerTile)) {
+				placementTile = centerTile;
+				return true;
+			}else if(checkIfBlockIsFree(centerTile + 1)) {
+				placementTile = centerTile + 1;
+				return true;
+			}else if(checkIfBlockIsFree(centerTile - 1)) {
+				placementTile = centerTile - 1;
+				return true;
+			}else if(checkIfBlockIsFree(centerTile + 128)) {
+				placementTile = centerTile + 128;
+				return true;
+			}else if(checkIfBlockIsFree(centerTile - 128)) {
+				placementTile = centerTile - 128;
+				return true;
+			}else if(checkIfBlockIsFree(centerTile - 129)) {
+				placementTile = centerTile - 129;
+				return true;
+			}else if(checkIfBlockIsFree(centerTile - 127)) {
+				placementTile = centerTile - 127;
+				return true;
+			}else if(checkIfBlockIsFree(centerTile + 127)) {
+				placementTile = centerTile + 127;
+				return true;
+			}else if(checkIfBlockIsFree(centerTile + 129)) {
+				placementTile = centerTile + 129;
+				return true;
+			}else if(checkIfBlockIsFree(centerTile + 2)) {
+				placementTile = centerTile + 2;
+				return true;
+			}else if(checkIfBlockIsFree(centerTile - 2)) {
+				placementTile = centerTile - 2;
+				return true;
+			}else if(checkIfBlockIsFree(centerTile + 256)) {
+				placementTile = centerTile + 256;
+				return true;
+			}else if(checkIfBlockIsFree(centerTile - 256)) {
+				placementTile = centerTile - 256;
+				return true;
+			}
+		}
+		
 		
 		//check placement for power plant
 		if(buildingType == 101){

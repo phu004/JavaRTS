@@ -171,6 +171,18 @@ public class unitProductionAI {
 		
 		
 		//make decision on what tech to research
+		
+		if(mainThread.ec.theBuildingManagerAI.theBaseInfo.numberOfCommunicationCenter > 0) {
+			if(mainThread.ec.theDefenseManagerAI.needMissileTurret && theBaseInfo.currentCredit > 500) {
+				if(!communicationCenter.rapidfireResearched_enemy) {
+					if(communicationCenter.rapidfireResearchProgress_enemy == 255){
+						communicationCenter.researchRapidfire(1);
+						System.out.println("----------------------------AI starts researching rapid fire ability------------------------------------");
+					}
+				}
+			}
+		}
+		
 		if(mainThread.ec.theBuildingManagerAI.theBaseInfo.numberOfTechCenter > 0){	
 					
 			//Immediately  start  stealth tank upgrades  when a tech center is built
@@ -220,6 +232,8 @@ public class unitProductionAI {
 					}
 				}
 			}
+			
+			
 		}
 		
 	

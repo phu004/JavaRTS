@@ -49,7 +49,7 @@ public class gunTurret extends solidObject{
 	public int turretAngle;
 	
 	//attack range
-	public float attackRange = 2f;
+	public final static float attackRange = 2f;
 		
 	//the angle that the turret have rotated between current frame and previous frame
 	public int turretAngleDelta, accumulatedDelta;

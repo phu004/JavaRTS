@@ -6,7 +6,10 @@ import core.vector;
 import entity.lightTank;
 import entity.solidObject;
 import entity.stealthTank;
+import entity.communicationCenter;
 import entity.constructionYard;
+import entity.gunTurret;
+import entity.missileTurret;
 
 public class defenseManagerAI {
 	public baseInfo theBaseInfo;
@@ -32,6 +35,9 @@ public class defenseManagerAI {
 	public vector minorThreatLocation;
 	public vector majorThreatLocation;
 	public int majorThreatCooldown; 
+	
+	public boolean needGunTurret;
+	public boolean needMissileTurret;
 	
 	public vector gunTurretDeployLocation;
 	public vector missileTurretDeployLocation;
@@ -176,7 +182,7 @@ public class defenseManagerAI {
 		if(majorThreatCooldown == 0)
 			majorThreatLocation.reset();
 		
-		// if the size of the player unit cluster is less than 5, and no heavy tanks in the cluster, then borrow some unites from combatAI to deal with the threat
+		// if the size of the player unit cluster is less than 7, and no heavy tanks in the cluster, then borrow some unites from combatAI to deal with the threat
 		if(mainPlayerForceSize < 7 && mainPlayerForceSize>0) {
 			//check if base is attacked by long ranged units
 			boolean attackedByRocketTank = false;
@@ -262,18 +268,64 @@ public class defenseManagerAI {
 			}
 		}
 		
+		
+		constructionYard[] constructionYards = mainThread.theAssetManager.constructionYards;
+		int numOfConstructionYard = 0;
+		
+		for(int i = 0; i < constructionYards.length; i++){
+			if(constructionYards[i] != null && constructionYards[i].teamNo != 0 && constructionYards[i].currentHP >0) {
+				numOfConstructionYard++;
+			}
+		}
+		
+		boolean gunTurretAlreadyInQueue = false;
+		boolean missileTurretAlreadyInQueue = false;
+		
 		//check if AI needs to build static defenses
 		/*
 		  build a gun turret when any of the following conditions are met:
-		  	1. there is no threat detected and there are more than 1 construction yard, and there is no other gun turret being constructed at the same time
-		  	2. there are threat detected  and there is no other gun turret being constructed at the same time
+		  	1. there are more than 1 construction yard
+		  	2. there is no other gun turret being constructed at the same time
+		  	3. not major threat detected
 		  
 		  build a missile turret when any of the following conditions are met:
-		  	1. there is no threat detected and there are more than 1 construction yard, and there is no other missile turret being constructed at the same time
-		  	2. there are threat detected and there is no other missile turret being constructed at the same time
+		  	1. there are more than 1 construction yard
+		  	2. there is no other missile turret being constructed at the same time
+		  	3. major threat detected
 		*/
 		
-
+		needGunTurret = false;
+		needMissileTurret = false;
+		
+		if(numOfConstructionYard > 1) {
+			for(int i = 0; i < constructionYards.length; i ++){
+				if(constructionYards[i] != null && constructionYards[i].teamNo != 0 && constructionYards[i].currentHP > 0){
+					if(constructionYards[i].currentBuildingType == 200){
+						gunTurretAlreadyInQueue = true;
+						break;
+					}
+				}
+			}
+			for(int i = 0; i < constructionYards.length; i ++){
+				if(constructionYards[i] != null && constructionYards[i].teamNo != 0 && constructionYards[i].currentHP > 0){
+					if(constructionYards[i].currentBuildingType == 199){
+						missileTurretAlreadyInQueue = true;
+						break;
+					}
+				}
+			}
+			
+			
+			if(!gunTurretAlreadyInQueue && majorThreatLocation.x ==0) {
+				needGunTurret = true;
+			}
+			
+			if(!missileTurretAlreadyInQueue && majorThreatLocation.x != 0) {
+				needMissileTurret = true;
+			}
+			
+			
+		}
 		
 		
 		//check if AI needs to deploy static defense
@@ -285,7 +337,43 @@ public class defenseManagerAI {
 		gunTurretDeployLocation.reset();
 		missileTurretDeployLocation.reset();
 		
-		constructionYard[] constructionYards = mainThread.theAssetManager.constructionYards;
+		int numOfGunTurretNearThreat = 0;
+		int numOfMissileTurretNearThreat = 0;
+	
+		
+		if(minorThreatLocation.x !=0){
+			for(int i = 0; i < AIStructures.length; i++) {
+				if(AIStructures[i] != null && AIStructures[i].teamNo !=0 && AIStructures[i].currentHP > 0  && (AIStructures[i].type == 200 || AIStructures[i].type == 199)) {
+					float d = (float)Math.sqrt((minorThreatLocation.x-AIStructures[i].centre.x)*(minorThreatLocation.x-AIStructures[i].centre.x) +
+							 (minorThreatLocation.z-AIStructures[i].centre.z)*(minorThreatLocation.z-AIStructures[i].centre.z));
+					
+					if(AIStructures[i].type == 200 && d <= 2)
+						numOfGunTurretNearThreat++;
+					if(AIStructures[i].type == 199 && d <= 2.4)
+						numOfMissileTurretNearThreat++;
+				}
+			}
+		}
+		
+		if(majorThreatLocation.x !=0){
+			numOfGunTurretNearThreat = 0;
+			numOfMissileTurretNearThreat = 0;
+			
+			for(int i = 0; i < AIStructures.length; i++) {
+				if(AIStructures[i] != null && AIStructures[i].teamNo !=0 && AIStructures[i].currentHP > 0 && (AIStructures[i].type == 200 || AIStructures[i].type == 199)) {
+					float d = (float)Math.sqrt((majorThreatLocation.x-AIStructures[i].centre.x)*(majorThreatLocation.x-AIStructures[i].centre.x) +
+							 (majorThreatLocation.z-AIStructures[i].centre.z)*(majorThreatLocation.z-AIStructures[i].centre.z));
+					
+					if(AIStructures[i].type == 200 && d <= 2)
+						numOfGunTurretNearThreat++;
+					if(AIStructures[i].type == 199 && d <= 2.4)
+						numOfMissileTurretNearThreat++;
+				}
+			}
+		}
+		
+		
+		
 		for(int i = 0; i < constructionYards.length; i++){
 			if(constructionYards[i] != null && constructionYards[i].teamNo != 0 && constructionYards[i].currentHP >0) {
 				
@@ -310,11 +398,53 @@ public class defenseManagerAI {
 				}
 				
 				//find deploy location of gun turret
-				if(threatX != 0 && distanceToThreat < 4.25) {
+				if(threatX != 0 && distanceToThreat < 4.75 && numOfGunTurretNearThreat < (float)mainPlayerForceSize/3) {
 					
-					//check the number of gun turrets that are already deployed near the threat location
+					float d = 1.75f;  //minimum deploy distance from conyard
+					if(distanceToThreat > d + gunTurret.attackRange)
+						d = distanceToThreat - gunTurret.attackRange;
+					
+					gunTurretDeployLocation.x = constructionYards[i].centre.x + (threatX - constructionYards[i].centre.x)/distanceToThreat*d;
+					gunTurretDeployLocation.z = constructionYards[i].centre.z + (threatZ - constructionYards[i].centre.z)/distanceToThreat*d;
+					
+					
 				}
 				
+				//find deploy location of missile turret
+				if(threatX != 0 && distanceToThreat < 5.15 && (numOfMissileTurretNearThreat < mainPlayerForceSize/6 || !gunTurretAlreadyInQueue)) {
+					
+					float d = 1.35f;  //minimum deploy distance from conyard
+					if(distanceToThreat > d + missileTurret.attackRange)
+						d = distanceToThreat - missileTurret.attackRange;
+					
+					missileTurretDeployLocation.x = constructionYards[i].centre.x + (threatX - constructionYards[i].centre.x)/distanceToThreat*d;
+					missileTurretDeployLocation.z = constructionYards[i].centre.z + (threatZ - constructionYards[i].centre.z)/distanceToThreat*d;
+				}
+				
+				
+			}
+		}
+		
+		//enable rapid fire ability for missiles turrets
+		if(communicationCenter.rapidfireResearched_enemy) {
+			for(int i = 0; i < AIStructures.length; i++) {
+				if(AIStructures[i] != null && AIStructures[i].currentHP > 0 && AIStructures[i].teamNo == 1 && AIStructures[i].type == 199) {
+					missileTurret t = (missileTurret)AIStructures[i];
+					if(t.targetObject != null && t.overCharge == false) {
+						mainThread.ec.theBaseInfo.numberOfOverChargedMissileTurret++;
+						t.overCharge = true;
+						mainThread.ec.theBaseInfo.reCalculatePower();
+						if(mainThread.ec.theBaseInfo.currentPowerConsumption > mainThread.ec.theBaseInfo.currentPowerLevel) {
+							mainThread.ec.theBaseInfo.numberOfOverChargedMissileTurret--;
+							t.overCharge = false;
+							mainThread.ec.theBaseInfo.reCalculatePower();
+						}
+					}else if((t.targetObject == null || mainThread.ec.theBaseInfo.currentPowerConsumption > mainThread.ec.theBaseInfo.currentPowerLevel) && t.overCharge == true) {
+						mainThread.ec.theBaseInfo.numberOfOverChargedMissileTurret--;
+						t.overCharge = false;
+						mainThread.ec.theBaseInfo.reCalculatePower();
+					}
+				}
 			}
 		}
 		

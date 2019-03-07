@@ -70,8 +70,7 @@ public class baseInfo {
 		}
 		
 		
-		currentPowerLevel = numberOfPowerPlant*500 + numberOfConstructionYard*100;
-		currentPowerConsumption = numberOfRefinery*150 + numberOfFactory*200 + numberOfCommunicationCenter*250 + numberOfGunTurret*100 + numberOfMissileTurret*200 + numberOfOverChargedMissileTurret*150 + numberOfTechCenter*400;
+		reCalculatePower();
 		
 		//calculate power level and power consumption
 		if(currentPowerLevel == 0){
@@ -88,6 +87,11 @@ public class baseInfo {
 			powerStatus = currentPowerConsumption << 16 | currentPowerLevel;
 		}
 
+	}
+	
+	public void reCalculatePower() {
+		currentPowerLevel = numberOfPowerPlant*500 + numberOfConstructionYard*100;
+		currentPowerConsumption = numberOfRefinery*150 + numberOfFactory*200 + numberOfCommunicationCenter*250 + numberOfGunTurret*100 + numberOfMissileTurret*200 + numberOfOverChargedMissileTurret*150 + numberOfTechCenter*400;
 	}
 	
 }

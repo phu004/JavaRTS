@@ -320,7 +320,7 @@ public class defenseManagerAI {
 				needGunTurret = true;
 			}
 			
-			if(!missileTurretAlreadyInQueue && majorThreatLocation.x != 0) {
+			if(!missileTurretAlreadyInQueue && majorThreatLocation.x != 0 && mainPlayerForceSize !=0) {
 				needMissileTurret = true;
 			}
 			

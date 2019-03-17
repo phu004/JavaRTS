@@ -967,8 +967,8 @@ public class communicationCenter extends solidObject{
 				
 			}else{
 				if(harvesterSpeedResearchProgress_enemy < 240){
-					if(mainThread.pc.theBaseInfo.currentCredit >0){
-						mainThread.pc.theBaseInfo.currentCredit--;
+					if(mainThread.ec.theBaseInfo.currentCredit >0){
+						mainThread.ec.theBaseInfo.currentCredit--;
 						creditSpentOnResearching_enemy++;
 						harvesterSpeedResearchProgress_enemy = 240 * creditSpentOnResearching_enemy/1500;
 					}
@@ -982,8 +982,8 @@ public class communicationCenter extends solidObject{
 				}
 				
 				if(rapidfireResearchProgress_enemy < 240){
-					if(mainThread.pc.theBaseInfo.currentCredit >0){
-						mainThread.pc.theBaseInfo.currentCredit--;
+					if(mainThread.ec.theBaseInfo.currentCredit >0){
+						mainThread.ec.theBaseInfo.currentCredit--;
 						creditSpentOnResearching_enemy++;
 						rapidfireResearchProgress_enemy = 240 * creditSpentOnResearching_enemy/1500;
 					}

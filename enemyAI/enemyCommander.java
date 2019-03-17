@@ -121,11 +121,6 @@ public class enemyCommander {
 			theMicroManagementAI.processAI();
 		//}
 		
-		
-		
-		
-		
-		
 	}
 	
 }

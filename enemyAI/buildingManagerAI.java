@@ -108,17 +108,7 @@ public class buildingManagerAI {
 		if(theBaseInfo.canBuildRefinery == false || theBaseInfo.lowPower || (theBaseInfo.currentPowerConsumption >= (theBaseInfo.currentPowerLevel - 500) && theBaseInfo.currentCredit > 500 && theBaseInfo.numberOfPowerPlant >=2 && frameIndex > 300)){
 			addBuildingToQueue(101);
 		}
-		
-		//build a gun turret if there is a need for it
-		if(theBaseInfo.canBuildGunTurret && mainThread.ec.theDefenseManagerAI.needGunTurret) {
-			addBuildingToQueue(200);
-		}
-		
-		//build missile turret if there is a need for it
-		if(theBaseInfo.canBuildMissileTurret && mainThread.ec.theDefenseManagerAI.needMissileTurret) {
-			addBuildingToQueue(199);
-		}
-		
+			
 		//build a refinery  center if there isn't any
 		if(theBaseInfo.numberOfRefinery == 0 && theBaseInfo.canBuildRefinery){
 			addBuildingToQueue(102);
@@ -137,6 +127,11 @@ public class buildingManagerAI {
 			
 		}
 		
+		//build a gun turret if there is a need for it
+		if(theBaseInfo.canBuildGunTurret && mainThread.ec.theDefenseManagerAI.needGunTurret) {
+			addBuildingToQueue(200);
+		}
+		
 		//build an addtional factory if we have enough harvester to sustain the production
 		if(mainThread.ec.theEconomyManagerAI.numberOfharvesters/2 > theBaseInfo.numberOfFactory && theBaseInfo.canBuildFactory && theBaseInfo.numberOfFactory < 2 && theBaseInfo.currentCredit > 1300){ 
 			addBuildingToQueue(105);
@@ -152,8 +147,15 @@ public class buildingManagerAI {
 			addBuildingToQueue(107);
 		}
 		
+	
+		//build missile turret if there is a need for it
+		if(theBaseInfo.canBuildMissileTurret && mainThread.ec.theDefenseManagerAI.needMissileTurret) {
+			addBuildingToQueue(199);
+		}
+		
+		
 		//build more factory if we have plenty of money in the bank 
-		if(theBaseInfo.currentCredit > 2200 && theBaseInfo.canBuildFactory && theBaseInfo.numberOfFactory <= mainThread.ec.theEconomyManagerAI.numberOfharvesters/2){
+		if(theBaseInfo.currentCredit > 2200 && theBaseInfo.canBuildFactory && theBaseInfo.numberOfFactory < 4 && theBaseInfo.numberOfFactory <= mainThread.ec.theEconomyManagerAI.numberOfharvesters/2){
 			addBuildingToQueue(105);
 		}
 		
@@ -632,9 +634,9 @@ public class buildingManagerAI {
 			return 100;
 		else if(buildingType == 199) {
 			if(communicationCenter.rapidfireResearched_enemy)
-				return 275;
+				return 300;
 			else
-				return 200;
+				return 250;
 		}else if(buildingType == 107)
 			return 400;
 		return 0;

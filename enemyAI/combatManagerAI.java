@@ -151,10 +151,10 @@ public class combatManagerAI {
 			int targetPlayerExpension = mainThread.ec.theMapAwarenessAI.targetPlayerExpension;
 			
 			if(frameAI > attackTime) {
-				if(targetPlayerExpension == 2 || targetPlayerExpension == 4 || targetPlayerExpension == 6 || targetPlayerExpension == 7)
-					shouldAttack = checkIfAIHasBiggerForce(1.2f);
-				else
+				if(targetPlayerExpension == 0 || targetPlayerExpension == 1 || targetPlayerExpension == 6 || targetPlayerExpension == 7)
 					shouldAttack = checkIfAIHasBiggerForce(0.9f);
+				else
+					shouldAttack = checkIfAIHasBiggerForce(1.2f);
 			}
 			
 			
@@ -374,6 +374,8 @@ public class combatManagerAI {
 				}
 			}
 			
+			System.out.println(staticDefenseAhead + "   "  + attackPosition);
+			
 
 			//send units to attack-move to target position
 			if(!playerHasBecomeStrongerThanAIDuringMarching && !frontalTroopIverwhelmed && (unNeutralizedEntity != null  || distanceToTarget > 2)){
@@ -416,6 +418,17 @@ public class combatManagerAI {
 					distanceToTarget = attackDirection.getLength();
 					attackDirection.unit();
 				}
+				
+				//make sure the attack position is a valid point on the map
+				if(attackPosition.x < 1.5)
+					attackPosition.x = 1.5f;
+				if(attackPosition.x > 30.5)
+					attackPosition.x = 30.5f;
+				if(attackPosition.y < 1.5)
+					attackPosition.y = 1.5f;
+				if(attackPosition.y > 30.5)
+					attackPosition.y = 30.5f;
+				
 				everyoneAttackTargetPosition();
 				
 			}else{
@@ -675,9 +688,6 @@ public class combatManagerAI {
 		//System.out.println("unrevealedPlayerForceStrength" + unrevealedPlayerForceStrength +  "    "  + "enemyAIForceStrength " + enemyAIForceStrength + "    "  + "playerForceStrength" + playerForceStrength);
 			
 		return enemyAIForceStrength > 0 && playerForceStrength/enemyAIForceStrength < ratio;
-			
-		
-		
 	}
 	
 	

@@ -47,6 +47,7 @@ public class mapAwarenessAI {
 	public boolean playerDoesntHaveMassHeavyTanks;
 	public boolean playerIsRushingLightTank;
 	public boolean playerHasManyLightTanksButNoHeavyTank;
+	public boolean playerHasMostlyHeavyAndStealthTanks;
 	
 	public solidObject[] mapAsset;
 	public boolean[] visionMap;
@@ -453,6 +454,8 @@ public class mapAwarenessAI {
         
         playerIsRushingLightTank = mainThread.frameIndex/30 > 300 && mainThread.frameIndex/30 < 600 && ((playerLikelyCanNotProduceHighTierUnits && numberOfStealthTanks_player < 3) || playerHasMostlyLightTanks);
         
+        playerHasMostlyHeavyAndStealthTanks = (maxNumberOfStealthTanks_playerInLastFiveMinutes >=2 ) && (float)(numberOfHeavyTanks_player + numberOfStealthTanks_player)/(numberOfLightTanks_player + numberOfRocketTanks_player + numberOfStealthTanks_player + numberOfHeavyTanks_player) > 0.8f;
+        
         
         //advanced counting of player units
         if(numberOfStealthTanks_player > maxNumberOfStealthTanks_playerInLastFiveMinutes) {
@@ -506,7 +509,7 @@ public class mapAwarenessAI {
 
 		//check if there are any player's structure around each gold mine.
 		for(int i = 0; i < goldMines.length; i++){
-			playerExpensionInfo[i] = findplayexpensionDefenseScore(goldMines[i], 3);
+			playerExpensionInfo[i] = findplayexpensionDefenseScore(goldMines[i], 4);
 		}
 		
 		//compute the target player expansion defense score

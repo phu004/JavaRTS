@@ -192,14 +192,14 @@ public class AssetManager {
 		//Heavy tank regen         3000 
 		
 		
-		goldMines[0] = new goldMine(2f,-0.515f, 1.25f, 30000);
-		goldMines[1] = new goldMine(9.5f,-0.515f, 5.5f, 30000);
-		goldMines[2] = new goldMine(2f,-0.515f, 28.25f, 40000);
-		goldMines[3] = new goldMine(26f,-0.515f, 3.5f, 40000);
-		goldMines[4] = new goldMine(29.75f,-0.515f, 30f, 30000);
-		goldMines[5] = new goldMine(22.5f,-0.515f, 25.5f, 30000);
-		goldMines[6] = new goldMine(15.5f,-0.515f, 17.75f, 50000);
-		goldMines[7] = new goldMine(16.5f,-0.515f, 12.5f, 50000);
+		goldMines[0] = new goldMine(2f,-0.515f, 1.25f, 45000);
+		goldMines[1] = new goldMine(9.5f,-0.515f, 5.5f, 45000);
+		goldMines[2] = new goldMine(2f,-0.515f, 28.25f, 50000);
+		goldMines[3] = new goldMine(26f,-0.515f, 3.5f, 50000);
+		goldMines[4] = new goldMine(29.75f,-0.515f, 30f, 45000);
+		goldMines[5] = new goldMine(22.5f,-0.515f, 25.5f, 45000);
+		goldMines[6] = new goldMine(15.75f,-0.515f, 18f, 55000);
+		goldMines[7] = new goldMine(16.25f,-0.515f, 12.25f, 55000);
 		
 		
 		//create trees from bitmap
@@ -251,8 +251,8 @@ public class AssetManager {
 		for(int i = 0; i < 10; i ++){
 			
 			for(int j = 0; j < 6; j++){ 
-				lightTank l = new lightTank(new vector(i*0.25f+ 1.125f,-0.3f, 17.375f - 0.25f*j), 90, 0);
-				addLightTank(l);
+				//lightTank l = new lightTank(new vector(i*0.25f+ 1.125f,-0.3f, 17.375f - 0.25f*j), 90, 0);
+				//addLightTank(l);
 				//l.hasMultiShotUpgrade = true;
 				//lightTank l = new lightTank(new vector(i*0.25f + 1.125f,-0.3f, 0.5f + 18.625f + j*0.25f), 90, 0);
 				

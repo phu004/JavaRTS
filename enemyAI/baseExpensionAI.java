@@ -9,6 +9,7 @@ import entity.*;
 public class baseExpensionAI {
 	public baseInfo theBaseInfo;
 	public int[] expensionPiorityList;
+	public boolean expensionListRerolled;
 	public stealthTank[] scouts;
 	public constructionVehicle myMCV;
 	public boolean isExpanding;
@@ -53,8 +54,20 @@ public class baseExpensionAI {
 	
 	public void processAI(){
 	
-		
 		frameAI++;
+		
+		if(frameAI > 750 && frameAI < 1000 && !expensionListRerolled) {
+			//if the AI has smaller force than player when it's time to grab a third base,  use the less aggressive base expansion route
+			if(mainThread.ec.theCombatManagerAI.checkIfAIHasBiggerForce(1) == false) {
+				int randomeNumber = gameData.getRandom();
+				if(randomeNumber < 512)
+					expensionPiorityList = new int[]{5,2,3,6,7};
+				else
+					expensionPiorityList = new int[]{5,3,2,6,7};
+				expensionListRerolled = true;
+			}
+			
+		}
 		
 		if(goldMines == null)
 			goldMines = mainThread.theAssetManager.goldMines;
@@ -126,11 +139,24 @@ public class baseExpensionAI {
 			}
 		}
 		
+		
+		boolean playerHasLessUnits = mainThread.ec.theCombatManagerAI.checkIfAIHasBiggerForce(0.85f);
+		
 		int lowGoldmineThreshold = 17500;
 		
 		
-		if(mainThread.ec.theEconomyManagerAI.preferedGoldMine == mainThread.theAssetManager.goldMines[4])
-			lowGoldmineThreshold = 12500;
+		if(playerHasLessUnits) {
+			lowGoldmineThreshold = 25000;
+			
+			if(mainThread.ec.theEconomyManagerAI.preferedGoldMine == mainThread.theAssetManager.goldMines[4])
+				lowGoldmineThreshold = 30000;
+			
+			if(mainThread.ec.theEconomyManagerAI.preferedGoldMine == mainThread.theAssetManager.goldMines[5])
+				lowGoldmineThreshold = 20000;
+		}
+		
+		
+		
 		
 		if(myMCV == null && expensionGoldMine.goldDeposite >= 17500 && (mainThread.ec.theEconomyManagerAI.preferedGoldMine.goldDeposite < lowGoldmineThreshold || 
 			(mainThread.ec.theEconomyManagerAI.preferedGoldMine == expensionGoldMine && !hasConstructionYardNearGoldMine(expensionGoldMine) && !hasRefineryNearTheGoldmine(expensionGoldMine)))){

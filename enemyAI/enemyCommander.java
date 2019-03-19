@@ -91,7 +91,7 @@ public class enemyCommander {
 		
 		if(mainThread.frameIndex % 30 == 1){
 			theBuildingManagerAI.processAI();
-		}
+		} 
 		
 		if(mainThread.frameIndex % 30 == 2){
 			theEconomyManagerAI.processAI();

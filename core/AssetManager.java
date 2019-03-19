@@ -508,14 +508,14 @@ public class AssetManager {
 		
 		//start drawing
 		//maximize the zbuffer value in the  area that are occupied by  UI, so the drawing process will not waste time filling the pixels which would eventually get overdrawn 
-		int start = 381 * 768 + 3;
+		/*int start = 381 * 768 + 3;
 		int start2 = 381 * 768 + 635;
 		for(int y = 0; y < 131; y++){
 			for(int x = 0; x < 128; x ++){
 				mainThread.zBuffer[start + x + y*768]	= Integer.MAX_VALUE;
 				mainThread.zBuffer[start2 + x + y*768]	= Integer.MAX_VALUE;
 			}
-		}
+		}*/
 		
 	
 		

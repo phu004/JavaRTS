@@ -30,7 +30,7 @@ public class mainThread extends JFrame implements KeyListener, ActionListener, M
 	public static int framePerSecond, cpuUsage;
 	public static double thisTime, lastTime;
 	public static boolean JavaRTSLoaded;
-	public static boolean inGame;
+	public static boolean gamePaused, gameStarted;
 	public static texture[] textures;
 	public static byte[][] lightMapTextures;
 	public static int[][] lightMapTexturesInfo;
@@ -134,7 +134,7 @@ public class mainThread extends JFrame implements KeyListener, ActionListener, M
 			JavaRTSLoaded = true;
 			
 			//test only
-			inGame = true;
+			gamePaused = false;
 		}
 		
 			
@@ -184,27 +184,28 @@ public class mainThread extends JFrame implements KeyListener, ActionListener, M
 			theAssetManager.prepareAssetForNewGame();
 		}
 		
-		gridMap.update();
+		if(!gamePaused) {
+			
+			gridMap.update();
+			
+			//Clears the z-buffer. All depth values are set to 0.
+			clearDepthBuffer();
+			
+			//update camera
+			Camera.update();
+			
+			//update light source
+			sunLight.update();
+					
+			//update and draw 3D mashes from  game objects
+			theAssetManager.updateAndDraw();
+			
+			pc.update();
+			ec.update();
 		
+		}
 		
-		
-		//Clears the z-buffer. All depth values are set to 0.
-		clearDepthBuffer();
-		
-		//update camera
-		Camera.update();
-		
-		//update light source
-		sunLight.update();
-				
-		//update and draw 3D mashes from  game objects
-		theAssetManager.updateAndDraw();
-		
-		pc.update();
-		ec.update();
-		
-		
-		
+		//show inpassible obstacle 
 		//gridMap.draw();
 		
 		if(this.getGraphics() != null && PPT!= null){
@@ -268,7 +269,9 @@ public class mainThread extends JFrame implements KeyListener, ActionListener, M
 			inputHandler.rightKeyPressed = true;
 		else if(e.getKeyCode() == KeyEvent.VK_CONTROL)
 			inputHandler.controlKeyPressed = true;
-		
+		else if(e.getKeyCode() == KeyEvent.VK_ESCAPE)
+			inputHandler.escapeKeyPressed = true;
+			
 		inputHandler.readCharacter(e.getKeyChar());
 		
 	}
@@ -280,6 +283,8 @@ public class mainThread extends JFrame implements KeyListener, ActionListener, M
 			 inputHandler.rightKeyPressed = false;
 		 else if(e.getKeyCode() == KeyEvent.VK_CONTROL)
 			 inputHandler.controlKeyPressed = false;
+		 else if(e.getKeyCode() == KeyEvent.VK_ESCAPE)
+				inputHandler.escapeKeyReleased = true;
 		 
 		 inputHandler.handleKeyRelease(e.getKeyChar());
 	}
@@ -292,7 +297,6 @@ public class mainThread extends JFrame implements KeyListener, ActionListener, M
 	}
 
 
-	
 	public void mouseDragged(MouseEvent e) {
 		inputHandler.mouse_x = e.getX();
 		inputHandler.mouse_y = e.getY();
@@ -495,7 +499,7 @@ public class mainThread extends JFrame implements KeyListener, ActionListener, M
 
 
 		sleepTime = 0; 
-		/*while(System.currentTimeMillis()-lastDraw<frameInterval){
+		while(System.currentTimeMillis()-lastDraw<frameInterval){
 
 			try {
 				Thread.sleep(1);
@@ -504,7 +508,7 @@ public class mainThread extends JFrame implements KeyListener, ActionListener, M
 				// TODO Auto-generated catch block
 				e1.printStackTrace();
 			}
-		}*/
+		}
 		lastDraw=System.currentTimeMillis();
 	}
 

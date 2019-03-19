@@ -55,6 +55,8 @@ public class combatManagerAI {
 	
 	public boolean staticDefenseAhead;
 	
+	public boolean staticDefenseNearAttackPosition;
+	
 	public boolean dealWithMajorThreat;
 	
 	public boolean unitCountLow;
@@ -374,7 +376,20 @@ public class combatManagerAI {
 				}
 			}
 			
-			System.out.println(staticDefenseAhead + "   "  + attackPosition);
+			staticDefenseNearAttackPosition = false;
+			for(int i = 0; i < mainThread.ec.theMapAwarenessAI.playerStaticDefenseLocations.length; i++) {
+				if(mainThread.ec.theMapAwarenessAI.playerStaticDefenseSize[i] > 0) {
+					if(mainThread.ec.theMapAwarenessAI.playerStaticDefenseStrength[i] > 6) {
+						float xPos = mainThread.ec.theMapAwarenessAI.playerStaticDefenseLocations[i].x;
+						float zPos = mainThread.ec.theMapAwarenessAI.playerStaticDefenseLocations[i].z;
+						float d = (xPos - attackPosition.x)*(xPos - attackPosition.x) + (zPos - attackPosition.z)*(zPos - attackPosition.z);
+						if(d < 16) {
+							staticDefenseNearAttackPosition = true;
+							break;
+						}
+					}
+				}
+			}
 			
 
 			//send units to attack-move to target position
@@ -569,7 +584,7 @@ public class combatManagerAI {
 							double d = Math.sqrt((team[i].centre.x -  combatCenterX)*(team[i].centre.x -  combatCenterX) + (team[i].centre.z -  combatCenterZ)*(team[i].centre.z -  combatCenterZ))*3;
 							
 							if(d > teamRadius){
-								if(!playerForceIsMuchWeakerThanAI || mainThread.ec.theMapAwarenessAI.playerAssetDestoryedCountDown == 0)
+								if(staticDefenseNearAttackPosition || !playerForceIsMuchWeakerThanAI || mainThread.ec.theMapAwarenessAI.playerAssetDestoryedCountDown == 0)
 									team[i].attackMoveTo(gatherPoint.x, gatherPoint.z); 
 								else
 									team[i].attackMoveTo(team[i].centre.x + attackDirection.x*teamRadius, team[i].centre.z + attackDirection.z*teamRadius); 

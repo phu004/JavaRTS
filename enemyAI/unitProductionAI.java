@@ -172,6 +172,7 @@ public class unitProductionAI {
 		}
 		
 		
+		
 		//make decision on what tech to research
 		if(mainThread.ec.theBuildingManagerAI.theBaseInfo.numberOfCommunicationCenter > 0) {
 			if(mainThread.ec.theDefenseManagerAI.needMissileTurret || theBaseInfo.currentCredit > 1500) {
@@ -184,11 +185,20 @@ public class unitProductionAI {
 			}
 		}
 		
-		if(mainThread.ec.theBuildingManagerAI.theBaseInfo.numberOfTechCenter > 0 && ((numberOfLightTanks_player + numberOfStealthTanks_player> 8) ||  theBaseInfo.currentCredit > 2000 || numberOfStealthTanks_AI > 6)){	
+		if(mainThread.ec.theBuildingManagerAI.theBaseInfo.numberOfTechCenter > 0){	
 					
+			
+			if(currentProductionOrder == produceStealthTank)
+				System.out.println("should make stealth tank now--------------");
+			if(currentProductionOrder == produceHeavyTank)
+				System.out.println("should make Heavy tank now-----------------");
+			if(currentProductionOrder == produceRocketTank)
+				System.out.println("should make Rocket tank now----------------");
+			
+			
 			//Immediately  start  stealth tank upgrades  when a tech center is built
 			if(!techCenter.stealthTankResearched_enemy){
-				if(techCenter.stealthTankResearchProgress_enemy == 255){
+				if(techCenter.stealthTankResearchProgress_enemy == 255 && ((numberOfLightTanks_player + numberOfStealthTanks_player> 8) ||  theBaseInfo.currentCredit > 2000 || numberOfStealthTanks_AI > 6)){
 					techCenter.cancelResearch(1);
 					techCenter.researchStealthTank(1);
 					System.out.println("----------------------------AI starts researching stealth tank------------------------------------");
@@ -204,16 +214,6 @@ public class unitProductionAI {
 					}
 				}
 			}
-				
-
-			//System.out.println("enemy light tank count: " + numberOfLightTanks_player +  " at "  + mainThread.frameIndex/30);
-			if(currentProductionOrder == produceStealthTank)
-				System.out.println("should make stealth tank now--------------");
-			if(currentProductionOrder == produceHeavyTank)
-				System.out.println("should make Heavy tank now-----------------");
-			if(currentProductionOrder == produceRocketTank)
-				System.out.println("should make Rocket tank now----------------");
-				
 			
 			if(numberOfRocketTanks_AI > 2 && theBaseInfo.currentCredit > 750 && (numberOfPlayerGunTurrets > 0 || numberOfPlayerMissileTurrets > 0)){
 				if(!techCenter.rocketTankResearched_enemy){

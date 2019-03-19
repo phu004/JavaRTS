@@ -12,8 +12,20 @@ public class inputHandler {
 
 	public static int mouse_x, mouse_y,mouse_x0, mouse_x1, mouse_y0, mouse_y1, cameraMovementAngle;
 	
-	public static boolean mouseIsInsideScreen, leftKeyPressed, rightKeyPressed, controlKeyPressed, leftMouseButtonPressed, rightMouseButtonPressed, leftMouseButtonReleased, rightMouseButtonReleased, H_pressed,A_pressed, userIsHoldingA; 
+	public static boolean mouseIsInsideScreen, userIsHoldingA;
 	
+	public static boolean leftKeyPressed, 
+	                      rightKeyPressed, 
+	                      controlKeyPressed, 
+	                      leftMouseButtonPressed, 
+	                      rightMouseButtonPressed, 
+	                      leftMouseButtonReleased, 
+	                      rightMouseButtonReleased, 
+	                      H_pressed,
+	                      A_pressed, 
+	                      escapeKeyPressed,
+	                      escapeKeyReleased;
+	                  
 	public static int numberTyped;
 	
 	public static final Rectangle mouseMovementArea = new Rectangle(30,20, 708, 472);
@@ -24,15 +36,20 @@ public class inputHandler {
 	public static int inputCounter, inputBufferIndex, keyReleaseCounter, keyReleaseBufferIndex;
 	
 	public static void processInput(){
+		
+		
 		//read input char
 		int theCounter = inputCounter;  
+		
 		//handle over flow
 		if(inputBufferIndex > theCounter){
 			while(inputBufferIndex < 1024){
 				char c = inputBuffer[inputBufferIndex];
 				
 				
+				
 				if(c == 'h' || c == 'H'){
+					
 					H_pressed = true;
 				}
 				
@@ -46,9 +63,11 @@ public class inputHandler {
 				
 				
 				inputBufferIndex++;
+				
 			}
 			inputBufferIndex = 0;
 		}
+		
 		
 		while(inputBufferIndex < theCounter){
 			char c = inputBuffer[inputBufferIndex];
@@ -68,6 +87,7 @@ public class inputHandler {
 			
 			inputBufferIndex++;
 		}
+	
 		
 		//read released char
 		theCounter = keyReleaseCounter;
@@ -104,7 +124,7 @@ public class inputHandler {
 		
 		
 		//handle input when game is running
-		if(mainThread.inGame){
+		if(!mainThread.gamePaused){
 			if(!mainThread.pc.isSelectingUnit){
 				mouse_x0 = mouse_x;
 				mouse_y0 = mouse_y;
@@ -214,13 +234,24 @@ public class inputHandler {
 			
 			//handle hotheys
 			if(A_pressed){
-				
 				if(!userIsHoldingA){
 					mainThread.pc.attackKeyPressed = true;
 					userIsHoldingA = true;
 				}
 				
 			}
+			
+			//handle escape key
+			if(escapeKeyReleased) {
+				mainThread.gamePaused = true;  //when game is running, pause the game when esc key is hit
+				
+			}
+			
+		}else {
+			//handle event when game is paused
+			if(escapeKeyReleased)
+				mainThread.gamePaused = false; //when game is paused unpause the game when esc key is hit
+			
 		}
 		
 		
@@ -229,8 +260,11 @@ public class inputHandler {
 		rightMouseButtonPressed = false;
 		leftMouseButtonReleased = false;
 		rightMouseButtonReleased = false;
+		escapeKeyPressed = false;
+		escapeKeyReleased = false;
 		
 		A_pressed = false;
+		H_pressed = false;
 		numberTyped = 0;
 		
 	}

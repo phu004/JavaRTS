@@ -71,6 +71,8 @@ public class postProcessingThread implements Runnable{
 	
 	public static textRenderer theTextRenderer;
 	
+	public static boolean gamePaused;
+	
 	//A pool of vectors which will be used for vector arithmetic
 	public static vector 
 		tempVector1 = new vector(0,0,0),
@@ -171,6 +173,7 @@ public class postProcessingThread implements Runnable{
 	}
 	
 	public void run(){
+		
 		while(true){
 			synchronized (this) {
 				try {	
@@ -189,7 +192,8 @@ public class postProcessingThread implements Runnable{
 				isWorking = true;
 			}
 			
-			doPostProcesssing();
+			if(!gamePaused)
+				doPostProcesssing();
 			frameIndex++;
 			
 		}
@@ -957,6 +961,7 @@ public class postProcessingThread implements Runnable{
 		
 		playerMoney = mainThread.pc.theBaseInfo.currentCredit;
 		playerPowerStatus = mainThread.pc.theBaseInfo.powerStatus;
+		gamePaused = mainThread.gamePaused;
 		
 	}
 	

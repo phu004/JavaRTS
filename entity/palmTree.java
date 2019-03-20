@@ -22,7 +22,7 @@ public class palmTree extends solidObject{
 	public final static Rectangle screenBoundary = new Rectangle(40,40,688, 432);
 	
 	//screen space boundary which is used to test if the shadow of the  object is within the screen
-	public final static Rectangle shadowBoundary1 = new Rectangle(-20, -20,808, 552);
+	public final static Rectangle shadowBoundary1 = new Rectangle(0,0,768, 512);
 	
 	//palmTrees never moves
 	public final static vector movenment = new vector(0,0,0);
@@ -255,7 +255,8 @@ public class palmTree extends solidObject{
 		tempCentre.rotate_YZ(camera.YZ_angle); 
 		tempCentre.updateLocation();
 		
-		if(tempCentre.screenX > 918 || tempCentre.screenX < - 50 || tempCentre.screenY < - 125 || tempCentre.screenY > 662){
+	
+		if(tempCentre.screenX > 918 || tempCentre.screenX < - 150 || tempCentre.screenY < - 150 || tempCentre.screenY > 662){
 			visible = false;
 			return;
 		}

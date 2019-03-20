@@ -263,14 +263,17 @@ public class goldMine extends solidObject{
 	
 	//update the model 
 	public void update(){
-		
-		if(mainThread.theAssetManager.minimapBitmap[tileIndex[0]] ||
-		   mainThread.theAssetManager.minimapBitmap[tileIndex[1]] ||	 
-		   mainThread.theAssetManager.minimapBitmap[tileIndex[2]] ||		
-		   mainThread.theAssetManager.minimapBitmap[tileIndex[3]] )
-					isRevealed = true;
-		else
-			isRevealed = false;
+		if(!mainThread.gameStarted) {
+			isRevealed = true;
+		}else {
+			if(mainThread.theAssetManager.minimapBitmap[tileIndex[0]] ||
+			   mainThread.theAssetManager.minimapBitmap[tileIndex[1]] ||	 
+			   mainThread.theAssetManager.minimapBitmap[tileIndex[2]] ||		
+			   mainThread.theAssetManager.minimapBitmap[tileIndex[3]] )
+						isRevealed = true;
+			else
+				isRevealed = false;
+		}
 		
 		if(isRevealed){
 			//check if gold mine has been depleted

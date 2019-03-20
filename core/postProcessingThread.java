@@ -4,6 +4,7 @@ import entity.*;
 import gui.MiniMap;
 import gui.SideBar;
 import gui.confirmationIcon;
+import gui.gameMenu;
 import particles.explosion;
 import particles.helix;
 import particles.smokeParticle;
@@ -71,7 +72,8 @@ public class postProcessingThread implements Runnable{
 	
 	public static textRenderer theTextRenderer;
 	
-	public static boolean gamePaused;
+	public static boolean gamePaused, gameStarted, gameEnded;
+	
 	
 	//A pool of vectors which will be used for vector arithmetic
 	public static vector 
@@ -194,6 +196,9 @@ public class postProcessingThread implements Runnable{
 			
 			if(!gamePaused)
 				doPostProcesssing();
+			
+			gameMenu.updateAndDraw(currentScreen, gameStarted, gamePaused);
+			
 			frameIndex++;
 			
 		}
@@ -351,355 +356,355 @@ public class postProcessingThread implements Runnable{
 			
 		}
 		
+		if(gameStarted) {
+			//create helix particles that are spawned by stealth tank's railgun trail.
+			for(int i = 0; i < helixCount; i++){
+				tempFloat = helixInfo[i];
+				railgunHelix[currentHelix].setActive(tempFloat[0], tempFloat[1], tempFloat[2], (int)tempFloat[3]);
+				currentHelix++;
+				currentHelix%=1500;
+			}
+			
+			//draw helix particles
+			for(int i = 0; i < 1500; i++){
+				 if(railgunHelix[i].isInAction)
+					 railgunHelix[i].updateAndDraw();
+			}
+			
+			
+			//draw explosion sprite
+			for(int i = 0; i < 200; i++)
+				explosions[i].drawExplosionSprite();
+			
+			
 		
-		//create helix particles that are spawned by stealth tank's railgun trail.
-		for(int i = 0; i < helixCount; i++){
-			tempFloat = helixInfo[i];
-			railgunHelix[currentHelix].setActive(tempFloat[0], tempFloat[1], tempFloat[2], (int)tempFloat[3]);
-			currentHelix++;
-			currentHelix%=1500;
-		}
-		
-		//draw helix particles
-		for(int i = 0; i < 1500; i++){
-			 if(railgunHelix[i].isInAction)
-				 railgunHelix[i].updateAndDraw();
-		}
-		
-		
-		//draw explosion sprite
-		for(int i = 0; i < 200; i++)
-			explosions[i].drawExplosionSprite();
-		
-		
-	
-		//create smoke particles
-		for(int i = 0; i < smokeEmmiterCount; i++){
-			tempFloat = smokeEmmiterList[i];
-			smokeParticles[currentParticleIndex].setActive(tempFloat[0], tempFloat[1], tempFloat[2],  tempFloat[3], (int)tempFloat[4] ,  (int)tempFloat[5], tempFloat[6]);
-			currentParticleIndex++;
-			currentParticleIndex%=2000;
-		}
-		
-		
-		//draw smoke particles
-		for(int i = 0; i < 2000; i++){ 
-			if(smokeParticles[i].isInAction)
-				smokeParticles[i].updateAndDraw();
-		}
-		
-		
-		
-		
-		//draw health bar/Group info/unit level  for every selected unit 
-		for(int i = 0; i < 100; i++){
-			if(currentSelectedUnitsInfo[i][0] != -1){
-				ObjectType = (currentSelectedUnitsInfo[i][0] & 0xff);
-				groupNo = ((currentSelectedUnitsInfo[i][0] & 0xff00) >> 8);
-				level =  ((currentSelectedUnitsInfo[i][0] & 0xff0000) >> 16);
-				maxHealth = unitInfoTable[ObjectType][0];
-				healthBarLength = unitInfoTable[ObjectType][1];
-				xPos = currentSelectedUnitsInfo[i][1] + unitInfoTable[ObjectType][2];
-				yPos = currentSelectedUnitsInfo[i][2] + unitInfoTable[ObjectType][3];
-				remainingHealth = healthBarLength * currentSelectedUnitsInfo[i][4] / maxHealth;
-				
-				//draw group info
-				if(groupNo != 255){
-					theTextRenderer.drawText_outline(xPos, yPos + 3, ""+(groupNo+1), currentScreen, 0xffffff, 0);
-				}
-				if(level != 0){
-					theTextRenderer.drawStarCharacter(xPos + healthBarLength - 13, yPos + 5, level, currentScreen, 0xffff33, 0);
-				}
-				
-				if(remainingHealth <= 2 && remainingHealth != 0)
-					remainingHealth = 2;
-				
-				if(ObjectType != 103){
-					if(yPos > 0 && yPos < 512){
-						
-						if(xPos >= 0 && xPos < 768)
-							currentScreen[xPos + yPos*768] = (currentScreen[xPos + yPos*768]&0xFEFEFE)>>1;
-						for(int j = xPos+1;  j < xPos + healthBarLength-1; j++){
-							if(j < 0 || j >= 768)
-								continue;
-							currentScreen[j + yPos*768] = 0;
-						}
-						if(xPos + healthBarLength-1 >= 0 && xPos + healthBarLength-1 < 768)
-							currentScreen[xPos + healthBarLength-1 + yPos*768] = (currentScreen[xPos + healthBarLength-1 + yPos*768]&0xFEFEFE)>>1;	
+			//create smoke particles
+			for(int i = 0; i < smokeEmmiterCount; i++){
+				tempFloat = smokeEmmiterList[i];
+				smokeParticles[currentParticleIndex].setActive(tempFloat[0], tempFloat[1], tempFloat[2],  tempFloat[3], (int)tempFloat[4] ,  (int)tempFloat[5], tempFloat[6]);
+				currentParticleIndex++;
+				currentParticleIndex%=2000;
+			}
+			
+			
+			//draw smoke particles
+			for(int i = 0; i < 2000; i++){ 
+				if(smokeParticles[i].isInAction)
+					smokeParticles[i].updateAndDraw();
+			}
+			
+			
+			
+			
+			//draw health bar/Group info/unit level  for every selected unit 
+			for(int i = 0; i < 100; i++){
+				if(currentSelectedUnitsInfo[i][0] != -1){
+					ObjectType = (currentSelectedUnitsInfo[i][0] & 0xff);
+					groupNo = ((currentSelectedUnitsInfo[i][0] & 0xff00) >> 8);
+					level =  ((currentSelectedUnitsInfo[i][0] & 0xff0000) >> 16);
+					maxHealth = unitInfoTable[ObjectType][0];
+					healthBarLength = unitInfoTable[ObjectType][1];
+					xPos = currentSelectedUnitsInfo[i][1] + unitInfoTable[ObjectType][2];
+					yPos = currentSelectedUnitsInfo[i][2] + unitInfoTable[ObjectType][3];
+					remainingHealth = healthBarLength * currentSelectedUnitsInfo[i][4] / maxHealth;
+					
+					//draw group info
+					if(groupNo != 255){
+						theTextRenderer.drawText_outline(xPos, yPos + 3, ""+(groupNo+1), currentScreen, 0xffffff, 0);
+					}
+					if(level != 0){
+						theTextRenderer.drawStarCharacter(xPos + healthBarLength - 13, yPos + 5, level, currentScreen, 0xffff33, 0);
 					}
 					
-					if((float)remainingHealth / healthBarLength > 0.5)
-						color = 0xdd00;
-					else if((float)remainingHealth / healthBarLength > 0.25)
-						color = 0xdddd00;
-					else 
-						color = 0xdd0000;
+					if(remainingHealth <= 2 && remainingHealth != 0)
+						remainingHealth = 2;
 					
-					
-					for(int k = 0; k < 2; k++){
-						yPos++;
-						
+					if(ObjectType != 103){
 						if(yPos > 0 && yPos < 512){
-							for(int j = xPos;  j < xPos + healthBarLength; j++){
+							
+							if(xPos >= 0 && xPos < 768)
+								currentScreen[xPos + yPos*768] = (currentScreen[xPos + yPos*768]&0xFEFEFE)>>1;
+							for(int j = xPos+1;  j < xPos + healthBarLength-1; j++){
 								if(j < 0 || j >= 768)
 									continue;
-								if(j < xPos + remainingHealth)
-									currentScreen[j + yPos*768] = color;
-								else
-									currentScreen[j + yPos*768] = (currentScreen[j + yPos*768]&0xFEFEFE)>>1;
+								currentScreen[j + yPos*768] = 0;
 							}
-							if(xPos > 0 && xPos < 768)
-								currentScreen[xPos + yPos*768] = 0;
-							if(xPos + healthBarLength -1 >0 && xPos + healthBarLength - 1 < 768)
-								currentScreen[xPos + healthBarLength -1 + yPos*768] = 0;
-							
+							if(xPos + healthBarLength-1 >= 0 && xPos + healthBarLength-1 < 768)
+								currentScreen[xPos + healthBarLength-1 + yPos*768] = (currentScreen[xPos + healthBarLength-1 + yPos*768]&0xFEFEFE)>>1;	
 						}
-					}
-					
-					yPos++;
-					if(yPos > 0 && yPos < 512){
-						if(xPos >= 0 && xPos < 768)
-							currentScreen[xPos + yPos*768] = (currentScreen[xPos + yPos*768]&0xFEFEFE)>>1;
-						for(int j = xPos+1;  j < xPos + healthBarLength-1; j++){
-							if(j < 0 || j >= 768)
-								continue;
-							currentScreen[j + yPos*768] = 0;
-						}
-						if(xPos + healthBarLength-1 >= 0 && xPos + healthBarLength-1 < 768)
-							currentScreen[xPos + healthBarLength-1 + yPos*768] = (currentScreen[xPos + healthBarLength-1 + yPos*768]&0xFEFEFE)>>1;
-					}
-				}
-				
-				//draw progress bar if appliable
-				if(currentSelectedUnitsInfo[i][5] >=0){
-					int progress = healthBarLength * currentSelectedUnitsInfo[i][5] / 100;
-					
-					if(yPos > 0 && yPos < 512){
-						if(xPos >= 0 && xPos < 768)
-							currentScreen[xPos + yPos*768] = (currentScreen[xPos + yPos*768]&0xFEFEFE)>>1;
-						for(int j = xPos+1;  j < xPos + healthBarLength-1; j++){
-							if(j < 0 || j >= 768)
-								continue;
-							currentScreen[j + yPos*768] = 0;
-						}
-						if(xPos + healthBarLength-1 >= 0 && xPos + healthBarLength-1 < 768)
-							currentScreen[xPos + healthBarLength-1 + yPos*768] = (currentScreen[xPos + healthBarLength-1 + yPos*768]&0xFEFEFE)>>1;	
-					}
-					
-					
-					color = 0xd0b000;
-					
-					
-					for(int k = 0; k < 2; k++){
-						yPos++;
 						
+						if((float)remainingHealth / healthBarLength > 0.5)
+							color = 0xdd00;
+						else if((float)remainingHealth / healthBarLength > 0.25)
+							color = 0xdddd00;
+						else 
+							color = 0xdd0000;
+						
+						
+						for(int k = 0; k < 2; k++){
+							yPos++;
+							
+							if(yPos > 0 && yPos < 512){
+								for(int j = xPos;  j < xPos + healthBarLength; j++){
+									if(j < 0 || j >= 768)
+										continue;
+									if(j < xPos + remainingHealth)
+										currentScreen[j + yPos*768] = color;
+									else
+										currentScreen[j + yPos*768] = (currentScreen[j + yPos*768]&0xFEFEFE)>>1;
+								}
+								if(xPos > 0 && xPos < 768)
+									currentScreen[xPos + yPos*768] = 0;
+								if(xPos + healthBarLength -1 >0 && xPos + healthBarLength - 1 < 768)
+									currentScreen[xPos + healthBarLength -1 + yPos*768] = 0;
+								
+							}
+						}
+						
+						yPos++;
 						if(yPos > 0 && yPos < 512){
-							for(int j = xPos;  j < xPos + healthBarLength; j++){
+							if(xPos >= 0 && xPos < 768)
+								currentScreen[xPos + yPos*768] = (currentScreen[xPos + yPos*768]&0xFEFEFE)>>1;
+							for(int j = xPos+1;  j < xPos + healthBarLength-1; j++){
 								if(j < 0 || j >= 768)
 									continue;
-								if(j < xPos + progress)
-									currentScreen[j + yPos*768] = color;
-								else
-									currentScreen[j + yPos*768] = (currentScreen[j + yPos*768]&0xFEFEFE)>>1;
+								currentScreen[j + yPos*768] = 0;
 							}
-							if(xPos > 0 && xPos < 768)
-								currentScreen[xPos + yPos*768] = 0;
-							if(xPos + healthBarLength -1 >0 && xPos + healthBarLength - 1 < 768)
-								currentScreen[xPos + healthBarLength -1 + yPos*768] = 0;
+							if(xPos + healthBarLength-1 >= 0 && xPos + healthBarLength-1 < 768)
+								currentScreen[xPos + healthBarLength-1 + yPos*768] = (currentScreen[xPos + healthBarLength-1 + yPos*768]&0xFEFEFE)>>1;
+						}
+					}
+					
+					//draw progress bar if appliable
+					if(currentSelectedUnitsInfo[i][5] >=0){
+						int progress = healthBarLength * currentSelectedUnitsInfo[i][5] / 100;
+						
+						if(yPos > 0 && yPos < 512){
+							if(xPos >= 0 && xPos < 768)
+								currentScreen[xPos + yPos*768] = (currentScreen[xPos + yPos*768]&0xFEFEFE)>>1;
+							for(int j = xPos+1;  j < xPos + healthBarLength-1; j++){
+								if(j < 0 || j >= 768)
+									continue;
+								currentScreen[j + yPos*768] = 0;
+							}
+							if(xPos + healthBarLength-1 >= 0 && xPos + healthBarLength-1 < 768)
+								currentScreen[xPos + healthBarLength-1 + yPos*768] = (currentScreen[xPos + healthBarLength-1 + yPos*768]&0xFEFEFE)>>1;	
+						}
+						
+						
+						color = 0xd0b000;
+						
+						
+						for(int k = 0; k < 2; k++){
+							yPos++;
 							
+							if(yPos > 0 && yPos < 512){
+								for(int j = xPos;  j < xPos + healthBarLength; j++){
+									if(j < 0 || j >= 768)
+										continue;
+									if(j < xPos + progress)
+										currentScreen[j + yPos*768] = color;
+									else
+										currentScreen[j + yPos*768] = (currentScreen[j + yPos*768]&0xFEFEFE)>>1;
+								}
+								if(xPos > 0 && xPos < 768)
+									currentScreen[xPos + yPos*768] = 0;
+								if(xPos + healthBarLength -1 >0 && xPos + healthBarLength - 1 < 768)
+									currentScreen[xPos + healthBarLength -1 + yPos*768] = 0;
+								
+							}
 						}
-					}
-					
-					yPos++;
-					if(yPos > 0 && yPos < 512){
-						if(xPos >= 0 && xPos < 768)
-							currentScreen[xPos + yPos*768] = (currentScreen[xPos + yPos*768]&0xFEFEFE)>>1;
-						for(int j = xPos+1;  j < xPos + healthBarLength-1; j++){
-							if(j < 0 || j >= 768)
-								continue;
-							currentScreen[j + yPos*768] = 0;
+						
+						yPos++;
+						if(yPos > 0 && yPos < 512){
+							if(xPos >= 0 && xPos < 768)
+								currentScreen[xPos + yPos*768] = (currentScreen[xPos + yPos*768]&0xFEFEFE)>>1;
+							for(int j = xPos+1;  j < xPos + healthBarLength-1; j++){
+								if(j < 0 || j >= 768)
+									continue;
+								currentScreen[j + yPos*768] = 0;
+							}
+							if(xPos + healthBarLength-1 >= 0 && xPos + healthBarLength-1 < 768)
+								currentScreen[xPos + healthBarLength-1 + yPos*768] = (currentScreen[xPos + healthBarLength-1 + yPos*768]&0xFEFEFE)>>1;
 						}
-						if(xPos + healthBarLength-1 >= 0 && xPos + healthBarLength-1 < 768)
-							currentScreen[xPos + healthBarLength-1 + yPos*768] = (currentScreen[xPos + healthBarLength-1 + yPos*768]&0xFEFEFE)>>1;
 					}
 				}
 			}
-		}
-		
-		
-		
-		//reset fogOfWarBuffer
-		fogOfWarBuffer[0] = 0;
-		for(int i = 1; i < 393216; i+=i){
-			System.arraycopy(fogOfWarBuffer, 0, fogOfWarBuffer, i, 393216 - i >= i ? i : 393216 - i);
-			
-		}
-		
-		for(int i = 0; i < 512; i++){
-			xMin[i] = 378;
-			xMax[i] = 378;
-			
-		}
-		
-		float[] list;
-		//shaffule vision polygons
-		for(int i = 0; i < 400; i++){
-			temp = (gameData.getRandom() * visionPolygonCount) >> 10;
-			temp1 = (gameData.getRandom() * visionPolygonCount) >> 10;
-				
-			list = visionPolygonInfo[temp];
-			visionPolygonInfo[temp] = visionPolygonInfo[temp1];
-			visionPolygonInfo[temp1] = list;
-		}
-		
-		//update vision polygons
-		for(int i = 0; i < visionPolygonCount; i++){
-			tempVector1.set(visionPolygonInfo[i][1], visionPolygonInfo[i][2], visionPolygonInfo[i][3]);
-			if(visionPolygonInfo[i][0] != 0){
-				poly = mainThread.theAssetManager.visionPolygon[1];
-			}else{
-				poly = mainThread.theAssetManager.visionPolygon[(int)visionPolygonInfo[i][4]];
-			}
-			tempVector1.subtract(poly.centre);
-			for(int j = 0; j < 48; j++)
-				poly.vertex3D[j].add(tempVector1);
 			
 			
-			poly.centre.add(tempVector1);
-			poly.update_visionPolygon();
 			
-			rasterize(poly);	
-		}
-		
-		
-		
-		//blur fog of war buffer, use cross shaped kernel
-		int radius = 16;
-		int radiusBit = 5;
-		int destIndex = 0;
-		int index = 0;
-		for(int i = 0; i < 512; i++){
-			//init the first element in the row
-			temp = 0;
-			destIndex = i + 512 * 767 ;
-			
-			for(int j = 0; j < radius -1; j++){
-				temp+=fogOfWarBuffer[index + j];
-			}
-			temp+=43*radius;
-			fogOfWarBuffer2[destIndex] =  (byte)(temp >> radiusBit);
-			index++;
-			destIndex-=512;
-			
-			for(int j = 1; j < radius; j++, index++, destIndex -=512){
-				temp = temp + fogOfWarBuffer[index + radius -2] - 43;
-				fogOfWarBuffer2[destIndex] =  (byte)(temp >> radiusBit);
-			}
-			
-			for(int j = radius; j < 768 - radius; j++, index++, destIndex -=512){
-				temp = temp + fogOfWarBuffer[index + radius -2] - fogOfWarBuffer[index - radius];
-				fogOfWarBuffer2[destIndex] =  (byte)(temp >> radiusBit);
+			//reset fogOfWarBuffer
+			fogOfWarBuffer[0] = 0;
+			for(int i = 1; i < 393216; i+=i){
+				System.arraycopy(fogOfWarBuffer, 0, fogOfWarBuffer, i, 393216 - i >= i ? i : 393216 - i);
 				
 			}
-			for(int j = 0; j < radius; j++, index++, destIndex -=512){
-				temp = temp - fogOfWarBuffer[index - radius] + 43;
-				fogOfWarBuffer2[destIndex] =  (byte)(temp >> radiusBit);
-			}
-		}
-		
-		destIndex = 0;
-		index = 0;
-		for(int i = 0; i < 768; i++){
-			//init the first element in the row
-			temp = 0;
-			destIndex = 767 - i;
 			
-			for(int j = 0; j < radius -1 ; j++){
-				temp+=fogOfWarBuffer2[index + j];
-			}
-			temp+=43*radius;
-			fogOfWarBuffer[destIndex] =  (byte)(temp >> radiusBit);
-			index++;
-			destIndex+=768;
-			
-			for(int j = 1; j < radius; j++, index++, destIndex +=768){
-				temp = temp + fogOfWarBuffer2[index + radius -2] - 43;
-				fogOfWarBuffer[destIndex] =  (byte)(temp >> radiusBit);
+			for(int i = 0; i < 512; i++){
+				xMin[i] = 378;
+				xMax[i] = 378;
+				
 			}
 			
-			for(int j = radius; j < 512 - radius; j++, index++, destIndex +=768){
-				temp = temp + fogOfWarBuffer2[index + radius -2] - fogOfWarBuffer2[index - radius];
-				fogOfWarBuffer[destIndex] =  (byte)(temp >> radiusBit);
+			float[] list;
+			//shaffule vision polygons
+			for(int i = 0; i < 400; i++){
+				temp = (gameData.getRandom() * visionPolygonCount) >> 10;
+				temp1 = (gameData.getRandom() * visionPolygonCount) >> 10;
+					
+				list = visionPolygonInfo[temp];
+				visionPolygonInfo[temp] = visionPolygonInfo[temp1];
+				visionPolygonInfo[temp1] = list;
 			}
-			for(int j = 0; j < radius; j++, index++, destIndex +=768){
-				temp  = temp - fogOfWarBuffer2[index - radius] + 43;
-				fogOfWarBuffer[destIndex] =  (byte)(temp >> radiusBit);
-			}
-		}
-		
-		
-		//blend fog of war to the frame buffer
-		for(int i = 0; i < 512 * 768; i++){
-			temp = fogOfWarBuffer[i];
-			if(temp < 112) {
-				r = (((currentScreen[i] & 0xff0000) >> 16) * (temp + 143)) >> 8;
-				g = (((currentScreen[i] & 0xff00) >> 8) * (temp + 143)) >> 8 ;
-				b = ((currentScreen[i] & 0xff) * (temp + 143)) >> 8;
-				currentScreen[i] = r << 16 | g << 8 | b;
-			}
-		}
-	
-	
-		//draw select rectangle
-		if(mainThread.pc.isSelectingUnit){
-			xPos = mainThread.pc.area.x;
-			yPos = mainThread.pc.area.y;
-			selectAreaWidth = mainThread.pc.area.width;
-			selectAreaHeight = mainThread.pc.area.height;
 			
-			try{
-				if(!(yPos == 511 || xPos == 767)){
-					for(int i = xPos; i < xPos + selectAreaWidth; i++)
-						currentScreen[i + yPos*768] = 0xaa00;
-					for(int i = xPos; i < xPos + selectAreaWidth; i++)
-						currentScreen[i + (yPos + 1)*768] = 0xcc00;
-					
-					for(int i = xPos; i < xPos + selectAreaWidth; i++)
-						currentScreen[i + (yPos+selectAreaHeight-1)*768] = 0xcc00;
-					for(int i = xPos; i < xPos + selectAreaWidth; i++)
-						currentScreen[i + (yPos + selectAreaHeight)*768] = 0xaa00;
-					
-					
-					for(int i = yPos; i < yPos + selectAreaHeight; i++)
-						currentScreen[xPos + i*768] = 0xaa00;
-					
-					for(int i = yPos+1; i < yPos + selectAreaHeight-1; i++)
-						currentScreen[xPos + 1 + i*768] = 0xcc00;
-					
-					for(int i = yPos; i < yPos + selectAreaHeight; i++)
-						currentScreen[xPos + selectAreaWidth + i*768] = 0xaa00;
-					
-					for(int i = yPos + 1; i < yPos + selectAreaHeight - 1; i++)
-						currentScreen[xPos - 1 + selectAreaWidth + i*768] = 0xcc00;
+			//update vision polygons
+			for(int i = 0; i < visionPolygonCount; i++){
+				tempVector1.set(visionPolygonInfo[i][1], visionPolygonInfo[i][2], visionPolygonInfo[i][3]);
+				if(visionPolygonInfo[i][0] != 0){
+					poly = mainThread.theAssetManager.visionPolygon[1];
+				}else{
+					poly = mainThread.theAssetManager.visionPolygon[(int)visionPolygonInfo[i][4]];
 				}
-			}catch(Exception e){}
+				tempVector1.subtract(poly.centre);
+				for(int j = 0; j < 48; j++)
+					poly.vertex3D[j].add(tempVector1);
+				
+				
+				poly.centre.add(tempVector1);
+				poly.update_visionPolygon();
+				
+				rasterize(poly);	
+			}
+			
+			
+			
+			//blur fog of war buffer, use cross shaped kernel
+			int radius = 16;
+			int radiusBit = 5;
+			int destIndex = 0;
+			int index = 0;
+			for(int i = 0; i < 512; i++){
+				//init the first element in the row
+				temp = 0;
+				destIndex = i + 512 * 767 ;
+				
+				for(int j = 0; j < radius -1; j++){
+					temp+=fogOfWarBuffer[index + j];
+				}
+				temp+=43*radius;
+				fogOfWarBuffer2[destIndex] =  (byte)(temp >> radiusBit);
+				index++;
+				destIndex-=512;
+				
+				for(int j = 1; j < radius; j++, index++, destIndex -=512){
+					temp = temp + fogOfWarBuffer[index + radius -2] - 43;
+					fogOfWarBuffer2[destIndex] =  (byte)(temp >> radiusBit);
+				}
+				
+				for(int j = radius; j < 768 - radius; j++, index++, destIndex -=512){
+					temp = temp + fogOfWarBuffer[index + radius -2] - fogOfWarBuffer[index - radius];
+					fogOfWarBuffer2[destIndex] =  (byte)(temp >> radiusBit);
+					
+				}
+				for(int j = 0; j < radius; j++, index++, destIndex -=512){
+					temp = temp - fogOfWarBuffer[index - radius] + 43;
+					fogOfWarBuffer2[destIndex] =  (byte)(temp >> radiusBit);
+				}
+			}
+			
+			destIndex = 0;
+			index = 0;
+			for(int i = 0; i < 768; i++){
+				//init the first element in the row
+				temp = 0;
+				destIndex = 767 - i;
+				
+				for(int j = 0; j < radius -1 ; j++){
+					temp+=fogOfWarBuffer2[index + j];
+				}
+				temp+=43*radius;
+				fogOfWarBuffer[destIndex] =  (byte)(temp >> radiusBit);
+				index++;
+				destIndex+=768;
+				
+				for(int j = 1; j < radius; j++, index++, destIndex +=768){
+					temp = temp + fogOfWarBuffer2[index + radius -2] - 43;
+					fogOfWarBuffer[destIndex] =  (byte)(temp >> radiusBit);
+				}
+				
+				for(int j = radius; j < 512 - radius; j++, index++, destIndex +=768){
+					temp = temp + fogOfWarBuffer2[index + radius -2] - fogOfWarBuffer2[index - radius];
+					fogOfWarBuffer[destIndex] =  (byte)(temp >> radiusBit);
+				}
+				for(int j = 0; j < radius; j++, index++, destIndex +=768){
+					temp  = temp - fogOfWarBuffer2[index - radius] + 43;
+					fogOfWarBuffer[destIndex] =  (byte)(temp >> radiusBit);
+				}
+			}
+			
+			
+			//blend fog of war to the frame buffer
+			for(int i = 0; i < 512 * 768; i++){
+				temp = fogOfWarBuffer[i];
+				if(temp < 112) {
+					r = (((currentScreen[i] & 0xff0000) >> 16) * (temp + 143)) >> 8;
+					g = (((currentScreen[i] & 0xff00) >> 8) * (temp + 143)) >> 8 ;
+					b = ((currentScreen[i] & 0xff) * (temp + 143)) >> 8;
+					currentScreen[i] = r << 16 | g << 8 | b;
+				}
+			}
+		
+		
+			//draw select rectangle
+			if(mainThread.pc.isSelectingUnit){
+				xPos = mainThread.pc.area.x;
+				yPos = mainThread.pc.area.y;
+				selectAreaWidth = mainThread.pc.area.width;
+				selectAreaHeight = mainThread.pc.area.height;
+				
+				try{
+					if(!(yPos == 511 || xPos == 767)){
+						for(int i = xPos; i < xPos + selectAreaWidth; i++)
+							currentScreen[i + yPos*768] = 0xaa00;
+						for(int i = xPos; i < xPos + selectAreaWidth; i++)
+							currentScreen[i + (yPos + 1)*768] = 0xcc00;
+						
+						for(int i = xPos; i < xPos + selectAreaWidth; i++)
+							currentScreen[i + (yPos+selectAreaHeight-1)*768] = 0xcc00;
+						for(int i = xPos; i < xPos + selectAreaWidth; i++)
+							currentScreen[i + (yPos + selectAreaHeight)*768] = 0xaa00;
+						
+						
+						for(int i = yPos; i < yPos + selectAreaHeight; i++)
+							currentScreen[xPos + i*768] = 0xaa00;
+						
+						for(int i = yPos+1; i < yPos + selectAreaHeight-1; i++)
+							currentScreen[xPos + 1 + i*768] = 0xcc00;
+						
+						for(int i = yPos; i < yPos + selectAreaHeight; i++)
+							currentScreen[xPos + selectAreaWidth + i*768] = 0xaa00;
+						
+						for(int i = yPos + 1; i < yPos + selectAreaHeight - 1; i++)
+							currentScreen[xPos - 1 + selectAreaWidth + i*768] = 0xcc00;
+					}
+				}catch(Exception e){}
+			}
+			
+			//draw confirmation icon
+			if(confirmationIconInfo[0] != 0){
+				theConfirmationIcon.setActive((float)confirmationIconInfo[1], (float)confirmationIconInfo[2], (int)confirmationIconInfo[3]);
+			}
+			
+			theConfirmationIcon.updateAndDraw();
+			
+			for(int i = 0; i < confirmationIconInfo.length; i++){
+				confirmationIconInfo[i] = 0;
+			}
+		
+			//draw mini map
+			theMiniMap.draw(currentScreen, minimapBitmap, unitsForMiniMap, unitsForMiniMapCount);
+			theSideBar.draw(currentScreen, sideBarInfo);
 		}
-		
-		//draw confirmation icon
-		if(confirmationIconInfo[0] != 0){
-			theConfirmationIcon.setActive((float)confirmationIconInfo[1], (float)confirmationIconInfo[2], (int)confirmationIconInfo[3]);
-		}
-		
-		theConfirmationIcon.updateAndDraw();
-		
-		for(int i = 0; i < confirmationIconInfo.length; i++){
-			confirmationIconInfo[i] = 0;
-		}
-		
-		//draw mini map
-		theMiniMap.draw(currentScreen, minimapBitmap, unitsForMiniMap, unitsForMiniMapCount);
-		theSideBar.draw(currentScreen, sideBarInfo);
-		
 		
 	}
 			
@@ -931,6 +936,11 @@ public class postProcessingThread implements Runnable{
 	}
 	
 	public static void prepareResources(){
+		
+		gamePaused = mainThread.gamePaused;
+		gameStarted = mainThread.gameStarted;
+		gameEnded = mainThread.gameEnded;
+		
 		currentScreen = mainThread.screen;
 		currentZbuffer = mainThread.zBuffer;
 		displacementBuffer = mainThread.displacementBuffer;
@@ -947,7 +957,11 @@ public class postProcessingThread implements Runnable{
 		helixCount = mainThread.theAssetManager.helixCount;
 		smokeEmmiterList = mainThread.theAssetManager.smokeEmmiterList;
 		smokeEmmiterCount = mainThread.theAssetManager.smokeEmmiterCount;
-		sideBarInfo = mainThread.pc.theSideBarManager.sideBarInfo;
+		if(gameStarted) {
+			sideBarInfo = mainThread.pc.theSideBarManager.sideBarInfo;
+			playerMoney = mainThread.pc.theBaseInfo.currentCredit;
+			playerPowerStatus = mainThread.pc.theBaseInfo.powerStatus;	
+		}
 		confirmationIconInfo = mainThread.theAssetManager.confirmationIconInfo;
 	
 		cameraPosition.set(camera.position);
@@ -959,9 +973,7 @@ public class postProcessingThread implements Runnable{
 		
 		theMiniMap.findCorners();
 		
-		playerMoney = mainThread.pc.theBaseInfo.currentCredit;
-		playerPowerStatus = mainThread.pc.theBaseInfo.powerStatus;
-		gamePaused = mainThread.gamePaused;
+		
 		
 	}
 	

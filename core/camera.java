@@ -21,6 +21,8 @@ public class camera{
 	//a rectangle that represents the screen area
 	public static final Rectangle screen = new Rectangle(0,0,768, 512);
 	
+	public static vector cameraMovement;
+	
 	
 	public camera(vector p, int XZ, int YZ){
 		view_Direction = new vector(0, 0, 1);
@@ -35,6 +37,26 @@ public class camera{
 	}
 
 	public void update(){
+		
+		if(!mainThread.gameStarted) {
+			
+			//when game has not started, use a "fly through" as the background for the menu
+			if(mainThread.frameIndex == 1) {
+				mainThread.Camera.position.z = 2.5f;
+				mainThread.Camera.position.x = 9;
+				cameraMovement = new vector(-0.01f,0,0);
+			}
+			
+			
+			if(mainThread.frameIndex > 90 && mainThread.frameIndex%400 >= 0 && mainThread.frameIndex%400 < 90) {
+				XZ_angle+=1;
+				cameraMovement.rotate_XZ(359);
+			}
+			
+			position.add(cameraMovement);
+		}
+		
+		
 		position.add(view_Direction.x*3, 0 , view_Direction.z*3);
 		
 		
@@ -77,7 +99,7 @@ public class camera{
 			down.unit();
 			position.add(down, -0.1f);
 		}
-
+		
 		//make sure the camera never leaves the map
 		if(position.x < 0.5){
 			position.x = 0.5f;
@@ -126,9 +148,6 @@ public class camera{
 		TURN_LEFT = false;
 		TURN_RIGHT = false;
 		
-	
-		
-
 	}
 
 }

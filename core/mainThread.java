@@ -30,7 +30,7 @@ public class mainThread extends JFrame implements KeyListener, ActionListener, M
 	public static int framePerSecond, cpuUsage;
 	public static double thisTime, lastTime;
 	public static boolean JavaRTSLoaded;
-	public static boolean gamePaused, gameStarted;
+	public static boolean gamePaused, gameStarted, gameEnded;
 	public static texture[] textures;
 	public static byte[][] lightMapTextures;
 	public static int[][] lightMapTexturesInfo;
@@ -52,7 +52,7 @@ public class mainThread extends JFrame implements KeyListener, ActionListener, M
 		
 	
 	public mainThread(){
-		setTitle("JAVA RTS");
+		setTitle("Battle Tank 3");
 		panel= (JPanel) this.getContentPane();
 		panel.setPreferredSize(new Dimension(768, 512));
 		panel.setMinimumSize(new Dimension(768,512));
@@ -65,79 +65,67 @@ public class mainThread extends JFrame implements KeyListener, ActionListener, M
 		setLocation(dim.width/2-this.getSize().width/2, dim.height/2-this.getSize().height/2);
     	setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
     	
-    	
+		//create screen buffer
+		doubleBuffer =  new BufferedImage(768, 512, BufferedImage.TYPE_INT_RGB);
+		DataBuffer dest = doubleBuffer.getRaster().getDataBuffer();
+		screen = ((DataBufferInt)dest).getData();
 		
-			
-		//load resource if the applet is loaded for the first time. (i.e refresh browser will not cause the applet to load resources again)
-		if(JavaRTSLoaded == false){
-			//create screen buffer
-			doubleBuffer =  new BufferedImage(768, 512, BufferedImage.TYPE_INT_RGB);
-			DataBuffer dest = doubleBuffer.getRaster().getDataBuffer();
-			screen = ((DataBufferInt)dest).getData();
-			
-			doubleBuffer2 =  new BufferedImage(768, 512, BufferedImage.TYPE_INT_RGB);
-			DataBuffer dest2 = doubleBuffer2.getRaster().getDataBuffer();
-			screen2 = ((DataBufferInt)dest2).getData();
-			
-			//create depth buffer
-			zBuffer = new int[393216];
-			zBuffer2 = new int[393216];
-			
-			//create shadoow bitmap
-			shadowBitmap = new byte[393216];
-			shadowBitmap2 = new byte[393216];
-			
-			for(int i = 0; i < 393216; i++){
-				shadowBitmap[i] = 127;
-				shadowBitmap2[i] = 127;
-			}
-			
-			//create displacement buffer
-			displacementBuffer = new short[393216];
-			displacementBuffer2 = new short[393216];
-			for(int i = 0; i < 393216; i++){
-				displacementBuffer[i] = 12345;
-				
-			}
-			
-			//create camera
-			Camera = new camera(new vector(3,2f,-1.25f), 0, 300);
+		doubleBuffer2 =  new BufferedImage(768, 512, BufferedImage.TYPE_INT_RGB);
+		DataBuffer dest2 = doubleBuffer2.getRaster().getDataBuffer();
+		screen2 = ((DataBufferInt)dest2).getData();
 		
-			//Create look up tables
-			gameData.makeData();
-			
-			//init grid 
-			gridMap = new grid(128);
-			
-			//init light source
-			sunLight.init();
-			
-			//init rasterizer
-			rasterizer.init();
-			
-			//init 2d to 3d factory
-			my2Dto3DFactory = new Turn2DTo3DFactory();
-			my2Dto3DFactory.init();
-	       
-			loadTexture();
-			
-			//init post processing  thread
-			postProcessingThread.init();
-			
-			theAssetManager = new AssetManager();
-			theAssetManager.init();
-			
-			frameIndex = 0;
-			frameInterval = 33;
-			lastDraw = 0;
-	
-			JavaRTSLoaded = true;
-			
-			//test only
-			gamePaused = false;
+		//create depth buffer
+		zBuffer = new int[393216];
+		zBuffer2 = new int[393216];
+		
+		//create shadoow bitmap
+		shadowBitmap = new byte[393216];
+		shadowBitmap2 = new byte[393216];
+		
+		for(int i = 0; i < 393216; i++){
+			shadowBitmap[i] = 127;
+			shadowBitmap2[i] = 127;
 		}
 		
+		//create displacement buffer
+		displacementBuffer = new short[393216];
+		displacementBuffer2 = new short[393216];
+		for(int i = 0; i < 393216; i++){
+			displacementBuffer[i] = 12345;
 			
+		}
+		
+		//create camera
+		Camera = new camera(new vector(3,2f,-1.25f), 0, 300);
+	
+		//Create look up tables
+		gameData.makeData();
+		
+		//init grid 
+		gridMap = new grid(128);
+		
+		//init light source
+		sunLight.init();
+		
+		//init rasterizer
+		rasterizer.init();
+		
+		//init 2d to 3d factory
+		my2Dto3DFactory = new Turn2DTo3DFactory();
+		my2Dto3DFactory.init();
+       
+		loadTexture();
+		
+		//init post processing  thread
+		postProcessingThread.init();
+		
+		theAssetManager = new AssetManager();
+		theAssetManager.init();
+		
+		frameIndex = 0;
+		frameInterval = 33;
+		lastDraw = 0;
+	
 		
 		//Add key handler
 		panel.addKeyListener(this);
@@ -160,6 +148,9 @@ public class mainThread extends JFrame implements KeyListener, ActionListener, M
         PPT = new postProcessingThread();
 		Thread theTread = new Thread(PPT);
 		
+		//test only
+		gameStarted = false;
+		
 		//start threads
 		t.start();
 		dt.start(); 
@@ -179,12 +170,12 @@ public class mainThread extends JFrame implements KeyListener, ActionListener, M
 		
 		inputHandler.processInput();
 		
-		//handle user's interaction with game GUI
-		if(frameIndex == 1){
-			theAssetManager.prepareAssetForNewGame();
-		}
-		
 		if(!gamePaused) {
+			
+			//handle user's interaction with game GUI
+			if(frameIndex == 1 && gameStarted){
+				theAssetManager.prepareAssetForNewGame();
+			}
 			
 			gridMap.update();
 			
@@ -200,12 +191,16 @@ public class mainThread extends JFrame implements KeyListener, ActionListener, M
 			//update and draw 3D mashes from  game objects
 			theAssetManager.updateAndDraw();
 			
-			pc.update();
-			ec.update();
-		
+			if(gameStarted) {
+				pc.update();
+				ec.update();
+			}
+		}else {
+			
+			
 		}
 		
-		//show inpassible obstacle 
+		//show unpassable obstacle 
 		//gridMap.draw();
 		
 		if(this.getGraphics() != null && PPT!= null){
@@ -486,7 +481,8 @@ public class mainThread extends JFrame implements KeyListener, ActionListener, M
 		rasterizer.displacementBuffer = mainThread.displacementBuffer;
 		
 		theAssetManager.swapResources();
-		pc.theSideBarManager.swapResources();
+		if(gameStarted)
+			pc.theSideBarManager.swapResources();
 		
 	}
 	

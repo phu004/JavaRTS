@@ -124,7 +124,7 @@ public class inputHandler {
 		
 		
 		//handle input when game is running
-		if(!mainThread.gamePaused){
+		if(!mainThread.gamePaused && mainThread.gameStarted){
 			if(!mainThread.pc.isSelectingUnit){
 				mouse_x0 = mouse_x;
 				mouse_y0 = mouse_y;
@@ -243,14 +243,14 @@ public class inputHandler {
 			
 			//handle escape key
 			if(escapeKeyReleased) {
-				mainThread.gamePaused = true;  //when game is running, pause the game when esc key is hit
+				mainThread.gamePaused = true;  //if game is running, pause the game when esc key is hit
 				
 			}
 			
 		}else {
 			//handle event when game is paused
-			if(escapeKeyReleased)
-				mainThread.gamePaused = false; //when game is paused unpause the game when esc key is hit
+			if(escapeKeyReleased && mainThread.gameStarted)
+				mainThread.gamePaused = false; //if game is paused, unpause the game when esc key is hit
 			
 		}
 		

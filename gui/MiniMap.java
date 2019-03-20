@@ -53,7 +53,6 @@ public class MiniMap {
 		for(int i = 0; i < minimapBitmap.length; i++)
 			minimapBitmap[i] = true;
 		
-		
 		//draw unit positions on minimap
 		drawUnit(screen, minimapBitmap, unitsForMiniMap, unitsForMiniMapCount);
 		

@@ -252,7 +252,16 @@ public class inputHandler {
 			if(escapeKeyReleased && mainThread.gameStarted)
 				mainThread.gamePaused = false; //if game is paused, unpause the game when esc key is hit
 			
+			//quit the game when the quit button is pressed
+			if(!mainThread.gameStarted) {
+				if(mainThread.buttonAction == "quitGame")
+					System.exit(0);
+			}
 		}
+		
+
+		if(leftMouseButtonReleased)
+			mainThread.leftMouseButtonReleased = true;
 		
 		
 		mouseIsInsideScreen = false;

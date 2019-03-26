@@ -705,7 +705,7 @@ public class harvester extends solidObject{
 		
 		//test if the tank object is visible in camera point of view
 		if(visible_minimap){
-			if(currentHP <= 130 && (mainThread.frameIndex + ID) % 3 ==0){
+			if(currentHP <= 130 && (mainThread.gameFrame + ID) % 3 ==0){
 				//spawn smoke particle if the tank is badly damaged
 				float[] tempFloat = theAssetManager.smokeEmmiterList[theAssetManager.smokeEmmiterCount];
 				tempFloat[0] = centre.x + (float)(Math.random()/20) - 0.025f;
@@ -1352,7 +1352,7 @@ public class harvester extends solidObject{
 		
 
 		if(obstacle != null){
-			if((unStableObstacle != null ||  !isStable(obstacle.owner)) && (ID + randomNumber + mainThread.frameIndex)%128 ==0){
+			if((unStableObstacle != null ||  !isStable(obstacle.owner)) && (ID + randomNumber + mainThread.gameFrame)%128 ==0){
 				
 				newDestinationisGiven = true;
 				currentMovementStatus = freeToMove;

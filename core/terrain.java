@@ -831,7 +831,7 @@ public class terrain {
 		}
 		
 		//animate water surface
-		mainThread.textures[54].waterHeightMap = mainThread.textures[54].waterHeightMaps[(mainThread.frameIndex)%48];
+		mainThread.textures[54].waterHeightMap = mainThread.textures[54].waterHeightMaps[(mainThread.gameFrame)%48];
 		
 		for(int i = 0; i < roadPolygonIndex; i++){
 			road[i].update();

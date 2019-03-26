@@ -25,6 +25,7 @@ public class mainThread extends JFrame implements KeyListener, ActionListener, M
 	public static Ticker t;
 	public static int frameInterval;
 	public static int frameIndex;
+	public static int gameFrame;
 	public static long lastDraw;
 	public static int sleepTime;
 	public static int framePerSecond, cpuUsage;
@@ -49,7 +50,8 @@ public class mainThread extends JFrame implements KeyListener, ActionListener, M
 	public static short[] displacementBuffer;
 	public static short[] displacementBuffer2;
 	
-		
+	public static boolean leftMouseButtonReleased;
+	public static String buttonAction; 
 	
 	public mainThread(){
 		setTitle("Battle Tank 3");
@@ -148,9 +150,6 @@ public class mainThread extends JFrame implements KeyListener, ActionListener, M
         PPT = new postProcessingThread();
 		Thread theTread = new Thread(PPT);
 		
-		//test only
-		gameStarted = false;
-		
 		//start threads
 		t.start();
 		dt.start(); 
@@ -166,14 +165,19 @@ public class mainThread extends JFrame implements KeyListener, ActionListener, M
 	//thread is always lag the main thread by 1 frame. However it is barely noticeable.
 	
 	public void actionPerformed(ActionEvent e){	
+		
+		
 		frameIndex++;		
+	
 		
 		inputHandler.processInput();
 		
 		if(!gamePaused) {
+			if(gameStarted)
+				gameFrame++;
 			
 			//handle user's interaction with game GUI
-			if(frameIndex == 1 && gameStarted){
+			if(gameFrame == 1 && gameStarted){
 				theAssetManager.prepareAssetForNewGame();
 			}
 			
@@ -238,8 +242,8 @@ public class mainThread extends JFrame implements KeyListener, ActionListener, M
 		Graphics2D g2 =(Graphics2D)bf.getGraphics(); //(Graphics2D)g;
 		
 		//display polygon count and frame rate
-		g2.setColor(Color.WHITE);
-		g2.drawString("FPS: " + framePerSecond + "   "  +  "Polygons: "  + theAssetManager.polygonCount + "    " + "Thread1 Sleep: " + sleepTime +  "ms    " + "Thread2 Sleep: " + postProcessingThread.sleepTime +  "ms    " , 5, 15);
+		//g2.setColor(Color.WHITE);
+		//g2.drawString("FPS: " + framePerSecond + "   "  +  "Polygons: "  + theAssetManager.polygonCount + "    " + "Thread1 Sleep: " + sleepTime +  "ms    " + "Thread2 Sleep: " + postProcessingThread.sleepTime +  "ms    " , 5, 15);
 		
 		//copy the screen buffer to video memory
 		g.drawImage(bf, 0, 0, this);

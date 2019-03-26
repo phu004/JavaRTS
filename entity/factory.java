@@ -953,7 +953,7 @@ public class factory extends solidObject{
 		}
 		
 		if(isRepairing && currentHP >0){
-			if(mainThread.frameIndex%8==0 && theBaseInfo.currentCredit > 0 && currentHP <maxHP){
+			if(mainThread.gameFrame%8==0 && theBaseInfo.currentCredit > 0 && currentHP <maxHP){
 				currentHP+=2;
 				theBaseInfo.currentCredit--;
 				if(currentHP > maxHP)
@@ -964,7 +964,7 @@ public class factory extends solidObject{
 		//process building event (at half speed when lower power)
 		if(currentStatus == isBuilding){
 			
-			if(!(theBaseInfo.lowPower && mainThread.frameIndex%2==0)){
+			if(!(theBaseInfo.lowPower && mainThread.gameFrame%2==0)){
 			
 				//light tank event
 				if(lightTankProgress < 240){

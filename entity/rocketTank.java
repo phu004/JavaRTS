@@ -299,7 +299,7 @@ public class rocketTank extends solidObject{
 			if(experience >= 100){
 				level = 2;
 				myDamage = 44;
-				if(currentHP < maxHP && mainThread.frameIndex%16==0)
+				if(currentHP < maxHP && mainThread.gameFrame%16==0)
 					currentHP++;
 			}
 		}
@@ -439,7 +439,7 @@ public class rocketTank extends solidObject{
 		
 		//test if the tank object is visible in camera point of view
 		if(visible_minimap){
-			if(currentHP <= maxHP/2 && (mainThread.frameIndex + ID) % 3 ==0){
+			if(currentHP <= maxHP/2 && (mainThread.gameFrame + ID) % 3 ==0){
 				//spawn smoke particle if the tank is badly damaged
 				float[] tempFloat = theAssetManager.smokeEmmiterList[theAssetManager.smokeEmmiterCount];
 				tempFloat[0] = centre.x + (float)(Math.random()/20) - 0.025f;
@@ -646,7 +646,7 @@ public class rocketTank extends solidObject{
 		else
 			bitmapVision = enemyCommander.visionMap;
 		
-		if((ID + mainThread.frameIndex)%32 == 0){
+		if((ID + mainThread.gameFrame)%32 == 0){
 			currentOccupiedTile = (int)(centre.x*64)/16 + (127 - (int)(centre.z*64)/16)*128;
 			
 			for(int i = 0; i < tileCheckList.length; i++){

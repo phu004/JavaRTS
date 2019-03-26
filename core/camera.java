@@ -23,6 +23,8 @@ public class camera{
 	
 	public static vector cameraMovement;
 	
+	public static int frameIndex;
+	
 	
 	public camera(vector p, int XZ, int YZ){
 		view_Direction = new vector(0, 0, 1);
@@ -37,18 +39,19 @@ public class camera{
 	}
 
 	public void update(){
+		frameIndex++;
 		
 		if(!mainThread.gameStarted) {
 			
 			//when game has not started, use a "fly through" as the background for the menu
-			if(mainThread.frameIndex == 1) {
-				mainThread.Camera.position.z = 2.5f;
-				mainThread.Camera.position.x = 9;
+			if(frameIndex == 1) {
+				position.z = 2.5f;
+				position.x = 9;
 				cameraMovement = new vector(-0.01f,0,0);
 			}
 			
 			
-			if(mainThread.frameIndex > 90 && mainThread.frameIndex%400 >= 0 && mainThread.frameIndex%400 < 90) {
+			if(frameIndex > 90 && frameIndex%400 >= 0 && frameIndex%400 < 90) {
 				XZ_angle+=1;
 				cameraMovement.rotate_XZ(359);
 			}

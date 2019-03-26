@@ -1429,7 +1429,7 @@ public class techCenter extends solidObject{
 		
 		//processing repair event
 		if(isRepairing && currentHP >0){
-			if(mainThread.frameIndex%8==0 && theBaseInfo.currentCredit > 0 && currentHP <maxHP){
+			if(mainThread.gameFrame%8==0 && theBaseInfo.currentCredit > 0 && currentHP <maxHP){
 				currentHP+=2;
 				theBaseInfo.currentCredit--;
 				if(currentHP > maxHP)
@@ -1438,7 +1438,7 @@ public class techCenter extends solidObject{
 		}
 		
 		//process researching
-		if(mainThread.frameIndex%2==0 && (!(theBaseInfo.lowPower && mainThread.frameIndex%4==0))){
+		if(mainThread.gameFrame%2==0 && (!(theBaseInfo.lowPower && mainThread.gameFrame%4==0))){
 			
 			//light tank research
 			if(teamNo == 0){
@@ -1666,7 +1666,7 @@ public class techCenter extends solidObject{
 		}
 		
 		if(visible){
-			float ratio = ((float)Math.sin((float)(mainThread.frameIndex + ID)/10) + 1)/2;
+			float ratio = ((float)Math.sin((float)(mainThread.gameFrame + ID)/10) + 1)/2;
 		
 			
 		

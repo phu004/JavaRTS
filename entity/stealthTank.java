@@ -389,7 +389,7 @@ public class stealthTank extends solidObject{
 			if(experience >= 120){
 				level = 2;
 				myDamage = 60;
-				if(currentHP < maxHP && mainThread.frameIndex%16==0)
+				if(currentHP < maxHP && mainThread.gameFrame%16==0)
 					currentHP++;
 			}
 		}
@@ -575,7 +575,7 @@ public class stealthTank extends solidObject{
 		
 		//test if the tank object is visible in camera point of view
 		if(visible_minimap){
-			if(currentHP <= (maxHP/2) && (mainThread.frameIndex + ID) % 3 ==0 && !isCloaked){
+			if(currentHP <= (maxHP/2) && (mainThread.gameFrame + ID) % 3 ==0 && !isCloaked){
 				//spawn smoke particle if the tank is badly damaged
 				float[] tempFloat = theAssetManager.smokeEmmiterList[theAssetManager.smokeEmmiterCount];
 				tempFloat[0] = centre.x + (float)(Math.random()/20) - 0.025f;
@@ -788,7 +788,7 @@ public class stealthTank extends solidObject{
 	//the tank will attack with any hostile unit that moved into its firing range
 	public void performStandByLogic(){
 		//scan for hostile unit
-		if((ID + mainThread.frameIndex)%32 == 0){
+		if((ID + mainThread.gameFrame)%32 == 0){
 			currentOccupiedTile = (int)(centre.x*64)/16 + (127 - (int)(centre.z*64)/16)*128;
 			
 			for(int i = 0; i < tileCheckList.length; i++){
@@ -1341,7 +1341,7 @@ public class stealthTank extends solidObject{
 		
 		rasterizer.modelCenterX = (int)(tempCentre.screenX);
 		rasterizer.modelCenterY = (int)(tempCentre.screenY);
-		rasterizer.cloakTexture = gameData.cloakTextures[(randomNumber + mainThread.frameIndex * 2)%120];
+		rasterizer.cloakTexture = gameData.cloakTextures[(randomNumber + mainThread.gameFrame * 2)%120];
 		rasterizer.cloakedThreshold = currentCloakingStatus;
 		
 		

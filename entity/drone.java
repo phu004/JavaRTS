@@ -470,12 +470,12 @@ public class drone extends solidObject{
 							
 							//heal unit
 							if(targetUnit.currentHP < targetUnit.getMaxHp() || targetUnit.underAttackCountDown > 60){
-								if(mainThread.frameIndex%5 == 1  && centre.y <=-0.1){
+								if(mainThread.gameFrame%5 == 1  && centre.y <=-0.1){
 									targetUnit.currentHP+=5;
 									if(targetUnit.currentHP > targetUnit.getMaxHp())
 										targetUnit.currentHP = targetUnit.getMaxHp();
 								}
-								if(mainThread.frameIndex%2==0 && centre.y <=-0.15){
+								if(mainThread.gameFrame%2==0 && centre.y <=-0.15){
 									//spawn a healing steam particle
 									float[] tempFloat = theAssetManager.smokeEmmiterList[theAssetManager.smokeEmmiterCount];
 									tempFloat[0] = armCenterClone.x + (float)(Math.random()/20) - 0.025f;
@@ -534,7 +534,7 @@ public class drone extends solidObject{
 		fan1Angle = fan1Angle%360;
 		fan2Angle = fan2Angle%360;
 		
-		heightVariance = gameData.sin[((mainThread.frameIndex+randomNumber)*5)%360] * 0.01f;
+		heightVariance = gameData.sin[((mainThread.gameFrame+randomNumber)*5)%360] * 0.01f;
 		
 			
 		//update center in camera coordinate

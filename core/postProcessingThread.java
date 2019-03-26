@@ -5,6 +5,8 @@ import gui.MiniMap;
 import gui.SideBar;
 import gui.confirmationIcon;
 import gui.gameMenu;
+import gui.inputHandler;
+import gui.textRenderer;
 import particles.explosion;
 import particles.helix;
 import particles.smokeParticle;
@@ -34,6 +36,7 @@ public class postProcessingThread implements Runnable{
 	
 	public static MiniMap theMiniMap;
 	public static SideBar theSideBar;
+	public static gameMenu theGameMenu;
 	
 	private boolean isWorking;
 	public static int sleepTime;
@@ -73,6 +76,10 @@ public class postProcessingThread implements Runnable{
 	public static textRenderer theTextRenderer;
 	
 	public static boolean gamePaused, gameStarted, gameEnded;
+	
+	public static int mouse_x, mouse_y;
+	public static boolean leftMouseButtonReleased;
+	public static String buttonAction;
 	
 	
 	//A pool of vectors which will be used for vector arithmetic
@@ -129,6 +136,10 @@ public class postProcessingThread implements Runnable{
 		//init sidebar interface
 		theSideBar = new SideBar();
 		theSideBar.init();
+		
+		//init game menu
+		theGameMenu = new gameMenu();
+		theGameMenu.init();
 		
 		
 		unitInfoTable = new int[201][4];
@@ -196,8 +207,8 @@ public class postProcessingThread implements Runnable{
 			
 			if(!gamePaused)
 				doPostProcesssing();
-			
-			gameMenu.updateAndDraw(currentScreen, gameStarted, gamePaused);
+
+			theGameMenu.updateAndDraw(currentScreen, gameStarted, gamePaused, gameEnded);
 			
 			frameIndex++;
 			
@@ -973,7 +984,14 @@ public class postProcessingThread implements Runnable{
 		
 		theMiniMap.findCorners();
 		
+		mouse_x = inputHandler.mouse_x;
+		mouse_y = inputHandler.mouse_y;
+		leftMouseButtonReleased = mainThread.leftMouseButtonReleased;
+		mainThread.leftMouseButtonReleased = false;
 		
+		//feed main thread with button action
+		mainThread.buttonAction = buttonAction;
+		buttonAction = null;
 		
 	}
 	

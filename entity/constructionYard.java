@@ -1241,7 +1241,7 @@ public class constructionYard extends solidObject{
 		}
 		
 		if(isRepairing && currentHP >0){
-			if(mainThread.frameIndex%8==0 && theBaseInfo.currentCredit > 0 && currentHP <maxHP){
+			if(mainThread.gameFrame%8==0 && theBaseInfo.currentCredit > 0 && currentHP <maxHP){
 				currentHP+=2;
 				theBaseInfo.currentCredit--;
 				if(currentHP > maxHP)
@@ -1251,7 +1251,7 @@ public class constructionYard extends solidObject{
 		
 		//process building event
 		
-		if(!(theBaseInfo.lowPower && mainThread.frameIndex%2==0)){
+		if(!(theBaseInfo.lowPower && mainThread.gameFrame%2==0)){
 			if(powerPlantProgress < 240){
 				if(theBaseInfo.currentCredit >0){
 					

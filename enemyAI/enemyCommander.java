@@ -85,35 +85,35 @@ public class enemyCommander {
 	
 	public void thinkHardLikeHumanPlayer(){
 		//the order is important!!
-		if(mainThread.frameIndex % 30 == 0){
+		if(mainThread.gameFrame % 30 == 0){
 			theMapAwarenessAI.processAI();
 		}
 		
-		if(mainThread.frameIndex % 30 == 1){
+		if(mainThread.gameFrame % 30 == 1){
 			theBuildingManagerAI.processAI();
 		} 
 		
-		if(mainThread.frameIndex % 30 == 2){
+		if(mainThread.gameFrame % 30 == 2){
 			theEconomyManagerAI.processAI();
 		}
 		
-		if(mainThread.frameIndex % 30 == 3){
+		if(mainThread.gameFrame % 30 == 3){
 			theScoutingManagerAI.processAI();
 		}
 		
-		if(mainThread.frameIndex % 30 == 4){
+		if(mainThread.gameFrame % 30 == 4){
 			theUnitProductionAI.processAI();
 		}
 		
-		if(mainThread.frameIndex % 30 == 5){
+		if(mainThread.gameFrame % 30 == 5){
 			theBaseExpentionAI.processAI();
 		}
 		
-		if(mainThread.frameIndex % 30 == 6){
+		if(mainThread.gameFrame % 30 == 6){
 			theCombatManagerAI.processAI();   
 		}
 		
-		if(mainThread.frameIndex % 30 == 7){
+		if(mainThread.gameFrame % 30 == 7){
 			theDefenseManagerAI.processAI();
 		}
 		

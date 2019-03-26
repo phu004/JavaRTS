@@ -329,10 +329,10 @@ public class SideBar {
 					if(iconTextureIndex == 17)
 						d = 768*44;
 					
-					int startIndex1 = (int)(mainThread.frameIndex/1.5)%74;
-					int startIndex2 = ((int)(mainThread.frameIndex/1.5)%74 + 18)%74;
-					int startIndex3 = ((int)(mainThread.frameIndex/1.5)%74 + 37)%74;
-					int startIndex4 = ((int)(mainThread.frameIndex/1.5)%74 + 55)%74;
+					int startIndex1 = (int)(mainThread.gameFrame/1.5)%74;
+					int startIndex2 = ((int)(mainThread.gameFrame/1.5)%74 + 18)%74;
+					int startIndex3 = ((int)(mainThread.gameFrame/1.5)%74 + 37)%74;
+					int startIndex4 = ((int)(mainThread.gameFrame/1.5)%74 + 55)%74;
 					
 					int markerR = 255;
 					int markerG = 255;

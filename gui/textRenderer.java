@@ -1,9 +1,11 @@
-package core;
+package gui;
 
 import java.awt.Image;
 import java.awt.image.PixelGrabber;
 
 import javax.imageio.ImageIO;
+
+import core.mainThread;
 
 //handle text rendering
 
@@ -81,7 +83,7 @@ public class textRenderer {
 		
 		char[] theText = text.toCharArray();
 		
-		int t = (int)(35 * Math.sin((double)mainThread.frameIndex/7)) + 35;
+		int t = (int)(35 * Math.sin((double)mainThread.gameFrame/7)) + 35;
 		if(t > 64)
 			 t = 64;
 		

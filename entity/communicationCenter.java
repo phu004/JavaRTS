@@ -924,7 +924,7 @@ public class communicationCenter extends solidObject{
 		}
 		
 		if(isRepairing && currentHP >0){
-			if(mainThread.frameIndex%8==0 && theBaseInfo.currentCredit > 0 && currentHP <maxHP){
+			if(mainThread.gameFrame%8==0 && theBaseInfo.currentCredit > 0 && currentHP <maxHP){
 				currentHP+=2;
 				theBaseInfo.currentCredit--;
 				if(currentHP > maxHP)
@@ -933,7 +933,7 @@ public class communicationCenter extends solidObject{
 		}
 		
 		//process researching
-		if(mainThread.frameIndex%2==0 && (!(theBaseInfo.lowPower && mainThread.frameIndex%4==0))){
+		if(mainThread.gameFrame%2==0 && (!(theBaseInfo.lowPower && mainThread.gameFrame%4==0))){
 			
 			if(teamNo == 0){
 				if(harvesterSpeedResearchProgress_player < 240){
@@ -1132,7 +1132,7 @@ public class communicationCenter extends solidObject{
 		}
 		
 		//scan for clocked unit
-		if((ID + mainThread.frameIndex)%10 == 0 && !theBaseInfo.lowPower){
+		if((ID + mainThread.gameFrame)%10 == 0 && !theBaseInfo.lowPower){
 			currentOccupiedTile = (int)(centre.x*64)/16 + (127 - (int)(centre.z*64)/16)*128;
 			
 			for(int i = 0; i < tileCheckList.length; i++){

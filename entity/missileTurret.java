@@ -477,7 +477,7 @@ public class missileTurret extends solidObject{
 				return;
 			}else{
 				
-				if(mainThread.frameIndex%2==0){
+				if(mainThread.gameFrame%2==0){
 					float[] tempFloat = theAssetManager.explosionInfo[theAssetManager.explosionCount];	
 					tempFloat[0] = centre.x + (float)Math.random()/4f - 0.125f;
 					tempFloat[1] = centre.y + 0.15f;
@@ -494,7 +494,7 @@ public class missileTurret extends solidObject{
 		}
 		
 		if(isRepairing && currentHP >0){
-			if(mainThread.frameIndex%5==0 && theBaseInfo.currentCredit > 0 && currentHP <maxHP){
+			if(mainThread.gameFrame%5==0 && theBaseInfo.currentCredit > 0 && currentHP <maxHP){
 				currentHP+=1;
 				theBaseInfo.currentCredit--;
 			}
@@ -679,7 +679,7 @@ public class missileTurret extends solidObject{
 		accumulatedDelta= accumulatedDelta%360;
 		if(visible){
 			if(!overCharge){
-				float ratio = ((float)Math.sin((float)(mainThread.frameIndex + ID)/10) + 1)/2;
+				float ratio = ((float)Math.sin((float)(mainThread.gameFrame + ID)/10) + 1)/2;
 				
 				if(theBaseInfo.lowPower)
 					ratio = 0;
@@ -691,7 +691,7 @@ public class missileTurret extends solidObject{
 					polygons[i].diffuse_I = 100;
 				}
 			}else{
-				float ratio = ((float)Math.sin((float)(mainThread.frameIndex + ID)/10) + 1)/2;
+				float ratio = ((float)Math.sin((float)(mainThread.gameFrame + ID)/10) + 1)/2;
 				
 				if(theBaseInfo.lowPower)
 					ratio = 0;
@@ -752,7 +752,7 @@ public class missileTurret extends solidObject{
 		if(targetObject != null){
 			
 			//target enemy military unit first
-			if((targetObject.type > 100 ||targetObject.type <199) && !attackLock && (randomInt + mainThread.frameIndex)%4   == 2){
+			if((targetObject.type > 100 ||targetObject.type <199) && !attackLock && (randomInt + mainThread.gameFrame)%4   == 2){
 				currentOccupiedTile = (int)(centre.x*64)/16 + (127 - (int)(centre.z*64)/16)*128;
 				
 				for(int i = 0; i < tileCheckList.length; i++){
@@ -824,7 +824,7 @@ public class missileTurret extends solidObject{
 			
 			attackLock = false;
 			
-			if((randomInt + mainThread.frameIndex)%240 == 0){
+			if((randomInt + mainThread.gameFrame)%240 == 0){
 				attackAngle = (int)(Math.random()*360);
 			}
 			if(turretAngle != attackAngle){
@@ -838,7 +838,7 @@ public class missileTurret extends solidObject{
 			}
 			
 	
-			if((ID + mainThread.frameIndex)%4 == 0){
+			if((ID + mainThread.gameFrame)%4 == 0){
 				currentOccupiedTile = (int)(centre.x*64)/16 + (127 - (int)(centre.z*64)/16)*128;
 				
 				for(int i = 0; i < tileCheckList.length; i++){

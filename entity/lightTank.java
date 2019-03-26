@@ -277,7 +277,7 @@ public class lightTank extends solidObject{
 			if(experience >= 80){
 				level = 2;
 				myDamage = 30 ;
-				if(currentHP < maxHP && mainThread.frameIndex%12==0)
+				if(currentHP < maxHP && mainThread.gameFrame%12==0)
 					currentHP++;
 			}
 		}
@@ -425,7 +425,7 @@ public class lightTank extends solidObject{
 		
 		//test if the tank object is visible in camera point of view
 		if(visible_minimap){
-			if(currentHP <= 60 && (mainThread.frameIndex + ID) % 3 ==0){
+			if(currentHP <= 60 && (mainThread.gameFrame + ID) % 3 ==0){
 				//spawn smoke particle if the tank is badly damaged
 				float[] tempFloat = theAssetManager.smokeEmmiterList[theAssetManager.smokeEmmiterCount];
 				tempFloat[0] = centre.x + (float)(Math.random()/20) - 0.025f;
@@ -612,7 +612,7 @@ public class lightTank extends solidObject{
 			tileCheckList = tileCheckList_enemy;
 		
 		//scan for hostile unit
-		if((ID + mainThread.frameIndex)%32 == 0){
+		if((ID + mainThread.gameFrame)%32 == 0){
 			currentOccupiedTile = (int)(centre.x*64)/16 + (127 - (int)(centre.z*64)/16)*128;
 			
 			for(int i = 0; i < tileCheckList.length; i++){

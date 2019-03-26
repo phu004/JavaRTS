@@ -1471,7 +1471,7 @@ public abstract class solidObject{
 		
 
 		if(obstacle != null && attackStatus != isAttacking){
-			if((unStableObstacle != null ||  !isStable(obstacle.owner)) && (ID + randomNumber + mainThread.frameIndex)%128 ==0){
+			if((unStableObstacle != null ||  !isStable(obstacle.owner)) && (ID + randomNumber + mainThread.gameFrame)%128 ==0){
 				
 				newDestinationisGiven = true;
 				currentMovementStatus = freeToMove;

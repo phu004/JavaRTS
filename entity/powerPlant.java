@@ -671,7 +671,7 @@ public class powerPlant extends solidObject{
 		
 		//processing repair event
 		if(isRepairing && currentHP >0){
-			if(mainThread.frameIndex%8==0 && theBaseInfo.currentCredit > 0 && currentHP <maxHP){
+			if(mainThread.gameFrame%8==0 && theBaseInfo.currentCredit > 0 && currentHP <maxHP){
 				currentHP+=2;
 				theBaseInfo.currentCredit--;
 				if(currentHP > maxHP)
@@ -805,7 +805,7 @@ public class powerPlant extends solidObject{
 			
 			
 			//spawn smoke particle
-			if((mainThread.frameIndex + ID) % 5 ==0 && centre.y >= -0.5f){
+			if((mainThread.gameFrame + ID) % 5 ==0 && centre.y >= -0.5f){
 				float[] tempFloat = theAssetManager.smokeEmmiterList[theAssetManager.smokeEmmiterCount];
 				tempFloat[0] = centre.x - 0.053f + (float)(Math.random()/20) - 0.025f;
 				tempFloat[1] = centre.y + 0.45f;

@@ -443,7 +443,7 @@ public class mapAwarenessAI {
 		playerHasMostlyHeavyTanks = numberOfHeavyTanks_player > 3 && (float)(numberOfHeavyTanks_player)/(numberOfLightTanks_player + numberOfRocketTanks_player + numberOfStealthTanks_player + numberOfHeavyTanks_player) > 0.6f;
 		playerHasManyLightTanksButNoHeavyTank = lightTankRatio > 0.5 && lightTankRatio <=0.8 && numberOfHeavyTanks_player < 3;
 
-		playIsRushingHighTierUnits = mainThread.frameIndex/30 > 250 && mainThread.frameIndex/30 < 400 
+		playIsRushingHighTierUnits = mainThread.gameFrame/30 > 250 && mainThread.gameFrame/30 < 400 
 			                             && mainThread.ec.theMapAwarenessAI.numberOfTechCenter_player >0 
 			                             && mainThread.ec.theMapAwarenessAI.numberOfMissileTurret_player < 2 
 			                             && mainThread.ec.theMapAwarenessAI.numberOfGunTurret_player < 4
@@ -452,7 +452,7 @@ public class mapAwarenessAI {
         playerLikelyCanNotProduceHighTierUnits = mainThread.ec.theMapAwarenessAI.numberOfTechCenter_player == 0 && mainThread.ec.theMapAwarenessAI.numberOfHeavyTanks_player == 0; 
         playerDoesntHaveMassHeavyTanks =  (float)numberOfHeavyTanks_player/( 1 + numberOfLightTanks_AI + numberOfRocketTanks_player + numberOfStealthTanks_player)  < 0.2f;
         
-        playerIsRushingLightTank = mainThread.frameIndex/30 > 300 && mainThread.frameIndex/30 < 600 && ((playerLikelyCanNotProduceHighTierUnits && numberOfStealthTanks_player < 3) || playerHasMostlyLightTanks);
+        playerIsRushingLightTank = mainThread.gameFrame/30 > 300 && mainThread.gameFrame/30 < 600 && ((playerLikelyCanNotProduceHighTierUnits && numberOfStealthTanks_player < 3) || playerHasMostlyLightTanks);
         
         playerHasMostlyHeavyAndStealthTanks = (maxNumberOfStealthTanks_playerInLastFiveMinutes >=2 ) && (float)(numberOfHeavyTanks_player + numberOfStealthTanks_player)/(numberOfLightTanks_player + numberOfRocketTanks_player + numberOfStealthTanks_player + numberOfHeavyTanks_player) > 0.8f;
         

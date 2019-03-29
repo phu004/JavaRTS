@@ -19,7 +19,6 @@ public class grid {
 			previousObstacleMap[i] = true;
 			currentObstacleMap[i] = true;
 		}
-		
 	}
 	
 	public void update(){
@@ -37,7 +36,21 @@ public class grid {
 		}
 	}
 	
+	public void reset() {
 	
+		for(int i = 0; i < size * size; i++){
+			previousObstacleMap[i] = true;
+			currentObstacleMap[i] = true;
+		
+			for(int j = 0; j < 5; j++) {
+				if(tiles[i][j] != null && tiles[i][j].teamNo != -1)
+					tiles[i][j] = null;
+			}
+		}
+		
+		
+		
+	}
 	
 	
 	public void draw(){

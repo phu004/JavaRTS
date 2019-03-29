@@ -1,18 +1,16 @@
 package gui;
-import java.util.ArrayList;
 
+import java.util.ArrayList;
 import java.awt.Image;
 import java.awt.image.PixelGrabber;
-
 import javax.imageio.ImageIO;
-
 import core.*;
 
 public class gameMenu {
 	
 	public int gameSuspendCount;
 	
-	public int menuStatus = 0;
+	public static int menuStatus = 0;
 	public static final int mainMenu = 0;
 	public static final int difficulitySelectionMenu = 1;
 	public static final int helpMenu = 2;
@@ -25,9 +23,13 @@ public class gameMenu {
 	
 	public int[] titleImage;
 	
-	public button newGame, unpauseGame, showHelp, quitGame, restartGame;
+	public button newGame, unpauseGame, showHelp, quitGame, abortGame, easyGame, normalGame, hardGame, quitDifficulty, quitHelpMenu, nextPage, previousPage;
 	
-	ArrayList<button> buttons = new ArrayList<button>();
+	public char[] easyDescription, normalDescription, hardDescription, helpPage1;
+	
+	public int currentHelpPage;
+	
+	public ArrayList<button> buttons = new ArrayList<button>();
 	
 	public void init() {
 		if(titleImage == null)
@@ -49,6 +51,41 @@ public class gameMenu {
 		
 		quitGame = new button("quitGame", "Quit Game", 324, 345, 120, 28);
 		buttons.add(quitGame);
+		
+		abortGame = new button("abortGame", "Abort Game", 324, 345, 120, 28);
+		buttons.add(abortGame);
+		
+		easyGame = new button("easyGame", "Easy", 190, 120, 85, 28);
+		buttons.add(easyGame);
+		
+		normalGame = new button("normalGame", "Normal", 190, 200, 85, 28);
+		buttons.add(normalGame);
+		
+		hardGame = new button("hardGame", "Hard", 190, 280, 85, 28);
+		buttons.add(hardGame);
+		
+		quitDifficulty = new button("quitDifficulty", "x", 570, 80, 18,16);
+		buttons.add(quitDifficulty);
+		
+		easyDescription = "AI will attack blindly at player's base \nwithout thinking too much. ".toCharArray();
+		normalDescription = "AI will launch timed attacks, it will also \nchange its army composition based on \nthe scouted information.".toCharArray();
+		hardDescription = "AI will micro each of its units, expand \nmore aggressively and carry out high\nlevel maneuver such as harassing during \npeaceful peirod.".toCharArray();
+		
+		helpPage1 = ("                                                Controls             \n\n"
+				   + "\"Left Click\" -- Select a unit. Left click + mouse drag can be used to select up to \n100 units at a time.\n\n"
+				   + "\"Right Click\" -- Issue a move or attack command to the selected unit(s). You can \nalso use right click to set rally point and cancel build orders.\n\n"
+				   + "\"a\" -- Force attack a unit. If no unit is under the cursor, then the selected units will \nbe set to attack move to the cursor location.\n\n"
+				   + "\"h\" -- stop current action for the selected unit(s).\n\n"
+				   + "\"Ctrl + number\" -- Create a control group and assigned the number to the group.\n\n"
+				   + "\"Ctrl + Left Click\" -- Add/Remove the selected unit to/from the current control \ngroup.\n\n"
+				   + "\"Ctrl + Mouse Drag\" -- Add all the units inside the dragging box to the current \ncontrol group.\n\n\n"
+				   + "                                                  1/3                  ").toCharArray();
+		
+		quitHelpMenu = new button("quitHelpMenu", "x", 670, 80, 18,16);
+		buttons.add(quitHelpMenu);
+		
+		nextPage = new button("nextPage", "Next Page ", 550, 445, 120, 28);
+		buttons.add(nextPage);
 	}
 	
 	
@@ -82,6 +119,8 @@ public class gameMenu {
 		}
 		
 		if(menuStatus == mainMenu) {
+			currentHelpPage = 0;
+			
 			
 			if(gameSuspendCount > 0) {
 				drawBluredBackground();
@@ -96,28 +135,80 @@ public class gameMenu {
 				quitGame.display = true;
 			}else {
 				unpauseGame.display = true;
-				
+				abortGame.display = true;
 			}
 			
 			showHelp.display = true;
 			
-			updateButtons();
+		}else if(menuStatus == difficulitySelectionMenu) {
+			if(postProcessingThread.escapeKeyReleased) {
+				menuStatus = mainMenu;
+				
+			}else {
+				drawTitle();
+				drawMenuFrame(420, 260);
+				
+				textRenderer tRenderer = postProcessingThread.theTextRenderer;
+				easyGame.display = true;
+				tRenderer.drawMenuText(285,118,easyDescription, screen, 255,255,50);
+				
+				normalGame.display = true;
+				tRenderer.drawMenuText(285,188,normalDescription, screen, 255,255,50);
+				
+				hardGame.display = true;
+				tRenderer.drawMenuText(285,265,hardDescription, screen, 255,255,50);
+				
+				quitDifficulty.display = true;
+			}
 			
-			drawButtons();
+			
+		}else if(menuStatus == helpMenu) {
+			if(postProcessingThread.escapeKeyReleased) {
+				menuStatus = mainMenu;
+			
+			}else{
+				if(gameSuspendCount > 0) {
+					drawBluredBackground();
+				}
+				
+				drawTitle();
+				drawMenuFrame(620, 380);
+				
+				if(currentHelpPage == 0) {
+					textRenderer tRenderer = postProcessingThread.theTextRenderer;
+					tRenderer.drawMenuText(82,97,helpPage1, screen, 255,255,255);
+					nextPage.display = true;
+				}
+				
+				quitHelpMenu.display = true;
+			}
 		}
 		
 		
-		
+		updateButtons();
+		drawButtons();
 		
 	}
 	
 	public void updateButtons() {
-		for (int i = 0; i < buttons.size(); i++) {
+		for(int i = 0; i < buttons.size(); i++) {
 			if(buttons.get(i).checkIfCursorIsOnTop(postProcessingThread.mouse_x, postProcessingThread.mouse_y)) {
 				if(postProcessingThread.leftMouseButtonReleased) {
-					if(buttons.get(i).actionCooldown == 0) {
-						postProcessingThread.buttonAction = buttons.get(i).name;
+					if(buttons.get(i).actionCooldown == 0 && buttons.get(i).display == true) {
 						buttons.get(i).actionCooldown = 15;
+						
+						
+						if(buttons.get(i).name == "newGame") {
+							menuStatus = difficulitySelectionMenu;
+						}else if(buttons.get(i).name == "showHelp") {
+							menuStatus = helpMenu;
+						}if(buttons.get(i).name == "quitDifficulty" || buttons.get(i).name == "quitHelpMenu") {
+							menuStatus = mainMenu;
+						}if(buttons.get(i).name == "nextPage") {
+							currentHelpPage++;
+						}
+						
+						postProcessingThread.buttonAction = buttons.get(i).name;
 					}
 				}
 			}

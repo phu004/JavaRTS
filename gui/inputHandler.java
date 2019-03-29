@@ -242,20 +242,42 @@ public class inputHandler {
 			}
 			
 			//handle escape key
-			if(escapeKeyReleased) {
+			if(escapeKeyReleased && mainThread.menuStatus != mainThread.helpMenu) {
 				mainThread.gamePaused = true;  //if game is running, pause the game when esc key is hit
 				
 			}
 			
 		}else {
 			//handle event when game is paused
-			if(escapeKeyReleased && mainThread.gameStarted)
+			if((escapeKeyReleased || mainThread.buttonAction == "unpauseGame") &&  mainThread.gamePaused && mainThread.gameStarted && mainThread.menuStatus != mainThread.helpMenu)
 				mainThread.gamePaused = false; //if game is paused, unpause the game when esc key is hit
 			
 			//quit the game when the quit button is pressed
 			if(!mainThread.gameStarted) {
 				if(mainThread.buttonAction == "quitGame")
 					System.exit(0);
+				
+				if(mainThread.buttonAction == "easyGame") {
+					mainThread.gameStarted = true;
+					mainThread.gameFrame = 0;
+					mainThread.ec.difficulty = 0;
+				}else if(mainThread.buttonAction == "normalGame") {
+					mainThread.gameStarted = true;
+					mainThread.gameFrame = 0;
+					mainThread.ec.difficulty = 1;
+				}else if(mainThread.buttonAction == "hardGame") {
+					mainThread.gameStarted = true;
+					mainThread.gameFrame = 0;
+					mainThread.ec.difficulty = 2;
+				}
+			}
+			
+			//abort current game when the abort button is pressed
+			if(mainThread.gameStarted && mainThread.buttonAction == "abortGame") {
+				mainThread.gameStarted = false;
+				mainThread.gameFrame = 0;
+				mainThread.gamePaused = false;
+				mainThread.theAssetManager.destoryAsset();
 			}
 		}
 		
@@ -263,6 +285,8 @@ public class inputHandler {
 		if(leftMouseButtonReleased)
 			mainThread.leftMouseButtonReleased = true;
 		
+		if(escapeKeyReleased)
+			mainThread.escapeKeyReleased = true;
 		
 		mouseIsInsideScreen = false;
 		leftMouseButtonPressed = false;

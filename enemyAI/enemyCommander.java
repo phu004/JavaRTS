@@ -21,6 +21,8 @@ public class enemyCommander {
 	public defenseManagerAI theDefenseManagerAI;
 	public combatManagerAI theCombatManagerAI;
 	public microManagementAI theMicroManagementAI;
+	public int difficulty;
+	
 	
 	public void init(){
 		

@@ -34,7 +34,7 @@ public class palmTree extends solidObject{
 	public palmTree(float x, float y, float z){
 		//uncontrollable unit, but act as a small sized static collidable agent
 		ID = -1;
-		
+		teamNo = -1;
 		type = 100;
 		
 	

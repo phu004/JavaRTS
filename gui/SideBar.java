@@ -51,8 +51,8 @@ public class SideBar {
 		}
 		
 		
-		iconImages = new int[24][44 * 44];
-		iconImages_dark = new int[24][44 * 44];
+		iconImages = new int[25][44 * 44];
+		iconImages_dark = new int[25][44 * 44];
 		String folder = "../images/";
 		loadTexture(folder + "44.jpg", iconImages[0], 44, 44, iconImages_dark[0]);
 		loadTexture(folder + "47.jpg", iconImages[1], 44, 44, iconImages_dark[1]);
@@ -78,6 +78,7 @@ public class SideBar {
 		loadTexture(folder + "87.jpg", iconImages[21], 44, 44, iconImages_dark[21]);
 		loadTexture(folder + "88.jpg", iconImages[22], 44, 44, iconImages_dark[22]);
 		loadTexture(folder + "89.jpg", iconImages[23], 44, 44, iconImages_dark[23]);
+		loadTexture(folder + "time.png", iconImages[24], 16, 16, iconImages_dark[24]);
 		
 		
 	}
@@ -88,14 +89,18 @@ public class SideBar {
 
 		drawSideBarInfo(screen, sideBarInfo);
 		
-		drawCreditAndPowerLevel(screen, postProcessingThread.playerMoney, postProcessingThread.playerPowerStatus);
+		drawCreditAndPowerLevelAndTime(screen, postProcessingThread.playerMoney, postProcessingThread.playerPowerStatus);
 		
 		drawFrame(screen);
 	}
 	
 	
-	public void drawCreditAndPowerLevel(int[] screen, int playerMoney, int playerPowerStatus){
+	public void drawCreditAndPowerLevelAndTime(int[] screen, int playerMoney, int playerPowerStatus){
 
+		drawInfoBackGround(screen, 2, 3, 65, 16, 100);
+		drawIcon(screen, 5 + 2 * 768, 24);
+		postProcessingThread.theTextRenderer.drawText(23, 3, postProcessingThread.timeString, screen, 255,255,255);
+		
 		drawInfoBackGround(screen, 637, 3, 129, 16, 100);
 		int startIndex = 639 + 3 * 768;
 		

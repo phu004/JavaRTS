@@ -135,6 +135,11 @@ public class AssetManager {
 	}
 	
 	public void prepareAssetForNewGame(){
+				
+		camera.position.set(3,2f,-1.25f);
+		camera.view_Direction.set(0, 0, 1);
+		camera.XZ_angle = 0;
+		
 		
 		selectedUnitsInfo = new int[100][6];
 		selectedUnitsInfo2 = new int[100][6];
@@ -247,10 +252,69 @@ public class AssetManager {
 			
 			}
 		}
-		
-	
-	 
 	}
+	
+	public void destoryAsset() {
+		camera.view_Direction.set(0, 0, 1);
+		camera.frameIndex = 0;
+		camera.XZ_angle = 0;
+		
+		selectedUnitsInfo = null;
+		selectedUnitsInfo2 = null;
+	
+		visionPolygonInfo = null;
+		visionPolygonInfo2 = null;
+		
+		unitsForMiniMap = null;
+		unitsForMiniMap2 = null;
+		
+		
+		smokeEmmiterList = null;
+		smokeEmmiterList2 = null;
+
+		minimapBitmap = null;
+		minimapBitmap2 = null;
+		
+		
+		explosionInfo = null;
+		explosionInfo2 = null;
+		helixInfo = null;
+		helixInfo2 = null;
+		
+		confirmationIconInfo = null;
+		confirmationIconInfo2 = null;
+		
+		lightTanks = null;
+		heavyTanks = null;
+		powerPlants = null;
+		refineries = null;
+		rocketTanks = null;
+		harvesters = null;
+		constructionVehicles = null;
+		constructionYards = null;
+		factories = null;
+		drones = null;
+		communicationCenters = null;
+		techCenters = null;
+		stealthTanks = null;
+		gunTurrets = null;
+		missileTurrets = null;
+		
+		goldMines[0].goldDeposite = 45000;
+		goldMines[1].goldDeposite = 45000;
+		goldMines[2].goldDeposite = 50000;
+		goldMines[3].goldDeposite = 50000;
+		goldMines[4].goldDeposite = 45000;
+		goldMines[5].goldDeposite = 45000;
+		goldMines[6].goldDeposite = 55000;
+		goldMines[7].goldDeposite = 55000;
+		
+		bullets = null;		
+		rockets = null;
+		
+		mainThread.gridMap.reset();
+	}
+	
 	
 	public void addContructionYard(constructionYard o){
 		for(int i = 0; i < constructionYards.length; i++){

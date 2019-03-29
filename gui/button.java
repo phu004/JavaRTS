@@ -1,9 +1,12 @@
 package gui;
 
+import core.postProcessingThread;
+
 public class button {
 	
 	public int xPos, yPos, width, height;
 	public String name, text;
+	public char[] theText;
 	public boolean display, cursorIsOnTop;
 	public int actionCooldown;
 	
@@ -14,6 +17,7 @@ public class button {
 		this.yPos = yPos;
 		this.width = width;
 		this.height = height;
+		theText = text.toCharArray();
 	}
 	
 	public boolean checkIfCursorIsOnTop(int mouse_x, int mouse_y) {
@@ -169,6 +173,16 @@ public class button {
 			}
 			
 		}
+		
+		//draw text
+		textRenderer tRenderer = postProcessingThread.theTextRenderer;
+		if(text != "x")
+			tRenderer.drawMenuText(xPos+ (width-tRenderer.getMenuTextWidth(theText))/2,yPos+6,theText, screen, 255,255,255);
+		else{
+			tRenderer.drawMenuText(xPos+ (width-tRenderer.getMenuTextWidth(theText))/2-1,yPos,theText, screen, 255,255,255);
+		}
+		
+		
 		
 		cursorIsOnTop = false;
 	}

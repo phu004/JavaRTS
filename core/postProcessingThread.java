@@ -78,8 +78,10 @@ public class postProcessingThread implements Runnable{
 	public static boolean gamePaused, gameStarted, gameEnded;
 	
 	public static int mouse_x, mouse_y;
-	public static boolean leftMouseButtonReleased;
+	public static boolean leftMouseButtonReleased, escapeKeyReleased;
 	public static String buttonAction;
+	
+	public static String timeString;
 	
 	
 	//A pool of vectors which will be used for vector arithmetic
@@ -952,6 +954,8 @@ public class postProcessingThread implements Runnable{
 		gameStarted = mainThread.gameStarted;
 		gameEnded = mainThread.gameEnded;
 		
+		timeString = mainThread.timeString;
+		
 		currentScreen = mainThread.screen;
 		currentZbuffer = mainThread.zBuffer;
 		displacementBuffer = mainThread.displacementBuffer;
@@ -987,11 +991,14 @@ public class postProcessingThread implements Runnable{
 		mouse_x = inputHandler.mouse_x;
 		mouse_y = inputHandler.mouse_y;
 		leftMouseButtonReleased = mainThread.leftMouseButtonReleased;
+		escapeKeyReleased = mainThread.escapeKeyReleased;
 		mainThread.leftMouseButtonReleased = false;
+		mainThread.escapeKeyReleased = false;
 		
 		//feed main thread with button action
 		mainThread.buttonAction = buttonAction;
 		buttonAction = null;
+		mainThread.menuStatus = gameMenu.menuStatus;
 		
 	}
 	

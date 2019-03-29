@@ -12,11 +12,13 @@ import core.mainThread;
 
 public class textRenderer {
 
-	public  int[] fontBuffer, star, halfStar;
-	public  int[][] chars;
+	public  int[] fontBuffer, menuFontBuffer, star, halfStar;
+	public  int[][] chars, menuChars;
+	public  int[] menuCharsWidth;
 	
 	public void init(){
 		fontBuffer = new int[665*16];
+		menuFontBuffer = new int[789*16];
 		star = new int[12*12];
 		halfStar = new int[12*12];
 		
@@ -28,7 +30,6 @@ public class textRenderer {
 			e.printStackTrace();
 		}
 		
-
 		PixelGrabber pg = new PixelGrabber(img, 0, 0, 665, 16, fontBuffer, 0, 665);
 		try {
 			pg.grabPixels();
@@ -36,7 +37,21 @@ public class textRenderer {
 			e.printStackTrace();	
 		}
 		
-		//create character bitmaps
+		try{
+			img = ImageIO.read(getClass().getResource("../images/" + "menuFont.png"));
+		}catch(Exception e){
+			e.printStackTrace();
+		}
+		
+		pg = new PixelGrabber(img, 0, 0, 789, 16, menuFontBuffer, 0, 789);
+		try {
+			pg.grabPixels();
+		}catch(Exception e){
+			e.printStackTrace();	
+		}
+		
+		
+		//create character bitmaps for in game text
 		chars = new int[93][16*7];
 		for(int i = 0; i < 93; i++){
 			for(int j = 0; j < 16; j++){
@@ -45,6 +60,27 @@ public class textRenderer {
 				}
 			}
 		}
+		
+		//create character bitmaps for menu text
+		menuChars = new int[95][];
+  		int[] charEndPosition = new int[]{6,9,15,25,34,46,57,61,65,69,76,86,90,95,99, 105,114,120,130,138,146,155, 163,172,180,189,193,197,206,216,225,234,246,259,267,280,291,300,307,320,330,334,340, 350,357,372,382,396,404,419,428,435,443, 451,463,478,487,496,503,507,516,520,530,539,545,555,565,574,585,594,600,610,619,622,625,633,636,650,659,668,679,689,694,700,705,714,722,735,743,750,757,763,770,778,787};
+		int[] charStartPosition = new int[95];
+		menuCharsWidth = new int[95];
+		for(int i = 1; i < 95; i++) {
+			menuCharsWidth[i] = charEndPosition[i] - charEndPosition[i-1];
+			charStartPosition[i] = charEndPosition[i-1] + 1;
+		}
+		menuCharsWidth[0] = 6;
+		charStartPosition[0] = 0;
+		for(int i = 0; i < 95; i++) {
+			menuChars[i] = new int[menuCharsWidth[i] * 16];
+			for(int j = 0; j < 16; j++) {
+				for(int k = 0; k < menuCharsWidth[i]; k++) {
+					menuChars[i][k+j*menuCharsWidth[i]] = menuFontBuffer[charStartPosition[i] + k + j*789];
+				}
+			}
+		}
+		
 		
 		//load half star images
 		try{
@@ -75,6 +111,46 @@ public class textRenderer {
 			e.printStackTrace();	
 		}
 		
+	}
+	
+	public void drawMenuText(int xPos, int yPos, char[] theText, int[] screen, int r, int g, int b) {
+		int pixel, SpriteValue, screenValue, overflow, screenIndex;
+		int MASK7Bit = 0xFEFEFF;
+		int xPos_initial = xPos;
+		
+		for(int i = 0; i < theText.length; i++){
+			if(theText[i] == 10) {
+				yPos+=16;
+				xPos = xPos_initial;
+				continue;
+			}
+			
+			int charIndex = theText[i] - 32;
+			int w = menuCharsWidth[charIndex];
+			int pos = 768*yPos + xPos;
+			for(int j = 0; j < 16; j++){
+				for(int k = 0; k < w; k++){
+					screenIndex = pos + k + j*768;
+					screenValue = screen[screenIndex];
+					SpriteValue = menuChars[charIndex][k+ j*w]&255; 
+					SpriteValue = (r*SpriteValue/256) << 16 | (g*SpriteValue/256) << 8 | (b*SpriteValue/256);
+					
+					
+					pixel=(SpriteValue&MASK7Bit)+(screenValue&MASK7Bit);
+					overflow=pixel&0x1010100;
+					overflow=overflow-(overflow>>8);
+					screen[screenIndex] = overflow|pixel;
+				}
+			}
+			xPos+=w;
+		}
+	}
+	
+	public int getMenuTextWidth(char[] theText) {
+		int w = 0;
+		for(int i = 0; i< theText.length; i++)
+			w+=menuCharsWidth[theText[i] - 32];
+		return w;
 	}
 	
 	public void drawFlashingText(int xPos, int yPos, String text, int[] screen){

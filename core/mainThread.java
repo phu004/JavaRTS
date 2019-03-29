@@ -50,8 +50,15 @@ public class mainThread extends JFrame implements KeyListener, ActionListener, M
 	public static short[] displacementBuffer;
 	public static short[] displacementBuffer2;
 	
-	public static boolean leftMouseButtonReleased;
+	public static boolean leftMouseButtonReleased, escapeKeyReleased;
 	public static String buttonAction; 
+	public static int menuStatus = 0;
+	public static final int mainMenu = 0;
+	public static final int difficulitySelectionMenu = 1;
+	public static final int helpMenu = 2;
+	public static final int endGameMenu = 3;
+	
+	public static String timeString;
 	
 	public mainThread(){
 		setTitle("Battle Tank 3");
@@ -168,13 +175,14 @@ public class mainThread extends JFrame implements KeyListener, ActionListener, M
 		
 		
 		frameIndex++;		
-	
 		
 		inputHandler.processInput();
 		
 		if(!gamePaused) {
 			if(gameStarted)
 				gameFrame++;
+			
+			timeString = secondsToString(gameFrame/30);
 			
 			//handle user's interaction with game GUI
 			if(gameFrame == 1 && gameStarted){
@@ -511,7 +519,19 @@ public class mainThread extends JFrame implements KeyListener, ActionListener, M
 		}
 		lastDraw=System.currentTimeMillis();
 	}
+	
+	public static String secondsToString(int pTime) {
+	    int min = pTime/60;
+	    int sec = pTime-(min*60);
 
+	    String strMin = placeZeroIfNeede(min);
+	    String strSec = placeZeroIfNeede(sec);
+	    return String.format("%s:%s",strMin,strSec);
+	}
+
+	public static String placeZeroIfNeede(int number) {
+	    return (number >=10)? Integer.toString(number):String.format("0%s",Integer.toString(number));
+	}
 
 	@Override
 	public void focusGained(FocusEvent arg0) {

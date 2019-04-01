@@ -20,8 +20,8 @@ public class baseExpensionAI {
 	public int numberOfStealthTankScout;
 	public int frameAI;
 	public vector temp; 
-	
-	
+	public boolean allExpansionOccupied;
+	public int lastExpansionLocation;
 	
 	public baseExpensionAI(baseInfo theBaseInfo){
 		this.theBaseInfo = theBaseInfo;
@@ -48,13 +48,17 @@ public class baseExpensionAI {
 		
 		scouts = new stealthTank[3];
 		
-		
+		lastExpansionLocation = 7;
 	}
 	
 	
 	public void processAI(){
 	
 		frameAI++;
+		
+		//when all the expansion position has been utilized then do nothing 
+		if(allExpansionOccupied)
+			return;
 		
 		if(frameAI > 750 && frameAI < 1000 && !expensionListRerolled) {
 			//if the AI has smaller force than player when it's time to grab a third base,  use the less aggressive base expansion route
@@ -80,10 +84,8 @@ public class baseExpensionAI {
 			}
 		}
 		
+	
 		expensionGoldMine = goldMines[expensionPiorityList[targetExpension]];
-		
-		
-		
 		
 		//produce a total of 3  scout units, check if there are any stealth tank in the production
 		numberOfActiveScout = 0;
@@ -205,6 +207,17 @@ public class baseExpensionAI {
 			
 			//change the preferred gold mine to the one near the new expension once MCV is deployed
 			if(myMCV.getDistance(expensionGoldMine) < 2 && myMCV.getDistance(expensionGoldMine) > 0.75 && myMCV.canBeDeployed()){
+				if(expensionPiorityList[targetExpension] == lastExpansionLocation) {
+					allExpansionOccupied = true;
+					for(int i = 0; i < scouts.length; i++){
+						if(scouts[i] != null && scouts[i].currentHP >0){
+							mainThread.ec.theUnitProductionAI.addStealthTank((stealthTank)scouts[i]);
+							scouts[i].moveTo(mainThread.ec.theUnitProductionAI.rallyPoint.x, mainThread.ec.theUnitProductionAI.rallyPoint.z);
+							scouts[i].currentCommand = solidObject.attackMove;
+							scouts[i].secondaryCommand = solidObject.attackMove;
+						}
+					}
+				}
 				myMCV.expand();
 				mainThread.ec.theEconomyManagerAI.preferedGoldMine = expensionGoldMine;
 			}	

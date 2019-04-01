@@ -104,33 +104,6 @@ public class mainThread extends JFrame implements KeyListener, ActionListener, M
 			
 		}
 		
-		//create camera
-		Camera = new camera(new vector(3,2f,-1.25f), 0, 300);
-	
-		//Create look up tables
-		gameData.makeData();
-		
-		//init grid 
-		gridMap = new grid(128);
-		
-		//init light source
-		sunLight.init();
-		
-		//init rasterizer
-		rasterizer.init();
-		
-		//init 2d to 3d factory
-		my2Dto3DFactory = new Turn2DTo3DFactory();
-		my2Dto3DFactory.init();
-       
-		loadTexture();
-		
-		//init post processing  thread
-		postProcessingThread.init();
-		
-		theAssetManager = new AssetManager();
-		theAssetManager.init();
-		
 		frameIndex = 0;
 		frameInterval = 33;
 		lastDraw = 0;
@@ -172,7 +145,31 @@ public class mainThread extends JFrame implements KeyListener, ActionListener, M
 	//thread is always lag the main thread by 1 frame. However it is barely noticeable.
 	
 	public void actionPerformed(ActionEvent e){	
+		if(frameIndex == 0) {
+			//create camera
+			Camera = new camera(new vector(3,2f,-1.25f), 0, 300);
 		
+			//Create look up tables
+			gameData.makeData();
+			
+			//init grid 
+			gridMap = new grid(128);
+			
+			//init light source
+			sunLight.init();
+			
+			//init rasterizer
+			rasterizer.init();
+			
+			//init 2d to 3d factory
+			my2Dto3DFactory = new Turn2DTo3DFactory();
+			my2Dto3DFactory.init();
+	       
+			loadTexture();
+				
+			theAssetManager = new AssetManager();
+			theAssetManager.init();
+		}
 		
 		frameIndex++;		
 		

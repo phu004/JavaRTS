@@ -188,7 +188,9 @@ public class postProcessingThread implements Runnable{
 	}
 	
 	public void run(){
-		
+		if(frameIndex == 0)
+			init();
+	
 		while(true){
 			synchronized (this) {
 				try {	

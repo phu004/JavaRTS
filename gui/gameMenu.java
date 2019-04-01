@@ -21,24 +21,36 @@ public class gameMenu {
 	
 	public String imageFolder = "";
 	
-	public int[] titleImage;
+	public int[] titleImage, lightTankImage, rocketTankImage, stealthTankImage, heavyTankImage;
 	
 	public button newGame, unpauseGame, showHelp, quitGame, abortGame, easyGame, normalGame, hardGame, quitDifficulty, quitHelpMenu, nextPage, previousPage;
 	
-	public char[] easyDescription, normalDescription, hardDescription, helpPage1;
+	public char[] easyDescription, normalDescription, hardDescription, helpPage1, helpPage2, helpPage3;
 	
 	public int currentHelpPage;
 	
 	public ArrayList<button> buttons = new ArrayList<button>();
 	
 	public void init() {
-		if(titleImage == null)
+		if(titleImage == null) {
 			titleImage = new int[288*46];
+			lightTankImage = new int[44*44];
+			rocketTankImage = new int[44*44];
+			stealthTankImage = new int[44*44];
+			heavyTankImage = new int[44*44];
+		}
 		if(screenBlurBuffer == null)
 			screenBlurBuffer = new int[512 * 768];
+	
+			
 		
 		String folder = "../images/";
 		loadTexture(folder + "title.png", titleImage, 216, 35);
+		loadTexture(folder + "58.jpg", lightTankImage, 44, 44);
+		loadTexture(folder + "59.jpg", rocketTankImage, 44, 44);
+		loadTexture(folder + "72.jpg", stealthTankImage, 44, 44);
+		loadTexture(folder + "83.jpg", heavyTankImage, 44, 44);
+		
 		
 		newGame = new button("newGame", "New Game", 324, 110, 120, 28);
 		buttons.add(newGame);
@@ -72,20 +84,49 @@ public class gameMenu {
 		hardDescription = "AI will micro each of its units, expand \nmore aggressively and carry out high\nlevel maneuver such as harassing during \npeaceful peirod.".toCharArray();
 		
 		helpPage1 = ("                                                Controls             \n\n"
+				   + "\"Esc\" -- Pause/Unpause the game.\n\n"
 				   + "\"Left Click\" -- Select a unit. Left click + mouse drag can be used to select up to \n100 units at a time.\n\n"
 				   + "\"Right Click\" -- Issue a move or attack command to the selected unit(s). You can \nalso use right click to set rally point and cancel build orders.\n\n"
 				   + "\"a\" -- Force attack a unit. If no unit is under the cursor, then the selected units will \nbe set to attack move to the cursor location.\n\n"
 				   + "\"h\" -- stop current action for the selected unit(s).\n\n"
 				   + "\"Ctrl + number\" -- Create a control group and assigned the number to the group.\n\n"
-				   + "\"Ctrl + Left Click\" -- Add/Remove the selected unit to/from the current control \ngroup.\n\n"
-				   + "\"Ctrl + Mouse Drag\" -- Add all the units inside the dragging box to the current \ncontrol group.\n\n\n"
+				   + "\"Ctrl + Left Click\" -- Add/Remove the selected unit to/from the current selected \nunits.\n\n"
+				   + "\"Ctrl + Mouse Drag\" -- Add all the units inside the dragging box to the current \nselected units.\n\n"
 				   + "                                                  1/3                  ").toCharArray();
+		
+		helpPage2 = ("                                                  Units        \n\n"
+				   + "There are 4 type of military units, each has its own strength and weakness.\n\n"
+				   + "         Light Tank -- Cheap but lightly armored. Has moderate movement speed \n         and firepower. It can be considered as the jack of all trades. It can be \n         upgraded to have increased range.\n\n"
+				   + "         Rocket Tank -- A slow moving and lightly armored unit. It has long reload \n         time but can out range static defenses. It does extra damage to buildings \n         and can be upgraded to deal even more damage to buildings.\n\n"
+				   + "         Stealth Tank -- Fast but lightly armoured. It has a passive cloak ablility that \n         turns the tank invisible when not attacking. It does more damage to light \n         armoured unit but significantly less damage to heavy armoured unit. It can \n         be upgraded to damage multiple units in one shot.\n\n"
+				   + "         Heavy Tank -- Slowest and the most expensive tank in the game. Equiped \n         with twin cannons, it is a moving fortress. It can be upgraded with self \n         repair capability so it can last even longer in battle field.\n\n\n\n"
+				   + "                                                  2/3                  ").toCharArray(); 
+		
+		helpPage3 = ("                                              About Me             \n\n"
+				   + "Hi everyone, my name is Pan Hu, I have a great interest in making video games. \n"
+				   + "It has been a dream job for me since a very young age. Unfortunately I ended \n"
+				   + "up make a living doing the \"boring\" job like most other folks. But it will not stop\n"
+				   + "me from doing what I enjoy in my spare time!\n\n" 
+				   + "In this project I am trying to create a small RTS game with somewhat challenging \n"
+				   + "AI using pure Java. However the AI will not cheat by any means, i.e. Its vision is\n"
+				   + "limited by fog of war, it doesn't have any advantage in resource gathering. Well,\n"
+				   + "the only advantage is porbably the inhuman action per second the AI carries out \n"
+				   + "in higher difficulty.\n\n"
+				   + "This game is completely open source. You can find the source code at my github \n"
+				   + "page: https://github.com/phu004/JavaRTS. If you are intersted in other projects of\n"
+				   + "mine, feel free to check out my YouTube channel, user name is \"Pan Hu\".\n\n"
+				   + "Have a nice Day!\n\n\n\n\n\n"
+				   + "                                                  3/3"
+				    ).toCharArray();
 		
 		quitHelpMenu = new button("quitHelpMenu", "x", 670, 80, 18,16);
 		buttons.add(quitHelpMenu);
 		
-		nextPage = new button("nextPage", "Next Page ", 550, 445, 120, 28);
+		nextPage = new button("nextPage", "Next Page", 550, 450, 120, 28);
 		buttons.add(nextPage);
+		
+		previousPage = new button("previousPage", "Previous Page", 98, 450, 120, 28);
+		buttons.add(previousPage);
 	}
 	
 	
@@ -174,10 +215,22 @@ public class gameMenu {
 				drawTitle();
 				drawMenuFrame(620, 380);
 				
+				textRenderer tRenderer = postProcessingThread.theTextRenderer;
+				
 				if(currentHelpPage == 0) {
-					textRenderer tRenderer = postProcessingThread.theTextRenderer;
-					tRenderer.drawMenuText(82,97,helpPage1, screen, 255,255,255);
+					tRenderer.drawMenuText(82,90,helpPage1, screen, 255,255,255);
 					nextPage.display = true;
+				}else if(currentHelpPage == 1) {
+					tRenderer.drawMenuText(82,90,helpPage2, screen, 255,255,255);
+					nextPage.display = true;
+					previousPage.display = true;
+					drawImage(83,157, 44, 44,lightTankImage);
+					drawImage(83,220, 44, 44,rocketTankImage);
+					drawImage(83,290, 44, 44,stealthTankImage);
+					drawImage(83,364, 44, 44,heavyTankImage);
+				}else if(currentHelpPage == 2) {
+					tRenderer.drawMenuText(82,90,helpPage3, screen, 255,255,255);
+					previousPage.display = true;
 				}
 				
 				quitHelpMenu.display = true;
@@ -195,17 +248,19 @@ public class gameMenu {
 			if(buttons.get(i).checkIfCursorIsOnTop(postProcessingThread.mouse_x, postProcessingThread.mouse_y)) {
 				if(postProcessingThread.leftMouseButtonReleased) {
 					if(buttons.get(i).actionCooldown == 0 && buttons.get(i).display == true) {
-						buttons.get(i).actionCooldown = 15;
+						buttons.get(i).actionCooldown = 5;
 						
 						
 						if(buttons.get(i).name == "newGame") {
 							menuStatus = difficulitySelectionMenu;
 						}else if(buttons.get(i).name == "showHelp") {
 							menuStatus = helpMenu;
-						}if(buttons.get(i).name == "quitDifficulty" || buttons.get(i).name == "quitHelpMenu") {
+						}else if(buttons.get(i).name == "quitDifficulty" || buttons.get(i).name == "quitHelpMenu") {
 							menuStatus = mainMenu;
-						}if(buttons.get(i).name == "nextPage") {
+						}else if(buttons.get(i).name == "nextPage") {
 							currentHelpPage++;
+						}else if(buttons.get(i).name == "previousPage") {
+							currentHelpPage--;
 						}
 						
 						postProcessingThread.buttonAction = buttons.get(i).name;
@@ -421,6 +476,15 @@ public class gameMenu {
 				int c = titleImage[j + i*216];
 					if(!((c&0xff0000 >> 16) > 254 && (c&0x00ff00 >> 8) > 254  && ((c&0xff) > 254)))
 						screen[pos+ 768*i + j] = c;
+			}
+		}
+	}
+	
+	public void drawImage(int xPos, int yPos, int w, int h, int[] myImage) {
+		int pos = xPos + yPos*768;
+		for(int i = 0; i < h; i++) {
+			for(int j = 0; j < w; j++) {
+				screen[pos + j + i*768] = myImage[j+ i*h];
 			}
 		}
 	}

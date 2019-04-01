@@ -40,7 +40,7 @@ public class scoutingManagerAI {
 		};
 		
 		exploringNodes = new float[][]{
-				{9, 3.5f}, {2,2}, {14, 14}
+				{8f, 3f}, {2,2}, {14, 14}
 		};
 		
 		destinationNode = 0;
@@ -58,7 +58,8 @@ public class scoutingManagerAI {
 		if(avoidingIncomingPlayerUnitCooldown > 0)
 			avoidingIncomingPlayerUnitCooldown--;
 		
-		if(gameTime%275 > 235 && gameTime%275 < 275 && gameTime < 600 && scoutingMode == patrolling){
+		boolean scoutIsLightTank = scout != null && scout.type == 0;
+		if((gameTime%275 > 235 && gameTime%275 < 275 && !scoutIsLightTank) && gameTime < 600 && scoutingMode == patrolling || (scoutIsLightTank && gameTime < 240)){
 			scoutingMode = exploring;
 			destinationNode = 0;
 			movementOrderIssued = false;
@@ -319,7 +320,7 @@ public class scoutingManagerAI {
 	
 	public boolean needStealthTank(){
 		if(theBaseInfo.canBuildStealthTank){
-			if(scout == null || scout.currentHP <= 0 || scout.type != 6){
+			if((scout == null || scout.currentHP <= 0 || scout.type != 6) && gameTime > 280){
 				return true;
 			}
 		}
@@ -337,7 +338,7 @@ public class scoutingManagerAI {
 			scout.currentCommand = solidObject.attackMove;
 			scout.secondaryCommand = solidObject.attackMove;
 		}
-		
+		destinationNode = 0;
 		scout = o;
 		movementOrderIssued = false;
 	}

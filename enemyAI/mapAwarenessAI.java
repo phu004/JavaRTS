@@ -15,6 +15,7 @@ import core.vector;
 public class mapAwarenessAI {
 	
 	public baseInfo theBaseInfo;
+	public int frameAI;
 	
 	public int numberOfLightTanks_player, numberOfLightTanks_AI, numberOfLightTanksOnMinimap_player;
 	public int numberOfStealthTanks_player, numberOfStealthTanks_AI, numberOfStealthTanksOnMinimap_player;
@@ -70,6 +71,7 @@ public class mapAwarenessAI {
 	public vector[] playerForceLocations;
 	public vector[] playerForceDirections;
 	public int[] playerForceSize;
+	public vector playerNaturalLocation;
 	
 	public vector[] playerStaticDefenseLocations;
 	public int[] playerStaticDefenseSize;
@@ -87,6 +89,7 @@ public class mapAwarenessAI {
 		
 		goldMines = mainThread.theAssetManager.goldMines;
 		playerExpensionInfo = new int[goldMines.length];
+		playerNaturalLocation = goldMines[1].centre;
 		
 		mainPlayerForceLocation = new vector(0,0,0);
 		mainPlayerForceDirection = new vector(0,0,0);
@@ -113,6 +116,8 @@ public class mapAwarenessAI {
 	}
 	
 	public void processAI(){
+		frameAI++;
+		
 		theAssetManager = mainThread.theAssetManager;				
 		
 		//the number of player's military units in AI's vision
@@ -471,6 +476,10 @@ public class mapAwarenessAI {
         
         
         //determine if a rush is feasible against the player
+        canRushPlayer = false;
+        if(frameAI > 270 && frameAI < 300) {
+        	
+        }
         
         
         findTheMostVulnerablePlayerBase();

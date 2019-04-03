@@ -22,11 +22,6 @@ public class unitProductionAI {
 	public float combatAICenterX;
 	public float combatAICenterZ;
 	
-	//public int currentState;
-	//public final int booming = 0;
-	//public final int aggressing = 1;
-	//public final int defending = 2;
-	
 	public int currentProductionOrder;
 	public final int produceLightTank = 0;
 	public final int produceRocketTank = 1;

@@ -335,8 +335,8 @@ public class scoutingManagerAI {
 		if(scout != null && scout.currentHP > 0 && scout.type == 0){
 			mainThread.ec.theUnitProductionAI.addLightTank((lightTank)scout);
 			scout.moveTo(mainThread.ec.theUnitProductionAI.rallyPoint.x, mainThread.ec.theUnitProductionAI.rallyPoint.z);
-			scout.currentCommand = solidObject.attackMove;
-			scout.secondaryCommand = solidObject.attackMove;
+			scout.currentCommand = solidObject.move;
+			scout.secondaryCommand = solidObject.StandBy;
 		}
 		destinationNode = 0;
 		scout = o;

@@ -40,7 +40,6 @@ public class mapAwarenessAI {
 	public int numberOfPlayerBuildingDestroyedPreviousFrame;
 	public int playerAssetDestoryedCountDown;
 	
-	
 	public boolean playerHasMostlyLightTanks;
 	public boolean playerHasMostlyHeavyTanks;
 	public boolean playIsRushingHighTierUnits;
@@ -49,6 +48,7 @@ public class mapAwarenessAI {
 	public boolean playerIsRushingLightTank;
 	public boolean playerHasManyLightTanksButNoHeavyTank;
 	public boolean playerHasMostlyHeavyAndStealthTanks;
+	public boolean canRushPlayer;
 	
 	public solidObject[] mapAsset;
 	public boolean[] visionMap;
@@ -468,6 +468,9 @@ public class mapAwarenessAI {
         	fiveMinuteTimer--;
         else
         	maxNumberOfStealthTanks_playerInLastFiveMinutes = 0;
+        
+        
+        //determine if a rush is feasible against the player
         
         
         findTheMostVulnerablePlayerBase();

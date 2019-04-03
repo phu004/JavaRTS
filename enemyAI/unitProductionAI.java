@@ -48,11 +48,27 @@ public class unitProductionAI {
 	public solidObject[] unitInCombatRadius;
 	public solidObject[] unitOutsideCombatRadius;
 	
+	public float rushRallyPointX, rushRallyPointZ;
+	
 	public int frameAI;
 	
 	public unitProductionAI(baseInfo theBaseInfo){
 		this.theBaseInfo = theBaseInfo;
 		rallyPoint = new vector(0,0,0);
+		
+		if(gameData.getRandom() < 341) {
+			rushRallyPointX = 9.5f+2;
+			rushRallyPointZ = 5.5f+2;
+		}else if(gameData.getRandom() < 682) {
+			rushRallyPointX = 9.5f-2.75f;
+			rushRallyPointZ = 5.5f+2;
+		}else {
+			rushRallyPointX = 9.5f+3.5f;
+			rushRallyPointZ = 5.5f-0.5f;
+		}
+		
+		rushRallyPointX = 9.5f+2;
+		rushRallyPointZ = 5.5f+2;
 		
 		lightTanksControlledByCombatAI = new lightTank[192];
 		rocketTanksControlledByCombatAI = new rocketTank[72];
@@ -117,7 +133,9 @@ public class unitProductionAI {
 		
 		//If the difficulty is set to normal or hard, set the rally point just outside of player's natural expansion. 
 		//So if the player is going for a fast expansion and don't have much units, the AI can perform a rush attack. 
-		
+		if(frameAI < 360 && mainThread.ec.theCombatManagerAI.checkIfAIHasBiggerForce(1f)) {
+			rallyPoint.set(rushRallyPointX, 0,  rushRallyPointZ);
+		}
 		
 		
 		//make sure not to over produce when the resource is running low

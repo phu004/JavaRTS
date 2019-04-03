@@ -21,6 +21,7 @@ public class mapAwarenessAI {
 	public int numberOfRocketTanks_player, numberOfRocketTanks_AI, numberOfRocketTanksOnMinimap_player;
 	public int numberOfHeavyTanks_player, numberOfHeavyTanks_AI, numberOfHeavyTanksOnMinimap_player;
 	public int numberOfPlayerUnitsOnMinimap;
+	public int totalNumberOfPlayerUnits;
 	public int numberOfGunTurret_player;
 	public int numberOfMissileTurret_player;
 	public int numberOfFactory_player;
@@ -436,11 +437,12 @@ public class mapAwarenessAI {
 		numberOfPlayerBuildingDestroyedPreviousFrame = numberOfPlayerBuildingDestroyed;
 	
 		//analyze the enemy units composition 
+		totalNumberOfPlayerUnits = numberOfLightTanks_player + numberOfRocketTanks_player + numberOfStealthTanks_player + numberOfHeavyTanks_player;
 		
-		float lightTankRatio = (float)(numberOfLightTanks_player)/(numberOfLightTanks_player + numberOfRocketTanks_player + numberOfStealthTanks_player + numberOfHeavyTanks_player + 1);
+		float lightTankRatio = (float)(numberOfLightTanks_player)/(totalNumberOfPlayerUnits + 1);
 		
 		playerHasMostlyLightTanks = numberOfLightTanks_player > 5 &&  lightTankRatio > 0.8f;
-		playerHasMostlyHeavyTanks = numberOfHeavyTanks_player > 3 && (float)(numberOfHeavyTanks_player)/(numberOfLightTanks_player + numberOfRocketTanks_player + numberOfStealthTanks_player + numberOfHeavyTanks_player) > 0.6f;
+		playerHasMostlyHeavyTanks = numberOfHeavyTanks_player > 3 && (float)(numberOfHeavyTanks_player)/(totalNumberOfPlayerUnits) > 0.6f;
 		playerHasManyLightTanksButNoHeavyTank = lightTankRatio > 0.5 && lightTankRatio <=0.8 && numberOfHeavyTanks_player < 3;
 
 		playIsRushingHighTierUnits = mainThread.gameFrame/30 > 250 && mainThread.gameFrame/30 < 400 
@@ -454,7 +456,7 @@ public class mapAwarenessAI {
         
         playerIsRushingLightTank = mainThread.gameFrame/30 > 300 && mainThread.gameFrame/30 < 600 && ((playerLikelyCanNotProduceHighTierUnits && numberOfStealthTanks_player < 3) || playerHasMostlyLightTanks);
         
-        playerHasMostlyHeavyAndStealthTanks = (maxNumberOfStealthTanks_playerInLastFiveMinutes >=2 ) && (float)(numberOfHeavyTanks_player + numberOfStealthTanks_player)/(numberOfLightTanks_player + numberOfRocketTanks_player + numberOfStealthTanks_player + numberOfHeavyTanks_player) > 0.8f;
+        playerHasMostlyHeavyAndStealthTanks = (maxNumberOfStealthTanks_playerInLastFiveMinutes >=2 ) && (float)(numberOfHeavyTanks_player + numberOfStealthTanks_player)/totalNumberOfPlayerUnits > 0.8f;
         
         
         //advanced counting of player units

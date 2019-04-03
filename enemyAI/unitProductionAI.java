@@ -115,6 +115,9 @@ public class unitProductionAI {
 				rallyPoint.set(mainThread.theAssetManager.constructionYards[index].centre.x - 2.5f, 0,  mainThread.theAssetManager.constructionYards[index].centre.z -2.5f);
 		}
 		
+		//If the difficulty is set to normal or hard, set the rally point just outside of player's natural expansion. 
+		//So if the player is going for a fast expansion and don't have much units, the AI can perform a rush attack. 
+		
 		
 		
 		//make sure not to over produce when the resource is running low

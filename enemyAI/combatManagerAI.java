@@ -93,8 +93,8 @@ public class combatManagerAI {
 		//assume player force gets stronger as time goes by
 		if(unrevealedPlayerForceStrength < 0)
 			unrevealedPlayerForceStrength = 0;
-		if(noPlayerActivityCountdown > 0)
-			unrevealedPlayerForceStrength+=0.1f;
+		if(noPlayerActivityCountdown > 0 && mainThread.ec.theMapAwarenessAI.totalNumberOfPlayerUnits > 0)
+			unrevealedPlayerForceStrength+=0.075f;
 		
 		if(withdrawUnitOutsideCombatRadiusCooldown > 0){
 			withdrawUnitOutsideCombatRadiusCooldown --;

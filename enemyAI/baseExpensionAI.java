@@ -142,7 +142,7 @@ public class baseExpensionAI {
 		}
 		
 		
-		boolean playerHasLessUnits = mainThread.ec.theCombatManagerAI.checkIfAIHasBiggerForce(0.85f);
+		boolean playerHasLessUnits = mainThread.ec.theCombatManagerAI.checkIfAIHasBiggerForce(1f);
 		
 		int lowGoldmineThreshold = 17500;
 		
@@ -156,9 +156,6 @@ public class baseExpensionAI {
 			if(mainThread.ec.theEconomyManagerAI.preferedGoldMine == mainThread.theAssetManager.goldMines[5])
 				lowGoldmineThreshold = 20000;
 		}
-		
-		
-		
 		
 		if(myMCV == null && expensionGoldMine.goldDeposite >= 17500 && (mainThread.ec.theEconomyManagerAI.preferedGoldMine.goldDeposite < lowGoldmineThreshold || 
 			(mainThread.ec.theEconomyManagerAI.preferedGoldMine == expensionGoldMine && !hasConstructionYardNearGoldMine(expensionGoldMine) && !hasRefineryNearTheGoldmine(expensionGoldMine)))){

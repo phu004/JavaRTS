@@ -99,7 +99,7 @@ public class gameMenu {
 				   + "         Light Tank -- Cheap but lightly armored. Has moderate movement speed \n         and firepower. It can be considered as the jack of all trades. It can be \n         upgraded to have increased range.\n\n"
 				   + "         Rocket Tank -- A slow moving and lightly armored unit. It has long reload \n         time but can out range static defenses. It does extra damage to buildings \n         and can be upgraded to deal even more damage to buildings.\n\n"
 				   + "         Stealth Tank -- Fast but lightly armoured. It has a passive cloak ablility that \n         turns the tank invisible when not attacking. It does more damage to light \n         armoured unit but significantly less damage to heavy armoured unit. It can \n         be upgraded to damage multiple units in one shot.\n\n"
-				   + "         Heavy Tank -- Slowest and the most expensive tank in the game. Equiped \n         with twin cannons, it is a moving fortress. It can be upgraded with self \n         repair capability so it can last even longer in battle field.\n\n\n\n"
+				   + "         Heavy Tank -- The Slowest and most expensive tank in the game. Equiped \n         with twin cannons, it is a moving fortress. It can be upgraded with self \n         repair capability so it can last even longer in battle field.\n\n\n\n"
 				   + "                                                  2/3                  ").toCharArray(); 
 		
 		helpPage3 = ("                                              About Me             \n\n"

@@ -143,12 +143,9 @@ public class combatManagerAI {
 		if(currentState == booming){
 			
 			//enemy AI compares its own  force with player's force, then make a decision whether it should attack or not 
-			//only start comparing after 6 minutes mark, or player is rushing with light tank delay attack mark to around 10 minutes mark
-			int attackTime = 360;
-			if(mainThread.ec.theMapAwarenessAI.playerIsRushingLightTank)
-				attackTime = 540;
-			else
-				attackTime = 360;
+			int attackTime = 540;
+			if(mainThread.ec.theMapAwarenessAI.canRushPlayer)
+				attackTime = 300;
 			
 			int targetPlayerExpension = mainThread.ec.theMapAwarenessAI.targetPlayerExpension;
 			

@@ -477,8 +477,23 @@ public class mapAwarenessAI {
         
         //determine if a rush is feasible against the player
         canRushPlayer = false;
-        if(frameAI > 270 && frameAI < 300) {
+        if(frameAI > 300 && frameAI < 360) {
+        	if(totalNumberOfPlayerUnits < 3)
+        		canRushPlayer = true;
         	
+        	for(int i = 0; i < playerStructures.length; i++) {
+        		if(playerStructures[i] != null && playerStructures[i].currentHP > 0) {
+        			float x1 = playerStructures[i].centre.x;
+        			float z1 = playerStructures[i].centre.z;
+        			float x2 = playerNaturalLocation.x;
+        			float z2 = playerNaturalLocation.z;
+        			
+        			if(Math.sqrt((x1-x2)*(x1-x2) + (z1-z2)*(z1-z2)) < 3.5f) {
+        				canRushPlayer = true;
+        				break;
+        			}
+        		}
+        	}
         }
         
         

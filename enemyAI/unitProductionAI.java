@@ -51,19 +51,14 @@ public class unitProductionAI {
 		this.theBaseInfo = theBaseInfo;
 		rallyPoint = new vector(0,0,0);
 		
-		if(gameData.getRandom() < 341) {
+		if(gameData.getRandom() < 512) {
 			rushRallyPointX = 9.5f+2;
 			rushRallyPointZ = 5.5f+2;
-		}else if(gameData.getRandom() < 682) {
+		}else {
 			rushRallyPointX = 9.5f-2.75f;
 			rushRallyPointZ = 5.5f+2;
-		}else {
-			rushRallyPointX = 9.5f+3.5f;
-			rushRallyPointZ = 5.5f-0.5f;
 		}
 		
-		rushRallyPointX = 9.5f+2;
-		rushRallyPointZ = 5.5f+2;
 		
 		lightTanksControlledByCombatAI = new lightTank[192];
 		rocketTanksControlledByCombatAI = new rocketTank[72];

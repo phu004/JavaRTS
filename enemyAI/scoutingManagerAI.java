@@ -40,7 +40,9 @@ public class scoutingManagerAI {
 		};
 		
 		exploringNodes = new float[][]{
-				{8f, 3f}, {2,2}, {2, 14}
+				{8f, 3f}, {2,2}, {3, 6},{11.5f, 7.5f}
+				
+				
 		};
 		
 		destinationNode = 0;

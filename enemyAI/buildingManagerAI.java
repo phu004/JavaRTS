@@ -117,7 +117,7 @@ public class buildingManagerAI {
 		
 		//build an additional refinery if there are more production building
 		//don't build more than 2 refinery around a goldmine
-		if(getNumberOfFunctionalRefinery() < theBaseInfo.numberOfConstructionYard*2 && theBaseInfo.numberOfFactory > 0 && theBaseInfo.canBuildRefinery && getNumberOfRefineriesNearPreferedGoldMine() < 2){
+		if(getNumberOfFunctionalRefinery() < theBaseInfo.numberOfConstructionYard*2 && (getNumberOfFunctionalRefinery() == 0 || theBaseInfo.numberOfFactory > 0) && theBaseInfo.canBuildRefinery && getNumberOfRefineriesNearPreferedGoldMine() < 2){
 			addBuildingToQueue(102);
 		}
 		

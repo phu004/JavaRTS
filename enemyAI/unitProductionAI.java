@@ -191,6 +191,15 @@ public class unitProductionAI {
 					}
 				}
 			}
+			
+			if(mainThread.ec.theEconomyManagerAI.numberOfharvesters > 6 && theBaseInfo.currentCredit > 1500) {
+				if(!communicationCenter.harvesterSpeedResearched_enemy) {
+					if(communicationCenter.harvesterSpeedResearchProgress_enemy == 255){
+						communicationCenter.researchHarvesterSpeed(1);
+						System.out.println("----------------------------AI starts researching harvester  speed ability------------------------------------");
+					}
+				}
+			}
 		}
 		
 		if(mainThread.ec.theBuildingManagerAI.theBaseInfo.numberOfTechCenter > 0){	

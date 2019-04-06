@@ -6,6 +6,7 @@ import core.vector;
 import entity.constructionYard;
 import entity.goldMine;
 import entity.harvester;
+import entity.refinery;
 
 public class economyManagerAI {
 
@@ -16,7 +17,7 @@ public class economyManagerAI {
 	
 	public int numberOfharvesters;
 	public vector evadeDirection;
-
+    public int numberOfFunctionalRefinery;
 	
 	public economyManagerAI(baseInfo theBaseInfo){
 		this.theBaseInfo = theBaseInfo;
@@ -26,6 +27,19 @@ public class economyManagerAI {
 	}
 	
 	public void processAI(){
+		//find the number of functional refinery, (refinery with depleted gold mine are not considered functional)
+		numberOfFunctionalRefinery = 0;
+		refinery[] refineries = mainThread.theAssetManager.refineries;
+		for(int i = 0; i < refineries.length; i++) {
+			if(refineries[i] != null && refineries[i].teamNo == 1 && refineries[i].currentHP> 0) {
+				if(refineries[i].nearestGoldMine != null && refineries[i].nearestGoldMine.goldDeposite > 0)
+					numberOfFunctionalRefinery++;
+			}
+		
+				
+		}
+		
+		
 		//find an ideal goldmine 
 		goldMine[] goldMines = mainThread.theAssetManager.goldMines;
 		constructionYard[] constructionYards = mainThread.theAssetManager.constructionYards;

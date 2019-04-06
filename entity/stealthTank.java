@@ -1113,7 +1113,7 @@ public class stealthTank extends solidObject{
 				for(int j = 0; j < 4; j++){
 					if(tile[j] != null){
 						if(tile[j].teamNo !=  teamNo && tile[j].teamNo != -1 && tile[j].currentHP > 0  && !tile[j].isCloaked){
-							if(tile[j].type < 100){
+							if(tile[j].type < 100 || tile[j].type >= 199){
 								attack(tile[j]);
 								currentCommand = attackInNumbers;
 								return;

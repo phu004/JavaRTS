@@ -100,7 +100,6 @@ public class bullet {
 	public void updateAndDraw(){
 		if(!isInAction)
 			return;
-	
 		
 		distanceToTarget -= speed;
 		if(distanceToTarget < 0){
@@ -118,6 +117,7 @@ public class bullet {
 			int start = xPos/16 + (127 - yPos/16)*128;
 			int targetTeamNo = target.teamNo;
 			solidObject[] tile;
+			solidObject o;
 			
 			for(int i  = 0; i < 9; i++){
 				int index = start + tiles3x3[i];
@@ -125,12 +125,17 @@ public class bullet {
 					continue;
 				tile = mainThread.gridMap.tiles[index];
 				for(int j = 0; j < 4; j++){
-					if(tile[j] != null){
-						if(tile[j].teamNo == targetTeamNo && tile[j].teamNo!= attacker.teamNo && tile[j].attackStatus != solidObject.isAttacking && tile[j].currentCommand != solidObject.move && tile[j].isCloaked == false
-								&& 	previousUnderAttackCountDown <=30 && (tile[j].currentCommand == solidObject.StandBy || tile[j].secondaryCommand == solidObject.attackMove)){
-							if(tile[j].type < 100){								
-								tile[j].attack(attacker);
-								tile[j].currentCommand = solidObject.attackCautiously; 
+					o = tile[j];
+					if(o != null){
+						if(o.teamNo == targetTeamNo
+						   && o.teamNo!= attacker.teamNo  
+						   && (o.attackStatus != solidObject.isAttacking || (o.attackStatus == solidObject.isAttacking && o.secondaryCommand == solidObject.attackMove && (o.targetObject == null || o.targetObject.type > 100) ))  
+						   && o.currentCommand != solidObject.move && o.isCloaked == false
+						   && previousUnderAttackCountDown <=30 
+						   && (o.currentCommand == solidObject.StandBy || o.secondaryCommand == solidObject.attackMove)){
+							if(o.type < 100){								
+								o.attack(attacker);
+								o.currentCommand = solidObject.attackCautiously; 
 							}
 						}
 						

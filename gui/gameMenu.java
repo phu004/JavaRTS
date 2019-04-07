@@ -90,8 +90,9 @@ public class gameMenu {
 				   + "\"a\" -- Force attack a unit. If no unit is under the cursor, then the selected units will \nbe set to attack move to the cursor location.\n\n"
 				   + "\"h\" -- stop current action for the selected unit(s).\n\n"
 				   + "\"Ctrl + number\" -- Create a control group and assigned the number to the group.\n\n"
-				   + "\"Ctrl + Left Click\" -- Add/Remove the selected unit to/from the current selected \nunits.\n\n"
-				   + "\"Ctrl + Mouse Drag\" -- Add all the units inside the dragging box to the current \nselected units.\n\n"
+				   + "\"Ctrl + Left Click\" -- Add/Remove the a unit to/from the selected units.\n\n"
+				   + "\"Ctrl + Mouse Drag\" -- Add units in the dragging box to the selected units.\n\n"
+				   + "\"Left and Right Keys\" -- Change camera view angle.\n\n"
 				   + "                                                  1/3                  ").toCharArray();
 		
 		helpPage2 = ("                                                  Units        \n\n"

@@ -69,6 +69,30 @@ public class techCenter extends solidObject{
 	public static int creditSpentOnResearching_player, creditSpentOnResearching_enemy;
 	
 	public static int intendedDeployLocation = -1;
+	
+	public static void resetResarchStatus() {
+		lightTankResearched_player = false;
+		lightTankResearched_enemy = false;
+		rocketTankResearched_player = false;
+		rocketTankResearched_enemy = false;
+		stealthTankResearched_player = false;
+		stealthTankResearched_enemy = false;
+		heavyTankResearched_player = false;
+		heavyTankResearched_enemy = false;
+		
+		lightTankResearchProgress_player = 255;
+		lightTankResearchProgress_enemy = 255;
+		rocketTankResearchProgress_player = 255;
+		rocketTankResearchProgress_enemy = 255;
+		stealthTankResearchProgress_player = 255;
+		stealthTankResearchProgress_enemy = 255;
+		heavyTankResearchProgress_player = 255;
+		heavyTankResearchProgress_enemy = 255;
+		
+		creditSpentOnResearching_player = 0;
+		creditSpentOnResearching_enemy = 0;
+		intendedDeployLocation = -1;
+	}
 
 	public techCenter(float x, float y, float z,  int teamNo){
 		//uncontrollable unit, but act as a big sized static collidable agent

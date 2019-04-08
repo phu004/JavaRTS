@@ -105,7 +105,7 @@ public class mainThread extends JFrame implements KeyListener, ActionListener, M
 		}
 		
 		frameIndex = 0;
-		frameInterval = 33;
+		frameInterval = 35;
 		lastDraw = 0;
 	
 		
@@ -121,8 +121,8 @@ public class mainThread extends JFrame implements KeyListener, ActionListener, M
 		t.addActionListener(this);
 		
 		//create a daemon thread which will sleep for the duration of the game
-		Thread   dt   =   new   Thread(new   DaemonThread() );
-        dt.setDaemon(true);
+		//Thread   dt   =   new   Thread(new   DaemonThread() );
+       // dt.setDaemon(true);
       
         
         //create another thread to create post processing effects
@@ -132,7 +132,7 @@ public class mainThread extends JFrame implements KeyListener, ActionListener, M
 		
 		//start threads
 		t.start();
-		dt.start(); 
+		//dt.start(); 
 		theTread.start();
 	
   
@@ -179,7 +179,7 @@ public class mainThread extends JFrame implements KeyListener, ActionListener, M
 			if(gameStarted)
 				gameFrame++;
 			
-			timeString = secondsToString(gameFrame/30);
+			timeString = secondsToString(gameFrame/35);
 			
 			//handle user's interaction with game GUI
 			if(gameFrame == 1 && gameStarted){
@@ -496,15 +496,15 @@ public class mainThread extends JFrame implements KeyListener, ActionListener, M
 	}
 	
 	public void regulateFramerate(){
-		if(frameIndex%30==0){
+		if(frameIndex%35==0){
 			double thisTime = System.currentTimeMillis();
-			framePerSecond = (int)(1000/((thisTime - lastTime)/30));
+			framePerSecond = (int)(1000/((thisTime - lastTime)/35));
 			lastTime = thisTime;
 		}
 
 
 		sleepTime = 0; 
-		/*while(System.currentTimeMillis()-lastDraw<frameInterval){
+		while(System.currentTimeMillis()-lastDraw<frameInterval){
 
 			try {
 				Thread.sleep(1);
@@ -513,7 +513,7 @@ public class mainThread extends JFrame implements KeyListener, ActionListener, M
 				// TODO Auto-generated catch block
 				e1.printStackTrace();
 			}
-		}*/
+		}
 		lastDraw=System.currentTimeMillis();
 	}
 	

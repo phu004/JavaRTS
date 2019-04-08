@@ -64,6 +64,20 @@ public class communicationCenter extends solidObject{
 	
 	public static int intendedDeployLocation = -1;
 	
+	public static void resetResearchStatus() {
+		harvesterSpeedResearched_player = false;
+		harvesterSpeedResearched_enemy = false;
+		rapidfireResearched_player = false;
+		rapidfireResearched_enemy = false;
+		harvesterSpeedResearchProgress_player = 255;
+		harvesterSpeedResearchProgress_enemy = 255;
+		rapidfireResearchProgress_player = 255;
+		rapidfireResearchProgress_enemy = 255;
+		creditSpentOnResearching_player = 0;
+		creditSpentOnResearching_enemy = 0;
+		intendedDeployLocation = -1;
+	}
+	
 	public communicationCenter(float x, float y, float z,  int teamNo){	
 		//uncontrollable unit, but act as a big sized static collidable agent
 		type = 106;

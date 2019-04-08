@@ -207,6 +207,11 @@ public class AssetManager {
 		mainThread.pc.init();
 		mainThread.ec.init();
 		
+		lightTank.tileCheckList_player = solidObject.generateTileCheckList(5f);
+		lightTank.tileCheckList_enemy = solidObject.generateTileCheckList(5f);
+		techCenter.resetResarchStatus();
+		communicationCenter.resetResearchStatus();
+		
 		
 		addConstructionVehicle(new constructionVehicle(new vector(3.125f,-0.3f, 2.125f), 90, 0));	
 		addConstructionVehicle(new constructionVehicle(new vector(29.625f,-0.3f, 28.875f), 90, 1));	

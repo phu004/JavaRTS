@@ -126,11 +126,6 @@ public class lightTank extends solidObject{
 		
 		movement_offscreen = new vector(0,0,0);
 		
-		if(tileCheckList_player == null){
-			tileCheckList_player = generateTileCheckList(5f);
-			tileCheckList_enemy = generateTileCheckList(5f);
-		}
-		
 	}
 	
 	public void makePolygons(){

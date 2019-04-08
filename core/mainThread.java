@@ -105,7 +105,7 @@ public class mainThread extends JFrame implements KeyListener, ActionListener, M
 		}
 		
 		frameIndex = 0;
-		frameInterval = 35;
+		frameInterval = 28;
 		lastDraw = 0;
 	
 		
@@ -129,6 +129,8 @@ public class mainThread extends JFrame implements KeyListener, ActionListener, M
         PPT_Lock = new Object();
         PPT = new postProcessingThread();
 		Thread theTread = new Thread(PPT);
+		
+		
 		
 		//start threads
 		t.start();
@@ -179,7 +181,7 @@ public class mainThread extends JFrame implements KeyListener, ActionListener, M
 			if(gameStarted)
 				gameFrame++;
 			
-			timeString = secondsToString(gameFrame/35);
+			timeString = secondsToString((int)(gameFrame*0.028));
 			
 			//handle user's interaction with game GUI
 			if(gameFrame == 1 && gameStarted){
@@ -249,6 +251,8 @@ public class mainThread extends JFrame implements KeyListener, ActionListener, M
 		//display polygon count and frame rate
 		//g2.setColor(Color.WHITE);
 		//g2.drawString("FPS: " + framePerSecond + "   "  +  "Polygons: "  + theAssetManager.polygonCount + "    " + "Thread1 Sleep: " + sleepTime +  "ms    " + "Thread2 Sleep: " + postProcessingThread.sleepTime +  "ms    " , 5, 15);
+		
+		System.out.println(framePerSecond);
 		
 		//copy the screen buffer to video memory
 		g.drawImage(bf, 0, 0, this);

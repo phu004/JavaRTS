@@ -446,7 +446,7 @@ public class mapAwarenessAI {
 		
 		float lightTankRatio = (float)(numberOfLightTanks_player)/(totalNumberOfPlayerUnits + 1);
 		
-		playerHasMostlyLightTanks = numberOfLightTanks_player > 5 &&  lightTankRatio > 0.8f;
+		playerHasMostlyLightTanks = (numberOfLightTanks_player > 5 &&  lightTankRatio > 0.8f) || (frameAI < 420 && numberOfLightTanks_player > 1 && lightTankRatio >= 0.75f);
 		playerHasMostlyHeavyTanks = numberOfHeavyTanks_player > 3 && (float)(numberOfHeavyTanks_player)/(totalNumberOfPlayerUnits) > 0.6f;
 		playerHasManyLightTanksButNoHeavyTank = lightTankRatio > 0.5 && lightTankRatio <=0.8 && numberOfHeavyTanks_player < 3;
 
@@ -475,11 +475,9 @@ public class mapAwarenessAI {
         	maxNumberOfStealthTanks_playerInLastFiveMinutes = 0;
         
         
-        //determine if a rush is feasible against the player
+        //if player fast expand then AI can rush the player
         canRushPlayer = false;
-        if(frameAI > 300 && frameAI < 360) {
-        	if(totalNumberOfPlayerUnits < 3)
-        		canRushPlayer = true;
+        if(frameAI >= 240 && frameAI < 360) {
         	
         	for(int i = 0; i < playerStructures.length; i++) {
         		if(playerStructures[i] != null && playerStructures[i].currentHP > 0) {
@@ -496,6 +494,7 @@ public class mapAwarenessAI {
         	}
         }
         
+   
         
         findTheMostVulnerablePlayerBase();
         

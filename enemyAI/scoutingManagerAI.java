@@ -168,9 +168,12 @@ public class scoutingManagerAI {
 				
 				
 				if(scout.type == 0) {
-					if(mainThread.ec.theDefenseManagerAI.minorThreatLocation.x != 0 || mainThread.ec.theDefenseManagerAI.majorThreatLocation.x != 0) {
+					if(mainThread.ec.theDefenseManagerAI.minorThreatLocation.x != 0 || mainThread.ec.theDefenseManagerAI.majorThreatLocation.x != 0 || (!mainThread.ec.theMapAwarenessAI.canRushPlayer && gameTime > 240)) {
 						if(scout.currentHP > 0) {
-							mainThread.ec.theUnitProductionAI.addLightTank((lightTank)scout);
+							
+							if(gameTime > 315)
+								mainThread.ec.theUnitProductionAI.addLightTank((lightTank)scout);
+							
 							scout.moveTo(mainThread.ec.theUnitProductionAI.rallyPoint.x, mainThread.ec.theUnitProductionAI.rallyPoint.z);
 							scout.currentCommand = solidObject.attackMove;
 							scout.secondaryCommand = solidObject.attackMove;
@@ -313,7 +316,7 @@ public class scoutingManagerAI {
 	
 	//build light tank as scout when stealth tank tech is locked
 	public boolean needLightTank(){
-		if((scout == null ) && !theBaseInfo.canBuildStealthTank && mainThread.ec.theDefenseManagerAI.minorThreatLocation.x == 0 && mainThread.ec.theDefenseManagerAI.majorThreatLocation.x == 0){
+		if(gameTime < 200 &&  scout == null  && !theBaseInfo.canBuildStealthTank && mainThread.ec.theDefenseManagerAI.minorThreatLocation.x == 0 && mainThread.ec.theDefenseManagerAI.majorThreatLocation.x == 0){
 			return true;
 		}
 		
@@ -322,7 +325,7 @@ public class scoutingManagerAI {
 	
 	public boolean needStealthTank(){
 		if(theBaseInfo.canBuildStealthTank){
-			if((scout == null || scout.currentHP <= 0 || scout.type != 6) && gameTime > 280){
+			if((scout == null || scout.currentHP <= 0 || scout.type != 6) && gameTime > 480){
 				return true;
 			}
 		}

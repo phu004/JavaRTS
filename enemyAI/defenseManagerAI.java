@@ -1,6 +1,7 @@
 package enemyAI;
 
 import core.baseInfo;
+import entity.factory;
 import core.mainThread;
 import core.vector;
 import entity.lightTank;
@@ -230,7 +231,7 @@ public class defenseManagerAI {
 		
 		
 		//take over controls of  defenders from combat AI to deal with minor threat
-		if(minorThreatLocation.x != 0 && numOfDefenders > 0) {
+		if(minorThreatLocation.x != 0 && numOfDefenders > 0 && gameTime > 480) {
 			takeOverDefendersFromCombatAI();
 			
 			//attack move to threat location
@@ -420,10 +421,45 @@ public class defenseManagerAI {
 					missileTurretDeployLocation.x = constructionYards[i].centre.x + (threatX - constructionYards[i].centre.x)/distanceToThreat*d;
 					missileTurretDeployLocation.z = constructionYards[i].centre.z + (threatZ - constructionYards[i].centre.z)/distanceToThreat*d;
 				}
-				
-				
 			}
 		}
+		
+		//tell the factory that are closest to the  threat location to build a repair drone
+		float threatX = 0;
+		float threatZ = 0;
+
+		if(minorThreatLocation.x !=0) {
+			threatX = minorThreatLocation.x;
+			threatZ = minorThreatLocation.z;
+		}
+		
+		if(majorThreatLocation.x !=0) { 
+			threatX = majorThreatLocation.x;
+			threatZ = majorThreatLocation.z;
+		}
+		
+		factory cloestFactory = null;
+		factory[] factories = mainThread.theAssetManager.factories;
+		float threatDistance = 999f;
+		for(int i = 0; i < factories.length; i++) {
+			if(factories[i] !=null && factories[i].teamNo !=0 && factories[i].currentHP > 0) {
+				float xPos = factories[i].centre.x;
+				float zPos = factories[i].centre.z;
+				double d = Math.sqrt( (threatX - xPos)*(threatX - xPos) + (threatZ - zPos)*(threatZ - zPos));
+				if(d < 5f && d < threatDistance) {
+					threatDistance = (float)d;
+					cloestFactory = factories[i];
+				}
+			}
+		}
+		if(cloestFactory != null && cloestFactory.numOfDrones == 0 && cloestFactory.numOfDroneOnQueue == 0) {
+			cloestFactory.cancelItemFromProductionQueue(factory.lightTankType);
+			cloestFactory.cancelItemFromProductionQueue(factory.rocketTankType);
+			cloestFactory.cancelItemFromProductionQueue(factory.stealthTankType);
+			cloestFactory.cancelItemFromProductionQueue(factory.heavyTankType);
+			cloestFactory.buildDrone();
+		}
+		
 		
 		//enable rapid fire ability for missiles turrets
 		if(communicationCenter.rapidfireResearched_enemy) {
@@ -451,6 +487,7 @@ public class defenseManagerAI {
 	}
 	
 	public float playerForceIsMovingTwoardsBase(vector location, vector direction) {
+		float threatDistance = 999f;
 		for(int i = 0; i < mainThread.theAssetManager.refineries.length;i++) {
 			if(mainThread.theAssetManager.refineries[i] != null && mainThread.theAssetManager.refineries[i].teamNo != 0) {
 				float xPos = mainThread.theAssetManager.refineries[i].nearestGoldMine.centre.x;
@@ -461,12 +498,19 @@ public class defenseManagerAI {
 				threatToBaseDirection.unit();
 				if(threatToBaseDirection.dot(direction) > 0.8) {
 				
-					return Math.max(3f, d - 3f);
+					float currentThreatDistance = Math.max(3f, d - 3f);
+					
+					if(currentThreatDistance <  threatDistance)
+						threatDistance = currentThreatDistance;
+				
 				}
 			}
 		}
 		
-		return -1;
+		if(threatDistance == 999)
+			return -1;
+		
+		return threatDistance;
 	}
 	
 	public void giveBackControlOfDefendersToCombatAI() {

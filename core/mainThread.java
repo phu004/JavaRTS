@@ -108,21 +108,13 @@ public class mainThread extends JFrame implements KeyListener, ActionListener, M
 		frameInterval = 28;
 		lastDraw = 0;
 	
-		
-		//Add key handler
-		panel.addKeyListener(this);
-		panel.addMouseMotionListener(this);
-		panel.addMouseListener(this);
-		panel.addFocusListener(this);
-		panel.requestFocus();
-		
 		//create main thread
 		t = new Ticker(0);
 		t.addActionListener(this);
 		
 		//create a daemon thread which will sleep for the duration of the game
-		//Thread   dt   =   new   Thread(new   DaemonThread() );
-       // dt.setDaemon(true);
+		Thread   dt   =   new   Thread(new   DaemonThread() );
+        dt.setDaemon(true);
       
         
         //create another thread to create post processing effects
@@ -134,7 +126,7 @@ public class mainThread extends JFrame implements KeyListener, ActionListener, M
 		
 		//start threads
 		t.start();
-		//dt.start(); 
+		dt.start(); 
 		theTread.start();
 	
   
@@ -148,6 +140,14 @@ public class mainThread extends JFrame implements KeyListener, ActionListener, M
 	
 	public void actionPerformed(ActionEvent e){	
 		if(frameIndex == 0) {
+			
+			//Add key handler
+			panel.addKeyListener(this);
+			panel.addMouseMotionListener(this);
+			panel.addMouseListener(this);
+			panel.addFocusListener(this);
+			panel.requestFocus();
+			
 			//create camera
 			Camera = new camera(new vector(3,2f,-1.25f), 0, 300);
 		
@@ -252,8 +252,6 @@ public class mainThread extends JFrame implements KeyListener, ActionListener, M
 		//g2.setColor(Color.WHITE);
 		//g2.drawString("FPS: " + framePerSecond + "   "  +  "Polygons: "  + theAssetManager.polygonCount + "    " + "Thread1 Sleep: " + sleepTime +  "ms    " + "Thread2 Sleep: " + postProcessingThread.sleepTime +  "ms    " , 5, 15);
 		
-		System.out.println(framePerSecond);
-		
 		//copy the screen buffer to video memory
 		g.drawImage(bf, 0, 0, this);
 	}
@@ -291,9 +289,9 @@ public class mainThread extends JFrame implements KeyListener, ActionListener, M
 			 inputHandler.rightKeyPressed = false;
 		 else if(e.getKeyCode() == KeyEvent.VK_CONTROL)
 			 inputHandler.controlKeyPressed = false;
-		 else if(e.getKeyCode() == KeyEvent.VK_ESCAPE)
+		 else if(e.getKeyCode() == KeyEvent.VK_ESCAPE) 
 				inputHandler.escapeKeyReleased = true;
-		 
+			
 		 inputHandler.handleKeyRelease(e.getKeyChar());
 	}
 

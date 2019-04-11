@@ -54,7 +54,7 @@ public class stealthTank extends solidObject{
 
 	public int bodyTurnRate = 10; 
 	public int turretTurnRate = 12;
-	public int myAttackCooldown= 80;
+	public int myAttackCooldown= 75;
 	
 	//once the  tank starts attacking, it exposed itself to the enemy
 	public int exposedCountDown;

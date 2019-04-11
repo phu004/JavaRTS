@@ -54,6 +54,8 @@ public class drone extends solidObject{
 	
 	public static vector armCenter, armDirection;
 	public vector armCenterClone, armDirectionClone;
+	
+	public int returnToIdlePositionCountdown;
 		
 		
 	public drone(vector origin, int bodyAngle, factory myFactory){
@@ -118,7 +120,7 @@ public class drone extends solidObject{
 
 	
 		if(tileCheckList == null){
-			tileCheckList = generateTileCheckList(11f);   
+			tileCheckList = generateTileCheckList(13f);   
 		}
 		
 		randomNumber = (int)(Math.random()*360);
@@ -339,6 +341,9 @@ public class drone extends solidObject{
 	//update the model 
 	public void update(){
 		
+		if(returnToIdlePositionCountdown > 0)
+			returnToIdlePositionCountdown--;
+		
 		//check if factory where the drone is spawned has been destroyed
 		if(myFactory.currentHP <= 0){
 			
@@ -372,7 +377,7 @@ public class drone extends solidObject{
 					centre.y+=0.005f;
 				}
 				
-				if(idlePosition.x != centre.x || idlePosition.z != centre.z){
+				if((idlePosition.x != centre.x || idlePosition.z != centre.z) && returnToIdlePositionCountdown == 0){
 					double distanceToDestination = Math.sqrt((idlePosition.x - centre.x)* (idlePosition.x - centre.x) + (idlePosition.z - centre.z)*(idlePosition.z - centre.z));
 					
 					if(distanceToDestination >= 0.2f){
@@ -441,6 +446,9 @@ public class drone extends solidObject{
 				}
 				
 			}else if(currentCommand == healUnit){
+				
+				returnToIdlePositionCountdown = 60;
+				
 				if(targetUnit.currentHP <=0 || getDistance(myFactory, targetUnit) >= serviceRadius){
 					targetUnit.myHealer = null;
 					targetUnit = null;

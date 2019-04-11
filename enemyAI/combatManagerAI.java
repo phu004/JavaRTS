@@ -93,8 +93,12 @@ public class combatManagerAI {
 		//assume player force gets stronger as time goes by
 		if(unrevealedPlayerForceStrength < 0)
 			unrevealedPlayerForceStrength = 0;
-		if(noPlayerActivityCountdown > 0 && mainThread.ec.theMapAwarenessAI.totalNumberOfPlayerUnits > 0)
-			unrevealedPlayerForceStrength+=0.075f;
+		if(noPlayerActivityCountdown > 0 && mainThread.ec.theMapAwarenessAI.totalNumberOfPlayerUnits > 0) {
+			if(frameAI < 360)
+				unrevealedPlayerForceStrength+=0.075f;
+			else
+				unrevealedPlayerForceStrength+=0.1f;
+		}
 		
 		if(withdrawUnitOutsideCombatRadiusCooldown > 0){
 			withdrawUnitOutsideCombatRadiusCooldown --;
@@ -116,6 +120,8 @@ public class combatManagerAI {
 		combatCenterX = mainThread.ec.theUnitProductionAI.combatAICenterX;
 		combatCenterZ = mainThread.ec.theUnitProductionAI.combatAICenterZ;
 		
+		
+		
 		if(Float.isNaN(combatCenterX) || Float.isNaN(combatCenterZ)) {
 		//	combatCenterX = 0;
 		//	combatCenterZ= 0;
@@ -134,11 +140,14 @@ public class combatManagerAI {
 			rallyPointChanged = true;
 		}
 		
+		
+		System.out.println(frameAI);
+		
 		int numberOfLightTanks_AI = mainThread.ec.theUnitProductionAI.numberOfLightTanksControlledByCombatAI;
 		int numberOfRocketTanks_AI = mainThread.ec.theUnitProductionAI.numberOfRocketTanksControlledByCombatAI;
 		int numberOfStealthTanks_AI = mainThread.ec.theUnitProductionAI.numberOfStealthTanksControlledByCombatAI;
 		int numberOfHeavyTanks_AI = mainThread.ec.theUnitProductionAI.numberOfHeavyTanksControlledByCombatAI;
-		unitCountLow = numberOfLightTanks_AI + numberOfRocketTanks_AI + numberOfStealthTanks_AI + numberOfHeavyTanks_AI * 2 < 9;
+		unitCountLow = (numberOfLightTanks_AI + numberOfRocketTanks_AI + numberOfStealthTanks_AI + numberOfHeavyTanks_AI * 2 < 9) && frameAI > 480;
 		
 		if(currentState == booming){
 			
@@ -262,11 +271,16 @@ public class combatManagerAI {
 			
 			if(currentState != aggressing) {
 				if(rallyPointChanged || Math.abs(myRallyPointX - combatCenterX) > 1 || Math.abs(myRallyPointZ - combatCenterZ) > 1){
+					
 					for(int i =0 ; i < troopsControlledByCombatAI.length; i++){
 						if(troopsControlledByCombatAI[i] != null && troopsControlledByCombatAI[i].currentHP > 0){
-							troopsControlledByCombatAI[i].attackMoveTo(myRallyPointX, myRallyPointZ);
-							troopsControlledByCombatAI[i].currentCommand = solidObject.attackMove;
-							troopsControlledByCombatAI[i].secondaryCommand = solidObject.attackMove;
+
+							if(Math.abs(troopsControlledByCombatAI[i].destinationX - myRallyPointX) > 0.25 || Math.abs(troopsControlledByCombatAI[i].destinationY - myRallyPointZ) > 0.25) {
+								
+								troopsControlledByCombatAI[i].attackMoveTo(myRallyPointX, myRallyPointZ);
+								troopsControlledByCombatAI[i].currentCommand = solidObject.attackMove;
+								troopsControlledByCombatAI[i].secondaryCommand = solidObject.attackMove;
+							}
 						}
 					}
 				}

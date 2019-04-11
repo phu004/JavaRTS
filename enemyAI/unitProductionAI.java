@@ -109,10 +109,10 @@ public class unitProductionAI {
 			}
 		}
 		if(z != 999999) {
-			if(mainThread.ec.theCombatManagerAI.shouldDefenceAggressively)
+			if(mainThread.ec.theCombatManagerAI.shouldDefenceAggressively && frameAI > 480)
 				rallyPoint.set(z - 2.5f, 0, z - 2.5f);
 			else
-				rallyPoint.set(x - 1.5f, 0, z - 1.5f);
+				rallyPoint.set(x - 2f, 0, z - 1.5f);
 		}else {
 			if(mainThread.theAssetManager.constructionYards[index] != null && mainThread.theAssetManager.constructionYards[index].teamNo !=0)
 				rallyPoint.set(mainThread.theAssetManager.constructionYards[index].centre.x - 2.5f, 0,  mainThread.theAssetManager.constructionYards[index].centre.z -2.5f);
@@ -120,10 +120,9 @@ public class unitProductionAI {
 		
 		//If the difficulty is set to normal or hard, set the rally point just outside of player's natural expansion. 
 		//So if the player is going for a fast expansion and don't have much units, the AI can perform a rush attack. 
-		if(frameAI < 360 && mainThread.ec.theCombatManagerAI.checkIfAIHasBiggerForce(1f)) {
-			rallyPoint.set(rushRallyPointX, 0,  rushRallyPointZ);
-		}
-		
+		//if((frameAI < 240 || (mainThread.ec.theMapAwarenessAI.canRushPlayer && frameAI < 360)) && mainThread.ec.theCombatManagerAI.checkIfAIHasBiggerForce(1f)) {
+		//	rallyPoint.set(rushRallyPointX, 0,  rushRallyPointZ);
+		//}
 		
 		//make sure not to over produce when the resource is running low
 		int maxNumOfUnitCanBeProduced =  theBaseInfo.currentCredit / 500 + 1;
@@ -163,7 +162,7 @@ public class unitProductionAI {
 		boolean playerHasManyLightTanksButNoHeavyTank = mainThread.ec.theMapAwarenessAI.playerHasManyLightTanksButNoHeavyTank;
 		boolean playerHasMostlyHeavyAndStealthTanks = mainThread.ec.theMapAwarenessAI.playerHasMostlyHeavyAndStealthTanks;
 		
-		if((numberOfRocketTanks_AI < 2 &&  frameAI > 300 ) || numberOfRocketTanks_AI < numberOfPlayerGunTurrets + numberOfPlayerMissileTurrets*1.5 || (gameData.getRandom() > 925 && !playerHasMostlyLightTanks)){
+		if((numberOfRocketTanks_AI < 2 &&  frameAI > 300 && !playerHasMostlyLightTanks) || numberOfRocketTanks_AI < numberOfPlayerGunTurrets + numberOfPlayerMissileTurrets*1.5 || (gameData.getRandom() > 925 && !playerHasMostlyLightTanks)){
 			currentProductionOrder = produceRocketTank;
 		}else if(theBaseInfo.canBuildHeavyTank &&
 				playerHasMostlyHeavyAndStealthTanks || 
@@ -179,8 +178,7 @@ public class unitProductionAI {
 			currentProductionOrder = produceLightTank;
 		}
 		
-		
-		
+	
 		//make decision on what tech to research
 		if(mainThread.ec.theBuildingManagerAI.theBaseInfo.numberOfCommunicationCenter > 0) {
 			if(mainThread.ec.theDefenseManagerAI.needMissileTurret || theBaseInfo.currentCredit > 1500) {
@@ -205,17 +203,17 @@ public class unitProductionAI {
 		if(mainThread.ec.theBuildingManagerAI.theBaseInfo.numberOfTechCenter > 0){	
 					
 			
-			if(currentProductionOrder == produceStealthTank)
+			/*if(currentProductionOrder == produceStealthTank)
 				System.out.println("should make stealth tank now--------------");
 			if(currentProductionOrder == produceHeavyTank)
 				System.out.println("should make Heavy tank now-----------------");
 			if(currentProductionOrder == produceRocketTank)
 				System.out.println("should make Rocket tank now----------------");
-			
+			*/
 			
 			//Immediately  start  stealth tank upgrades  when a tech center is built
 			if(!techCenter.stealthTankResearched_enemy){
-				if(techCenter.stealthTankResearchProgress_enemy == 255 && ((numberOfLightTanks_player + numberOfStealthTanks_player> 8) ||  theBaseInfo.currentCredit > 2000 || numberOfStealthTanks_AI > 6)){
+				if(techCenter.stealthTankResearchProgress_enemy == 255){
 					techCenter.cancelResearch(1);
 					techCenter.researchStealthTank(1);
 					System.out.println("----------------------------AI starts researching stealth tank------------------------------------");

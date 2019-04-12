@@ -113,6 +113,10 @@ public class unitProductionAI {
 				rallyPoint.set(z - 2.5f, 0, z - 2.5f);
 			else
 				rallyPoint.set(x - 2f, 0, z - 1.5f);
+			
+			if(frameAI < 240) {
+				rallyPoint.set(mainThread.theAssetManager.goldMines[5].centre);
+			}
 		}else {
 			if(mainThread.theAssetManager.constructionYards[index] != null && mainThread.theAssetManager.constructionYards[index].teamNo !=0)
 				rallyPoint.set(mainThread.theAssetManager.constructionYards[index].centre.x - 2.5f, 0,  mainThread.theAssetManager.constructionYards[index].centre.z -2.5f);
@@ -162,7 +166,7 @@ public class unitProductionAI {
 		boolean playerHasManyLightTanksButNoHeavyTank = mainThread.ec.theMapAwarenessAI.playerHasManyLightTanksButNoHeavyTank;
 		boolean playerHasMostlyHeavyAndStealthTanks = mainThread.ec.theMapAwarenessAI.playerHasMostlyHeavyAndStealthTanks;
 		
-		if((numberOfRocketTanks_AI < 2 &&  frameAI > 300 && !playerHasMostlyLightTanks) || numberOfRocketTanks_AI < numberOfPlayerGunTurrets + numberOfPlayerMissileTurrets*1.5 || (gameData.getRandom() > 925 && !playerHasMostlyLightTanks)){
+		if((numberOfRocketTanks_AI < 2 &&  (frameAI > 300 || frameAI > 170 && frameAI < 240 && mainThread.ec.theMapAwarenessAI.numberOfConstructionYard_player > 0) && !playerHasMostlyLightTanks) || numberOfRocketTanks_AI < numberOfPlayerGunTurrets + numberOfPlayerMissileTurrets*1.5 || (gameData.getRandom() > 925 && !playerHasMostlyLightTanks)){
 			currentProductionOrder = produceRocketTank;
 		}else if(theBaseInfo.canBuildHeavyTank &&
 				playerHasMostlyHeavyAndStealthTanks || 

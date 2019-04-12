@@ -165,20 +165,34 @@ public class scoutingManagerAI {
 						
 					}
 				}
-				
+			
+			
 				
 				if(scout.type == 0) {
+					
+					
+					
+					
 					if(mainThread.ec.theDefenseManagerAI.minorThreatLocation.x != 0 || mainThread.ec.theDefenseManagerAI.majorThreatLocation.x != 0 || (!mainThread.ec.theMapAwarenessAI.canRushPlayer && gameTime > 240)) {
 						if(scout.currentHP > 0) {
 							
-							if(gameTime > 315)
+							if(gameTime > 310)
 								mainThread.ec.theUnitProductionAI.addLightTank((lightTank)scout);
 							
 							scout.moveTo(mainThread.ec.theUnitProductionAI.rallyPoint.x, mainThread.ec.theUnitProductionAI.rallyPoint.z);
 							scout.currentCommand = solidObject.attackMove;
 							scout.secondaryCommand = solidObject.attackMove;
+							scout = null;
 						}
+					}else if(mainThread.ec.theMapAwarenessAI.canRushPlayer && gameTime > 290) {
+						mainThread.ec.theUnitProductionAI.addLightTank((lightTank)scout);
+						
+						scout.moveTo(mainThread.ec.theUnitProductionAI.rallyPoint.x, mainThread.ec.theUnitProductionAI.rallyPoint.z);
+						scout.currentCommand = solidObject.attackMove;
+						scout.secondaryCommand = solidObject.attackMove;
+						scout = null;
 					}
+					
 					return;
 				}
 				

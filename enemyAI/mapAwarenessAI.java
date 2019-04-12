@@ -4,6 +4,7 @@ import core.AssetManager;
 import core.baseInfo;
 import core.mainThread;
 import entity.goldMine;
+import entity.harvester;
 import entity.solidObject;
 import core.vector;
 
@@ -50,6 +51,7 @@ public class mapAwarenessAI {
 	public boolean playerHasManyLightTanksButNoHeavyTank;
 	public boolean playerHasMostlyHeavyAndStealthTanks;
 	public boolean canRushPlayer;
+	public boolean playerIsFastExpanding;
 	
 	public solidObject[] mapAsset;
 	public boolean[] visionMap;
@@ -487,12 +489,35 @@ public class mapAwarenessAI {
         			float z2 = playerNaturalLocation.z;
         			
         			if(Math.sqrt((x1-x2)*(x1-x2) + (z1-z2)*(z1-z2)) < 3.5f) {
-        				canRushPlayer = true;
+        				playerIsFastExpanding = true;
         				break;
         			}
         		}
         	}
+        	
+        	harvester[] harvesters = mainThread.theAssetManager.harvesters;
+        	for(int i = 0; i < harvesters.length; i++) {
+        		if(harvesters[i] != null && harvesters[i].currentHP > 0) {
+        			float x1 = harvesters[i].centre.x;
+        			float z1 = harvesters[i].centre.z;
+        			float x2 = playerNaturalLocation.x;
+        			float z2 = playerNaturalLocation.z;
+        			
+        			if(Math.sqrt((x1-x2)*(x1-x2) + (z1-z2)*(z1-z2)) < 3.5f) {
+        				playerIsFastExpanding = true;
+        				break;
+        			}
+        		}
+        		
+        		
+        	}
+        	
         }
+        
+        if(playerIsFastExpanding) {
+        	canRushPlayer = true;
+        }
+      
         
    
         

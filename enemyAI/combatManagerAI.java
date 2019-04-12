@@ -121,7 +121,6 @@ public class combatManagerAI {
 		combatCenterZ = mainThread.ec.theUnitProductionAI.combatAICenterZ;
 		
 		
-		
 		if(Float.isNaN(combatCenterX) || Float.isNaN(combatCenterZ)) {
 		//	combatCenterX = 0;
 		//	combatCenterZ= 0;
@@ -140,8 +139,6 @@ public class combatManagerAI {
 			rallyPointChanged = true;
 		}
 		
-		
-		System.out.println(frameAI);
 		
 		int numberOfLightTanks_AI = mainThread.ec.theUnitProductionAI.numberOfLightTanksControlledByCombatAI;
 		int numberOfRocketTanks_AI = mainThread.ec.theUnitProductionAI.numberOfRocketTanksControlledByCombatAI;

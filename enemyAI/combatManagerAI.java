@@ -121,6 +121,9 @@ public class combatManagerAI {
 		combatCenterZ = mainThread.ec.theUnitProductionAI.combatAICenterZ;
 		
 		
+		//System.out.println(combatCenterX + "   "  + combatCenterZ + "   " + currentState + "   "  + numberOfUnitInCombatRadius);
+		
+		
 		if(Float.isNaN(combatCenterX) || Float.isNaN(combatCenterZ)) {
 		//	combatCenterX = 0;
 		//	combatCenterZ= 0;

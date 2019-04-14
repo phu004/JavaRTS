@@ -166,7 +166,7 @@ public class unitProductionAI {
 		boolean playerHasManyLightTanksButNoHeavyTank = mainThread.ec.theMapAwarenessAI.playerHasManyLightTanksButNoHeavyTank;
 		boolean playerHasMostlyHeavyAndStealthTanks = mainThread.ec.theMapAwarenessAI.playerHasMostlyHeavyAndStealthTanks;
 		
-		if((numberOfRocketTanks_AI < 2 &&  (frameAI > 300 || frameAI > 170 && frameAI < 240 && mainThread.ec.theMapAwarenessAI.numberOfConstructionYard_player > 0) && !playerHasMostlyLightTanks) || numberOfRocketTanks_AI < numberOfPlayerGunTurrets + numberOfPlayerMissileTurrets*1.5 || (gameData.getRandom() > 925 && !playerHasMostlyLightTanks)){
+		if((numberOfRocketTanks_AI < 2 &&  (frameAI > 400 || frameAI > 170 && frameAI < 240 && mainThread.ec.theMapAwarenessAI.numberOfConstructionYard_player > 0) && !playerHasMostlyLightTanks) || numberOfRocketTanks_AI < numberOfPlayerGunTurrets + numberOfPlayerMissileTurrets*1.5 || (gameData.getRandom() > 925 && !playerHasMostlyLightTanks)){
 			currentProductionOrder = produceRocketTank;
 		}else if(theBaseInfo.canBuildHeavyTank &&
 				playerHasMostlyHeavyAndStealthTanks || 

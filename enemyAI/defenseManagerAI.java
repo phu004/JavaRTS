@@ -215,7 +215,9 @@ public class defenseManagerAI {
 				giveBackControlOfDefendersToCombatAI();
 				majorThreatCooldown = 20;
 				majorThreatLocation.set(mainPlayerForceLocation);
-			}else {
+			}
+			/*
+			else {
 				float d = playerForceIsMovingTwoardsBase(mainPlayerForceLocation, mainPlayerForceDirection);
 				if(d != -1) {
 					giveBackControlOfDefendersToCombatAI();
@@ -224,7 +226,7 @@ public class defenseManagerAI {
 					majorThreatLocation.add(mainPlayerForceDirection, d);
 				}
 			}
-			
+			*/
 		}
 		
 		

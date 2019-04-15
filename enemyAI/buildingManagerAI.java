@@ -210,7 +210,7 @@ public class buildingManagerAI {
 						}
 					}
 				
-					//then reset factory production if still dont have enough credit to finish building
+					//then reset factory production if still dont have enough credit to finish refinery
 					hasEnoughCredit = theBaseInfo.currentCredit > 1200 -constructionYards[i].creditSpentOnBuilding;
 					if(!hasEnoughCredit) {
 						factory[] factories = mainThread.theAssetManager.factories;

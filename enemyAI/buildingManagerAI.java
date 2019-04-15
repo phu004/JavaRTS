@@ -103,7 +103,6 @@ public class buildingManagerAI {
 		
 		powerPlantUnderConstruction = buildingUnderProduction(101);
 		
-		
 		//build power plant, if the base is in lower power  status or we have more money to spend on make extra one
 		if(theBaseInfo.canBuildRefinery == false || theBaseInfo.lowPower || (theBaseInfo.currentPowerConsumption >= (theBaseInfo.currentPowerLevel - 500) && theBaseInfo.currentCredit > 500 && theBaseInfo.numberOfPowerPlant >=2 && frameIndex > 300)){
 			addBuildingToQueue(101);
@@ -190,7 +189,43 @@ public class buildingManagerAI {
 						h.goToTheNearestGoldMine();  
 						constructionYards[i].finishDeployment();
 					}
+				}else if(constructionYards[i].refineryProgress < 240 && frameIndex > 300) {
+					//if there is not enough money to finish building the refinery, reset all other production.
+				
+
+					// first reset construction yard production
+					boolean hasEnoughCredit = theBaseInfo.currentCredit > 1200 -constructionYards[i].creditSpentOnBuilding;
+					if(!hasEnoughCredit) {
+						for(int j = 0; j < constructionYards.length; j++) {
+							if(constructionYards[j] != null && constructionYards[j] != constructionYards[i] && constructionYards[j].teamNo != 0) {
+								int currentBuildingType = constructionYards[j].currentBuildingType;
+								if(currentBuildingType != -1) {
+									constructionYards[j].cancelBuilding();
+									constructionYards[j].build(currentBuildingType);
+								}
+								hasEnoughCredit = theBaseInfo.currentCredit > 1200 -constructionYards[i].creditSpentOnBuilding;
+								if(hasEnoughCredit)
+									break;
+							}
+						}
+					}
+				
+					//then reset factory production if still dont have enough credit to finish building
+					hasEnoughCredit = theBaseInfo.currentCredit > 1200 -constructionYards[i].creditSpentOnBuilding;
+					if(!hasEnoughCredit) {
+						factory[] factories = mainThread.theAssetManager.factories;
+						for(int j = 0; j < factories.length; j++) {
+							if(factories[j] != null && factories[j].teamNo != 0) {
+								factories[j].cancelBuilding();
+							}
+							hasEnoughCredit = theBaseInfo.currentCredit > 1200 -constructionYards[i].creditSpentOnBuilding;
+							if(hasEnoughCredit)
+								break;
+						}
+					}
+					
 				}
+				
 				
 				//deploy factory
 				if(constructionYards[i].factoryProgress == 240){
@@ -613,7 +648,7 @@ public class buildingManagerAI {
 		
 		refinery[] refineries = mainThread.theAssetManager.refineries;
 		for(int i = 0; i < refineries.length; i++){
-			if(refineries[i] != null && refineries[i].teamNo != 0 && refineries[i].nearestGoldMine != null &&  refineries[i].nearestGoldMine.goldDeposite > 10000){
+			if(refineries[i] != null && refineries[i].teamNo != 0 && refineries[i].nearestGoldMine != null &&  refineries[i].nearestGoldMine.goldDeposite > 5000){
 				numberOfFunctionalRefinery++;
 			}
 		}

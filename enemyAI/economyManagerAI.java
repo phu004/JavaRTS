@@ -39,7 +39,6 @@ public class economyManagerAI {
 				
 		}
 		
-		
 		//find an ideal goldmine 
 		goldMine[] goldMines = mainThread.theAssetManager.goldMines;
 		constructionYard[] constructionYards = mainThread.theAssetManager.constructionYards;
@@ -116,7 +115,7 @@ public class economyManagerAI {
 						}
 						
 						//only go to the gold mine that has a refinery nearby and its not saturated with harvesters
-						if(numberOfHarvestersOnTheMine < 6)
+						if(numberOfHarvestersOnTheMine < 6 && hasRefineryNearby)
 							o.myGoldMine = preferedGoldMine;
 					}
 				}

@@ -284,6 +284,13 @@ public class goldMine extends solidObject{
 				for(int i = 0; i < polygons.length; i++)
 					polygons[i].myTexture = mainThread.textures[textureIndex];
 			}
+		}else {
+			if(textureIndex == 41 && goldDeposite == maxDeposite) {
+				textureIndex = 39;
+				for(int i = 0; i < polygons.length; i++) {
+					polygons[i].myTexture = mainThread.textures[textureIndex];
+				}
+			}
 		}
 			
 			

@@ -194,7 +194,7 @@ public class unitProductionAI {
 				}
 			}
 			
-			if(mainThread.ec.theEconomyManagerAI.numberOfharvesters > 6 && theBaseInfo.currentCredit > 1500) {
+			if(mainThread.ec.theEconomyManagerAI.numberOfharvesters >= 6 && theBaseInfo.currentCredit > 1500) {
 				if(!communicationCenter.harvesterSpeedResearched_enemy) {
 					if(communicationCenter.harvesterSpeedResearchProgress_enemy == 255){
 						communicationCenter.researchHarvesterSpeed(1);

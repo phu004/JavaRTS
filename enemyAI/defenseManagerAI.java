@@ -216,7 +216,7 @@ public class defenseManagerAI {
 				majorThreatCooldown = 20;
 				majorThreatLocation.set(mainPlayerForceLocation);
 			}
-			/*
+			
 			else {
 				float d = playerForceIsMovingTwoardsBase(mainPlayerForceLocation, mainPlayerForceDirection);
 				if(d != -1) {
@@ -226,7 +226,7 @@ public class defenseManagerAI {
 					majorThreatLocation.add(mainPlayerForceDirection, d);
 				}
 			}
-			*/
+			
 		}
 		
 		
@@ -403,7 +403,7 @@ public class defenseManagerAI {
 				//find deploy location of gun turret
 				if(threatX != 0 && distanceToThreat < 4.75 && numOfGunTurretNearThreat < (float)mainPlayerForceSize/3) {
 					
-					float d = 1.75f;  //minimum deploy distance from conyard
+					float d = 1.85f;  //minimum deploy distance from conyard
 					if(distanceToThreat > d + gunTurret.attackRange)
 						d = distanceToThreat - gunTurret.attackRange;
 					
@@ -416,7 +416,7 @@ public class defenseManagerAI {
 				//find deploy location of missile turret
 				if(threatX != 0 && distanceToThreat < 5.15 && (numOfMissileTurretNearThreat < mainPlayerForceSize/6 || !gunTurretAlreadyInQueue)) {
 					
-					float d = 1.35f;  //minimum deploy distance from conyard
+					float d = 1.65f;  //minimum deploy distance from conyard
 					if(distanceToThreat > d + missileTurret.attackRange)
 						d = distanceToThreat - missileTurret.attackRange;
 					
@@ -500,7 +500,7 @@ public class defenseManagerAI {
 				threatToBaseDirection.unit();
 				if(threatToBaseDirection.dot(direction) > 0.8) {
 				
-					float currentThreatDistance = Math.max(3f, d - 3f);
+					float currentThreatDistance = Math.max(3f, d - 2f);
 					
 					if(currentThreatDistance <  threatDistance)
 						threatDistance = currentThreatDistance;

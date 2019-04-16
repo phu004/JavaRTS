@@ -364,7 +364,7 @@ public class combatManagerAI {
 			
 			//check if the player force has become stronger than the AI during the marching towards attack position
 			//System.out.println("distanceToTarget: "  + distanceToTarget);
-			if(checkIfAIHasBiggerForce(1.2f) == false && distanceToTarget > 5){
+			if(checkIfAIHasBiggerForce(1.5f) == false && distanceToTarget > 5){
 				playerHasBecomeStrongerThanAIDuringMarching = true;
 			}
 			
@@ -711,7 +711,7 @@ public class combatManagerAI {
 		
 		double playerForceStrength = unrevealedPlayerForceStrength + numberOfLightTanks_player + 0.75f*numberOfRocketTanks_player + 1.5*numberOfStealthTanks_player +  3* numberOfHeavyTanks_player;
 		
-		//System.out.println("unrevealedPlayerForceStrength" + unrevealedPlayerForceStrength +  "    "  + "enemyAIForceStrength " + enemyAIForceStrength + "    "  + "playerForceStrength" + playerForceStrength);
+		System.out.println("unrevealedPlayerForceStrength" + unrevealedPlayerForceStrength +  "    "  + "enemyAIForceStrength " + enemyAIForceStrength + "    "  + "playerForceStrength" + playerForceStrength);
 			
 		return enemyAIForceStrength > 0 && playerForceStrength/enemyAIForceStrength < ratio;
 	}

@@ -113,7 +113,7 @@ public class textRenderer {
 		
 	}
 	
-	public void drawMenuText(int xPos, int yPos, char[] theText, int[] screen, int r, int g, int b) {
+	public void drawMenuText(int xPos, int yPos, char[] theText, int[] screen, int r, int g, int b, int filterBrightness) {
 		int pixel, SpriteValue, screenValue, overflow, screenIndex;
 		int MASK7Bit = 0xFEFEFF;
 		int xPos_initial = xPos;
@@ -133,9 +133,12 @@ public class textRenderer {
 					screenIndex = pos + k + j*768;
 					screenValue = screen[screenIndex];
 					SpriteValue = menuChars[charIndex][k+ j*w]&255; 
+					
+					if(SpriteValue < filterBrightness)
+						continue;
+					
 					SpriteValue = (r*SpriteValue/256) << 16 | (g*SpriteValue/256) << 8 | (b*SpriteValue/256);
-					
-					
+		
 					pixel=(SpriteValue&MASK7Bit)+(screenValue&MASK7Bit);
 					overflow=pixel&0x1010100;
 					overflow=overflow-(overflow>>8);

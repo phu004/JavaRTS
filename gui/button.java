@@ -177,9 +177,9 @@ public class button {
 		//draw text
 		textRenderer tRenderer = postProcessingThread.theTextRenderer;
 		if(text != "x")
-			tRenderer.drawMenuText(xPos+ (width-tRenderer.getMenuTextWidth(theText))/2,yPos+6,theText, screen, 255,255,255);
+			tRenderer.drawMenuText(xPos+ (width-tRenderer.getMenuTextWidth(theText))/2,yPos+6,theText, screen, 255,255,255,11);
 		else{
-			tRenderer.drawMenuText(xPos+ (width-tRenderer.getMenuTextWidth(theText))/2-1,yPos,theText, screen, 255,255,255);
+			tRenderer.drawMenuText(xPos+ (width-tRenderer.getMenuTextWidth(theText))/2-1,yPos,theText, screen, 255,255,255, 11);
 		}
 		
 		

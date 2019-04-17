@@ -50,7 +50,7 @@ public class mainThread extends JFrame implements KeyListener, ActionListener, M
 	public static short[] displacementBuffer;
 	public static short[] displacementBuffer2;
 	
-	public static boolean leftMouseButtonReleased, escapeKeyReleased;
+	public static boolean leftMouseButtonReleased, escapeKeyPressed;
 	public static String buttonAction; 
 	public static int menuStatus = 0;
 	public static final int mainMenu = 0;
@@ -516,6 +516,9 @@ public class mainThread extends JFrame implements KeyListener, ActionListener, M
 				e1.printStackTrace();
 			}
 		}
+		
+		
+		
 		lastDraw=System.currentTimeMillis();
 	}
 	

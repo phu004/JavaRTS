@@ -78,7 +78,7 @@ public class postProcessingThread implements Runnable{
 	public static boolean gamePaused, gameStarted, gameEnded;
 	
 	public static int mouse_x, mouse_y;
-	public static boolean leftMouseButtonReleased, escapeKeyReleased;
+	public static boolean leftMouseButtonReleased, escapeKeyPressed;
 	public static String buttonAction;
 	
 	public static String timeString;
@@ -993,9 +993,9 @@ public class postProcessingThread implements Runnable{
 		mouse_x = inputHandler.mouse_x;
 		mouse_y = inputHandler.mouse_y;
 		leftMouseButtonReleased = mainThread.leftMouseButtonReleased;
-		escapeKeyReleased = mainThread.escapeKeyReleased;
+		escapeKeyPressed = mainThread.escapeKeyPressed;
 		mainThread.leftMouseButtonReleased = false;
-		mainThread.escapeKeyReleased = false;
+		mainThread.escapeKeyPressed = false;
 		
 		//feed main thread with button action
 		mainThread.buttonAction = buttonAction;

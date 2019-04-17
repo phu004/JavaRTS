@@ -711,7 +711,7 @@ public class combatManagerAI {
 		
 		double playerForceStrength = unrevealedPlayerForceStrength + numberOfLightTanks_player + 0.75f*numberOfRocketTanks_player + 1.5*numberOfStealthTanks_player +  3* numberOfHeavyTanks_player;
 		
-		System.out.println("unrevealedPlayerForceStrength" + unrevealedPlayerForceStrength +  "    "  + "enemyAIForceStrength " + enemyAIForceStrength + "    "  + "playerForceStrength" + playerForceStrength);
+		//System.out.println("unrevealedPlayerForceStrength" + unrevealedPlayerForceStrength +  "    "  + "enemyAIForceStrength " + enemyAIForceStrength + "    "  + "playerForceStrength" + playerForceStrength);
 			
 		return enemyAIForceStrength > 0 && playerForceStrength/enemyAIForceStrength < ratio;
 	}

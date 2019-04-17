@@ -1,6 +1,7 @@
 package gui;
 
 import core.mainThread;
+import core.playerCommander;
 import entity.*;
 
 //this class handles player's interaction with the sidebar
@@ -82,8 +83,6 @@ public class sideBarManager {
 		}
 		
 		
-		
-		
 		//side bar will be interactive only if the selected units are the same type
 		for(int i = 0; i < selectedUnits.length;i++){
 			if(selectedUnits[i] != null && selectedUnits[i].teamNo == 0){
@@ -117,6 +116,39 @@ public class sideBarManager {
 			}
 		}
 		
+		
+		//check if there is only one construction yard among the selected objects
+		int numOfselectedConstructionYard = 0;
+		solidObject selecterdConyard = null;
+		for(int i = 0; i < selectedUnits.length;i++){
+			if(selectedUnits[i] != null && selectedUnits[i].teamNo == 0 && selectedUnits[i].currentHP > 0){
+				if(selectedUnits[i].type == 104) {
+					numOfselectedConstructionYard++;
+					selecterdConyard = selectedUnits[i];
+				}
+			}
+		}
+		if(numOfselectedConstructionYard == 1) {
+			buildingSelected = true;
+			selectedObject = selecterdConyard;
+		}
+		
+		//check if there is only one factory among the selected objects
+		int numOfselectedFactory = 0;
+		solidObject selecterdFactory = null;
+		for(int i = 0; i < selectedUnits.length;i++){
+			if(selectedUnits[i] != null && selectedUnits[i].teamNo == 0 && selectedUnits[i].currentHP > 0){
+				if(selectedUnits[i].type == 105) {
+					numOfselectedFactory++;
+					selecterdFactory = selectedUnits[i];
+				}
+			}
+		}
+		if(numOfselectedFactory >= 1 && numOfselectedConstructionYard != 1) {
+			buildingSelected = true;
+			selectedObject = selecterdFactory;
+		}
+
 		
 		//give the player option to repair, if only building(s) are selected
 		if(buildingSelected){
@@ -193,14 +225,22 @@ public class sideBarManager {
 			
 			
 			//handle factory side bar interaction
-			if(selectedObject.type == 105){
+			if(selectedObject.type == 105 && !(numOfselectedConstructionYard == 1)){
 				onlyFactorySelected = true;
+				for(int i = 0; i < selectedUnits.length; i++) {
+					if(selectedUnits[i] != null && selectedUnits[i].teamNo == 0 && selectedUnits[i].currentHP > 0)
+						if(selectedUnits[i].type == 0 || selectedUnits[i].type == 1 || selectedUnits[i].type == 2 || selectedUnits[i].type == 3 || selectedUnits[i].type == 6 || selectedUnits[i].type == 7) {
+							onlyFactorySelected = false;
+							break;
+						}
+				}
+				
 				
 				factoryRallyOnSameGoldMine = true;
 				boolean firstFactory = true;
 				goldMine o = null;
 				for(int i = 0; i < selectedUnits.length;i++){
-					if(selectedUnits[i] != null){
+					if(selectedUnits[i] != null && selectedUnits[i].type == 105){
 						factory f = (factory)(selectedUnits[i]);
 						if(firstFactory){
 							o = f.targetGoldMine;
@@ -217,7 +257,7 @@ public class sideBarManager {
 				if(mainThread.pc.numberOfSelectedUnits != 0){
 					factory f = null;
 					for(int i = 0; i < selectedUnits.length;i++){
-						if(selectedUnits[i] != null){
+						if(selectedUnits[i] != null && selectedUnits[i].type == 105){
 							f = (factory)selectedUnits[i];
 							
 							//handle light tank building progress and display info
@@ -583,15 +623,10 @@ public class sideBarManager {
 			if(selectedObject.type == 104){
 				
 				//can only interact with one construction yard at a time
-				if(mainThread.pc.numberOfSelectedUnits == 1){
+				if(numOfselectedConstructionYard == 1){
 					
-					constructionYard cy = null;
-					for(int i = 0; i < selectedUnits.length;i++){
-						if(selectedUnits[i] != null){
-							cy = (constructionYard)selectedUnits[i];
-							break;
-						}
-					}
+					constructionYard cy = (constructionYard)selecterdConyard;
+					
 					
 					//handle power plant building progress and display info
 					if(cy.canBuildPowerPlant){

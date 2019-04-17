@@ -12,7 +12,7 @@ public class inputHandler {
 
 	public static int mouse_x, mouse_y,mouse_x0, mouse_x1, mouse_y0, mouse_y1, cameraMovementAngle;
 	
-	public static boolean mouseIsInsideScreen, userIsHoldingA;
+	public static boolean mouseIsInsideScreen, userIsHoldingA, userIsHoldingC, userIsHoldingF;
 	
 	public static boolean leftKeyPressed, 
 	                      rightKeyPressed, 
@@ -22,9 +22,12 @@ public class inputHandler {
 	                      leftMouseButtonReleased, 
 	                      rightMouseButtonReleased, 
 	                      H_pressed,
-	                      A_pressed, 
+	                      A_pressed,
+	                      C_pressed,
+	                      F_pressed,
 	                      escapeKeyPressed,
 	                      escapeKeyReleased;
+	            
 	                  
 	public static int numberTyped;
 	
@@ -35,8 +38,12 @@ public class inputHandler {
 	
 	public static int inputCounter, inputBufferIndex, keyReleaseCounter, keyReleaseBufferIndex;
 	
+	public static int escapePressedCooldown;
+	
 	public static void processInput(){
 		
+		if(escapePressedCooldown > 0)
+			escapePressedCooldown --;
 		
 		//read input char
 		int theCounter = inputCounter;  
@@ -56,6 +63,16 @@ public class inputHandler {
 				if(c == 'a' || c == 'A'){
 					A_pressed = true;
 				}
+				
+				if(c == 'c' || c == 'C'){
+					
+					C_pressed = true;
+				}
+				
+				if(c == 'f' || c == 'F'){
+					F_pressed = true;
+				}
+				
 				
 				if(c >=49 && c <=53){
 					numberTyped = c - 48;
@@ -81,6 +98,15 @@ public class inputHandler {
 				A_pressed = true;
 			}
 			
+			if(c == 'c' || c == 'C'){
+				
+				C_pressed = true;
+			}
+			
+			if(c == 'f' || c == 'F'){
+				F_pressed = true;
+			}
+			
 			if(c >=49 && c <=53){
 				numberTyped = c - 48;
 			}
@@ -104,6 +130,15 @@ public class inputHandler {
 					userIsHoldingA = false;
 					
 				}
+				if(c == 'c' || c == 'C'){
+					C_pressed = false;
+					userIsHoldingC = false;
+					
+				}
+				if(c == 'f' || c == 'F'){
+					F_pressed = false;
+					userIsHoldingF = false;
+				}
 				keyReleaseBufferIndex++;
 			}
 			keyReleaseBufferIndex = 0;
@@ -117,8 +152,17 @@ public class inputHandler {
 			if(c == 'a' || c == 'A'){
 				A_pressed = false;
 				userIsHoldingA = false;
+			}
+			if(c == 'c' || c == 'C'){
+				C_pressed = false;
+				userIsHoldingC = false;
 				
 			}
+			if(c == 'f' || c == 'F'){
+				F_pressed = false;
+				userIsHoldingF = false;
+			}
+			
 			keyReleaseBufferIndex++;
 		}
 		
@@ -240,17 +284,33 @@ public class inputHandler {
 				}
 				
 			}
+			if(C_pressed) {
+				if(!userIsHoldingC) {
+					mainThread.pc.toggleConyard = true;
+					userIsHoldingC = true;
+				}
+			}
+			if(F_pressed) {
+				if(!userIsHoldingF) {
+					mainThread.pc.toggleFactory = true;
+					userIsHoldingF = true;
+				}
+			}
+			
 			
 			//handle escape key
-			if(escapeKeyReleased && mainThread.menuStatus != mainThread.helpMenu) {
+			if(escapeKeyPressed && escapePressedCooldown == 0 && mainThread.menuStatus != mainThread.helpMenu) {
 				mainThread.gamePaused = true;  //if game is running, pause the game when esc key is hit
+				escapePressedCooldown = 5;
 				
 			}
 			
 		}else {
 			//handle event when game is paused
-			if((escapeKeyReleased || mainThread.buttonAction == "unpauseGame") &&  mainThread.gamePaused && mainThread.gameStarted && mainThread.menuStatus != mainThread.helpMenu)
+			if(((escapeKeyPressed && escapePressedCooldown == 0)|| mainThread.buttonAction == "unpauseGame") &&  mainThread.gamePaused && mainThread.gameStarted && mainThread.menuStatus != mainThread.helpMenu) {
 				mainThread.gamePaused = false; //if game is paused, unpause the game when esc key is hit
+				escapePressedCooldown = 5;
+			}
 			
 			//quit the game when the quit button is pressed
 			if(!mainThread.gameStarted) {
@@ -285,8 +345,8 @@ public class inputHandler {
 		if(leftMouseButtonReleased)
 			mainThread.leftMouseButtonReleased = true;
 		
-		if(escapeKeyReleased)
-			mainThread.escapeKeyReleased = true;
+		if(escapeKeyPressed)
+			mainThread.escapeKeyPressed = true;
 		
 		mouseIsInsideScreen = false;
 		leftMouseButtonPressed = false;
@@ -294,10 +354,12 @@ public class inputHandler {
 		leftMouseButtonReleased = false;
 		rightMouseButtonReleased = false;
 		escapeKeyPressed = false;
-		escapeKeyReleased = false;
+		
 		
 		A_pressed = false;
 		H_pressed = false;
+		C_pressed = false;
+		F_pressed = false;
 		numberTyped = 0;
 		
 	}

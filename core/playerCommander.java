@@ -1,14 +1,12 @@
-package gui;
+package core;
 
 import java.awt.Rectangle;
 
-import core.AssetManager;
-import core.baseInfo;
-import core.camera;
-import core.mainThread;
-import core.vector;
 import entity.constructionYard;
+import entity.factory;
 import entity.solidObject;
+import gui.inputHandler;
+import gui.sideBarManager;
 
 //this class interprets  player's inputs and turns them into commands that can be issued to game  units 
 public class playerCommander {
@@ -17,7 +15,7 @@ public class playerCommander {
 	
 	public solidObject[][] groups;
 	
-	public boolean leftMouseButtonPressed, rightMouseButtonPressed, leftMouseButtonReleased, rightMouseButtonReleased, attackKeyPressed, holdKeyPressed, controlKeyPressed;
+	public boolean leftMouseButtonPressed, rightMouseButtonPressed, leftMouseButtonReleased, rightMouseButtonReleased, attackKeyPressed, toggleConyard, toggleFactory, holdKeyPressed, controlKeyPressed;
 	
 	public int numberTyped;
 	
@@ -328,12 +326,12 @@ public class playerCommander {
 				int height = Math.abs(endY - startY);
 				int xPos = Math.min(startX, endX) - 50;
 				int yPos = Math.min(startY, endY) -20;
-				int xPos_small = Math.min(startX, endX) - 20;
-				int yPos_small = Math.min(startY, endY) -20;
+				int xPos_small = Math.min(startX, endX) - 30;
+				int yPos_small = Math.min(startY, endY) -30;
 				
 				if(width < 20 || height < 20){
 					area.setBounds(xPos, yPos, 100, 100);
-					areaSmall.setBounds(xPos_small, yPos_small, 40,40);
+					areaSmall.setBounds(xPos_small, yPos_small, 60,60);
 					selectUnit(area, areaSmall);
 				}else
 					selectMultipleUnits(area);
@@ -362,6 +360,102 @@ public class playerCommander {
 			holdAllSelectedUnit();
 		}
 		
+		if(toggleConyard) {
+			int selectedConyardID = -1;
+			//deselect all the selected construction yards;
+			for(int i = 0; i < selectedUnits.length; i++) {
+				if(selectedUnits[i] != null && selectedUnits[i].teamNo == 0 && selectedUnits[i].currentHP > 0) {
+					if(selectedUnits[i].type == 104) {
+						selectedConyardID = selectedUnits[i].ID;
+						deSelect(selectedUnits[i]);
+					}else if(selectedUnits[i].type == 105) {
+						deSelect(selectedUnits[i]);
+					}
+				}
+			}
+		
+			//toggle to a different conyard
+			constructionYard[] constructionYards = mainThread.theAssetManager.constructionYards;
+			int conyardIndex = -1;
+				
+			if(selectedConyardID != -1) {	
+				for(int i = 0; i < constructionYards.length; i++) {
+					if(constructionYards[i].ID == selectedConyardID) {
+						conyardIndex = i;
+						break;
+					}
+				}
+			}else {
+				for(int i = 0; i < constructionYards.length; i++) {
+					if(constructionYards[i] != null && constructionYards[i].teamNo == 0 && constructionYards[i].currentHP > 0) {
+						conyardIndex = i;
+						break;
+					}
+				}
+			}
+		
+			if(conyardIndex != -1) {
+				for(int i = conyardIndex+1; i < constructionYards.length + conyardIndex + 1; i++) {
+					int index = i%constructionYards.length;
+					if(constructionYards[index] != null && constructionYards[index].teamNo == 0 && constructionYards[index].currentHP > 0) {
+						addToSelection(constructionYards[index]);
+						
+						break;
+					}
+				}
+			}
+			
+			toggleConyard = false;
+		}
+		
+		if(toggleFactory) {
+			int selectedConyardID = -1;
+			//deselect all the selected condyard and factory;
+			for(int i = 0; i < selectedUnits.length; i++) {
+				if(selectedUnits[i] != null && selectedUnits[i].teamNo == 0 && selectedUnits[i].currentHP > 0 ) {
+					if(selectedUnits[i].type == 105) {
+						selectedConyardID = selectedUnits[i].ID;
+						deSelect(selectedUnits[i]);
+					}else if(selectedUnits[i].type == 104) {
+						deSelect(selectedUnits[i]);
+					}
+				}
+			}
+			
+			//toggle to a different conyard
+			factory[] factories = mainThread.theAssetManager.factories;
+			int factoryIndex = -1;
+				
+			if(selectedConyardID != -1) {	
+				for(int i = 0; i < factories.length; i++) {
+					if(factories[i].ID == selectedConyardID) {
+						factoryIndex = i;
+						break;
+					}
+				}
+			}else {
+				for(int i = 0; i < factories.length; i++) {
+					if(factories[i] != null && factories[i].teamNo == 0 && factories[i].currentHP > 0) {
+						factoryIndex = i;
+						break;
+					}
+				}
+			}
+		
+			if(factoryIndex != -1) {
+				for(int i = factoryIndex+1; i < factories.length + factoryIndex + 1; i++) {
+					int index = i%factories.length;
+					if(factories[index] != null && factories[index].teamNo == 0 && factories[index].currentHP > 0) {
+						addToSelection(factories[index]);
+						
+						break;
+					}
+				}
+			}
+			
+			toggleFactory = false;
+		}
+		
 
 		//display health bar when mouse cursor hover over a unit
 		if(!isSelectingUnit){
@@ -377,7 +471,7 @@ public class playerCommander {
 			
 			area.setBounds(xPos, yPos, 100, 100);
 			areaSmall.setBounds(xPos_small, yPos_small, 60,60);
-			addDelectUnitToDisplayInfo(area, areaSmall);
+			addMouseHoverUnitToDisplayInfo(area, areaSmall);
 			
 		}
 	
@@ -425,20 +519,33 @@ public class playerCommander {
 	}
 	
 	public void moveSelectedUnit(float x, float y){
-		boolean mobileUnitSelected = false;
+		boolean moveableUnitSelected = false;
+		int numOfConYardSelected = 0;
+		int numOfMobileUnitSelected = 0;
+		
 		for(int i = 0; i < selectedUnits.length; i++){
 			if(selectedUnits[i] != null){
-				if(selectedUnits[i].teamNo == 0 && (selectedUnits[i].type < 100 || selectedUnits[i].type == 105)){
-					selectedUnits[i].moveTo(x, y); 
-					selectedUnits[i].currentCommand = solidObject.move;
-					selectedUnits[i].secondaryCommand = solidObject.StandBy;
-					mobileUnitSelected = true;
+				if(selectedUnits[i].teamNo == 0){
+					if(selectedUnits[i].type < 100 || selectedUnits[i].type == 105){
+						selectedUnits[i].moveTo(x, y); 
+						selectedUnits[i].currentCommand = solidObject.move;
+						selectedUnits[i].secondaryCommand = solidObject.StandBy;
+						moveableUnitSelected = true;
+					}
+					
+					if(selectedUnits[i].type == 104)
+						numOfConYardSelected++;
+					
+					if(selectedUnits[i].type == 0 || selectedUnits[i].type == 1 || selectedUnits[i].type == 2 || selectedUnits[i].type == 3 || selectedUnits[i].type == 6 || selectedUnits[i].type == 7)
+						numOfMobileUnitSelected++;
 				}
 			}
 		}
 		
+		
+		
 		//draw move confirmation if a mobile unit is given move order
-		if(mobileUnitSelected){
+		if(moveableUnitSelected && !(numOfConYardSelected == 1 && numOfMobileUnitSelected == 0)){
 			theAssetManager.confirmationIconInfo[0] = 1;
 			theAssetManager.confirmationIconInfo[1] = x;
 			theAssetManager.confirmationIconInfo[2] = y;
@@ -470,7 +577,7 @@ public class playerCommander {
 				
 	}
 	
-	public void addDelectUnitToDisplayInfo(Rectangle unitArea, Rectangle unitAreaSmall){
+	public void addMouseHoverUnitToDisplayInfo(Rectangle unitArea, Rectangle unitAreaSmall){
 		solidObject theSelected = null;
 		for(int i = 0; i < theAssetManager.visibleUnitCount; i++){
 			if(unitArea.contains(theAssetManager.visibleUnit[i].tempCentre.screenX,  theAssetManager.visibleUnit[i].tempCentre.screenY)){

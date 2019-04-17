@@ -278,11 +278,16 @@ public class goldMine extends solidObject{
 		if(isRevealed){
 			//check if gold mine has been depleted
 			progressStatus = 100*goldDeposite/maxDeposite;
-		
+			
 			if(progressStatus == 0 && textureIndex != 41){
 				textureIndex = 41;
 				for(int i = 0; i < polygons.length; i++)
 					polygons[i].myTexture = mainThread.textures[textureIndex];
+			}else if(progressStatus == 100 && textureIndex == 41) {
+				textureIndex = 39;
+				for(int i = 0; i < polygons.length; i++) {
+					polygons[i].myTexture = mainThread.textures[textureIndex];
+				}
 			}
 		}else {
 			if(textureIndex == 41 && goldDeposite == maxDeposite) {

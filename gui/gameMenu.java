@@ -25,7 +25,7 @@ public class gameMenu {
 	
 	public button newGame, unpauseGame, showHelp, quitGame, abortGame, easyGame, normalGame, hardGame, quitDifficulty, quitHelpMenu, nextPage, previousPage;
 	
-	public char[] easyDescription, normalDescription, hardDescription, helpPage1, helpPage2, helpPage3;
+	public char[] easyDescription, normalDescription, hardDescription, helpPage1, helpPage2, helpPage3, helpPage4;
 	
 	public int currentHelpPage;
 	
@@ -83,27 +83,32 @@ public class gameMenu {
 		normalDescription = "AI will launch timed attacks, it will also \nchange its army composition based on \nthe scouted information.".toCharArray();
 		hardDescription = "AI will micro each of its units, expand \nmore aggressively and carry out high\nlevel maneuver such as harassing during \npeaceful peirod.".toCharArray();
 		
-		helpPage1 = ("                                                Controls             \n\n"
+		helpPage1 = ("                                               Controls             \n\n"
 				   + "\"Esc\" -- Pause/Unpause the game.\n\n"
-				   + "\"Left Click\" -- Select a unit. Left click + mouse drag can be used to select up to \n100 units at a time.\n\n"
-				   + "\"Right Click\" -- Issue a move or attack command to the selected unit(s). You can \nalso use right click to set rally point and cancel build orders.\n\n"
+				   + "\"Left Click\" -- Select a unit. Left click + mouse drag can be used to select up to \n100 units at a time. Double left click on a unit will automatically select surrounding \nunits of the same type.\n\n"
+				   + "\"Right Click\" -- Issue a move or attack command to the selected unit(s). You can \nalso use right click to set rally point or cancel build progress.\n\n"
 				   + "\"a\" -- Force attack a unit. If no unit is under the cursor, then the selected units will \nbe set to attack move to the cursor location.\n\n"
 				   + "\"h\" -- stop current action for the selected unit(s).\n\n"
 				   + "\"Ctrl + number\" -- Create a control group and assigned the number to the group.\n\n"
 				   + "\"Ctrl + Left Click\" -- Add/Remove the a unit to/from the selected units.\n\n"
-				   + "\"Ctrl + Mouse Drag\" -- Add units in the dragging box to the selected units.\n\n"
-				   + "\"Left and Right arrow keys\" -- Change camera view angle.\n\n"
-				   + "                                                  1/3                  ").toCharArray();
+				   + "\"Ctrl + Mouse Drag\" -- Add units in the dragging box to the selected units.\n\n\n"
+				   + "                                                  1/4                  ").toCharArray();
 		
-		helpPage2 = ("                                                  Units        \n\n"
+		helpPage2 = ("                                          Controls (Cont.)             \n\n"
+					+ "\"Left and Right arrow keys\" -- Change camera view angle.\n\n"
+					+ "\"c\" -- Toggle between different construction yards under your control.\n\n"
+					+ "\"f\" -- Toggle between different factories under your control.\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n"
+					+ "                                                  2/4                  ").toCharArray();
+		
+		helpPage3 = ("                                                  Units        \n\n"
 				   + "There are 4 type of military units, each has its own strength and weakness.\n\n"
 				   + "         Light Tank -- Cheap but lightly armored. Has moderate movement speed \n         and firepower. It can be considered as the jack of all trades. It can be \n         upgraded to have increased range.\n\n"
 				   + "         Rocket Tank -- A slow moving and lightly armored unit. It has long reload \n         time but can out range static defenses. It does extra damage to buildings \n         and can be upgraded to deal even more damage to buildings.\n\n"
-				   + "         Stealth Tank -- Fast but lightly armoured. It has a passive cloak ablility that \n         turns the tank invisible when not attacking. It does more damage to light \n         armoured unit but significantly less damage to heavy armoured unit. It can \n         be upgraded to damage multiple units in one shot.\n\n"
+				   + "         Stealth Tank -- Fast but lightly armoured. It has a passive cloak ablility that \n         turns the tank invisible when not attacking. It does more damage to light \n         armoured unit but significantly less damage to heavy armoured unit. It can \n         be upgraded to damage multiple units with one shot.\n\n"
 				   + "         Heavy Tank -- The Slowest and most expensive tank in the game. Equiped \n         with twin cannons, it is a moving fortress. It can be upgraded with self \n         repair capability so it can last even longer in battle field.\n\n\n\n"
-				   + "                                                  2/3                  ").toCharArray(); 
+				   + "                                                  3/4                  ").toCharArray(); 
 		
-		helpPage3 = ("                                              About Me             \n\n"
+		helpPage4 = ("                                              About Me             \n\n"
 				   + "Hi everyone, my name is Pan Hu, I have a great interest in making video games. \n"
 				   + "It has been a dream job for me since a very young age. Unfortunately I ended \n"
 				   + "up make a living doing the \"boring\" job like most other folks. But it will not stop\n"
@@ -117,7 +122,7 @@ public class gameMenu {
 				   + "page: https://github.com/phu004/JavaRTS. If you are intersted in other projects of\n"
 				   + "mine, feel free to check out my YouTube channel, user name is \"Pan Hu\".\n\n"
 				   + "Have a nice Day!\n\n\n\n\n\n"
-				   + "                                                  3/3"
+				   + "                                                  4/4"
 				    ).toCharArray();
 		
 		quitHelpMenu = new button("quitHelpMenu", "x", 670, 80, 18,16);
@@ -183,7 +188,7 @@ public class gameMenu {
 			showHelp.display = true;
 			
 		}else if(menuStatus == difficulitySelectionMenu) {
-			if(postProcessingThread.escapeKeyReleased) {
+			if(postProcessingThread.escapeKeyPressed) {
 				menuStatus = mainMenu;
 				
 			}else {
@@ -192,20 +197,20 @@ public class gameMenu {
 				
 				textRenderer tRenderer = postProcessingThread.theTextRenderer;
 				easyGame.display = true;
-				tRenderer.drawMenuText(285,118,easyDescription, screen, 255,255,50);
+				tRenderer.drawMenuText(285,118,easyDescription, screen, 255,255,50, 0);
 				
 				normalGame.display = true;
-				tRenderer.drawMenuText(285,188,normalDescription, screen, 255,255,50);
+				tRenderer.drawMenuText(285,188,normalDescription, screen, 255,255,50,0);
 				
 				hardGame.display = true;
-				tRenderer.drawMenuText(285,265,hardDescription, screen, 255,255,50);
+				tRenderer.drawMenuText(285,265,hardDescription, screen, 255,255,50,0);
 				
 				quitDifficulty.display = true;
 			}
 			
 			
 		}else if(menuStatus == helpMenu) {
-			if(postProcessingThread.escapeKeyReleased) {
+			if(postProcessingThread.escapeKeyPressed) {
 				menuStatus = mainMenu;
 			
 			}else{
@@ -219,18 +224,22 @@ public class gameMenu {
 				textRenderer tRenderer = postProcessingThread.theTextRenderer;
 				
 				if(currentHelpPage == 0) {
-					tRenderer.drawMenuText(82,90,helpPage1, screen, 255,255,255);
+					tRenderer.drawMenuText(82,90,helpPage1, screen, 255,255,255,11);
 					nextPage.display = true;
 				}else if(currentHelpPage == 1) {
-					tRenderer.drawMenuText(82,90,helpPage2, screen, 255,255,255);
+					tRenderer.drawMenuText(82,90,helpPage2, screen, 255,255,255,11);
+					nextPage.display = true;
+					previousPage.display = true;
+				}else if(currentHelpPage == 2) {
+					tRenderer.drawMenuText(82,90,helpPage3, screen, 255,255,255,11);
 					nextPage.display = true;
 					previousPage.display = true;
 					drawImage(83,157, 44, 44,lightTankImage);
 					drawImage(83,220, 44, 44,rocketTankImage);
 					drawImage(83,290, 44, 44,stealthTankImage);
 					drawImage(83,364, 44, 44,heavyTankImage);
-				}else if(currentHelpPage == 2) {
-					tRenderer.drawMenuText(82,90,helpPage3, screen, 255,255,255);
+				}else if(currentHelpPage == 3) {
+					tRenderer.drawMenuText(82,90,helpPage4, screen, 255,255,255,11);
 					previousPage.display = true;
 				}
 				
@@ -315,6 +324,10 @@ public class gameMenu {
 		int G1 = 188;
 		int B1 = 255;
 		
+		int R2 = 3;
+		int G2 = 70;
+		int B2 = 99;
+		
 		int pos = (768 - width)/2 + 90 * 768;
 		
 		
@@ -322,7 +335,7 @@ public class gameMenu {
 		for(int i = 0; i < height; i++) {
 			for(int j = 0; j < width; j++) {
 				int pixel = screen[pos + j + i* 768];
-				screen[pos + j + i* 768] = ((pixel&0xFEFEFE)>>1) +  ((R/2) << 16 | (G/2) << 8 | (B/2));
+				screen[pos + j + i* 768] = ((pixel&0xFEFEFE)>>1) +  ((R2/2) << 16 | (G2/2) << 8 | (B2/2));
 			}
 		}
 		float d = 20f;
@@ -330,7 +343,7 @@ public class gameMenu {
 			int delta = (int)((d/17)*i);
 			for(int j = 20-delta-1; j < width; j++) {
 				int pixel = screen[pos - 17*768 + j + i* 768];
-				screen[pos - 17*768 + j + i* 768] = ((pixel&0xFEFEFE)>>1) +  ((R/2) << 16 | (G/2) << 8 | (B/2));
+				screen[pos - 17*768 + j + i* 768] = ((pixel&0xFEFEFE)>>1) +  ((R2/2) << 16 | (G2/2) << 8 | (B2/2));
 			}
 		}
 		
@@ -339,7 +352,7 @@ public class gameMenu {
 			int delta = (int)((d/17)*i);
 			for(int j =0; j < width - delta; j++) {
 				int pixel = screen[pos - 17*768 + j + i* 768];
-				screen[pos - 17*768 + j + i* 768] = ((pixel&0xFEFEFE)>>1) +  ((R/2) << 16 | (G/2) << 8 | (B/2));
+				screen[pos - 17*768 + j + i* 768] = ((pixel&0xFEFEFE)>>1) +  ((R2/2) << 16 | (G2/2) << 8 | (B2/2));
 			}
 		}
 		

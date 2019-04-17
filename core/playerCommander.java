@@ -115,19 +115,45 @@ public class playerCommander {
 						groups[numberTyped-1][i] = null;
 					}
 				}
-					
+				
+				//check if the current selection has mobile unit, if that is the case grouping should exclude buildings
+				boolean hasMobileUnit = false;
 				for(int i = 0; i < 100; i ++){
-					
 					if(selectedUnits[i] != null){
 						if(selectedUnits[i].teamNo == 0){
-							groups[numberTyped-1][i] = selectedUnits[i];
-							selectedUnits[i].groupNo = numberTyped-1;
-						
-							selectedUnits[i].isSelected = true;
-							removeFromOtherGroup(selectedUnits[i], numberTyped-1);
+							if(selectedUnits[i].type == 0 || selectedUnits[i].type == 1 || selectedUnits[i].type == 2 || selectedUnits[i].type == 3 || selectedUnits[i].type == 6 || selectedUnits[i].type == 7) {
+								hasMobileUnit = true;
+								break;
+							}
 						}
 					}
 				}
+					
+					
+				for(int i = 0; i < 100; i ++){
+					if(selectedUnits[i] != null){
+						if(selectedUnits[i].teamNo == 0){
+							if(hasMobileUnit) {
+								if(selectedUnits[i].type == 0 || selectedUnits[i].type == 1 || selectedUnits[i].type == 2 || selectedUnits[i].type == 3 || selectedUnits[i].type == 6 || selectedUnits[i].type == 7) {
+									groups[numberTyped-1][i] = selectedUnits[i];
+									selectedUnits[i].groupNo = numberTyped-1;
+									selectedUnits[i].isSelected = true;
+									removeFromOtherGroup(selectedUnits[i], numberTyped-1);
+								}
+							}else {
+							
+								groups[numberTyped-1][i] = selectedUnits[i];
+								selectedUnits[i].groupNo = numberTyped-1;
+								selectedUnits[i].isSelected = true;
+								removeFromOtherGroup(selectedUnits[i], numberTyped-1);
+							}
+							
+						
+						}
+					}
+				}
+				
+				
 			}else{
 				if(numberTyped == pressedNumber){
 					doubleNumberPressed = true;
@@ -264,7 +290,7 @@ public class playerCommander {
 				}else{
 					
 					if(doubleClickCountDown == 0)
-						doubleClickCountDown = 10;
+						doubleClickCountDown = 15;
 					else
 						doubleClicked = true;
 					

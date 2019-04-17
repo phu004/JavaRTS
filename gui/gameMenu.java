@@ -224,14 +224,14 @@ public class gameMenu {
 				textRenderer tRenderer = postProcessingThread.theTextRenderer;
 				
 				if(currentHelpPage == 0) {
-					tRenderer.drawMenuText(82,90,helpPage1, screen, 255,255,255,11);
+					tRenderer.drawMenuText(82,90,helpPage1, screen, 255,255,255,0);
 					nextPage.display = true;
 				}else if(currentHelpPage == 1) {
-					tRenderer.drawMenuText(82,90,helpPage2, screen, 255,255,255,11);
+					tRenderer.drawMenuText(82,90,helpPage2, screen, 255,255,255,0);
 					nextPage.display = true;
 					previousPage.display = true;
 				}else if(currentHelpPage == 2) {
-					tRenderer.drawMenuText(82,90,helpPage3, screen, 255,255,255,11);
+					tRenderer.drawMenuText(82,90,helpPage3, screen, 255,255,255,0);
 					nextPage.display = true;
 					previousPage.display = true;
 					drawImage(83,157, 44, 44,lightTankImage);
@@ -239,7 +239,7 @@ public class gameMenu {
 					drawImage(83,290, 44, 44,stealthTankImage);
 					drawImage(83,364, 44, 44,heavyTankImage);
 				}else if(currentHelpPage == 3) {
-					tRenderer.drawMenuText(82,90,helpPage4, screen, 255,255,255,11);
+					tRenderer.drawMenuText(82,90,helpPage4, screen, 255,255,255,0);
 					previousPage.display = true;
 				}
 				
@@ -287,7 +287,7 @@ public class gameMenu {
 	}
 	
 	public void drawBluredBackground() {
-		if(gameSuspendCount < 6) {
+		if(gameSuspendCount < 4) {
 			
 			for(int k = 0; k < 3; k++)
 			for(int i = 1; i < 511; i++ ) {

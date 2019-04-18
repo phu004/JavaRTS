@@ -144,17 +144,17 @@ public class baseExpensionAI {
 		
 		boolean playerHasLessUnits = mainThread.ec.theCombatManagerAI.checkIfAIHasBiggerForce(1f);
 		
-		int lowGoldmineThreshold = 17500;
+		int lowGoldmineThreshold = 20000;
 		
 		
 		if(playerHasLessUnits) {
-			lowGoldmineThreshold = 25000;
+			lowGoldmineThreshold = 27500;
 			
 			if(mainThread.ec.theEconomyManagerAI.preferedGoldMine == mainThread.theAssetManager.goldMines[4])
 				lowGoldmineThreshold = 30000;
 			
 			if(mainThread.ec.theEconomyManagerAI.preferedGoldMine == mainThread.theAssetManager.goldMines[5])
-				lowGoldmineThreshold = 20000;
+				lowGoldmineThreshold = 25000;
 		}
 		
 		if(myMCV == null && expensionGoldMine.goldDeposite >= 17500 && (mainThread.ec.theEconomyManagerAI.preferedGoldMine.goldDeposite < lowGoldmineThreshold || 

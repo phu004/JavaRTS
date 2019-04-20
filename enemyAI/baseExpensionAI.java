@@ -23,8 +23,8 @@ public class baseExpensionAI {
 	public boolean allExpansionOccupied;
 	public int lastExpansionLocation;
 	
-	public baseExpensionAI(baseInfo theBaseInfo){
-		this.theBaseInfo = theBaseInfo;
+	public baseExpensionAI(){
+		this.theBaseInfo = mainThread.ec.theBaseInfo;
 		frameAI = 0;
 		temp = new vector(0,0,0);
 		
@@ -144,7 +144,7 @@ public class baseExpensionAI {
 		
 		boolean playerHasLessUnits = mainThread.ec.theCombatManagerAI.checkIfAIHasBiggerForce(1f);
 		
-		int lowGoldmineThreshold = 20000;
+		int lowGoldmineThreshold = 22500;
 		
 		
 		if(playerHasLessUnits) {
@@ -172,14 +172,13 @@ public class baseExpensionAI {
 			if(numberOfMCVOnQueue == 0 &&  theBaseInfo.canBuildMCV){
 				for(int i = 0; i < mainThread.theAssetManager.factories.length; i++){
 					if(mainThread.theAssetManager.factories[i] != null && mainThread.theAssetManager.factories[i].teamNo != 0){
-						//if(main.theAssetManager.factories[i].lightTankProgress < 240 || main.theAssetManager.factories[i].isIdle()){
+						
 						mainThread.theAssetManager.factories[i].cancelItemFromProductionQueue(factory.lightTankType);
 						mainThread.theAssetManager.factories[i].cancelItemFromProductionQueue(factory.rocketTankType);
 						mainThread.theAssetManager.factories[i].cancelItemFromProductionQueue(factory.stealthTankType);
 						mainThread.theAssetManager.factories[i].cancelItemFromProductionQueue(factory.heavyTankType);
 						mainThread.theAssetManager.factories[i].buildMCV();
-							break;
-						//}
+						break;
 					}
 				}
 			}

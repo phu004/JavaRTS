@@ -21,6 +21,7 @@ public class enemyCommander {
 	public defenseManagerAI theDefenseManagerAI;
 	public combatManagerAI theCombatManagerAI;
 	public microManagementAI theMicroManagementAI;
+	public harassmentAI theHarassmentAI;
 	public int difficulty;
 	
 	
@@ -33,15 +34,16 @@ public class enemyCommander {
 		
 		theBaseInfo = new baseInfo();
 		
-		theBuildingManagerAI = new buildingManagerAI(theBaseInfo);
-		theEconomyManagerAI = new economyManagerAI(theBaseInfo);
-		theMapAwarenessAI = new mapAwarenessAI(theBaseInfo, visionMap);
-		theUnitProductionAI = new unitProductionAI(theBaseInfo);
-		theBaseExpentionAI = new baseExpensionAI(theBaseInfo);
-		theScoutingManagerAI = new scoutingManagerAI(theBaseInfo);
-		theDefenseManagerAI = new defenseManagerAI(theBaseInfo);
-		theCombatManagerAI = new combatManagerAI(theBaseInfo);
-		theMicroManagementAI = new microManagementAI(theBaseInfo);
+		theBuildingManagerAI = new buildingManagerAI();
+		theEconomyManagerAI = new economyManagerAI();
+		theMapAwarenessAI = new mapAwarenessAI();
+		theUnitProductionAI = new unitProductionAI();
+		theBaseExpentionAI = new baseExpensionAI();
+		theScoutingManagerAI = new scoutingManagerAI();
+		theDefenseManagerAI = new defenseManagerAI();
+		theCombatManagerAI = new combatManagerAI();
+		theMicroManagementAI = new microManagementAI();
+		theHarassmentAI = new harassmentAI();
 		
 	}
 	
@@ -117,6 +119,10 @@ public class enemyCommander {
 		
 		if(mainThread.gameFrame % 30 == 7){
 			theDefenseManagerAI.processAI();
+		}
+		
+		if(mainThread.gameFrame % 30 == 8) {
+			theHarassmentAI.processAI();
 		}
 		
 		//if(mainThread.frameIndex % 5  == 0){

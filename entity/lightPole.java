@@ -35,6 +35,7 @@ public class lightPole extends solidObject{
 		//uncontrollable unit, but act as a small sized static collidable agent
 		ID = -1;
 		type = 100;
+		teamNo = -1;
 		
 		this.angle = angle;
 	

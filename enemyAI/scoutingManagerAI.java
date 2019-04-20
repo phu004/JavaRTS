@@ -32,8 +32,8 @@ public class scoutingManagerAI {
 	//scout unit consists a sole light tank
 	public solidObject scout;
 	
-	public scoutingManagerAI(baseInfo theBaseInfo){
-		this.theBaseInfo = theBaseInfo;
+	public scoutingManagerAI(){
+		this.theBaseInfo = mainThread.ec.theBaseInfo;
 		
 		patrolNodes = new float[][]{
 				{16, 30}, {2, 29}, {15, 17}, {16, 14}, {27f, 1}, {30, 16}, {16, 14}, {15, 17}
@@ -56,12 +56,12 @@ public class scoutingManagerAI {
 	public void processAI(){
 		
 		gameTime++;
-
+		
 		if(avoidingIncomingPlayerUnitCooldown > 0)
 			avoidingIncomingPlayerUnitCooldown--;
 		
 		boolean scoutIsLightTank = scout != null && scout.type == 0;
-		if((gameTime%275 > 235 && gameTime%275 < 275 && !scoutIsLightTank) && gameTime < 600 && scoutingMode == patrolling || (scoutIsLightTank && gameTime < 240)){
+		if((gameTime%275 > 235 && gameTime%275 < 275 && !scoutIsLightTank) && gameTime < 900 && scoutingMode == patrolling || (scoutIsLightTank && gameTime < 240)){
 			scoutingMode = exploring;
 			destinationNode = 0;
 			movementOrderIssued = false;

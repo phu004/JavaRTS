@@ -1,8 +1,7 @@
-package gui;
+package core;
 
-import core.mainThread;
-import core.playerCommander;
 import entity.*;
+import gui.inputHandler;
 
 //this class handles player's interaction with the sidebar
 public class sideBarManager {

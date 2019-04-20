@@ -61,10 +61,15 @@ public class combatManagerAI {
 	
 	public boolean unitCountLow;
 	
+	public int standardAttackTime, rushAttackTime;
 	
-	public combatManagerAI(baseInfo theBaseInfo){
-		this.theBaseInfo = theBaseInfo;
 	
+	
+	public combatManagerAI(){
+		this.theBaseInfo = mainThread.ec.theBaseInfo;
+	
+		standardAttackTime = 600;
+		rushAttackTime = 300;
 		
 		goldMines = mainThread.theAssetManager.goldMines;
 		
@@ -152,15 +157,18 @@ public class combatManagerAI {
 		if(currentState == booming){
 			
 			//enemy AI compares its own  force with player's force, then make a decision whether it should attack or not 
-			int attackTime = 540;
+			int attackTime = standardAttackTime;
 			if(mainThread.ec.theMapAwarenessAI.canRushPlayer)
-				attackTime = 300;
+				attackTime = rushAttackTime;
 			
 			int targetPlayerExpension = mainThread.ec.theMapAwarenessAI.targetPlayerExpension;
 			
 			if(frameAI > attackTime) {
 				if(targetPlayerExpension == 0 || targetPlayerExpension == 1 || targetPlayerExpension == 6 || targetPlayerExpension == 7)
-					shouldAttack = checkIfAIHasBiggerForce(0.9f);
+					if(frameAI < 700)
+						shouldAttack = checkIfAIHasBiggerForce(0.5f);
+					else
+						shouldAttack = checkIfAIHasBiggerForce(0.75f);
 				else
 					shouldAttack = checkIfAIHasBiggerForce(1.2f);
 			}
@@ -305,6 +313,11 @@ public class combatManagerAI {
 				}
 			}
 			
+			//if a rush tactics is denied by the player (e.g player builds static defenses around natural), then change status to booming
+			if(frameAI < standardAttackTime && !mainThread.ec.theMapAwarenessAI.canRushPlayer){
+				currentState = booming;
+				return;
+			}
 			
 			attackDirection.set(attackPosition.x - combatCenterX, 0, attackPosition.z - combatCenterZ);
 			distanceToTarget = attackDirection.getLength();
@@ -364,7 +377,7 @@ public class combatManagerAI {
 			
 			//check if the player force has become stronger than the AI during the marching towards attack position
 			//System.out.println("distanceToTarget: "  + distanceToTarget);
-			if(checkIfAIHasBiggerForce(1.5f) == false && distanceToTarget > 5){
+			if(checkIfAIHasBiggerForce(1.5f) == false && distanceToTarget > 6){
 				playerHasBecomeStrongerThanAIDuringMarching = true;
 			}
 			

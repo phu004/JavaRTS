@@ -44,8 +44,8 @@ public class defenseManagerAI {
 	public vector missileTurretDeployLocation;
 	
 	
-	public defenseManagerAI(baseInfo theBaseInfo){
-		this.theBaseInfo = theBaseInfo;
+	public defenseManagerAI(){
+		this.theBaseInfo = mainThread.ec.theBaseInfo;
 		
 		observers = new solidObject[4];
 		
@@ -95,7 +95,7 @@ public class defenseManagerAI {
 							}
 							
 							
-							if(gameTime > 880) {
+							if(gameTime > 980) {
 								xPos = 0.25f;
 								zPos = 20.5f;
 								
@@ -133,7 +133,7 @@ public class defenseManagerAI {
 							zPos = 24.5f;
 						}
 						
-						if(gameTime > 880) {
+						if(gameTime > 980) {
 							if(gameTime%18 < 9) {
 								xPos = 0.25f;
 								zPos = 20.5f;
@@ -155,7 +155,7 @@ public class defenseManagerAI {
 							zPos = 20f;
 						}
 						
-						if(gameTime > 880) {
+						if(gameTime > 980) {
 							if(gameTime%14 < 7) {
 								xPos = 18.75f;
 								zPos = 5f;
@@ -350,9 +350,9 @@ public class defenseManagerAI {
 					float d = (float)Math.sqrt((minorThreatLocation.x-AIStructures[i].centre.x)*(minorThreatLocation.x-AIStructures[i].centre.x) +
 							 (minorThreatLocation.z-AIStructures[i].centre.z)*(minorThreatLocation.z-AIStructures[i].centre.z));
 					
-					if(AIStructures[i].type == 200 && d <= 2)
+					if(AIStructures[i].type == 200 && d <= 2.5)
 						numOfGunTurretNearThreat++;
-					if(AIStructures[i].type == 199 && d <= 2.4)
+					if(AIStructures[i].type == 199 && d <= 2.9)
 						numOfMissileTurretNearThreat++;
 				}
 			}
@@ -367,14 +367,16 @@ public class defenseManagerAI {
 					float d = (float)Math.sqrt((majorThreatLocation.x-AIStructures[i].centre.x)*(majorThreatLocation.x-AIStructures[i].centre.x) +
 							 (majorThreatLocation.z-AIStructures[i].centre.z)*(majorThreatLocation.z-AIStructures[i].centre.z));
 					
-					if(AIStructures[i].type == 200 && d <= 2)
+					if(AIStructures[i].type == 200 && d <= 2.5)
 						numOfGunTurretNearThreat++;
-					if(AIStructures[i].type == 199 && d <= 2.4)
+					if(AIStructures[i].type == 199 && d <= 2.9)
 						numOfMissileTurretNearThreat++;
 				}
 			}
 		}
 		
+		
+		//System.out.println("mainPlayerForceSize: " + mainPlayerForceSize +  "   "  + "numOfGunTurretNearThreat: " +numOfGunTurretNearThreat +  "    " + "numOfMissileTurretNearThreat: " + numOfMissileTurretNearThreat);
 		
 		
 		for(int i = 0; i < constructionYards.length; i++){
@@ -414,7 +416,7 @@ public class defenseManagerAI {
 				}
 				
 				//find deploy location of missile turret
-				if(threatX != 0 && distanceToThreat < 5.15 && (numOfMissileTurretNearThreat < mainPlayerForceSize/6 || !gunTurretAlreadyInQueue)) {
+				if(threatX != 0 && distanceToThreat < 5.15 && (numOfMissileTurretNearThreat < mainPlayerForceSize/6 )) {
 					
 					float d = 1.65f;  //minimum deploy distance from conyard
 					if(distanceToThreat > d + missileTurret.attackRange)

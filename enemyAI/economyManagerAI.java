@@ -19,8 +19,8 @@ public class economyManagerAI {
 	public vector evadeDirection;
     public int numberOfFunctionalRefinery;
 	
-	public economyManagerAI(baseInfo theBaseInfo){
-		this.theBaseInfo = theBaseInfo;
+	public economyManagerAI(){
+		this.theBaseInfo = mainThread.ec.theBaseInfo;;
 		
 		evadeDirection = new vector(0,0,0);
 		

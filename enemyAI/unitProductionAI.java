@@ -47,8 +47,8 @@ public class unitProductionAI {
 	
 	public int frameAI;
 	
-	public unitProductionAI(baseInfo theBaseInfo){
-		this.theBaseInfo = theBaseInfo;
+	public unitProductionAI(){
+		this.theBaseInfo = mainThread.ec.theBaseInfo;
 		rallyPoint = new vector(0,0,0);
 		
 		
@@ -166,15 +166,18 @@ public class unitProductionAI {
 		boolean playerHasManyLightTanksButNoHeavyTank = mainThread.ec.theMapAwarenessAI.playerHasManyLightTanksButNoHeavyTank;
 		boolean playerHasMostlyHeavyAndStealthTanks = mainThread.ec.theMapAwarenessAI.playerHasMostlyHeavyAndStealthTanks;
 		
-		if((numberOfRocketTanks_AI < 2 &&  (frameAI > 400 || frameAI > 170 && frameAI < 240 && mainThread.ec.theMapAwarenessAI.numberOfConstructionYard_player > 0) && !playerHasMostlyLightTanks) || numberOfRocketTanks_AI < numberOfPlayerGunTurrets + numberOfPlayerMissileTurrets*1.5 || (gameData.getRandom() > 925 && !playerHasMostlyLightTanks)){
+		
+		boolean b1 = (numberOfRocketTanks_AI < 2 &&  (frameAI > 400 || frameAI > 170 && frameAI < 240 && mainThread.ec.theMapAwarenessAI.numberOfConstructionYard_player > 0) && !playerHasMostlyLightTanks);
+		boolean b2 = (numberOfRocketTanks_AI < numberOfPlayerGunTurrets + numberOfPlayerMissileTurrets*1.5);
+		if( b1 || b2){
 			currentProductionOrder = produceRocketTank;
 		}else if(theBaseInfo.canBuildHeavyTank &&
-				playerHasMostlyHeavyAndStealthTanks || 
-				 (!playerHasManyLightTanksButNoHeavyTank
+				 (playerHasMostlyHeavyAndStealthTanks || 
+				 !playerHasManyLightTanksButNoHeavyTank
 				 && !playerHasMostlyLightTanks 
 				 && !(numberOfHeavyTanks_player == 0 && maxNumberOfStealthTanks_playerInLastFiveMinutes < 3 &&  mainThread.gameFrame/30 > 600)  
 				 && !(playerHasMostlyHeavyTanks && numberOfStealthTanks_player < numberOfHeavyTanks_AI*2) 
-				 && (playIsRushingHighTierUnits || gameData.getRandom() > 985 ||  maxNumberOfStealthTanks_playerInLastFiveMinutes*4 > numberOfHeavyTanks_AI  || (mainThread.gameFrame/30 > 400 && mainThread.gameFrame/30 < 600 &&  numberOfPlayerGunTurrets +  numberOfPlayerMissileTurrets+ numberOfLightTanks_player + numberOfRocketTanks_player + numberOfHeavyTanks_player*5 < 5)))){
+				 && (playIsRushingHighTierUnits ||  maxNumberOfStealthTanks_playerInLastFiveMinutes*4 > numberOfHeavyTanks_AI  || (mainThread.gameFrame/30 > 400 && mainThread.gameFrame/30 < 600 &&  numberOfPlayerGunTurrets +  numberOfPlayerMissileTurrets+ numberOfLightTanks_player + numberOfRocketTanks_player + numberOfHeavyTanks_player*5 < 5)))){
 			currentProductionOrder = produceHeavyTank; 
 		}else if(theBaseInfo.canBuildStealthTank && (playerHasMostlyLightTanks || playerLikelyCanNotProduceHighTierUnits || playerDoesntHaveMassHeavyTanks) && !playerHasMostlyHeavyTanks){
 			currentProductionOrder = produceStealthTank;
@@ -182,7 +185,7 @@ public class unitProductionAI {
 			currentProductionOrder = produceLightTank;
 		}
 		
-	
+				
 		//make decision on what tech to research
 		if(mainThread.ec.theBuildingManagerAI.theBaseInfo.numberOfCommunicationCenter > 0) {
 			if(mainThread.ec.theDefenseManagerAI.needMissileTurret || theBaseInfo.currentCredit > 1500) {

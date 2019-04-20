@@ -28,8 +28,8 @@ public class microManagementAI {
 
 	public int numberOfPlayerUnitsOnMinimap;
 	
-	public microManagementAI(baseInfo theBaseInfo){
-		this.theBaseInfo = theBaseInfo;
+	public microManagementAI(){
+		this.theBaseInfo = mainThread.ec.theBaseInfo;
 	}
 	
 	public void processAI(){

@@ -183,14 +183,14 @@ public class AssetManager {
 		gunTurrets = new gunTurret[512];
 		missileTurrets = new missileTurret[256];
 		
-		goldMines[0].goldDeposite = 45000;
-		goldMines[1].goldDeposite = 45000;
-		goldMines[2].goldDeposite = 50000;
-		goldMines[3].goldDeposite = 50000;
-		goldMines[4].goldDeposite = 45000;
-		goldMines[5].goldDeposite = 45000;
-		goldMines[6].goldDeposite = 55000;
-		goldMines[7].goldDeposite = 55000;
+		goldMines[0].goldDeposite = goldMines[0].maxDeposite;
+		goldMines[1].goldDeposite = goldMines[1].maxDeposite;
+		goldMines[2].goldDeposite = goldMines[2].maxDeposite;
+		goldMines[3].goldDeposite = goldMines[3].maxDeposite;
+		goldMines[4].goldDeposite = goldMines[4].maxDeposite;
+		goldMines[5].goldDeposite = goldMines[5].maxDeposite;
+		goldMines[6].goldDeposite = goldMines[6].maxDeposite;
+		goldMines[7].goldDeposite = goldMines[7].maxDeposite;
 		
 		bullets = new bullet[200];
 		for(int i = 0; i < 200; i ++){
@@ -305,14 +305,14 @@ public class AssetManager {
 		gunTurrets = null;
 		missileTurrets = null;
 		
-		goldMines[0].goldDeposite = 45000;
-		goldMines[1].goldDeposite = 45000;
-		goldMines[2].goldDeposite = 50000;
-		goldMines[3].goldDeposite = 50000;
-		goldMines[4].goldDeposite = 45000;
-		goldMines[5].goldDeposite = 45000;
-		goldMines[6].goldDeposite = 55000;
-		goldMines[7].goldDeposite = 55000;
+		goldMines[0].goldDeposite = goldMines[0].maxDeposite;
+		goldMines[1].goldDeposite = goldMines[1].maxDeposite;
+		goldMines[2].goldDeposite = goldMines[2].maxDeposite;
+		goldMines[3].goldDeposite = goldMines[3].maxDeposite;
+		goldMines[4].goldDeposite = goldMines[4].maxDeposite;
+		goldMines[5].goldDeposite = goldMines[5].maxDeposite;
+		goldMines[6].goldDeposite = goldMines[6].maxDeposite;
+		goldMines[7].goldDeposite = goldMines[7].maxDeposite;
 		
 		bullets = null;		
 		rockets = null;

@@ -79,9 +79,9 @@ public class mapAwarenessAI {
 	public int[] playerStaticDefenseSize;
 	public int[] playerStaticDefenseStrength;
 	
-	public mapAwarenessAI(baseInfo theBaseInfo, boolean[] visionMap){
-		this.theBaseInfo = theBaseInfo;
-		this.visionMap = visionMap;
+	public mapAwarenessAI(){
+		this.theBaseInfo = mainThread.ec.theBaseInfo;
+		this.visionMap = mainThread.ec.visionMap;
 		
 		mapAsset = new solidObject[1024];
 		playerUnitInMinimap = new solidObject[128];
@@ -463,7 +463,7 @@ public class mapAwarenessAI {
         
         playerIsRushingLightTank = mainThread.gameFrame/30 > 300 && mainThread.gameFrame/30 < 600 && ((playerLikelyCanNotProduceHighTierUnits && numberOfStealthTanks_player < 3) || playerHasMostlyLightTanks);
         
-        playerHasMostlyHeavyAndStealthTanks = (maxNumberOfStealthTanks_playerInLastFiveMinutes >=2 ) && (float)(numberOfHeavyTanks_player + numberOfStealthTanks_player)/totalNumberOfPlayerUnits > 0.8f;
+        playerHasMostlyHeavyAndStealthTanks = (maxNumberOfStealthTanks_playerInLastFiveMinutes >=3 ) && (float)(numberOfHeavyTanks_player + numberOfStealthTanks_player)/totalNumberOfPlayerUnits > 0.8f;
         
         
         //advanced counting of player units
@@ -515,7 +515,26 @@ public class mapAwarenessAI {
         }
         
         if(playerIsFastExpanding) {
-        	canRushPlayer = true;
+        	
+        	//check if there is any static defense around player's natural
+        	boolean staticDefenceNearPlayerExpansion = false;
+        	solidObject[] playerStaticDefence = mainThread.ec.theMapAwarenessAI.playerStaticDefenceInMinimap;
+        	for(int i = 0; i < playerStaticDefence.length; i++) {
+        		if(playerStaticDefence[i] != null && playerStaticDefence[i].currentHP > 0) {
+        			float x1 = playerStaticDefence[i].centre.x;
+        			float z1 = playerStaticDefence[i].centre.z;
+        			float x2 = playerNaturalLocation.x;
+        			float z2 = playerNaturalLocation.z;
+        			
+        			if(Math.sqrt((x1-x2)*(x1-x2) + (z1-z2)*(z1-z2)) < 3f) {
+        				staticDefenceNearPlayerExpansion = true;
+        				break;
+        			}
+        		}
+        	}
+        	
+        	if(!staticDefenceNearPlayerExpansion)
+        		canRushPlayer = true;
         }
       
         

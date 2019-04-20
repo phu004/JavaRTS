@@ -6,7 +6,6 @@ import entity.constructionYard;
 import entity.factory;
 import entity.solidObject;
 import gui.inputHandler;
-import gui.sideBarManager;
 
 //this class interprets  player's inputs and turns them into commands that can be issued to game  units 
 public class playerCommander {

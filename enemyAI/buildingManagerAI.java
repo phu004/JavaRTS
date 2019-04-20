@@ -20,8 +20,8 @@ public class buildingManagerAI {
 	public int frameIndex;
 
 	
-	public buildingManagerAI (baseInfo theBaseInfo){
-		this.theBaseInfo = theBaseInfo;
+	public buildingManagerAI (){
+		this.theBaseInfo = mainThread.ec.theBaseInfo;
 		
 		buildingPlacementCheckTiles = solidObject.generateTileCheckList(13);
 		buildingPlacementCheckTiles_2x2 = new int[buildingPlacementCheckTiles.length];

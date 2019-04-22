@@ -339,7 +339,7 @@ public class scoutingManagerAI {
 	
 	public boolean needStealthTank(){
 		if(theBaseInfo.canBuildStealthTank){
-			if((scout == null || scout.currentHP <= 0 || scout.type != 6) && gameTime > 480){
+			if((scout == null || scout.currentHP <= 0 || scout.type != 6) && gameTime > 380){
 				return true;
 			}
 		}

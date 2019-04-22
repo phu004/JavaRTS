@@ -47,8 +47,6 @@ public class combatManagerAI {
 	public float combatCenterX, combatCenterZ;
 	public float myRallyPointX, myRallyPointZ;
 	public boolean rallyPointChanged;
-	boolean shouldDefenceAggressively;
-	
 	
 	public float unrevealedPlayerForceStrength;
 	public int noPlayerActivityCountdown;
@@ -118,7 +116,7 @@ public class combatManagerAI {
 		unitOutsideCombatRadius = mainThread.ec.theUnitProductionAI.unitOutsideCombatRadius;
 		troopsControlledByCombatAI = mainThread.ec.theUnitProductionAI.troopsControlledByCombatAI;
 		playerUnitInMinimap = mainThread.ec.theMapAwarenessAI.playerUnitInMinimap;
-		shouldDefenceAggressively  = checkIfAIHasBiggerForce(1.6f);
+		
 	
 		
 		
@@ -154,8 +152,7 @@ public class combatManagerAI {
 		int numberOfHeavyTanks_AI = mainThread.ec.theUnitProductionAI.numberOfHeavyTanksControlledByCombatAI;
 		unitCountLow = (numberOfLightTanks_AI + numberOfRocketTanks_AI + numberOfStealthTanks_AI + numberOfHeavyTanks_AI * 2 < 9) && frameAI > 480;
 		
-		if(currentState == booming){
-			
+		if(currentState == booming){			
 			//enemy AI compares its own  force with player's force, then make a decision whether it should attack or not 
 			int attackTime = standardAttackTime;
 			if(mainThread.ec.theMapAwarenessAI.canRushPlayer)
@@ -247,9 +244,7 @@ public class combatManagerAI {
 							attackDirection.set(playerUnitInMinimap[i].centre.x - combatCenterX, 0, playerUnitInMinimap[i].centre.z - combatCenterZ);
 							attackDirection.unit();
 							attackPosition.set(playerUnitInMinimap[i].centre);
-							
-							if(shouldDefenceAggressively)
-								attackPosition.add(attackDirection);
+						
 							
 							return;
 						}
@@ -264,9 +259,6 @@ public class combatManagerAI {
 							attackDirection.set(playerStructures[i].centre.x - combatCenterX, 0, playerStructures[i].centre.z - combatCenterZ);
 							attackDirection.unit();
 							attackPosition.set(playerStructures[i].centre);
-							
-							if(shouldDefenceAggressively)
-								attackPosition.add(attackDirection);
 							
 							return;
 						}
@@ -313,10 +305,22 @@ public class combatManagerAI {
 				}
 			}
 			
-			//if a rush tactics is denied by the player (e.g player builds static defenses around natural), then change status to booming
+			//if a rush tactics is denied by the player (e.g player builds static defenses around natural), then call back the troops that were sent to rush the player
 			if(frameAI < standardAttackTime && !mainThread.ec.theMapAwarenessAI.canRushPlayer){
-				currentState = booming;
-				return;
+
+				if(Math.abs(attackPosition.x - myRallyPointX) > 12 || Math.abs(attackPosition.z - myRallyPointZ) > 12) {
+					for(int i = 0; i < troopsControlledByCombatAI.length; i++) {
+						if(troopsControlledByCombatAI[i] != null && troopsControlledByCombatAI[i].currentHP > 0) {
+							troopsControlledByCombatAI[i].attackMoveTo(myRallyPointX, myRallyPointZ);
+							troopsControlledByCombatAI[i].currentCommand = solidObject.attackMove;
+							troopsControlledByCombatAI[i].secondaryCommand = solidObject.attackMove;
+						}
+					}
+					currentState = booming;
+					return;
+				}
+				
+				
 			}
 			
 			attackDirection.set(attackPosition.x - combatCenterX, 0, attackPosition.z - combatCenterZ);
@@ -377,7 +381,7 @@ public class combatManagerAI {
 			
 			//check if the player force has become stronger than the AI during the marching towards attack position
 			//System.out.println("distanceToTarget: "  + distanceToTarget);
-			if(checkIfAIHasBiggerForce(1.5f) == false && distanceToTarget > 6){
+			if(checkIfAIHasBiggerForce(1.5f) == false && distanceToTarget > 8){
 				playerHasBecomeStrongerThanAIDuringMarching = true;
 			}
 			
@@ -441,12 +445,25 @@ public class combatManagerAI {
 			
 				if(withdrawUnitOutsideCombatRadiusCooldown > 0){
 					team  = unitInCombatRadius; //exclude the tail portion of the troops from the attack force
-					for(int i = 0; i < troopsControlledByCombatAI.length; i++){
-						//send the tail portion of the troops to rally point
-						if(troopsControlledByCombatAI[i] != null && troopsControlledByCombatAI[i].currentHP > 0){
-							troopsControlledByCombatAI[i].attackMoveTo(mainThread.ec.theUnitProductionAI.rallyPoint.x, mainThread.ec.theUnitProductionAI.rallyPoint.z);
-							troopsControlledByCombatAI[i].currentCommand = solidObject.attackMove;
-							troopsControlledByCombatAI[i].secondaryCommand = solidObject.attackMove;
+					
+					//retreat tail portion of the troops to rally point
+					//but if the player's force is near the rally point, send tail portion of the troops to defend the rally point
+					float x = mainThread.ec.theMapAwarenessAI.mainPlayerForceLocation.x;
+					float z = mainThread.ec.theMapAwarenessAI.mainPlayerForceLocation.z;
+					double d = Math.sqrt((x-myRallyPointX)*(x-myRallyPointX) + (z-myRallyPointZ)*(z-myRallyPointZ));
+					
+					for(int i = 0; i < unitOutsideCombatRadius.length; i++){
+						
+						if(unitOutsideCombatRadius[i] != null && unitOutsideCombatRadius[i].currentHP > 0){
+							
+							if(d > 3.5) {
+								unitOutsideCombatRadius[i].attackMoveTo(mainThread.ec.theUnitProductionAI.rallyPoint.x, mainThread.ec.theUnitProductionAI.rallyPoint.z);
+							}else {
+								unitOutsideCombatRadius[i].attackMoveTo(x, z);
+							}
+								
+							unitOutsideCombatRadius[i].currentCommand = solidObject.attackMove;
+							unitOutsideCombatRadius[i].secondaryCommand = solidObject.attackMove;
 						}
 					}
 				}
@@ -579,6 +596,8 @@ public class combatManagerAI {
 				else
 					break;
 			}
+			
+			System.out.println(gatherPoint);
 			
 			boolean playerForceIsMuchWeakerThanAI = checkIfAIHasBiggerForce(0.5f);
 

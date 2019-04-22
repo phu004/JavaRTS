@@ -24,6 +24,7 @@ public class harassmentAI {
 		
 		gameTime++;
 		
+		System.out.println(gameTime + "    ("  + mainThread.ec.theCombatManagerAI.combatCenterX + "   "  + mainThread.ec.theCombatManagerAI.combatCenterZ + ")   " + mainThread.ec.theCombatManagerAI.attackPosition);
 		
 	}
 	

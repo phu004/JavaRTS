@@ -109,10 +109,8 @@ public class unitProductionAI {
 			}
 		}
 		if(z != 999999) {
-			if(mainThread.ec.theCombatManagerAI.shouldDefenceAggressively && frameAI > 480)
-				rallyPoint.set(z - 2.5f, 0, z - 2.5f);
-			else
-				rallyPoint.set(x - 2f, 0, z - 1.5f);
+			
+			rallyPoint.set(x - 2f, 0, z - 1.5f);
 			
 			if(frameAI < 240) {
 				rallyPoint.set(mainThread.theAssetManager.goldMines[5].centre);
@@ -188,7 +186,7 @@ public class unitProductionAI {
 				
 		//make decision on what tech to research
 		if(mainThread.ec.theBuildingManagerAI.theBaseInfo.numberOfCommunicationCenter > 0) {
-			if(mainThread.ec.theDefenseManagerAI.needMissileTurret || theBaseInfo.currentCredit > 1500) {
+			if(mainThread.ec.theDefenseManagerAI.needMissileTurret || theBaseInfo.currentCredit > 1500 && frameAI > 450) {
 				if(!communicationCenter.rapidfireResearched_enemy) {
 					if(communicationCenter.rapidfireResearchProgress_enemy == 255){
 						communicationCenter.researchRapidfire(1);
@@ -237,7 +235,7 @@ public class unitProductionAI {
 				}
 			}
 			
-			if(numberOfRocketTanks_AI > 2 && theBaseInfo.currentCredit > 750 && (numberOfPlayerGunTurrets > 0 || numberOfPlayerMissileTurrets > 0)){
+			if(numberOfRocketTanks_AI > 2 && theBaseInfo.currentCredit > 1250 && (numberOfPlayerGunTurrets > 0 || numberOfPlayerMissileTurrets > 0 || frameAI > 600)){
 				if(!techCenter.rocketTankResearched_enemy){
 					if(techCenter.lightTankResearchProgress_enemy >= 240 && techCenter.stealthTankResearchProgress_enemy >= 240 && techCenter.rocketTankResearchProgress_enemy >= 240 && techCenter.heavyTankResearchProgress_enemy >= 240){
 

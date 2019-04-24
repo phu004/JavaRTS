@@ -572,7 +572,14 @@ public class combatManagerAI {
 						
 						if(team[i].attackStatus != solidObject.isAttacking){
 						
-							team[i].attackMoveTo(playerForceCenter.x + adjustedAttackDirection.x, playerForceCenter.z + adjustedAttackDirection.z); 
+							float x = team[i].centre.x;
+							float z = team[i].centre.z;
+							boolean farFromAttackPosition = Math.abs(x - attackPosition.x) > 2.5 || Math.abs(z - attackPosition.z) > 2.5;
+							
+							if(!farFromAttackPosition)
+								team[i].attackMoveTo(playerForceCenter.x + adjustedAttackDirection.x, playerForceCenter.z + adjustedAttackDirection.z); 
+							else
+								team[i].attackMoveTo(attackPosition.x, attackPosition.z); 
 							team[i].currentCommand = solidObject.attackMove;
 							team[i].secondaryCommand = solidObject.attackMove;
 							
@@ -596,9 +603,7 @@ public class combatManagerAI {
 				else
 					break;
 			}
-			
-			System.out.println(gatherPoint);
-			
+			  
 			boolean playerForceIsMuchWeakerThanAI = checkIfAIHasBiggerForce(0.5f);
 
 			for(int i = 0; i < mainThread.ec.theUnitProductionAI.numberOfCombatUnit; i++){
@@ -630,7 +635,7 @@ public class combatManagerAI {
 								if(staticDefenseNearAttackPosition || !playerForceIsMuchWeakerThanAI || mainThread.ec.theMapAwarenessAI.playerAssetDestoryedCountDown == 0)
 									team[i].attackMoveTo(gatherPoint.x, gatherPoint.z); 
 								else
-									team[i].attackMoveTo(team[i].centre.x + attackDirection.x*teamRadius, team[i].centre.z + attackDirection.z*teamRadius); 
+									team[i].attackMoveTo(attackPosition.x, attackPosition.z); 
 								
 							}else{
 								team[i].attackMoveTo(team[i].centre.x + attackDirection.x*teamRadius, team[i].centre.z + attackDirection.z*teamRadius); 

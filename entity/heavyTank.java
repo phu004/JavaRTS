@@ -69,7 +69,7 @@ public class heavyTank extends solidObject{
 	public heavyTank(vector origin, int bodyAngle, int teamNo){
 		speed = 0.0085f;
 		attackRange = 1.7f;
-		groupAttackRange = 1.1f;
+		groupAttackRange = 1.25f;
 		start = origin.myClone(); 
 		centre = origin.myClone();
 		tempCentre = origin.myClone();

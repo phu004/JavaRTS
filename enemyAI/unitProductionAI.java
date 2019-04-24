@@ -165,7 +165,7 @@ public class unitProductionAI {
 		boolean playerHasMostlyHeavyAndStealthTanks = mainThread.ec.theMapAwarenessAI.playerHasMostlyHeavyAndStealthTanks;
 		
 		
-		boolean b1 = (numberOfRocketTanks_AI < 2 &&  (frameAI > 400 || frameAI > 170 && frameAI < 240 && mainThread.ec.theMapAwarenessAI.numberOfConstructionYard_player > 0) && !playerHasMostlyLightTanks);
+		boolean b1 = (numberOfRocketTanks_AI < 3 &&  (frameAI > 400 || frameAI > 170 && frameAI < 240 && mainThread.ec.theMapAwarenessAI.numberOfConstructionYard_player > 0) && !playerHasMostlyLightTanks);
 		boolean b2 = (numberOfRocketTanks_AI < numberOfPlayerGunTurrets + numberOfPlayerMissileTurrets*1.5);
 		if( b1 || b2){
 			currentProductionOrder = produceRocketTank;

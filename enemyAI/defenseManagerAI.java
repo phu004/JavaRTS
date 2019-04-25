@@ -15,7 +15,7 @@ import entity.missileTurret;
 public class defenseManagerAI {
 	public baseInfo theBaseInfo;
 	
-	public int gameTime;
+	public int frameAI;
 	
 	public int currentState;
 	public final int booming = 0;
@@ -68,7 +68,9 @@ public class defenseManagerAI {
 	
 	
 	public void processAI(){
-		gameTime++;
+		frameAI = mainThread.ec.frameAI;
+		
+		
 		
 		if(majorThreatCooldown > 0)
 			majorThreatCooldown --;
@@ -79,7 +81,7 @@ public class defenseManagerAI {
 		lightTanksControlledByCombatAI = mainThread.ec.theUnitProductionAI.lightTanksControlledByCombatAI;
 		
 		//after 500 seconds mark, borrow 2 stealth tanks from combat manager, and send them to guard western and southern side of the main base
-		if(gameTime >= 480) {
+		if(frameAI >= 480) {
 			for(int i = 0; i < 2; i++) {
 				if(observers[i] == null || observers[i].currentHP <=0) {
 					for(int j = 0; j < stealthTanksControlledByCombatAI.length; j++) {
@@ -95,7 +97,7 @@ public class defenseManagerAI {
 							}
 							
 							
-							if(gameTime > 980) {
+							if(frameAI > 980) {
 								xPos = 0.25f;
 								zPos = 20.5f;
 								
@@ -125,7 +127,7 @@ public class defenseManagerAI {
 					
 					//if there is no player units in sight, return to patrol position
 					if(i == 0) {
-						if(gameTime%28 < 14) {
+						if(frameAI%28 < 14) {
 							xPos = 20f;
 							zPos = 30.5f;
 						}else {
@@ -133,8 +135,8 @@ public class defenseManagerAI {
 							zPos = 24.5f;
 						}
 						
-						if(gameTime > 980) {
-							if(gameTime%18 < 9) {
+						if(frameAI > 980) {
+							if(frameAI%18 < 9) {
 								xPos = 0.25f;
 								zPos = 20.5f;
 							}else {
@@ -147,7 +149,7 @@ public class defenseManagerAI {
 					
 					if(i == 1) {
 						
-						if(gameTime%20 < 10) {
+						if(frameAI%20 < 10) {
 							xPos = 30f;
 							zPos = 20f;
 						}else {
@@ -155,8 +157,8 @@ public class defenseManagerAI {
 							zPos = 20f;
 						}
 						
-						if(gameTime > 980) {
-							if(gameTime%14 < 7) {
+						if(frameAI > 980) {
+							if(frameAI%14 < 7) {
 								xPos = 18.75f;
 								zPos = 5f;
 							}else {
@@ -233,7 +235,7 @@ public class defenseManagerAI {
 		
 		
 		//take over controls of  defenders from combat AI to deal with minor threat
-		if(minorThreatLocation.x != 0 && numOfDefenders > 0 && gameTime > 480) {
+		if(minorThreatLocation.x != 0 && numOfDefenders > 0 && frameAI > 480) {
 			takeOverDefendersFromCombatAI();
 			
 			//attack move to threat location
@@ -262,7 +264,7 @@ public class defenseManagerAI {
 				
 				//move back to rally point
 				for(int i =0; i < defenders.length; i++) {
-					if(defenders[i] != null && gameTime%20==0) {
+					if(defenders[i] != null && frameAI%20==0) {
 						defenders[i].moveTo(mainThread.ec.theUnitProductionAI.rallyPoint.x, mainThread.ec.theUnitProductionAI.rallyPoint.z);
 						defenders[i].currentCommand = solidObject.attackMove;
 						defenders[i].secondaryCommand = solidObject.attackMove;

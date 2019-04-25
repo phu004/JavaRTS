@@ -12,7 +12,6 @@ public class microManagementAI {
 	
 	public baseInfo theBaseInfo;
 	
-	public int frameAI;
 	
 	public int currentState;
 	public final int booming = 0;
@@ -33,9 +32,7 @@ public class microManagementAI {
 	}
 	
 	public void processAI(){
-		
-		frameAI++;
-		
+	
 		unitInCombatRadius = mainThread.ec.theUnitProductionAI.unitInCombatRadius;
 		playerUnitInMinimap = mainThread.ec.theMapAwarenessAI.playerUnitInMinimap;
 		playerStaticDefenceInMinimap = mainThread.ec.theMapAwarenessAI.playerStaticDefenceInMinimap;

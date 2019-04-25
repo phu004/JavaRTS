@@ -74,7 +74,7 @@ public class unitProductionAI {
 
 	
 	public void processAI(){
-		frameAI++;
+		frameAI = mainThread.ec.frameAI;
 		
 		//set the rally point to near the construction yard which is closest to the AI player's starting position
 		float x = 0;

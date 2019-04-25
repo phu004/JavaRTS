@@ -11,7 +11,7 @@ public class scoutingManagerAI {
 
 	public baseInfo theBaseInfo;
 	
-	public int gameTime;
+	public int frameAI;
 	
 	public int scoutingMode;
 	
@@ -55,13 +55,13 @@ public class scoutingManagerAI {
 	
 	public void processAI(){
 		
-		gameTime++;
+		frameAI = mainThread.ec.frameAI;
 		
 		if(avoidingIncomingPlayerUnitCooldown > 0)
 			avoidingIncomingPlayerUnitCooldown--;
 		
 		boolean scoutIsLightTank = scout != null && scout.type == 0;
-		if((gameTime%275 > 235 && gameTime%275 < 275 && !scoutIsLightTank) && gameTime < 900 && scoutingMode == patrolling || (scoutIsLightTank && gameTime < 240)){
+		if((frameAI%275 > 235 && frameAI%275 < 275 && !scoutIsLightTank) && frameAI < 900 && scoutingMode == patrolling || (scoutIsLightTank && frameAI < 240)){
 			scoutingMode = exploring;
 			destinationNode = 0;
 			movementOrderIssued = false;
@@ -173,18 +173,18 @@ public class scoutingManagerAI {
 					
 					
 					
-					if(mainThread.ec.theDefenseManagerAI.minorThreatLocation.x != 0 || mainThread.ec.theDefenseManagerAI.majorThreatLocation.x != 0 || (!mainThread.ec.theMapAwarenessAI.canRushPlayer && gameTime > 240)) {
+					if(mainThread.ec.theDefenseManagerAI.minorThreatLocation.x != 0 || mainThread.ec.theDefenseManagerAI.majorThreatLocation.x != 0 || (!mainThread.ec.theMapAwarenessAI.canRushPlayer && frameAI > 240)) {
 						if(scout.currentHP > 0) {							
 							scout.moveTo(mainThread.ec.theUnitProductionAI.rallyPoint.x, mainThread.ec.theUnitProductionAI.rallyPoint.z);
 							scout.currentCommand = solidObject.attackMove;
 							scout.secondaryCommand = solidObject.attackMove;
 							
-							if(gameTime > 310) {
+							if(frameAI > 310) {
 								mainThread.ec.theUnitProductionAI.addLightTank((lightTank)scout);
 								scout = null;
 							}
 						}
-					}else if(mainThread.ec.theMapAwarenessAI.canRushPlayer && gameTime > 290) {
+					}else if(mainThread.ec.theMapAwarenessAI.canRushPlayer && frameAI > 290) {
 						mainThread.ec.theUnitProductionAI.addLightTank((lightTank)scout);
 						
 						scout.moveTo(mainThread.ec.theUnitProductionAI.rallyPoint.x, mainThread.ec.theUnitProductionAI.rallyPoint.z);
@@ -330,7 +330,7 @@ public class scoutingManagerAI {
 	
 	//build light tank as scout when stealth tank tech is locked
 	public boolean needLightTank(){
-		if(gameTime < 200 &&  scout == null  && !theBaseInfo.canBuildStealthTank && mainThread.ec.theDefenseManagerAI.minorThreatLocation.x == 0 && mainThread.ec.theDefenseManagerAI.majorThreatLocation.x == 0){
+		if(frameAI < 200 &&  scout == null  && !theBaseInfo.canBuildStealthTank && mainThread.ec.theDefenseManagerAI.minorThreatLocation.x == 0 && mainThread.ec.theDefenseManagerAI.majorThreatLocation.x == 0){
 			return true;
 		}
 		
@@ -339,7 +339,7 @@ public class scoutingManagerAI {
 	
 	public boolean needStealthTank(){
 		if(theBaseInfo.canBuildStealthTank){
-			if((scout == null || scout.currentHP <= 0 || scout.type != 6) && gameTime > 380){
+			if((scout == null || scout.currentHP <= 0 || scout.type != 6) && frameAI > 380){
 				return true;
 			}
 		}

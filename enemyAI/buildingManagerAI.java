@@ -17,7 +17,7 @@ public class buildingManagerAI {
 	public int[] buildingPlacementCheckTiles, buildingPlacementCheckTiles_2x2, buildingPlacementCheckTiles_3x3;
 	public int placementTile;
 	public boolean powerPlantUnderConstruction;
-	public int frameIndex;
+	public int frameAI;
 
 	
 	public buildingManagerAI (){
@@ -50,10 +50,7 @@ public class buildingManagerAI {
 			int list = buildingPlacementCheckTiles_3x3[temp];
 			buildingPlacementCheckTiles_3x3[temp] = buildingPlacementCheckTiles_3x3[temp1];
 			buildingPlacementCheckTiles_3x3[temp1] = list;
-		}
-		
-		frameIndex = 0;
-		
+		}	
 	}
 	
 	public void addBuildingToQueue(int buildingType){
@@ -98,13 +95,13 @@ public class buildingManagerAI {
 	}
 	
 	public void processAI(){
-		frameIndex++;
+		frameAI = mainThread.ec.frameAI;
 		
 		
 		powerPlantUnderConstruction = buildingUnderProduction(101);
 		
 		//build power plant, if the base is in lower power  status or we have more money to spend on make extra one
-		if(theBaseInfo.canBuildRefinery == false || theBaseInfo.lowPower || (theBaseInfo.currentPowerConsumption >= (theBaseInfo.currentPowerLevel - 500) && theBaseInfo.currentCredit > 500 && theBaseInfo.numberOfPowerPlant >=2 && frameIndex > 300)){
+		if(theBaseInfo.canBuildRefinery == false || theBaseInfo.lowPower || (theBaseInfo.currentPowerConsumption >= (theBaseInfo.currentPowerLevel - 500) && theBaseInfo.currentCredit > 500 && theBaseInfo.numberOfPowerPlant >=2 && frameAI > 300)){
 			addBuildingToQueue(101);
 		}
 			
@@ -189,7 +186,7 @@ public class buildingManagerAI {
 						h.goToTheNearestGoldMine();  
 						constructionYards[i].finishDeployment();
 					}
-				}else if(constructionYards[i].refineryProgress < 240 && frameIndex > 300) {
+				}else if(constructionYards[i].refineryProgress < 240 && frameAI > 300) {
 					//if there is not enough money to finish building the refinery, reset all other production.
 				
 

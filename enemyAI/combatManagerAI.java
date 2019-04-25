@@ -86,7 +86,7 @@ public class combatManagerAI {
 	//if AI is under significant threat, switch to defending mode
 	
 	public void processAI(){
-		frameAI++;
+		frameAI = mainThread.ec.frameAI;
 		
 		if(mainThread.ec.theMapAwarenessAI.numberOfPlayerUnitsOnMinimap != 0)
 			noPlayerActivityCountdown=150;

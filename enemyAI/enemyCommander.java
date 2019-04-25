@@ -24,6 +24,7 @@ public class enemyCommander {
 	public harassmentAI theHarassmentAI;
 	public int difficulty;
 	
+	public int frameAI;
 	
 	public void init(){
 		
@@ -88,6 +89,8 @@ public class enemyCommander {
 	
 	
 	public void thinkHardLikeHumanPlayer(){
+		frameAI = mainThread.gameFrame/30;
+		
 		//the order is important!!
 		if(mainThread.gameFrame % 30 == 0){
 			theMapAwarenessAI.processAI();
@@ -121,9 +124,9 @@ public class enemyCommander {
 			theDefenseManagerAI.processAI();
 		}
 		
-		if(mainThread.gameFrame % 30 == 8) {
+		
 			theHarassmentAI.processAI();
-		}
+		
 		
 		//if(mainThread.frameIndex % 5  == 0){
 			theMicroManagementAI.processAI();

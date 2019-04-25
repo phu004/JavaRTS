@@ -11,7 +11,9 @@ public class harassmentAI {
 	
 	public baseInfo theBaseInfo;
 	
-	public int gameTime;
+	
+	public int frameAI;
+	public int miniFrameAI;
 
 	
 	public harassmentAI(){
@@ -21,11 +23,11 @@ public class harassmentAI {
 	}
 	
 	public void processAI(){
+		miniFrameAI++;
+		frameAI = mainThread.ec.frameAI;
 		
-		gameTime++;
-	
+		
+		
 		
 	}
-	
-	
 }

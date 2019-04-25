@@ -118,7 +118,7 @@ public class mapAwarenessAI {
 	}
 	
 	public void processAI(){
-		frameAI++;
+		frameAI = mainThread.ec.frameAI;
 		
 		theAssetManager = mainThread.theAssetManager;				
 		

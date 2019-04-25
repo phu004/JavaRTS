@@ -25,7 +25,6 @@ public class baseExpensionAI {
 	
 	public baseExpensionAI(){
 		this.theBaseInfo = mainThread.ec.theBaseInfo;
-		frameAI = 0;
 		temp = new vector(0,0,0);
 		
 		//generate a expension piority list
@@ -54,7 +53,7 @@ public class baseExpensionAI {
 	
 	public void processAI(){
 	
-		frameAI++;
+		frameAI = mainThread.ec.frameAI;
 		
 		//when all the expansion position has been utilized then do nothing 
 		if(allExpansionOccupied)

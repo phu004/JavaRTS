@@ -405,7 +405,7 @@ public class playerCommander {
 				
 			if(selectedConyardID != -1) {	
 				for(int i = 0; i < constructionYards.length; i++) {
-					if(constructionYards[i].ID == selectedConyardID) {
+					if(constructionYards[i] != null && constructionYards[i].ID == selectedConyardID) {
 						conyardIndex = i;
 						break;
 					}

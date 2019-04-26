@@ -26,7 +26,8 @@ public class harassmentAI {
 		miniFrameAI++;
 		frameAI = mainThread.ec.frameAI;
 		
-		
+		if(miniFrameAI%30 == 29)
+			System.out.println(frameAI + "   " + mainThread.ec.theCombatManagerAI.rushAttackTime);
 		
 		
 	}

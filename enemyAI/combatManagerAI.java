@@ -1,6 +1,7 @@
 package enemyAI;
 
 import core.baseInfo;
+import core.gameData;
 import core.mainThread;
 import core.vector;
 import entity.goldMine;
@@ -67,7 +68,7 @@ public class combatManagerAI {
 		this.theBaseInfo = mainThread.ec.theBaseInfo;
 	
 		standardAttackTime = 600;
-		rushAttackTime = 300;
+		rushAttackTime = 330 + gameData.getRandom()/4;
 		
 		goldMines = mainThread.theAssetManager.goldMines;
 		

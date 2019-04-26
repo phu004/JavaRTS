@@ -516,24 +516,7 @@ public class mapAwarenessAI {
         
         if(playerIsFastExpanding) {
         	
-        	//check if there is any static defense around player's natural
-        	boolean staticDefenceNearPlayerExpansion = false;
-        	solidObject[] playerStaticDefence = mainThread.ec.theMapAwarenessAI.playerStaticDefenceInMinimap;
-        	for(int i = 0; i < playerStaticDefence.length; i++) {
-        		if(playerStaticDefence[i] != null && playerStaticDefence[i].currentHP > 0) {
-        			float x1 = playerStaticDefence[i].centre.x;
-        			float z1 = playerStaticDefence[i].centre.z;
-        			float x2 = playerNaturalLocation.x;
-        			float z2 = playerNaturalLocation.z;
-        			
-        			if(Math.sqrt((x1-x2)*(x1-x2) + (z1-z2)*(z1-z2)) < 3f) {
-        				staticDefenceNearPlayerExpansion = true;
-        				break;
-        			}
-        		}
-        	}
-        	
-        	if(!staticDefenceNearPlayerExpansion)
+        	if(mainThread.ec.theCombatManagerAI.checkIfAIHasBiggerForce(0.5f))
         		canRushPlayer = true;
         }
       

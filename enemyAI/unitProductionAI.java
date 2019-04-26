@@ -122,9 +122,9 @@ public class unitProductionAI {
 		
 		//If the difficulty is set to normal or hard, set the rally point just outside of player's natural expansion. 
 		//So if the player is going for a fast expansion and don't have much units, the AI can perform a rush attack. 
-		if(mainThread.ec.theMapAwarenessAI.canRushPlayer && frameAI < 360 && mainThread.ec.theCombatManagerAI.checkIfAIHasBiggerForce(1f)) {
-			rallyPoint.set(rushRallyPointX, 0,  rushRallyPointZ);
-		}
+		//if(mainThread.ec.theMapAwarenessAI.canRushPlayer && frameAI < 360 && mainThread.ec.theCombatManagerAI.checkIfAIHasBiggerForce(0.75f)) {
+		//	rallyPoint.set(rushRallyPointX, 0,  rushRallyPointZ);
+		//}
 		
 		//make sure not to over produce when the resource is running low
 		int maxNumOfUnitCanBeProduced =  theBaseInfo.currentCredit / 500 + 1;

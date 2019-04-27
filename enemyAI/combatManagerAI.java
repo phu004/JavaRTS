@@ -62,13 +62,15 @@ public class combatManagerAI {
 	
 	public int standardAttackTime, rushAttackTime;
 	
+	public int stateSwitchingCooldown;
+	
 	
 	
 	public combatManagerAI(){
 		this.theBaseInfo = mainThread.ec.theBaseInfo;
 	
 		standardAttackTime = 600;
-		rushAttackTime = 330 + gameData.getRandom()/4;
+		rushAttackTime = 300 + gameData.getRandom()/4;
 		
 		goldMines = mainThread.theAssetManager.goldMines;
 		
@@ -109,6 +111,9 @@ public class combatManagerAI {
 		}else{
 			maxPlayerForceStrengthRoundAttacker = 0;
 		}
+		
+		if(stateSwitchingCooldown > 0)
+			stateSwitchingCooldown--;
 		
 		team = mainThread.ec.theUnitProductionAI.troopsControlledByCombatAI;
 		numberOfUnitInCombatRadius = mainThread.ec.theUnitProductionAI.numberOfUnitInCombatRadius;
@@ -286,7 +291,7 @@ public class combatManagerAI {
 					}
 				}
 			}
-		}else if(currentState == aggressing){
+		}else if(currentState == aggressing && stateSwitchingCooldown == 0){
 			
 			//check if a major threat is found other than the current attack position
 			if(mainThread.ec.theDefenseManagerAI.majorThreatLocation.x != 0){
@@ -306,23 +311,7 @@ public class combatManagerAI {
 				}
 			}
 			
-			//if a rush tactics is denied by the player (e.g player builds static defenses around natural), then call back the troops that were sent to rush the player
-			if(frameAI < standardAttackTime && !mainThread.ec.theMapAwarenessAI.canRushPlayer){
-
-				if(Math.abs(attackPosition.x - myRallyPointX) > 12 || Math.abs(attackPosition.z - myRallyPointZ) > 12) {
-					for(int i = 0; i < troopsControlledByCombatAI.length; i++) {
-						if(troopsControlledByCombatAI[i] != null && troopsControlledByCombatAI[i].currentHP > 0) {
-							troopsControlledByCombatAI[i].attackMoveTo(myRallyPointX, myRallyPointZ);
-							troopsControlledByCombatAI[i].currentCommand = solidObject.attackMove;
-							troopsControlledByCombatAI[i].secondaryCommand = solidObject.attackMove;
-						}
-					}
-					currentState = booming;
-					return;
-				}
-				
-				
-			}
+			
 			
 			attackDirection.set(attackPosition.x - combatCenterX, 0, attackPosition.z - combatCenterZ);
 			distanceToTarget = attackDirection.getLength();
@@ -391,19 +380,38 @@ public class combatManagerAI {
 			//check if the troops is near a concentration of player's static defense.
 			//If true, then check if AI has enough troops to deal with the static defense.
 			staticDefenseAhead = false;
+			double distanceToTower = 999;
 			for(int i = 0; i < mainThread.ec.theMapAwarenessAI.playerStaticDefenseLocations.length; i++) {
 				if(mainThread.ec.theMapAwarenessAI.playerStaticDefenseSize[i] > 0) {
-					if(mainThread.ec.theMapAwarenessAI.playerStaticDefenseStrength[i] > 6) {
-						float xPos = mainThread.ec.theMapAwarenessAI.playerStaticDefenseLocations[i].x;
-						float zPos = mainThread.ec.theMapAwarenessAI.playerStaticDefenseLocations[i].z;
-						float d = (xPos - combatCenterX)*(xPos - combatCenterX) + (zPos - combatCenterZ)*(zPos - combatCenterZ);
-						if(d < 20.25) {
-							staticDefenseAhead = true;
-							break;
-						}
-					}
+					
+					float xPos = mainThread.ec.theMapAwarenessAI.playerStaticDefenseLocations[i].x;
+					float zPos = mainThread.ec.theMapAwarenessAI.playerStaticDefenseLocations[i].z;
+					distanceToTower = Math.sqrt((xPos - combatCenterX)*(xPos - combatCenterX) + (zPos - combatCenterZ)*(zPos - combatCenterZ));
+					if(distanceToTower < 4.5) {
+						staticDefenseAhead = true;
+						break;
+						
+ 					}
+					
 				}
 			}
+			
+			//if a rush tactics is denied by the player (e.g player builds static defenses around natural), then call back the troops that were sent to rush the player
+			if(frameAI < standardAttackTime && mainThread.ec.theMapAwarenessAI.canRushPlayer && distanceToTower < 2){
+				if(Math.abs(attackPosition.x - myRallyPointX) > 12 || Math.abs(attackPosition.z - myRallyPointZ) > 12) {
+					for(int i = 0; i < troopsControlledByCombatAI.length; i++) {
+						if(troopsControlledByCombatAI[i] != null && troopsControlledByCombatAI[i].currentHP > 0 && troopsControlledByCombatAI[i].type != 1) {
+							troopsControlledByCombatAI[i].moveTo(myRallyPointX, myRallyPointZ);
+							troopsControlledByCombatAI[i].currentCommand = solidObject.move;
+							troopsControlledByCombatAI[i].secondaryCommand = solidObject.StandBy;
+						}
+					}
+					currentState = booming;
+					stateSwitchingCooldown = 8;
+					return;
+				}
+			}
+			
 			
 			staticDefenseNearAttackPosition = false;
 			for(int i = 0; i < mainThread.ec.theMapAwarenessAI.playerStaticDefenseLocations.length; i++) {
@@ -623,10 +631,12 @@ public class combatManagerAI {
 						
 						
 						if(staticDefenseAhead) {
-							if(team[i].type == 1)
+							if(team[i].type == 1) {
 								team[i].attackMoveTo(team[i].centre.x + attackDirection.x*teamRadius, team[i].centre.z + attackDirection.z*teamRadius); 
-							else 
+							}else {
 								team[i].attackMoveTo(combatCenterX, combatCenterZ); 
+							}
+							
 							
 						}else if(!(team[i].currentMovementStatus ==  solidObject.hugRight || team[i].currentMovementStatus == solidObject.hugLeft)){
 						

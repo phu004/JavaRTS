@@ -60,7 +60,7 @@ public class combatManagerAI {
 	
 	public boolean unitCountLow;
 	
-	public int standardAttackTime, rushAttackTime;
+	public int  attackTime, standardAttackTime, rushAttackTime;
 	
 	public int stateSwitchingCooldown;
 	
@@ -160,7 +160,7 @@ public class combatManagerAI {
 		
 		if(currentState == booming){			
 			//enemy AI compares its own  force with player's force, then make a decision whether it should attack or not 
-			int attackTime = standardAttackTime;
+			attackTime = standardAttackTime;
 			if(mainThread.ec.theMapAwarenessAI.canRushPlayer)
 				attackTime = rushAttackTime;
 			
@@ -174,7 +174,10 @@ public class combatManagerAI {
 						shouldAttack = checkIfAIHasBiggerForce(0.75f);
 				else
 					shouldAttack = checkIfAIHasBiggerForce(1.2f);
+				if(mainThread.ec.theUnitProductionAI.numberOfCombatUnit > 100)
+					shouldAttack = true;
 			}
+			
 			
 			
 			if(shouldAttack){
@@ -396,7 +399,7 @@ public class combatManagerAI {
 				}
 			}
 			
-			//if a rush tactics is denied by the player (e.g player builds static defenses around natural), then call back the troops that were sent to rush the player
+			//if a rush tactics is denied by the player (e.g player builds static defenses around natural), then briefly suspend the attacking force (wait for rocket tanks to take out the static defenses)
 			if(frameAI < standardAttackTime && mainThread.ec.theMapAwarenessAI.canRushPlayer && distanceToTower < 2){
 				if(Math.abs(attackPosition.x - myRallyPointX) > 12 || Math.abs(attackPosition.z - myRallyPointZ) > 12) {
 					for(int i = 0; i < troopsControlledByCombatAI.length; i++) {

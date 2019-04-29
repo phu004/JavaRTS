@@ -216,7 +216,7 @@ public class AssetManager {
 		addConstructionVehicle(new constructionVehicle(new vector(3.125f,-0.3f, 2.125f), 90, 0));	
 		addConstructionVehicle(new constructionVehicle(new vector(29.625f,-0.3f, 28.875f), 90, 1));	
 		constructionVehicles[1].expand();
- 
+		
 		
 		//testing only
 		for(int i = 0; i < 6; i ++){

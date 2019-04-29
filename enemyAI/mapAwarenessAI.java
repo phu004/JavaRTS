@@ -564,7 +564,7 @@ public class mapAwarenessAI {
 
 		//check if there are any player's structure around each gold mine.
 		for(int i = 0; i < goldMines.length; i++){
-			playerExpensionInfo[i] = findplayexpensionDefenseScore(goldMines[i], 4);
+			playerExpensionInfo[i] = findplayexpensionDefenseScore(goldMines[i], 3.5f);
 		}
 		
 		//compute the target player expansion defense score

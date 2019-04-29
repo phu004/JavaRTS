@@ -255,6 +255,7 @@ public class sideBarManager {
 				//can  interact with one than 1 factory at a time
 				if(mainThread.pc.numberOfSelectedUnits != 0){
 					factory f = null;
+					boolean productionQueueDisplayed = false;
 					for(int i = 0; i < selectedUnits.length;i++){
 						if(selectedUnits[i] != null && selectedUnits[i].type == 105){
 							f = (factory)selectedUnits[i];
@@ -274,14 +275,14 @@ public class sideBarManager {
 								}
 								
 								
-							
 								//display info
 								int displayInfo = 0;
 								if(cursorInBlock0){
 									displayInfo = 5;
 								}
 								
-								sideBarInfo[0] = displayInfo << 24 | 6 << 16 | f.lightTankProgress << 8 | (f.numOfLightTankOnQueue + 100);
+								if(!productionQueueDisplayed)
+									sideBarInfo[0] = displayInfo << 24 | 6 << 16 | f.lightTankProgress << 8 | (f.numOfLightTankOnQueue + 100);
 								
 							}
 							
@@ -304,7 +305,8 @@ public class sideBarManager {
 									displayInfo = 6;
 								}
 								
-								sideBarInfo[1] = displayInfo << 24 | 7 << 16 | f.rocketTankProgress << 8 | (f.numOfRocketTankOnQueue + 100);
+								if(!productionQueueDisplayed)
+									sideBarInfo[1] = displayInfo << 24 | 7 << 16 | f.rocketTankProgress << 8 | (f.numOfRocketTankOnQueue + 100);
 								
 							}
 							
@@ -325,8 +327,9 @@ public class sideBarManager {
 								if(cursorInBlock2){
 									displayInfo = 7;
 								}
-									
-								sideBarInfo[2] = displayInfo << 24 | 8 << 16 | f.harvesterProgress << 8 | (f.numOfHarvesterOnQueue + 100);
+								
+								if(!productionQueueDisplayed)
+									sideBarInfo[2] = displayInfo << 24 | 8 << 16 | f.harvesterProgress << 8 | (f.numOfHarvesterOnQueue + 100);
 							}
 							
 							//handle drone building progress and display info
@@ -347,10 +350,12 @@ public class sideBarManager {
 									displayInfo = 8;
 								}
 								
-								if(f.numOfDrones == 3){
-									sideBarInfo[3] = displayInfo << 24 | 9 << 16 | 0 << 8 | (f.numOfDroneOnQueue + 100);
-								}else{
-									sideBarInfo[3] = displayInfo << 24 | 9 << 16 | f.droneProgress << 8 | (f.numOfDroneOnQueue + 100);
+								if(!productionQueueDisplayed) {
+									if(f.numOfDrones == 3){
+										sideBarInfo[3] = displayInfo << 24 | 9 << 16 | 0 << 8 | (f.numOfDroneOnQueue + 100);
+									}else{
+										sideBarInfo[3] = displayInfo << 24 | 9 << 16 | f.droneProgress << 8 | (f.numOfDroneOnQueue + 100);
+									}
 								}
 							}
 							
@@ -373,8 +378,8 @@ public class sideBarManager {
 								if(cursorInBlock5){
 									displayInfo = 10;
 								}
-									
-								sideBarInfo[5] = displayInfo << 24 | 11 << 16 | f.MCVProgress << 8 | (f.numOfMCVOnQueue + 100);
+								if(!productionQueueDisplayed)
+									sideBarInfo[5] = displayInfo << 24 | 11 << 16 | f.MCVProgress << 8 | (f.numOfMCVOnQueue + 100);
 								
 							}
 							
@@ -396,7 +401,8 @@ public class sideBarManager {
 									displayInfo = 11;
 								}
 								
-								sideBarInfo[4] = displayInfo << 24 | 12 << 16 | f.stealthTankProgress << 8 | (f.numOfStealthTankOnQueue + 100);
+								if(!productionQueueDisplayed)
+									sideBarInfo[4] = displayInfo << 24 | 12 << 16 | f.stealthTankProgress << 8 | (f.numOfStealthTankOnQueue + 100);
 							}
 							
 							//handle heavy tank building progress and display info
@@ -418,11 +424,13 @@ public class sideBarManager {
 									displayInfo = 19;
 								}
 								
-								sideBarInfo[6] = displayInfo << 24 | 19 << 16 | f.heavyTankProgress << 8 | (f.numOfHeavyTankOnQueue + 100);
+								if(!productionQueueDisplayed)
+									sideBarInfo[6] = displayInfo << 24 | 19 << 16 | f.heavyTankProgress << 8 | (f.numOfHeavyTankOnQueue + 100);
 					
 							}
-							
+							productionQueueDisplayed = true;
 						}
+						
 					}
 				}		
 			}

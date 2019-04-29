@@ -22,6 +22,8 @@ public class baseExpensionAI {
 	public vector temp; 
 	public boolean allExpansionOccupied;
 	public int lastExpansionLocation;
+	public int  lowGoldmineThreshold;
+	
 	
 	public baseExpensionAI(){
 		this.theBaseInfo = mainThread.ec.theBaseInfo;
@@ -48,6 +50,8 @@ public class baseExpensionAI {
 		scouts = new stealthTank[3];
 		
 		lastExpansionLocation = 7;
+		
+		lowGoldmineThreshold = 22500;
 	}
 	
 	
@@ -143,17 +147,15 @@ public class baseExpensionAI {
 		
 		boolean playerHasLessUnits = mainThread.ec.theCombatManagerAI.checkIfAIHasBiggerForce(1f);
 		
-		int lowGoldmineThreshold = 22500;
-		
 		
 		if(playerHasLessUnits) {
-			lowGoldmineThreshold = 27500;
+			lowGoldmineThreshold = 32500;
 			
 			if(mainThread.ec.theEconomyManagerAI.preferedGoldMine == mainThread.theAssetManager.goldMines[4])
 				lowGoldmineThreshold = 30000;
 			
 			if(mainThread.ec.theEconomyManagerAI.preferedGoldMine == mainThread.theAssetManager.goldMines[5])
-				lowGoldmineThreshold = 25000;
+				lowGoldmineThreshold = 40000;
 		}
 		
 		if(myMCV == null && expensionGoldMine.goldDeposite >= 17500 && (mainThread.ec.theEconomyManagerAI.preferedGoldMine.goldDeposite < lowGoldmineThreshold || 

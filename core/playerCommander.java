@@ -402,7 +402,7 @@ public class playerCommander {
 			//toggle to a different conyard
 			constructionYard[] constructionYards = mainThread.theAssetManager.constructionYards;
 			int conyardIndex = -1;
-				
+			
 			if(selectedConyardID != -1) {	
 				for(int i = 0; i < constructionYards.length; i++) {
 					if(constructionYards[i] != null && constructionYards[i].ID == selectedConyardID) {
@@ -418,11 +418,11 @@ public class playerCommander {
 					}
 				}
 			}
-		
+			
 			if(conyardIndex != -1) {
 				for(int i = conyardIndex+1; i < constructionYards.length + conyardIndex + 1; i++) {
 					int index = i%constructionYards.length;
-					if(constructionYards[index] != null && constructionYards[index].teamNo == 0 && constructionYards[index].currentHP > 0) {
+					if(constructionYards[index] != null && constructionYards[index].teamNo == 0 && constructionYards[index].currentHP > 0 && constructionYards[index].isSelectable) {
 						addToSelection(constructionYards[index]);
 						
 						break;
@@ -510,6 +510,7 @@ public class playerCommander {
 		controlKeyPressed = false;
 		numberTyped = 0;
 	}
+
 	
 	
 	

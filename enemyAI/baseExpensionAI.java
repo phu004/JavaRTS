@@ -150,10 +150,7 @@ public class baseExpensionAI {
 		
 		
 		boolean playerHasLessUnits = mainThread.ec.theCombatManagerAI.checkIfAIHasBiggerForce(1f);
-		
-		
-		System.out.println(mainThread.ec.theUnitProductionAI.numberOfCombatUnit + "   "  + theBaseInfo.currentCredit +  "   "  + playerHasLessUnits);
-		
+				
 		if(playerHasLessUnits) {
 			lowGoldmineThreshold = 32500;
 			

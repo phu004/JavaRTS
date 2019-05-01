@@ -177,13 +177,16 @@ public class unitProductionAI {
 				 && !(playerHasMostlyHeavyTanks && numberOfStealthTanks_player < numberOfHeavyTanks_AI*2) 
 				 && (playIsRushingHighTierUnits ||  maxNumberOfStealthTanks_playerInLastFiveMinutes*4 > numberOfHeavyTanks_AI  || (mainThread.gameFrame/30 > 400 && mainThread.gameFrame/30 < 550 &&  numberOfPlayerGunTurrets +  numberOfPlayerMissileTurrets+ numberOfLightTanks_player + numberOfRocketTanks_player + numberOfHeavyTanks_player*5 < 5)))){
 			currentProductionOrder = produceHeavyTank; 
-		}else if(theBaseInfo.canBuildStealthTank && (playerHasMostlyLightTanks || playerLikelyCanNotProduceHighTierUnits || playerDoesntHaveMassHeavyTanks) && (!playerHasMostlyHeavyTanks && frameAI > 450 || numberOfLightTanks_player > 8)){
+		}else if(theBaseInfo.canBuildStealthTank && (playerHasMostlyLightTanks || playerLikelyCanNotProduceHighTierUnits || playerDoesntHaveMassHeavyTanks) && !playerHasMostlyHeavyTanks && (frameAI > 450 || numberOfLightTanks_player > 8)){
 			currentProductionOrder = produceStealthTank;
 		}else{
 			currentProductionOrder = produceLightTank;
 		}
 		
-	
+		System.out.println("playerHasMostlyHeavyAndStealthTanks: " + playerHasMostlyHeavyAndStealthTanks);
+		System.out.println("playerHasManyLightTanksButNoHeavyTank: " + playerHasManyLightTanksButNoHeavyTank);
+		System.out.println("playerHasMostlyLightTanks: " + playerHasMostlyLightTanks);
+		System.out.println(currentProductionOrder);
 				
 		//make decision on what tech to research
 		if(mainThread.ec.theBuildingManagerAI.theBaseInfo.numberOfCommunicationCenter > 0) {

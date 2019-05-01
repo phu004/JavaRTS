@@ -84,10 +84,29 @@ public class buildingManagerAI {
 		
 		//if not in the queue then 
 		if(!alreadyInQueue){
+			boolean hasIdleConYard = false;
 			for(int i = 0; i < constructionYards.length; i ++){
 				if(constructionYards[i] != null && constructionYards[i].teamNo != 0 && constructionYards[i].isIdle()){
 					constructionYards[i].build(buildingType);
+					hasIdleConYard = true;
 					break;
+				}
+			}
+			
+			//Prioritize factory construction over static defense if there is no idle con yard
+			if(!hasIdleConYard && buildingType == 105) {
+				for(int i = 0; i < constructionYards.length; i ++){
+					if(constructionYards[i] != null && constructionYards[i].teamNo != 0 && constructionYards[i].currentBuildingType == 200){
+						constructionYards[i].cancelBuilding();
+						break;
+					}
+				}
+				
+				for(int i = 0; i < constructionYards.length; i ++){
+					if(constructionYards[i] != null && constructionYards[i].teamNo != 0 && constructionYards[i].isIdle()){
+						constructionYards[i].build(105);
+						break;
+					}
 				}
 			}
 		}
@@ -151,10 +170,11 @@ public class buildingManagerAI {
 		
 		
 		//build more factory if we have plenty of money in the bank 
-		if(theBaseInfo.currentCredit > 2200 && theBaseInfo.canBuildFactory && theBaseInfo.numberOfFactory < 4 && theBaseInfo.numberOfFactory <= mainThread.ec.theEconomyManagerAI.numberOfharvesters/2){
+		if(theBaseInfo.currentCredit > 2200 && theBaseInfo.canBuildFactory && theBaseInfo.numberOfFactory < 5 && theBaseInfo.numberOfFactory <= mainThread.ec.theEconomyManagerAI.numberOfharvesters/2){
 			addBuildingToQueue(105);
 		}
 		
+	
 	
 		//process structure building event
 		constructionYard[] constructionYards = mainThread.theAssetManager.constructionYards;

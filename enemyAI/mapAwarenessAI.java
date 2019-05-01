@@ -449,7 +449,7 @@ public class mapAwarenessAI {
 		float lightTankRatio = (float)(numberOfLightTanks_player)/(totalNumberOfPlayerUnits + 1);
 		
 		playerHasMostlyLightTanks = (numberOfLightTanks_player > 5 &&  lightTankRatio > 0.8f) || (frameAI < 420 && numberOfLightTanks_player > 1 && lightTankRatio >= 0.75f);
-		playerHasMostlyHeavyTanks = numberOfHeavyTanks_player > 3 && (float)(numberOfHeavyTanks_player)/(totalNumberOfPlayerUnits) > 0.6f;
+		playerHasMostlyHeavyTanks = numberOfHeavyTanks_player > 1 && (float)(numberOfHeavyTanks_player)/(totalNumberOfPlayerUnits) > 0.6f;
 		playerHasManyLightTanksButNoHeavyTank = lightTankRatio > 0.5 && lightTankRatio <=0.8 && numberOfHeavyTanks_player < 3;
 
 		playIsRushingHighTierUnits = mainThread.gameFrame/30 > 250 && mainThread.gameFrame/30 < 400 

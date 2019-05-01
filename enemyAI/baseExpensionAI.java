@@ -65,7 +65,7 @@ public class baseExpensionAI {
 		
 		if(frameAI > 750 && frameAI < 1000 && !expensionListRerolled) {
 			//if the AI has smaller force than player when it's time to grab a third base,  use the less aggressive base expansion route
-			if(mainThread.ec.theCombatManagerAI.checkIfAIHasBiggerForce(1) == false) {
+			if(mainThread.ec.theCombatManagerAI.checkIfAIHasBiggerForce(1) == false && expensionPiorityList[targetExpension] == 6) {
 				int randomeNumber = gameData.getRandom();
 				if(randomeNumber < 512)
 					expensionPiorityList = new int[]{5,2,3,6,7};
@@ -87,8 +87,12 @@ public class baseExpensionAI {
 			}
 		}
 		
-	
-		expensionGoldMine = goldMines[expensionPiorityList[targetExpension]];
+		if(expensionGoldMine == null)
+			expensionGoldMine = goldMines[expensionPiorityList[targetExpension]];
+		else {
+			if(goldMines[expensionPiorityList[targetExpension]].goldDeposite > expensionGoldMine.goldDeposite)
+				expensionGoldMine = goldMines[expensionPiorityList[targetExpension]];
+		}
 		
 		//produce a total of 3  scout units, check if there are any stealth tank in the production
 		numberOfActiveScout = 0;
@@ -148,14 +152,17 @@ public class baseExpensionAI {
 		boolean playerHasLessUnits = mainThread.ec.theCombatManagerAI.checkIfAIHasBiggerForce(1f);
 		
 		
+		System.out.println(mainThread.ec.theUnitProductionAI.numberOfCombatUnit + "   "  + theBaseInfo.currentCredit +  "   "  + playerHasLessUnits);
+		
 		if(playerHasLessUnits) {
 			lowGoldmineThreshold = 32500;
 			
 			if(mainThread.ec.theEconomyManagerAI.preferedGoldMine == mainThread.theAssetManager.goldMines[4])
 				lowGoldmineThreshold = 30000;
 			
-			if(mainThread.ec.theEconomyManagerAI.preferedGoldMine == mainThread.theAssetManager.goldMines[5])
-				lowGoldmineThreshold = 40000;
+			if(mainThread.ec.theEconomyManagerAI.preferedGoldMine == mainThread.theAssetManager.goldMines[5]) {
+				lowGoldmineThreshold = 38750;
+			}
 		}
 		
 		if(myMCV == null && expensionGoldMine.goldDeposite >= 17500 && (mainThread.ec.theEconomyManagerAI.preferedGoldMine.goldDeposite < lowGoldmineThreshold || 

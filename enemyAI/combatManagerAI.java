@@ -174,7 +174,7 @@ public class combatManagerAI {
 						shouldAttack = checkIfAIHasBiggerForce(0.75f);
 				else
 					shouldAttack = checkIfAIHasBiggerForce(1.2f);
-				if(mainThread.ec.theUnitProductionAI.numberOfCombatUnit > 100)
+				if(mainThread.ec.theUnitProductionAI.numberOfCombatUnit > 75)
 					shouldAttack = true;
 			}
 			
@@ -385,7 +385,7 @@ public class combatManagerAI {
 			staticDefenseAhead = false;
 			double distanceToTower = 999;
 			for(int i = 0; i < mainThread.ec.theMapAwarenessAI.playerStaticDefenseLocations.length; i++) {
-				if(mainThread.ec.theMapAwarenessAI.playerStaticDefenseSize[i] > 0) {
+				if(mainThread.ec.theMapAwarenessAI.playerStaticDefenseSize[i] > 6) {
 					
 					float xPos = mainThread.ec.theMapAwarenessAI.playerStaticDefenseLocations[i].x;
 					float zPos = mainThread.ec.theMapAwarenessAI.playerStaticDefenseLocations[i].z;
@@ -419,6 +419,7 @@ public class combatManagerAI {
 			staticDefenseNearAttackPosition = false;
 			for(int i = 0; i < mainThread.ec.theMapAwarenessAI.playerStaticDefenseLocations.length; i++) {
 				if(mainThread.ec.theMapAwarenessAI.playerStaticDefenseSize[i] > 0) {
+					
 					if(mainThread.ec.theMapAwarenessAI.playerStaticDefenseStrength[i] > 6) {
 						float xPos = mainThread.ec.theMapAwarenessAI.playerStaticDefenseLocations[i].x;
 						float zPos = mainThread.ec.theMapAwarenessAI.playerStaticDefenseLocations[i].z;

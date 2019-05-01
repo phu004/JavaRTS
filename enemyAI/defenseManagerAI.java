@@ -217,9 +217,7 @@ public class defenseManagerAI {
 				giveBackControlOfDefendersToCombatAI();
 				majorThreatCooldown = 20;
 				majorThreatLocation.set(mainPlayerForceLocation);
-			}
-			
-			else {
+			}else {
 				float d = playerForceIsMovingTwoardsBase(mainPlayerForceLocation, mainPlayerForceDirection);
 				if(d != -1) {
 					giveBackControlOfDefendersToCombatAI();
@@ -410,6 +408,8 @@ public class defenseManagerAI {
 					float d = 1.85f;  //minimum deploy distance from conyard
 					if(distanceToThreat > d + gunTurret.attackRange)
 						d = distanceToThreat - gunTurret.attackRange;
+					if(distanceToThreat < 1.8)
+						d = 1.25f;
 					
 					gunTurretDeployLocation.x = constructionYards[i].centre.x + (threatX - constructionYards[i].centre.x)/distanceToThreat*d;
 					gunTurretDeployLocation.z = constructionYards[i].centre.z + (threatZ - constructionYards[i].centre.z)/distanceToThreat*d;
@@ -423,6 +423,8 @@ public class defenseManagerAI {
 					float d = 1.65f;  //minimum deploy distance from conyard
 					if(distanceToThreat > d + missileTurret.attackRange)
 						d = distanceToThreat - missileTurret.attackRange;
+					if(distanceToThreat < 2.2)
+						d = 1f;
 					
 					missileTurretDeployLocation.x = constructionYards[i].centre.x + (threatX - constructionYards[i].centre.x)/distanceToThreat*d;
 					missileTurretDeployLocation.z = constructionYards[i].centre.z + (threatZ - constructionYards[i].centre.z)/distanceToThreat*d;

@@ -175,14 +175,15 @@ public class unitProductionAI {
 				 && !playerHasMostlyLightTanks 
 				 && !(numberOfHeavyTanks_player == 0 && maxNumberOfStealthTanks_playerInLastFiveMinutes < 3 &&  mainThread.gameFrame/30 > 600)  
 				 && !(playerHasMostlyHeavyTanks && numberOfStealthTanks_player < numberOfHeavyTanks_AI*2) 
-				 && (playIsRushingHighTierUnits ||  maxNumberOfStealthTanks_playerInLastFiveMinutes*4 > numberOfHeavyTanks_AI  || (mainThread.gameFrame/30 > 400 && mainThread.gameFrame/30 < 600 &&  numberOfPlayerGunTurrets +  numberOfPlayerMissileTurrets+ numberOfLightTanks_player + numberOfRocketTanks_player + numberOfHeavyTanks_player*5 < 5)))){
+				 && (playIsRushingHighTierUnits ||  maxNumberOfStealthTanks_playerInLastFiveMinutes*4 > numberOfHeavyTanks_AI  || (mainThread.gameFrame/30 > 400 && mainThread.gameFrame/30 < 550 &&  numberOfPlayerGunTurrets +  numberOfPlayerMissileTurrets+ numberOfLightTanks_player + numberOfRocketTanks_player + numberOfHeavyTanks_player*5 < 5)))){
 			currentProductionOrder = produceHeavyTank; 
-		}else if(theBaseInfo.canBuildStealthTank && (playerHasMostlyLightTanks || playerLikelyCanNotProduceHighTierUnits || playerDoesntHaveMassHeavyTanks) && !playerHasMostlyHeavyTanks){
+		}else if(theBaseInfo.canBuildStealthTank && (playerHasMostlyLightTanks || playerLikelyCanNotProduceHighTierUnits || playerDoesntHaveMassHeavyTanks) && (!playerHasMostlyHeavyTanks && frameAI > 450 || numberOfLightTanks_player > 8)){
 			currentProductionOrder = produceStealthTank;
 		}else{
 			currentProductionOrder = produceLightTank;
 		}
 		
+	
 				
 		//make decision on what tech to research
 		if(mainThread.ec.theBuildingManagerAI.theBaseInfo.numberOfCommunicationCenter > 0) {
@@ -207,15 +208,6 @@ public class unitProductionAI {
 		
 		if(mainThread.ec.theBuildingManagerAI.theBaseInfo.numberOfTechCenter > 0){	
 					
-			
-			/*if(currentProductionOrder == produceStealthTank)
-				System.out.println("should make stealth tank now--------------");
-			if(currentProductionOrder == produceHeavyTank)
-				System.out.println("should make Heavy tank now-----------------");
-			if(currentProductionOrder == produceRocketTank)
-				System.out.println("should make Rocket tank now----------------");
-			*/
-			
 			//Immediately  start  stealth tank upgrades  when a tech center is built
 			if(!techCenter.stealthTankResearched_enemy){
 				if(techCenter.stealthTankResearchProgress_enemy == 255){

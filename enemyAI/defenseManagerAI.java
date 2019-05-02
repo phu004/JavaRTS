@@ -81,7 +81,7 @@ public class defenseManagerAI {
 		lightTanksControlledByCombatAI = mainThread.ec.theUnitProductionAI.lightTanksControlledByCombatAI;
 		
 		//after 500 seconds mark, borrow 2 stealth tanks from combat manager, and send them to guard western and southern side of the main base
-		if(frameAI >= 480) {
+		if(frameAI >= 480 && mainThread.ec.theCombatManagerAI.checkIfAIHasBiggerForce(0.8f)) {
 			for(int i = 0; i < 2; i++) {
 				if(observers[i] == null || observers[i].currentHP <=0) {
 					for(int j = 0; j < stealthTanksControlledByCombatAI.length; j++) {
@@ -374,10 +374,7 @@ public class defenseManagerAI {
 				}
 			}
 		}
-		
-		
-		//System.out.println("mainPlayerForceSize: " + mainPlayerForceSize +  "   "  + "numOfGunTurretNearThreat: " +numOfGunTurretNearThreat +  "    " + "numOfMissileTurretNearThreat: " + numOfMissileTurretNearThreat);
-		
+				
 		
 		for(int i = 0; i < constructionYards.length; i++){
 			if(constructionYards[i] != null && constructionYards[i].teamNo != 0 && constructionYards[i].currentHP >0) {
@@ -424,7 +421,7 @@ public class defenseManagerAI {
 					if(distanceToThreat > d + missileTurret.attackRange)
 						d = distanceToThreat - missileTurret.attackRange;
 					if(distanceToThreat < 2.2)
-						d = 1f;
+						d = 1.25f;
 					
 					missileTurretDeployLocation.x = constructionYards[i].centre.x + (threatX - constructionYards[i].centre.x)/distanceToThreat*d;
 					missileTurretDeployLocation.z = constructionYards[i].centre.z + (threatZ - constructionYards[i].centre.z)/distanceToThreat*d;

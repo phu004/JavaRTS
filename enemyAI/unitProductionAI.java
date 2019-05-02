@@ -110,7 +110,7 @@ public class unitProductionAI {
 		}
 		if(z != 999999) {
 			
-			rallyPoint.set(x - 2f, 0, z - 1.5f);
+			rallyPoint.set(x - 2.5f, 0, z - 2f);
 			
 			if(frameAI < 240) {
 				rallyPoint.set(mainThread.theAssetManager.goldMines[5].centre);
@@ -173,20 +173,15 @@ public class unitProductionAI {
 				 (playerHasMostlyHeavyAndStealthTanks || 
 				 !playerHasManyLightTanksButNoHeavyTank
 				 && !playerHasMostlyLightTanks 
-				 && !(numberOfHeavyTanks_player == 0 && maxNumberOfStealthTanks_playerInLastFiveMinutes < 3 &&  mainThread.gameFrame/30 > 600)  
+				 && !(numberOfHeavyTanks_player == 0 && maxNumberOfStealthTanks_playerInLastFiveMinutes < 3 &&  frameAI > 600)  
 				 && !(playerHasMostlyHeavyTanks && numberOfStealthTanks_player < numberOfHeavyTanks_AI*2) 
-				 && (playIsRushingHighTierUnits ||  maxNumberOfStealthTanks_playerInLastFiveMinutes*4 > numberOfHeavyTanks_AI  || (mainThread.gameFrame/30 > 400 && mainThread.gameFrame/30 < 550 &&  numberOfPlayerGunTurrets +  numberOfPlayerMissileTurrets+ numberOfLightTanks_player + numberOfRocketTanks_player + numberOfHeavyTanks_player*5 < 5)))){
+				 && (playIsRushingHighTierUnits ||  maxNumberOfStealthTanks_playerInLastFiveMinutes*4 > numberOfHeavyTanks_AI  || (frameAI > 400 && frameAI < 500 &&  numberOfPlayerGunTurrets +  numberOfPlayerMissileTurrets+ numberOfLightTanks_player + numberOfRocketTanks_player + numberOfHeavyTanks_player*5 < 5)))){
 			currentProductionOrder = produceHeavyTank; 
 		}else if(theBaseInfo.canBuildStealthTank && (playerHasMostlyLightTanks || playerLikelyCanNotProduceHighTierUnits || playerDoesntHaveMassHeavyTanks) && !playerHasMostlyHeavyTanks && (frameAI > 450 || numberOfLightTanks_player > 8)){
 			currentProductionOrder = produceStealthTank;
 		}else{
 			currentProductionOrder = produceLightTank;
 		}
-		
-		System.out.println("playerHasMostlyHeavyAndStealthTanks: " + playerHasMostlyHeavyAndStealthTanks);
-		System.out.println("playerHasManyLightTanksButNoHeavyTank: " + playerHasManyLightTanksButNoHeavyTank);
-		System.out.println("playerHasMostlyLightTanks: " + playerHasMostlyLightTanks);
-		System.out.println(currentProductionOrder);
 				
 		//make decision on what tech to research
 		if(mainThread.ec.theBuildingManagerAI.theBaseInfo.numberOfCommunicationCenter > 0) {

@@ -69,8 +69,8 @@ public class combatManagerAI {
 	public combatManagerAI(){
 		this.theBaseInfo = mainThread.ec.theBaseInfo;
 	
-		standardAttackTime = 600;
-		rushAttackTime = 300 + gameData.getRandom()/4;
+		standardAttackTime = 550;
+		rushAttackTime = 250 + gameData.getRandom()/4;
 		
 		goldMines = mainThread.theAssetManager.goldMines;
 		

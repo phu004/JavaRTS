@@ -79,8 +79,8 @@ public class factory extends solidObject{
 	public static int harvesterType = 2;
 	public static int droneType = 5;
 	public static int MCVType = 3;
-	public static int stealthTankType = 4;
-	public static int heavyTankType = 6;
+	public static int stealthTankType = 6;
+	public static int heavyTankType = 7;
 	
 	public int currentStatus;
 	public static int isBuilding = 1;
@@ -824,7 +824,7 @@ public class factory extends solidObject{
 		canBuildMCV = theBaseInfo.canBuildMCV;
 		canBuildStealthTank = theBaseInfo.canBuildStealthTank;
 		canBuildHeavyTank = theBaseInfo.canBuildHeavyTank;
-		
+	
 		
 		//process emerging from  ground animation
 		if(centre.y < -0.79f){
@@ -1946,6 +1946,19 @@ public class factory extends solidObject{
 		theBaseInfo.currentCredit+=creditSpentOnBuilding;
 		creditSpentOnBuilding = 0;
 		currentStatus = isIdle;
+		lightTankProgress = 255;
+		rocketTankProgress = 255;
+		harvesterProgress = 255;
+		droneProgress = 255; 
+		MCVProgress = 255;
+		stealthTankProgress = 255;
+		heavyTankProgress = 255;
+		for(int i = 0; i < productionQueue.length; i++)
+			productionQueue[i] = -1;
+		numOfLightTankOnQueue = 0;
+		numOfStealthTankOnQueue = 0;
+		numOfRocketTankOnQueue = 0;
+		numOfHeavyTankOnQueue = 0;
 	}
 	
 	//draw the model

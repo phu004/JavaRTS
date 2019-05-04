@@ -100,7 +100,7 @@ public class rocket {
 			return;
 		
 		distanceToTarget = (float)Math.sqrt((target.centre.x - centre.x) * (target.centre.x - centre.x) + (target.centre.z - centre.z) * (target.centre.z - centre.z));
-		if(distanceToTarget <= 0.06){
+		if(distanceToTarget <= 0.065){
 			
 			//spawn an explosion at the end of the rocket life
 			float[] tempFloat = mainThread.theAssetManager.explosionInfo[mainThread.theAssetManager.explosionCount];	
@@ -168,11 +168,15 @@ public class rocket {
 		
 		
 		
-
+		if(attacker.type == 199) {
+			if(speed < 0.1)
+				speed*=1.5f;
+		}else {
+			if(speed < 0.1)
+				speed*=1.4f;
+		}
 		
-		if(speed < 0.1)
-			speed*=1.4f;
-		
+	
 		distanceTravelled+=speed;
 		
 		

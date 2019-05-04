@@ -421,7 +421,7 @@ public class defenseManagerAI {
 					if(distanceToThreat > d + missileTurret.attackRange)
 						d = distanceToThreat - missileTurret.attackRange;
 					if(distanceToThreat < 2.2)
-						d = 1.25f;
+						d = 1f;
 					
 					missileTurretDeployLocation.x = constructionYards[i].centre.x + (threatX - constructionYards[i].centre.x)/distanceToThreat*d;
 					missileTurretDeployLocation.z = constructionYards[i].centre.z + (threatZ - constructionYards[i].centre.z)/distanceToThreat*d;

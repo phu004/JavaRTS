@@ -52,6 +52,9 @@ public class baseExpensionAI {
 		lastExpansionLocation = 7;
 		
 		lowGoldmineThreshold = 22500;
+		
+		
+		System.out.println(expensionPiorityList[1]);
 	}
 	
 	
@@ -162,7 +165,9 @@ public class baseExpensionAI {
 			}
 		}
 		
+		
 		if(myMCV == null && expensionGoldMine.goldDeposite >= 17500 && (mainThread.ec.theEconomyManagerAI.preferedGoldMine.goldDeposite < lowGoldmineThreshold || 
+			(!hasRefineryNearTheGoldmine(mainThread.ec.theEconomyManagerAI.preferedGoldMine) && !hasConstructionYardNearGoldMine(mainThread.ec.theEconomyManagerAI.preferedGoldMine)) ||
 			(mainThread.ec.theEconomyManagerAI.preferedGoldMine == expensionGoldMine && !hasConstructionYardNearGoldMine(expensionGoldMine) && !hasRefineryNearTheGoldmine(expensionGoldMine)))){
 			
 			int numberOfMCVOnQueue = 0;
@@ -171,17 +176,11 @@ public class baseExpensionAI {
 					numberOfMCVOnQueue += mainThread.theAssetManager.factories[i].numOfMCVOnQueue;
 				}
 			}
-			
-			
-			
+		
 			if(numberOfMCVOnQueue == 0 &&  theBaseInfo.canBuildMCV){
 				for(int i = 0; i < mainThread.theAssetManager.factories.length; i++){
 					if(mainThread.theAssetManager.factories[i] != null && mainThread.theAssetManager.factories[i].teamNo != 0){
-						
-						mainThread.theAssetManager.factories[i].cancelItemFromProductionQueue(factory.lightTankType);
-						mainThread.theAssetManager.factories[i].cancelItemFromProductionQueue(factory.rocketTankType);
-						mainThread.theAssetManager.factories[i].cancelItemFromProductionQueue(factory.stealthTankType);
-						mainThread.theAssetManager.factories[i].cancelItemFromProductionQueue(factory.heavyTankType);
+						mainThread.theAssetManager.factories[i].cancelBuilding();
 						mainThread.theAssetManager.factories[i].buildMCV();
 						break;
 					}

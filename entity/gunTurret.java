@@ -55,7 +55,7 @@ public class gunTurret extends solidObject{
 	public int turretAngleDelta, accumulatedDelta;
 	
 	public int turretTurnRate = 8;
-	public int myAttackCooldown= 25;
+	public int myAttackCooldown= 24;
 	public int attackCoolDown;
 	public vector firingPosition;
 	

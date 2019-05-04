@@ -1183,8 +1183,10 @@ public class stealthTank extends solidObject{
 				myDamageModified=(int)(myDamage*2);
 			}else if(targetObject.type==1 || targetObject.type==6){
 				myDamageModified=(int)(myDamage*1.75);
-			}else if(targetObject.type == 7 || targetObject.type > 100 || targetObject.type == 2 || targetObject.type == 3){
-				myDamageModified=(int)(myDamage*0.4);
+			}else if(targetObject.type > 100 || targetObject.type == 2 || targetObject.type == 3){
+				myDamageModified=(int)(myDamage*0.3);
+			}else if(targetObject.type  == 7) {
+				myDamageModified=(int)(myDamage*0.3); 
 			}
 			
 			//damage and alert target unit
@@ -1310,8 +1312,10 @@ public class stealthTank extends solidObject{
 							
 						}else if(targetObject.type==6){
 							myDamageModified=(int)(myDamage*1.75);
-						}else if(secondaryTargets[i].type == 7 || targetObject.type == 2 || targetObject.type == 3){
-							myDamageModified=(int)(myDamage*0.4);
+						}else if(targetObject.type == 2 || targetObject.type == 3){
+							myDamageModified=(int)(myDamage*0.3);
+						}else if(secondaryTargets[i].type == 7) {
+							myDamageModified=0;  //heavy tank is immue to secondary attack
 						}
 						
 						

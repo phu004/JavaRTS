@@ -510,7 +510,7 @@ public class missileTurret extends solidObject{
 			exposedCountDown --;
 		
 		if(overCharge)
-			myAttackCooldown = 10;
+			myAttackCooldown = 9;
 	
 		//mark itself on obstacle map
 		mainThread.gridMap.currentObstacleMap[tileIndex[0]] = false;

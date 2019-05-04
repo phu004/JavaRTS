@@ -157,14 +157,14 @@ public class economyManagerAI {
 	
 		//the ration between harvester and refinery should be 2:1
 		//economyManager has a higher priority than combat manager AI, so the enemy AI will always queue harvester first if lost any.
-		if(theBaseInfo.numberOfRefinery > 0 && numberOfharvesters < 4){
-			if(numberOfharvesters/theBaseInfo.numberOfRefinery < 2){
+		if(theBaseInfo.numberOfRefinery > 0 && numberOfharvesters < 6){
+			if(numberOfharvesters < theBaseInfo.numberOfRefinery + 2){
 				for(int i = 0; i < mainThread.theAssetManager.factories.length; i++){
 					if(mainThread.theAssetManager.factories[i] != null && mainThread.theAssetManager.factories[i].teamNo != 0){
-						if(mainThread.theAssetManager.factories[i].isIdle()){
-							mainThread.theAssetManager.factories[i].buildHarvester();
-							break;
-						}
+						mainThread.theAssetManager.factories[i].cancelBuilding();
+						mainThread.theAssetManager.factories[i].buildHarvester();
+						break;
+						
 					}
 				}
 			}

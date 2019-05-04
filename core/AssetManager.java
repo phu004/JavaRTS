@@ -106,12 +106,12 @@ public class AssetManager {
 		goldMines = new goldMine[16];
 		goldMines[0] = new goldMine(2f,-0.515f, 1.25f, 45000);
 		goldMines[1] = new goldMine(9.5f,-0.515f, 5.5f, 45000);
-		goldMines[2] = new goldMine(2f,-0.515f, 28.25f, 50000);
-		goldMines[3] = new goldMine(26f,-0.515f, 3.5f, 50000);
+		goldMines[2] = new goldMine(2f,-0.515f, 28.25f, 52500);
+		goldMines[3] = new goldMine(26f,-0.515f, 3.5f, 52500);
 		goldMines[4] = new goldMine(29.75f,-0.515f, 30f, 45000);
 		goldMines[5] = new goldMine(22.5f,-0.515f, 25.5f, 45000);
-		goldMines[6] = new goldMine(15.75f,-0.515f, 18f, 55000);
-		goldMines[7] = new goldMine(16.25f,-0.515f, 12.25f, 55000);
+		goldMines[6] = new goldMine(15.75f,-0.515f, 18f, 52500);
+		goldMines[7] = new goldMine(16.25f,-0.515f, 12.25f, 52500);
 		
 		
 		//create trees from bitmap
@@ -241,19 +241,19 @@ public class AssetManager {
 		
 		for(int i = 0; i < 10; i ++){
 			
-			for(int j = 0; j < 1; j++){ 
+			for(int j = 0; j < 6; j++){ 
 				//heavyTank l = new heavyTank(new vector(i*0.25f+ 1.125f,-0.3f, 17.375f - 0.25f*j), 90, 0);
 				//addHeavyTank(l);
 				//l.hasMultiShotUpgrade = true;
-				//lightTank l = new lightTank(new vector(i*0.25f + 1.125f,-0.3f, 0.5f + 18.625f + j*0.25f), 90, 0);
+				//stealthTank l = new stealthTank(new vector(i*0.25f + 1.125f,-0.3f, 0.5f + 18.625f + j*0.25f), 90, 0);
 				
 				//l.attackRange = 1.99f;
 		
 				//lightTank.tileCheckList_player = lightTank.generateTileCheckList(6);
 		
-				//addLightTank(l);
+				//addStealthTank(l);
 				//if(j == 0 && i == 0)
-				//addGunTurret(new gunTurret(i*0.25f -0.125f + 28, -0.65f, 0.25f + 28.125f + j*0.25f, 1));
+				//addMissileTurret(new missileTurret(i*0.25f -0.125f + 1, -0.65f, 0.25f + 17.125f + j*0.25f, 0));
 			
 			}
 		}

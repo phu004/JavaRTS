@@ -81,7 +81,7 @@ public class defenseManagerAI {
 		lightTanksControlledByCombatAI = mainThread.ec.theUnitProductionAI.lightTanksControlledByCombatAI;
 		
 		//after 500 seconds mark, borrow 2 stealth tanks from combat manager, and send them to guard western and southern side of the main base
-		if(frameAI >= 480 && mainThread.ec.theCombatManagerAI.checkIfAIHasBiggerForce(0.8f)) {
+		if(frameAI >= 630 && mainThread.ec.theCombatManagerAI.checkIfAIHasBiggerForce(0.8f)) {
 			for(int i = 0; i < 2; i++) {
 				if(observers[i] == null || observers[i].currentHP <=0) {
 					for(int j = 0; j < stealthTanksControlledByCombatAI.length; j++) {
@@ -135,7 +135,7 @@ public class defenseManagerAI {
 							zPos = 24.5f;
 						}
 						
-						if(frameAI > 980) {
+						if(frameAI > 1000) {
 							if(frameAI%18 < 9) {
 								xPos = 0.25f;
 								zPos = 20.5f;
@@ -157,7 +157,7 @@ public class defenseManagerAI {
 							zPos = 20f;
 						}
 						
-						if(frameAI > 980) {
+						if(frameAI > 1000) {
 							if(frameAI%14 < 7) {
 								xPos = 18.75f;
 								zPos = 5f;

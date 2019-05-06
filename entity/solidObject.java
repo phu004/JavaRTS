@@ -139,7 +139,7 @@ public abstract class solidObject{
 	public vector tempCentre = new vector(0,0,0);
 	public vector tempVector = new vector(0,0,0);
 	
-	public static int globalUniqID = 1;
+	public static int globalUniqID = 0;
 	
 	public int ID;
 	

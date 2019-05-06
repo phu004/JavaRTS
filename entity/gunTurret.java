@@ -753,7 +753,7 @@ public class gunTurret extends solidObject{
 		}
 		
 		int theDamage = myDamage;
-		if(targetObject.type == 0)
+		if(targetObject.type == 0 || targetObject.type == 6)
 			theDamage = 20;
 		
 		if(attackCoolDown == 0 ){

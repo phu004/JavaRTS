@@ -34,15 +34,15 @@ public class baseExpensionAI {
 		
 		int randomeNumber = gameData.getRandom();
 		
-		if(randomeNumber < 170)
+		if(randomeNumber < 100)
 			expensionPiorityList = new int[]{5,6,2,3,7};
-		else if(randomeNumber >= 170 && randomeNumber < 340)
+		else if(randomeNumber >= 100 && randomeNumber < 200)
 			expensionPiorityList = new int[]{5,6,3,2,7};
-		else if(randomeNumber >= 340 && randomeNumber < 510)
+		else if(randomeNumber >= 200 && randomeNumber < 407)
 			expensionPiorityList = new int[]{5,2,6,3,7};
-		else if(randomeNumber >= 510 && randomeNumber < 680)
+		else if(randomeNumber >= 407 && randomeNumber < 614)
 			expensionPiorityList = new int[]{5,2,3,6,7};
-		else if(randomeNumber >= 680 && randomeNumber < 850)
+		else if(randomeNumber >= 614 && randomeNumber < 821)
 			expensionPiorityList = new int[]{5,3,6,2,7};
 		else
 			expensionPiorityList = new int[]{5,3,2,6,7};
@@ -52,9 +52,6 @@ public class baseExpensionAI {
 		lastExpansionLocation = 7;
 		
 		lowGoldmineThreshold = 22500;
-		
-		
-		System.out.println(expensionPiorityList[1]);
 	}
 	
 	

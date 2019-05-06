@@ -157,19 +157,13 @@ public class microManagementAI {
 			solidObject currentTarget = unitInCombatRadius[i].targetObject;
 			int targetHP = 99999;
 			int level = 0;
-			
-			if(currentTarget != null) {
-				level = currentTarget.level;
-			}
-			
-			
 			float distanceToDesination = 99999;
 			
 		
 			for(int j=0; j < numberOfPlayerUnitsOnMinimap; j++){  
 				if(playerUnitInMinimap[j] != null  && playerUnitInMinimap[j].currentHP > 0){
 					
-					if(((playerUnitInMinimap[j].getMaxHp() / playerUnitInMinimap[j].currentHP >= 4) && !(currentTarget != null &&  currentTarget.currentHP < playerUnitInMinimap[j].currentHP))  || playerUnitInMinimap[j].level > level){
+					if((playerUnitInMinimap[j].getMaxHp() / playerUnitInMinimap[j].currentHP > 4 && !(currentTarget != null &&  currentTarget.currentHP < playerUnitInMinimap[j].currentHP))  || playerUnitInMinimap[j].level > level){
 						x1 = playerUnitInMinimap[j].centre.x;
 						x2 = unitInCombatRadius[i].centre.x;
 						z1 = playerUnitInMinimap[j].centre.z;

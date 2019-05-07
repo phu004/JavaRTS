@@ -3,6 +3,7 @@ package enemyAI;
 import core.AssetManager;
 import core.baseInfo;
 import core.mainThread;
+import entity.constructionYard;
 import entity.goldMine;
 import entity.harvester;
 import entity.solidObject;
@@ -47,11 +48,14 @@ public class mapAwarenessAI {
 	public boolean playIsRushingHighTierUnits;
 	public boolean playerLikelyCanNotProduceHighTierUnits;
 	public boolean playerDoesntHaveMassHeavyTanks;
+	public boolean playerArmyCanBeCounteredWithLightTanks;
 	public boolean playerIsRushingLightTank;
 	public boolean playerHasManyLightTanksButNoHeavyTank;
 	public boolean playerHasMostlyHeavyAndStealthTanks;
+	public boolean playerHasMostlyLightAndStealthTanks;
 	public boolean canRushPlayer;
 	public boolean playerIsFastExpanding;
+	public boolean playerForceNearBase;
 	
 	public solidObject[] mapAsset;
 	public boolean[] visionMap;
@@ -449,7 +453,7 @@ public class mapAwarenessAI {
 		float lightTankRatio = (float)(numberOfLightTanks_player)/(totalNumberOfPlayerUnits + 1);
 		
 		playerHasMostlyLightTanks = (numberOfLightTanks_player > 5 &&  lightTankRatio > 0.8f) || (frameAI < 420 && numberOfLightTanks_player > 1 && lightTankRatio >= 0.75f);
-		playerHasMostlyHeavyTanks = numberOfHeavyTanks_player > 1 && (float)(numberOfHeavyTanks_player)/(totalNumberOfPlayerUnits) > 0.6f;
+		playerHasMostlyHeavyTanks = numberOfHeavyTanks_player > 1 && (float)(numberOfHeavyTanks_player)/(totalNumberOfPlayerUnits) > 0.8f;
 		playerHasManyLightTanksButNoHeavyTank = lightTankRatio > 0.5  && numberOfHeavyTanks_player < 3;
 
 		playIsRushingHighTierUnits = mainThread.gameFrame/30 > 250 && mainThread.gameFrame/30 < 400 
@@ -463,8 +467,15 @@ public class mapAwarenessAI {
         
         playerIsRushingLightTank = mainThread.gameFrame/30 > 300 && mainThread.gameFrame/30 < 600 && ((playerLikelyCanNotProduceHighTierUnits && numberOfStealthTanks_player < 3) || playerHasMostlyLightTanks);
         
-        playerHasMostlyHeavyAndStealthTanks = (maxNumberOfStealthTanks_playerInLastFiveMinutes >=3 ) && (float)(numberOfHeavyTanks_player + numberOfStealthTanks_player)/totalNumberOfPlayerUnits > 0.8f;
+        playerHasMostlyHeavyAndStealthTanks = (maxNumberOfStealthTanks_playerInLastFiveMinutes >=3 ) && (float)(numberOfHeavyTanks_player + numberOfStealthTanks_player)/totalNumberOfPlayerUnits > 0.85f;
+       
+        playerHasMostlyLightAndStealthTanks = numberOfLightTanks_player > 5 && maxNumberOfStealthTanks_playerInLastFiveMinutes >=3 && (float)(numberOfLightTanks_player + numberOfStealthTanks_player)/totalNumberOfPlayerUnits > 0.85f;
         
+        if(frameAI < 600)
+        	playerArmyCanBeCounteredWithLightTanks = false;
+        else {
+        	playerArmyCanBeCounteredWithLightTanks = maxNumberOfStealthTanks_playerInLastFiveMinutes < 6 && maxNumberOfStealthTanks_playerInLastFiveMinutes/(totalNumberOfPlayerUnits + 1) < 0.2f;
+        }
         
         //advanced counting of player units
         if(numberOfStealthTanks_player > maxNumberOfStealthTanks_playerInLastFiveMinutes) {
@@ -519,9 +530,6 @@ public class mapAwarenessAI {
         	if(mainThread.ec.theCombatManagerAI.checkIfAIHasBiggerForce(0.5f))
         		canRushPlayer = true;
         }
-      
-        
-   
         
         findTheMostVulnerablePlayerBase();
         
@@ -753,6 +761,22 @@ public class mapAwarenessAI {
 		}
 		
 		mainPlayerForceDirection.unit();
+		
+		//check if player force is near any of AI's base
+        playerForceNearBase = false;
+        float x = mainPlayerForceLocation.x;
+		float z = mainPlayerForceLocation.z;
+		constructionYard[] constructionYards = mainThread.theAssetManager.constructionYards;
+		for(int i = 0; i < constructionYards.length; i++) {
+			if(constructionYards[i] != null && constructionYards[i].teamNo != 0 && constructionYards[i].currentHP > 0) {
+				double d = Math.sqrt((constructionYards[i].centre.x - x)*(constructionYards[i].centre.x - x) + (constructionYards[i].centre.z - z)*(constructionYards[i].centre.z - z));
+				if(d < 4.75) {
+					playerForceNearBase = true;
+					break;
+				}
+					
+			}
+		}
 	}
 
 	

@@ -81,7 +81,7 @@ public class defenseManagerAI {
 		lightTanksControlledByCombatAI = mainThread.ec.theUnitProductionAI.lightTanksControlledByCombatAI;
 		
 		//after 500 seconds mark, borrow 2 stealth tanks from combat manager, and send them to guard western and southern side of the main base
-		if(frameAI >= 630 && mainThread.ec.theCombatManagerAI.checkIfAIHasBiggerForce(0.8f)) {
+		if(frameAI >= 450 && mainThread.ec.theCombatManagerAI.checkIfAIHasBiggerForce(0.8f)) {
 			for(int i = 0; i < 2; i++) {
 				if(observers[i] == null || observers[i].currentHP <=0) {
 					for(int j = 0; j < stealthTanksControlledByCombatAI.length; j++) {
@@ -97,7 +97,7 @@ public class defenseManagerAI {
 							}
 							
 							
-							if(frameAI > 980) {
+							if(frameAI > 1000) {
 								xPos = 0.25f;
 								zPos = 20.5f;
 								
@@ -151,10 +151,10 @@ public class defenseManagerAI {
 						
 						if(frameAI%20 < 10) {
 							xPos = 30f;
-							zPos = 20f;
+							zPos = 15f;
 						}else {
 							xPos = 26f;
-							zPos = 20f;
+							zPos = 15f;
 						}
 						
 						if(frameAI > 1000) {
@@ -229,6 +229,36 @@ public class defenseManagerAI {
 			
 		}
 		
+		//treat player buildings that is close to the base as major threat too. 
+		constructionYard[] constructionYards = mainThread.theAssetManager.constructionYards;
+		boolean playerBuildingNearBase = false;
+		solidObject[] playerStructures = mainThread.ec.theMapAwarenessAI.playerStructures;
+		for(int i = 0; i < playerStructures.length; i++) {
+			if(playerStructures[i] != null && playerStructures[i].currentHP > 0) {
+				float x1 = playerStructures[i].centre.x;
+				float z1 = playerStructures[i].centre.z;
+				for(int j = 0; j < constructionYards.length; j++) {
+					if(constructionYards[j] != null && constructionYards[i].teamNo != 0 && constructionYards[j].currentHP > 0) {
+						float x2 = constructionYards[j].centre.x;
+						float z2 = constructionYards[j].centre.z;
+						double d = Math.sqrt((x1-x2)*(x1-x2) + (z1-z2)*(z1-z2));
+						
+						if(d < 4) {
+							playerBuildingNearBase = true;
+							majorThreatCooldown = 20;
+							majorThreatLocation.set(playerStructures[i].centre);
+							break;
+							
+						}
+					}
+				}
+				
+				if(playerBuildingNearBase) {
+					break;
+				}
+			}
+		}
+		
 		
 		
 		
@@ -272,7 +302,7 @@ public class defenseManagerAI {
 		}
 		
 		
-		constructionYard[] constructionYards = mainThread.theAssetManager.constructionYards;
+		
 		int numOfConstructionYard = 0;
 		
 		for(int i = 0; i < constructionYards.length; i++){
@@ -323,12 +353,13 @@ public class defenseManagerAI {
 				needGunTurret = true;
 			}
 			
-			if(!missileTurretAlreadyInQueue && majorThreatLocation.x != 0 && mainPlayerForceSize !=0) {
+			if(!missileTurretAlreadyInQueue && majorThreatLocation.x != 0 && (mainPlayerForceSize !=0 || playerBuildingNearBase)) {
 				needMissileTurret = true;
 			}
 			
 			
 		}
+		
 		
 		
 		//check if AI needs to deploy static defense
@@ -399,14 +430,15 @@ public class defenseManagerAI {
 					threatZ = majorThreatLocation.z;
 				}
 				
+			
 				//find deploy location of gun turret
-				if(threatX != 0 && distanceToThreat < 4.75 && numOfGunTurretNearThreat < (float)mainPlayerForceSize/3) {
+				if(threatX != 0 && distanceToThreat < 4.75 && (numOfGunTurretNearThreat < (float)mainPlayerForceSize/3  || playerBuildingNearBase)) {
 					
 					float d = 1.85f;  //minimum deploy distance from conyard
 					if(distanceToThreat > d + gunTurret.attackRange)
 						d = distanceToThreat - gunTurret.attackRange;
-					if(distanceToThreat < 1.8)
-						d = 1.25f;
+					if(distanceToThreat < 3.5)
+						d = 1.75f;
 					
 					gunTurretDeployLocation.x = constructionYards[i].centre.x + (threatX - constructionYards[i].centre.x)/distanceToThreat*d;
 					gunTurretDeployLocation.z = constructionYards[i].centre.z + (threatZ - constructionYards[i].centre.z)/distanceToThreat*d;
@@ -415,13 +447,13 @@ public class defenseManagerAI {
 				}
 				
 				//find deploy location of missile turret
-				if(threatX != 0 && distanceToThreat < 5.15 && (numOfMissileTurretNearThreat < mainPlayerForceSize/6 )) {
+				if(threatX != 0 && distanceToThreat < 5.15 && (numOfMissileTurretNearThreat < mainPlayerForceSize/6 || (playerBuildingNearBase && numOfMissileTurretNearThreat < 2))) {
 					
 					float d = 1.65f;  //minimum deploy distance from conyard
 					if(distanceToThreat > d + missileTurret.attackRange)
 						d = distanceToThreat - missileTurret.attackRange;
-					if(distanceToThreat < 2.2)
-						d = 1f;
+					if(distanceToThreat < 4.75)
+						d = 1.25f;
 					
 					missileTurretDeployLocation.x = constructionYards[i].centre.x + (threatX - constructionYards[i].centre.x)/distanceToThreat*d;
 					missileTurretDeployLocation.z = constructionYards[i].centre.z + (threatZ - constructionYards[i].centre.z)/distanceToThreat*d;

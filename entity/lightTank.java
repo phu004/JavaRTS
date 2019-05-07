@@ -976,7 +976,7 @@ public class lightTank extends solidObject{
 			if(targetObject.type == 0)
 				theDamage*=1.2;
 			if(targetObject.type >= 100)
-				theDamage*=0.8;
+				theDamage*=0.6;
 			
 			theAssetManager.spawnBullet(attackAngle, theDamage, targetObject, firingPosition, this);
 			attackCoolDown = myAttackCooldown;

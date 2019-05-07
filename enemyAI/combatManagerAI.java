@@ -248,7 +248,7 @@ public class combatManagerAI {
 				for(int i = 0; i < playerUnitInMinimap.length; i++) {
 					if(playerUnitInMinimap[i] != null && playerUnitInMinimap[i].currentHP > 0) {
 						double d = Math.sqrt((combatCenterX - playerUnitInMinimap[i].centre.x)*(combatCenterX - playerUnitInMinimap[i].centre.x) + (combatCenterZ - playerUnitInMinimap[i].centre.z)*(combatCenterZ - playerUnitInMinimap[i].centre.z));
-						if(d < 5){
+						if(d < 7){
 							currentState = aggressing;
 							attackDirection.set(playerUnitInMinimap[i].centre.x - combatCenterX, 0, playerUnitInMinimap[i].centre.z - combatCenterZ);
 							attackDirection.unit();
@@ -263,7 +263,7 @@ public class combatManagerAI {
 				for(int i = 0; i < playerStructures.length; i++) {
 					if(playerStructures[i] != null && playerStructures[i].currentHP > 0) {
 						double d = Math.sqrt((combatCenterX - playerStructures[i].centre.x)*(combatCenterX - playerStructures[i].centre.x) + (combatCenterZ - playerStructures[i].centre.z)*(combatCenterZ - playerStructures[i].centre.z));
-						if(d < 5){
+						if(d < 7){
 							currentState = aggressing;
 							attackDirection.set(playerStructures[i].centre.x - combatCenterX, 0, playerStructures[i].centre.z - combatCenterZ);
 							attackDirection.unit();
@@ -302,7 +302,7 @@ public class combatManagerAI {
 				float zPos = mainThread.ec.theDefenseManagerAI.majorThreatLocation.z;
 				float d1 = (attackPosition.x - combatCenterX)*(attackPosition.x - combatCenterX) + (attackPosition.z - combatCenterZ)*(attackPosition.z - combatCenterZ);
 				float d2 = (xPos - combatCenterX)*(xPos - combatCenterX) + (zPos - combatCenterZ)*(zPos - combatCenterZ);
-				if(d2 <= d1) {
+				if(d2 -2 <= d1) {
 					attackPosition.set(xPos, 0, zPos);
 				}
 				dealWithMajorThreat = true;
@@ -374,18 +374,18 @@ public class combatManagerAI {
 			
 			//check if the player force has become stronger than the AI during the marching towards attack position
 			//System.out.println("distanceToTarget: "  + distanceToTarget);
-			if(checkIfAIHasBiggerForce(1.5f) == false && distanceToTarget > 8){
+			if(checkIfAIHasBiggerForce(1.5f) == false && distanceToTarget > 8 && !(mainThread.ec.theMapAwarenessAI.playerForceNearBase && dealWithMajorThreat)){	
 				playerHasBecomeStrongerThanAIDuringMarching = true;
 			}
 			
-			
+		
 			
 			//check if the troops is near a concentration of player's static defense.
 			//If true, then check if AI has enough troops to deal with the static defense.
 			staticDefenseAhead = false;
 			double distanceToTower = 999;
 			for(int i = 0; i < mainThread.ec.theMapAwarenessAI.playerStaticDefenseLocations.length; i++) {
-				if(mainThread.ec.theMapAwarenessAI.playerStaticDefenseSize[i] > 6) {
+				if(mainThread.ec.theMapAwarenessAI.playerStaticDefenseSize[i] > 0) {
 					
 					float xPos = mainThread.ec.theMapAwarenessAI.playerStaticDefenseLocations[i].x;
 					float zPos = mainThread.ec.theMapAwarenessAI.playerStaticDefenseLocations[i].z;

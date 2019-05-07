@@ -18,6 +18,7 @@ public class buildingManagerAI {
 	public int placementTile;
 	public boolean powerPlantUnderConstruction;
 	public int frameAI;
+	public vector tempVector;
 
 	
 	public buildingManagerAI (){
@@ -51,6 +52,8 @@ public class buildingManagerAI {
 			buildingPlacementCheckTiles_3x3[temp] = buildingPlacementCheckTiles_3x3[temp1];
 			buildingPlacementCheckTiles_3x3[temp1] = list;
 		}	
+		
+		tempVector = new vector(0,0,0);
 	}
 	
 	public void addBuildingToQueue(int buildingType){
@@ -308,7 +311,7 @@ public class buildingManagerAI {
 					float zPos = mainThread.ec.theDefenseManagerAI.missileTurretDeployLocation.z;
 					int centerTile = (int)(xPos*64)/16 + (127 - (int)(zPos*64)/16)*128;
 					if(xPos != 0) {
-						if(hasRoomForPlacement(200, centerTile)) {
+						if(hasRoomForPlacement(199, centerTile)) {
 							int y = 127 - placementTile/128;
 							int x = placementTile%128;
 							missileTurret o = new missileTurret(x*0.25f + 0.125f, -0.65f, y*0.25f + 0.125f, 1);
@@ -326,46 +329,92 @@ public class buildingManagerAI {
 	public boolean hasRoomForPlacement(int buildingType, int centerTile){
 		//check placement for turrets
 		if(buildingType == 199 || buildingType == 200) {
+			placementTile = -1;
+			
 			if(checkIfBlockIsFree(centerTile)) {
 				placementTile = centerTile;
-				return true;
 			}else if(checkIfBlockIsFree(centerTile + 1)) {
 				placementTile = centerTile + 1;
-				return true;
 			}else if(checkIfBlockIsFree(centerTile - 1)) {
 				placementTile = centerTile - 1;
-				return true;
 			}else if(checkIfBlockIsFree(centerTile + 128)) {
 				placementTile = centerTile + 128;
-				return true;
 			}else if(checkIfBlockIsFree(centerTile - 128)) {
 				placementTile = centerTile - 128;
-				return true;
 			}else if(checkIfBlockIsFree(centerTile - 129)) {
 				placementTile = centerTile - 129;
-				return true;
 			}else if(checkIfBlockIsFree(centerTile - 127)) {
 				placementTile = centerTile - 127;
-				return true;
 			}else if(checkIfBlockIsFree(centerTile + 127)) {
 				placementTile = centerTile + 127;
-				return true;
 			}else if(checkIfBlockIsFree(centerTile + 129)) {
 				placementTile = centerTile + 129;
-				return true;
 			}else if(checkIfBlockIsFree(centerTile + 2)) {
 				placementTile = centerTile + 2;
-				return true;
 			}else if(checkIfBlockIsFree(centerTile - 2)) {
 				placementTile = centerTile - 2;
-				return true;
 			}else if(checkIfBlockIsFree(centerTile + 256)) {
 				placementTile = centerTile + 256;
-				return true;
 			}else if(checkIfBlockIsFree(centerTile - 256)) {
 				placementTile = centerTile - 256;
+			}
+			
+			
+			if(placementTile == -1)
+				return false;
+			
+			if(buildingType == 200) {
 				return true;
 			}
+			
+			
+			
+			//place missile turret behind buildings to take advantage of its long range and shoot over building ability
+			float x = mainThread.ec.theDefenseManagerAI.majorThreatLocation.x;
+			float z = mainThread.ec.theDefenseManagerAI.majorThreatLocation.z;
+			
+			if(x == 0 && z == 0 || !mainThread.ec.theMapAwarenessAI.playerForceNearBase) {
+				return true;
+			}
+			
+		
+			int perfectPlacementTile = -1;
+			
+			if(checkIfBlockIsFree(centerTile) && !hasLineOfSight(centerTile, x, z)) {
+				perfectPlacementTile = centerTile;
+			}else if(checkIfBlockIsFree(centerTile + 1) && !hasLineOfSight(centerTile + 1, x, z)) {
+				perfectPlacementTile = centerTile + 1;
+			}else if(checkIfBlockIsFree(centerTile - 1) && !hasLineOfSight(centerTile -1, x, z)) {
+				perfectPlacementTile = centerTile - 1;
+			}else if(checkIfBlockIsFree(centerTile + 128) && !hasLineOfSight(centerTile + 128, x, z)) {
+				perfectPlacementTile = centerTile + 128;
+			}else if(checkIfBlockIsFree(centerTile - 128) && !hasLineOfSight(centerTile - 128, x, z)) {
+				perfectPlacementTile = centerTile - 128;
+			}else if(checkIfBlockIsFree(centerTile - 129) && !hasLineOfSight(centerTile - 129, x, z)) {
+				perfectPlacementTile = centerTile - 129;
+			}else if(checkIfBlockIsFree(centerTile - 127) && !hasLineOfSight(centerTile-127, x, z)) {
+				perfectPlacementTile = centerTile - 127;
+			}else if(checkIfBlockIsFree(centerTile + 127) && !hasLineOfSight(centerTile+127, x, z)) {
+				perfectPlacementTile = centerTile + 127;
+			}else if(checkIfBlockIsFree(centerTile + 129) && !hasLineOfSight(centerTile + 129, x, z)) {
+				perfectPlacementTile = centerTile + 129;
+			}else if(checkIfBlockIsFree(centerTile + 2) && !hasLineOfSight(centerTile + 2, x, z)) {
+				perfectPlacementTile = centerTile + 2;
+			}else if(checkIfBlockIsFree(centerTile - 2) && !hasLineOfSight(centerTile - 2, x, z)) {
+				perfectPlacementTile = centerTile - 2;
+			}else if(checkIfBlockIsFree(centerTile + 256)  && !hasLineOfSight(centerTile+ 256, x, z)) {
+				perfectPlacementTile = centerTile + 256;
+			}else if(checkIfBlockIsFree(centerTile - 256)  && !hasLineOfSight(centerTile - 256, x, z)) {
+				perfectPlacementTile = centerTile - 256;
+			}
+			
+			if(perfectPlacementTile != -1) {
+				placementTile = perfectPlacementTile;
+			}
+			
+			
+			return true;
+			
 		}
 		
 		
@@ -692,6 +741,37 @@ public class buildingManagerAI {
 		}else if(buildingType == 107)
 			return 400;
 		return 0;
+	}
+	
+	public boolean hasLineOfSight(int tileIndex, float x1, float z1){
+		float z2 = 0.25f*(127 - tileIndex/128);
+		float x2 = 0.25f*(tileIndex%128);
+		
+		boolean hasLineOfSight = true;
+		
+		float dx = (x1 - x2);
+		float dy = (z1 - z2);
+		
+		tempVector.set(dx,0,dy);
+		tempVector.unit();
+		tempVector.scale(0.2f);
+		
+		float xStart = x2;
+		float yStart = z2;
+		
+		for(int i = 0; i < 4; i++){
+			xStart+=tempVector.x;
+			yStart+=tempVector.z;
+			solidObject s = mainThread.gridMap.tiles[(int)(xStart*4) + (127 - (int)(yStart*4))*128][0];
+			if(s != null){
+				if(s.type > 100 && s.type < 200){
+					hasLineOfSight = false;
+					break;
+				}
+			}
+		}
+		
+		return hasLineOfSight;
 	}
 	
 	

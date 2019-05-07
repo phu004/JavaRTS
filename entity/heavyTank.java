@@ -381,7 +381,7 @@ public class heavyTank extends solidObject{
 			}
 		}
 		
-		if(canSelfRepair && currentHP < maxHP && mainThread.gameFrame%6==0){
+		if(canSelfRepair && currentHP < maxHP && mainThread.gameFrame%5==0){
 			currentHP++;
 		}
 		

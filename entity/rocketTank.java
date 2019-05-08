@@ -1037,6 +1037,8 @@ public class rocketTank extends solidObject{
 		if(targetObject.type > 100){
 			multiplier = damageMultiplier;
 			multiplier*=damageAginstBuildingMulitplier;
+		}else if(targetObject.type == 6) {
+			multiplier = 0.7f;
 		}
 		
 		if(attackCoolDown == 0 && targetObject.currentHP >0 ){

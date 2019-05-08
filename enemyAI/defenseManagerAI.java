@@ -238,7 +238,7 @@ public class defenseManagerAI {
 				float x1 = playerStructures[i].centre.x;
 				float z1 = playerStructures[i].centre.z;
 				for(int j = 0; j < constructionYards.length; j++) {
-					if(constructionYards[j] != null && constructionYards[i].teamNo != 0 && constructionYards[j].currentHP > 0) {
+					if(constructionYards[j] != null && constructionYards[j].teamNo != 0 && constructionYards[j].currentHP > 0) {
 						float x2 = constructionYards[j].centre.x;
 						float z2 = constructionYards[j].centre.z;
 						double d = Math.sqrt((x1-x2)*(x1-x2) + (z1-z2)*(z1-z2));

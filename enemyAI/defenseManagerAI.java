@@ -128,10 +128,10 @@ public class defenseManagerAI {
 					//if there is no player units in sight, return to patrol position
 					if(i == 0) {
 						if(frameAI%28 < 14) {
-							xPos = 20f;
+							xPos = 15.5f;
 							zPos = 30.5f;
 						}else {
-							xPos = 20f;
+							xPos = 15.5f;
 							zPos = 24.5f;
 						}
 						
@@ -149,12 +149,12 @@ public class defenseManagerAI {
 					
 					if(i == 1) {
 						
-						if(frameAI%20 < 10) {
-							xPos = 30f;
-							zPos = 15f;
+						if(frameAI%30 < 15) {
+							xPos = 29.25f;
+							zPos = 17f;
 						}else {
-							xPos = 26f;
-							zPos = 15f;
+							xPos = 29.25f;
+							zPos = 10f;
 						}
 						
 						if(frameAI > 1000) {
@@ -535,7 +535,7 @@ public class defenseManagerAI {
 				threatToBaseDirection.unit();
 				if(threatToBaseDirection.dot(direction) > 0.8) {
 				
-					float currentThreatDistance = Math.max(3f, d - 2f);
+					float currentThreatDistance = Math.max(3f, d);
 					
 					if(currentThreatDistance <  threatDistance)
 						threatDistance = currentThreatDistance;

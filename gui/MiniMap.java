@@ -50,8 +50,8 @@ public class MiniMap {
 		drawBackground(screen, minimapBitmap);
 		
 		//remove fog of war for testing
-		//for(int i = 0; i < minimapBitmap.length; i++)
-		//	minimapBitmap[i] = true;
+		for(int i = 0; i < minimapBitmap.length; i++)
+			minimapBitmap[i] = true;
 		
 		//draw unit positions on minimap
 		drawUnit(screen, minimapBitmap, unitsForMiniMap, unitsForMiniMapCount);

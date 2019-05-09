@@ -973,7 +973,7 @@ public class lightTank extends solidObject{
 			int theDamage = myDamage;
 			if(targetObject.type == 7)
 				theDamage*=1.5;
-			if(targetObject.type == 0)
+			if(targetObject.type == 0 || targetObject.type == 1)
 				theDamage*=1.2;
 			if(targetObject.type >= 100)
 				theDamage*=0.6;

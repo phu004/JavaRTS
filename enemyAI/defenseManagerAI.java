@@ -56,7 +56,6 @@ public class defenseManagerAI {
 		
 		minorThreatLocation = new vector(0,0,0);
 		majorThreatLocation = new vector(0,0,0);
-		majorThreatCooldown = 20;	
 		
 		gunTurretDeployLocation = new vector(0,0,0);
 		missileTurretDeployLocation = new vector(0,0,0);	
@@ -215,13 +214,13 @@ public class defenseManagerAI {
 			//if the size of player unit cluster is bigger or equal to 5 then check if the threat is a big one
 			if(playerForceIsNearBase(mainPlayerForceLocation)) {
 				giveBackControlOfDefendersToCombatAI();
-				majorThreatCooldown = 20;
+				majorThreatCooldown = 30;
 				majorThreatLocation.set(mainPlayerForceLocation);
 			}else {
 				float d = playerForceIsMovingTwoardsBase(mainPlayerForceLocation, mainPlayerForceDirection);
 				if(d != -1) {
 					giveBackControlOfDefendersToCombatAI();
-					majorThreatCooldown = 20;
+					majorThreatCooldown = 30;
 					majorThreatLocation.set(mainPlayerForceLocation);
 					majorThreatLocation.add(mainPlayerForceDirection, d);
 				}
@@ -245,7 +244,7 @@ public class defenseManagerAI {
 						
 						if(d < 4) {
 							playerBuildingNearBase = true;
-							majorThreatCooldown = 20;
+							majorThreatCooldown = 30;
 							majorThreatLocation.set(playerStructures[i].centre);
 							break;
 							

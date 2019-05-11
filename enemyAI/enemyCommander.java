@@ -65,7 +65,7 @@ public class enemyCommander {
 		thinkHardLikeHumanPlayer();
 		
 		
-		drawVisionMap();
+		//drawVisionMap();
 		
 		//reset tempBitmap;
 		for(int i = 0 ;i < tempBitmap.length; i++){

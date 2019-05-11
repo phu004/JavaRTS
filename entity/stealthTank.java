@@ -426,8 +426,9 @@ public class stealthTank extends solidObject{
 		
 		if(isCloaked){
 			if(teamNo != 0){
-				//if(currentCloakingStatus < 127)
-				//	currentCloakingStatus+=3;
+				if(!mainThread.fogOfWarDisabled)
+					if(currentCloakingStatus < 127)
+						currentCloakingStatus+=3;
 			}else{
 				if(currentCloakingStatus < 70){
 					currentCloakingStatus+=3;
@@ -555,10 +556,10 @@ public class stealthTank extends solidObject{
 		}
 		
 		//check if the tank object is visible in mini map
-		visible_minimap = theAssetManager.minimapBitmap[boundary2D.x1/16 + (127 - (boundary2D.y1-1)/16)*128];
+		visible_minimap = theAssetManager.minimapBitmap[boundary2D.x1/16 + (127 - (boundary2D.y1-1)/16)*128] || mainThread.fogOfWarDisabled;
 	
 		if(teamNo == 0 || attackStatus == isAttacking || exposedCountDown > 0 || visible_minimap){
-			if(!(isCloaked && teamNo!=0)){
+			if(!(isCloaked && teamNo!=0) ||  mainThread.fogOfWarDisabled){
 				tempInt = theAssetManager.unitsForMiniMap[theAssetManager.unitsForMiniMapCount];
 				tempInt[0] = teamNo + (this.type << 8);
 				tempInt[1] = boundary2D.x1/16;

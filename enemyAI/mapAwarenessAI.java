@@ -49,6 +49,7 @@ public class mapAwarenessAI {
 	public boolean playerLikelyCanNotProduceHighTierUnits;
 	public boolean playerDoesntHaveMassHeavyTanks;
 	public boolean playerArmyCanBeCounteredWithLightTanks;
+	public boolean playerArmyCanBeCounteredWithStealthTanks;
 	public boolean playerIsRushingLightTank;
 	public boolean playerHasManyLightTanksButNoHeavyTank;
 	public boolean playerHasMostlyHeavyAndStealthTanks;
@@ -474,8 +475,11 @@ public class mapAwarenessAI {
         if(frameAI < 600)
         	playerArmyCanBeCounteredWithLightTanks = false;
         else {
-        	playerArmyCanBeCounteredWithLightTanks = maxNumberOfStealthTanks_playerInLastFiveMinutes < 6 && maxNumberOfStealthTanks_playerInLastFiveMinutes/(totalNumberOfPlayerUnits + 1) < 0.2f;
+        	playerArmyCanBeCounteredWithLightTanks = maxNumberOfStealthTanks_playerInLastFiveMinutes < 6 && (float)(numberOfHeavyTanks_player+ numberOfRocketTanks_player)/(totalNumberOfPlayerUnits + 1) > 0.85f;
         }
+        
+        playerArmyCanBeCounteredWithStealthTanks =  (float)(numberOfLightTanks_player+ numberOfRocketTanks_player)/(totalNumberOfPlayerUnits + 1) > 0.85f;
+        
         
         //advanced counting of player units
         if(numberOfStealthTanks_player > maxNumberOfStealthTanks_playerInLastFiveMinutes) {
@@ -760,7 +764,11 @@ public class mapAwarenessAI {
 			}
 		}
 		
-		mainPlayerForceDirection.unit();
+		if(mainPlayerForceDirection.getLength() < 0.001) {
+			mainPlayerForceDirection.reset();
+		}else {
+			mainPlayerForceDirection.unit();
+		}
 		
 		//check if player force is near any of AI's base
         playerForceNearBase = false;

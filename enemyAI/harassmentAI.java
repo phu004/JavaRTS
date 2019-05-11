@@ -5,7 +5,9 @@
 package enemyAI;
 
 import core.baseInfo;
+import core.gameData;
 import core.mainThread;
+import core.vector;
 import entity.rocketTank;
 import entity.solidObject;
 import entity.stealthTank;
@@ -26,21 +28,23 @@ public class harassmentAI {
 	public final int retreating = 3;
 	public stealthTank[] stealthTanksControlledByCombatAI;
 	public rocketTank[] rocketTanksControlledByCombatAI;
+	public vector targetLocation, gatherLocation, squadCenter, harassDirection;
+	public int harassTimer;
 
 	
 	public harassmentAI(){
 		this.theBaseInfo = mainThread.ec.theBaseInfo;
 		squad = new rocketTank[3];
 		status = gathering;
+		targetLocation = new vector(0,0,0);
+		gatherLocation = new vector(0,0,0);
+		squadCenter = new vector(0,0,0);
+		harassDirection = new vector(0,0,0);
 	}
 	
 	public void processAI(){
 		miniFrameAI++;
 		frameAI = mainThread.ec.frameAI;
-		
-		if(miniFrameAI%30 == 29) {
-			System.out.println(frameAI + "    "  + mainThread.ec.theUnitProductionAI.numberOfRocketTanksControlledByCombatAI);
-		}
 			
 		//only activate this AI after 660 game seconds (about 9 minutes in real time)
 		if(frameAI < 660)
@@ -49,8 +53,11 @@ public class harassmentAI {
 		stealthTanksControlledByCombatAI = mainThread.ec.theUnitProductionAI.stealthTanksControlledByCombatAI;
 		rocketTanksControlledByCombatAI = mainThread.ec.theUnitProductionAI.rocketTanksControlledByCombatAI;
 		
+		
+		
+		
 		if(status == gathering) {
-			
+		
 			if(scout == null || scout.currentHP <=0) {
 				for(int i = 0; i < stealthTanksControlledByCombatAI.length; i++) {
 					if(stealthTanksControlledByCombatAI[i] != null && stealthTanksControlledByCombatAI[i].currentHP == stealthTank.maxHP && stealthTanksControlledByCombatAI[i].attackStatus != solidObject.isAttacking) {
@@ -84,7 +91,7 @@ public class harassmentAI {
 			}
 			int numberOfSquad = 0;
 			for(int i = 0; i < squad.length; i++) {
-				if(squad[i] != null) {
+				if(squad[i] != null && squad[i].currentHP > 0) {
 					squad[i].attackMoveTo(mainThread.ec.theUnitProductionAI.rallyPoint.x - 1,mainThread.ec.theUnitProductionAI.rallyPoint.z);
 					squad[i].currentCommand = solidObject.attackMove;
 					squad[i].secondaryCommand = solidObject.attackMove;
@@ -92,13 +99,183 @@ public class harassmentAI {
 				}
 			}
 			
-			if(numberOfSquad == squad.length && scout !=null) {
+			if(numberOfSquad == squad.length && scout !=null && scout.currentHP > 0) {
 				status = positioning;
+				targetLocation.set(0,0,0);
+				
+				//find the location of the target location and gather location
+				
+				if(gameData.getRandom() >= 512) {
+					if(playerBaseIsAround(mainThread.theAssetManager.goldMines[2].centre)) {
+						targetLocation = mainThread.theAssetManager.goldMines[2].centre;
+						gatherLocation.set(15, 0, 28);
+					}else if(playerBaseIsAround(mainThread.theAssetManager.goldMines[3].centre)) {
+						targetLocation = mainThread.theAssetManager.goldMines[3].centre;
+						gatherLocation.set(28.5f, 0, 15);
+					}
+				}else {
+					if(playerBaseIsAround(mainThread.theAssetManager.goldMines[3].centre)) {
+						targetLocation = mainThread.theAssetManager.goldMines[3].centre;
+						gatherLocation.set(28.5f, 0, 15);
+					}else if(playerBaseIsAround(mainThread.theAssetManager.goldMines[2].centre)) {
+						targetLocation = mainThread.theAssetManager.goldMines[2].centre;
+						gatherLocation.set(15, 0, 28);
+					}
+				}
+				
+				if(targetLocation.x == 0 && targetLocation.z == 0) {
+					targetLocation.set(1.5f, 0, 1.5f);
+					if(gameData.getRandom() >= 512) {
+						gatherLocation.set(1.5f, 0, 15);
+					}else {
+						gatherLocation.set(15, 0, 1.5f);
+					}
+				}
+					
 			}
 		}else if(status == positioning) {
+			//move squad and scout to gathering point
+			int numberOfSquad = 0;
+			for(int i = 0; i < squad.length; i++) {
+				if(squad[i] != null && squad[i].currentHP > 0 ) {
+					numberOfSquad++;
+					if(squad[i].secondaryDestinationX != gatherLocation.x || squad[i].secondaryDestinationY != gatherLocation.z || (squad[i].movement.x == 0 && squad[i].movement.z == 0 && squad[i].currentMovementStatus == solidObject.freeToMove)){
+						squad[i].attackMoveTo(gatherLocation.x,gatherLocation.z);
+						squad[i].currentCommand = solidObject.attackMove;
+						squad[i].secondaryCommand = solidObject.attackMove;
+					}
+				}
+			}
+			
+			
+			if(scout != null) {
+				scout.moveTo(gatherLocation.x,gatherLocation.z);
+				scout.currentCommand = solidObject.move;
+				scout.secondaryCommand = solidObject.StandBy;
+			}
+			
+			boolean scoutInPosition = true;
+			float x = scout.centre.x;
+			float z = scout.centre.z;
+			double d = Math.sqrt((x - gatherLocation.x)*(x - gatherLocation.x) + (z - gatherLocation.z)*(z - gatherLocation.z));
+			if(d > 0.75)
+				scoutInPosition = false;
+			
+			boolean squadInPosition = true;
+			for(int i = 0; i < squad.length; i++) {
+				x = squad[i].centre.x;
+				z = squad[i].centre.z;
+				d = Math.sqrt((x - gatherLocation.x)*(x - gatherLocation.x) + (z - gatherLocation.z)*(z - gatherLocation.z));
+				if(d > 1) {
+					squadInPosition = false;
+					break;
+				}
+			}
+			
+			if(scoutInPosition && squadInPosition) {
+				status = harasing;
+				harassTimer = 0;
+			}
+			
+			
+			
+			if(numberOfSquad < squad.length || scout == null || scout.currentHP <=0) {
+				status = gathering;
+			}
+			
+		}else if(status == harasing) {
+			harassTimer++;
+			
+			//move squad towards target base
+			squadCenter.reset();
+			int numberOfSquad = 0;
+			
+			for(int i = 0; i < squad.length; i++) {
+				if(squad[i] != null  && squad[i].currentHP > 0) {
+					if(squad[i].secondaryDestinationX != targetLocation.x || squad[i].secondaryDestinationY != targetLocation.z) {
+						if(harassTimer > 200) {  //delay the squad moment a little bit, make sure scout stays ahead
+							squad[i].attackMoveTo(targetLocation.x,targetLocation.z);
+							squad[i].currentCommand = solidObject.attackMove;
+							squad[i].secondaryCommand = solidObject.attackMove;
+						}
+					}
+					
+					squadCenter.add(squad[i].centre);
+					numberOfSquad++;
+				}
+			}
+			
+			if(numberOfSquad > 0) {
+				squadCenter.x/=numberOfSquad;
+				squadCenter.z/=numberOfSquad;
+				
+				harassDirection.set(targetLocation.x,0,targetLocation.z);
+				harassDirection.subtract(squadCenter);
+				harassDirection.unit();
+				
+				if(scout != null) {
+				
+					scout.moveTo(squadCenter.x + harassDirection.x*1.75f, squadCenter.z + harassDirection.z*1.75f);
+					scout.currentCommand = solidObject.move;
+					scout.secondaryCommand = solidObject.StandBy;
+				}
+			}
+			
+			//attack the first building within range.
+			solidObject[] playerStructures = mainThread.ec.theMapAwarenessAI.playerStructures;
+			for(int i = 0; i < playerStructures.length; i++) {
+				if(playerStructures[i] != null && playerStructures[i].currentHP >0) {
+					float x = playerStructures[i].centre.x;
+					float z = playerStructures[i].centre.z;
+					double d = Math.sqrt((squadCenter.x-x)*(squadCenter.x-x) + (squadCenter.z-z)*(squadCenter.z-z));
+					if(d < 2.8) {
+						for(int j = 0; j < squad.length; j++) {
+							if(squad[j] != null  && squad[j].currentHP > 0) {
+								double d1 = Math.sqrt((squad[j].centre.x-x)*(squad[j].centre.x-x) + (squad[j].centre.z-z)*(squad[j].centre.z-z));
+								if(d1 < 2.86) {
+									squad[j].attack(playerStructures[i]);
+									squad[j].currentCommand = solidObject.attackCautiously;
+								}
+							}
+						}
+						break;
+					}
+				}
+			}
+			
+			
+			//if the target location is clear of player base, then chance status to gathering
+			double distance = Math.sqrt((squadCenter.x-targetLocation.x)*(squadCenter.x-targetLocation.x) + (squadCenter.z-targetLocation.z)*(squadCenter.z-targetLocation.z));
+			if(distance < 1) {
+				if(!playerBaseIsAround(targetLocation)) {
+					status = gathering;
+				}
+			}
+			
+			//if all squad members are dead, change status to gathering
+			if(numberOfSquad == 0) {
+				status = gathering;
+			}
+	
 			
 		}
 		
+	}
+	
+	public boolean playerBaseIsAround(vector v) {
+		solidObject[] playerStructures = mainThread.ec.theMapAwarenessAI.playerStructures;
+		for(int i = 0; i < playerStructures.length; i++) {
+			if(playerStructures[i] != null && playerStructures[i].currentHP >0) {
+				float x = playerStructures[i].centre.x;
+				float z = playerStructures[i].centre.z;
+				double d = Math.sqrt((v.x-x)*(v.x-x) + (v.z-z)*(v.z-z));
+				if(d < 3.5) {
+					return true;
+				}
+			}
+		}
+		
+		return false;
 	}
 	
 	public boolean hasRoomToMove(solidObject o) {

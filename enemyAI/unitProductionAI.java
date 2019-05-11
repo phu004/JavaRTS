@@ -165,6 +165,7 @@ public class unitProductionAI {
 		boolean playerHasMostlyHeavyAndStealthTanks = mainThread.ec.theMapAwarenessAI.playerHasMostlyHeavyAndStealthTanks;
 		boolean playerHasMostlyLightAndStealthTanks = mainThread.ec.theMapAwarenessAI.playerHasMostlyLightAndStealthTanks;
 		boolean playerArmyCanBeCounteredWithLightTanks = mainThread.ec.theMapAwarenessAI.playerArmyCanBeCounteredWithLightTanks;
+		boolean playerArmyCanBeCounteredWithStealthTanks = mainThread.ec.theMapAwarenessAI.playerArmyCanBeCounteredWithStealthTanks;
 		
 		int timeToBuildHeavyTank = 400;
 		int timeToBuildStealthTank = 200;
@@ -178,15 +179,15 @@ public class unitProductionAI {
 		boolean b2 = (numberOfRocketTanks_AI < numberOfPlayerGunTurrets + numberOfPlayerMissileTurrets*1.5);
 		if( b1 || b2){
 			currentProductionOrder = produceRocketTank;
-		}else if(theBaseInfo.canBuildHeavyTank && !playerHasMostlyHeavyTanks && !playerHasMostlyLightTanks && !playerHasMostlyLightAndStealthTanks && !playerArmyCanBeCounteredWithLightTanks &&
+		}else if(theBaseInfo.canBuildHeavyTank && numberOfHeavyTanksControlledByCombatAI < 20 && !(numberOfStealthTanksControlledByCombatAI < 1) && !playerHasMostlyHeavyTanks && !playerHasMostlyLightTanks && !playerHasMostlyLightAndStealthTanks && !playerArmyCanBeCounteredWithLightTanks && !playerArmyCanBeCounteredWithStealthTanks &&
 				 (playerHasMostlyHeavyAndStealthTanks || (frameAI > timeToBuildHeavyTank && numberOfHeavyTanks_AI < 3) ||
 				 !playerHasManyLightTanksButNoHeavyTank
 				 && !(numberOfHeavyTanks_player == 0 && maxNumberOfStealthTanks_playerInLastFiveMinutes < 3 &&  frameAI > 600)  
 				 && !(playerHasMostlyHeavyTanks && numberOfStealthTanks_player < numberOfHeavyTanks_AI*2) 
 				 && (playIsRushingHighTierUnits ||  maxNumberOfStealthTanks_playerInLastFiveMinutes*4 > numberOfHeavyTanks_AI))){
 			currentProductionOrder = produceHeavyTank; 
-		}else if(theBaseInfo.canBuildStealthTank && playerDoesntHaveMassHeavyTanks && !playerHasMostlyHeavyTanks && !playerArmyCanBeCounteredWithLightTanks && !(numberOfStealthTanksControlledByCombatAI >= 8 &&  frameAI < 600) && !(numberOfStealthTanksControlledByCombatAI >= 16 &&  frameAI > 600)
-				 && (playerHasMostlyLightTanks || playerLikelyCanNotProduceHighTierUnits || playerDoesntHaveMassHeavyTanks || playerHasMostlyLightAndStealthTanks) && !playerHasMostlyHeavyTanks && (frameAI > timeToBuildStealthTank || numberOfLightTanks_player > 8)){
+		}else if(theBaseInfo.canBuildStealthTank && ((numberOfStealthTanksControlledByCombatAI < 1)  || (playerDoesntHaveMassHeavyTanks && !playerHasMostlyHeavyTanks && !playerArmyCanBeCounteredWithLightTanks && !(numberOfStealthTanksControlledByCombatAI >= 8 &&  frameAI < 600) && !(numberOfStealthTanksControlledByCombatAI >= 16 &&  frameAI > 600)
+				 && (playerHasMostlyLightTanks || playerLikelyCanNotProduceHighTierUnits || playerDoesntHaveMassHeavyTanks || playerHasMostlyLightAndStealthTanks) && !playerHasMostlyHeavyTanks && (frameAI > timeToBuildStealthTank || numberOfLightTanks_player > 8)))){
 			currentProductionOrder = produceStealthTank;
 		}else{
 			currentProductionOrder = produceLightTank;

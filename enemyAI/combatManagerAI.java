@@ -285,10 +285,11 @@ public class combatManagerAI {
 						if(troopsControlledByCombatAI[i] != null && troopsControlledByCombatAI[i].currentHP > 0){
 
 							if(Math.abs(troopsControlledByCombatAI[i].destinationX - myRallyPointX) > 0.25 || Math.abs(troopsControlledByCombatAI[i].destinationY - myRallyPointZ) > 0.25) {
-								
-								troopsControlledByCombatAI[i].attackMoveTo(myRallyPointX, myRallyPointZ);
-								troopsControlledByCombatAI[i].currentCommand = solidObject.attackMove;
-								troopsControlledByCombatAI[i].secondaryCommand = solidObject.attackMove;
+								if(troopsControlledByCombatAI[i].secondaryDestinationX != myRallyPointX || troopsControlledByCombatAI[i].secondaryDestinationY != myRallyPointZ) {
+									troopsControlledByCombatAI[i].attackMoveTo(myRallyPointX, myRallyPointZ);
+									troopsControlledByCombatAI[i].currentCommand = solidObject.attackMove;
+									troopsControlledByCombatAI[i].secondaryCommand = solidObject.attackMove;
+								}
 							}
 						}
 					}
@@ -741,18 +742,16 @@ public class combatManagerAI {
 			m3+=0.5f;
 			
 		
-		if(techCenter.stealthTankResearched_enemy == true && mainThread.ec.theMapAwarenessAI.playerHasMostlyLightTanks){
+		if(techCenter.stealthTankResearched_enemy == true && mainThread.ec.theMapAwarenessAI.playerArmyCanBeCounteredWithStealthTanks){
 			m3+=0.5f;
 		}
 		
 		float m1 = 1;
-		
 	
-		
-		if(mainThread.ec.theMapAwarenessAI.playerHasMostlyHeavyTanks){
+		if(mainThread.ec.theMapAwarenessAI.playerArmyCanBeCounteredWithLightTanks){
 			m1 = 1.2f;
 			
-			if(techCenter.lightTankResearched_enemy == true && numberOfStealthTanks_player < 5){
+			if(techCenter.lightTankResearched_enemy == true){
 				m1=1.75f;
 				
 			}

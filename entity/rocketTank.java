@@ -271,6 +271,10 @@ public class rocketTank extends solidObject{
 	//update and draw model 
 	public void update(){
 		
+		if(isSelected) {
+			System.out.println(currentCommand + "  "  + secondaryCommand);
+		}
+		
 		
 		//check if tank has been destroyed
 		if(currentHP <= 0){

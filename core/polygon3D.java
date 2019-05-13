@@ -16,7 +16,7 @@ public class polygon3D {
 	public vector centre;
 	
 	//The number of vertex
-	public int L;
+	public byte L;
 	
 	//whether the polygon is completely bounded by the screen
 	public boolean withinViewScreen;
@@ -49,7 +49,7 @@ public class polygon3D {
 	public solidObject parentObject;
 	
 	//A pool of vectors which will be used for vector arithmetic
-	public  vector 
+	public static vector 
 		tempVector1 = new vector(0,0,0),
 		tempVector2 = new vector(0,0,0),
 		tempVector3 = new vector(0,0,0),
@@ -71,7 +71,7 @@ public class polygon3D {
 	public  int visibleCount;
 	
 	//type of the polygon
-	public int type; 
+	public byte type; 
 	
 	//the diffuse/ambient intensity of this polygon
 	public int diffuse_I;
@@ -89,10 +89,10 @@ public class polygon3D {
 	public int color;
 	
 	//light map texture  for this polygon
-	public int lightMapTextureIndex;
+	//public int lightMapTextureIndex;
 	
 	//max texel change rate in x direction;
-	public int max_dx = 512;
+	//public int max_dx = 512;
 	
 	//Whether  origin, rightEnd and bottomEnd vectors match exactly the corners of the polygon
 	public boolean textureFitPolygon;
@@ -104,12 +104,12 @@ public class polygon3D {
 	
 	//Constuctor of the polygon class, it will only accept convex polygons	
 	public polygon3D(vector[] vertex3D, vector origin,  vector  rightEnd, vector bottomEnd,  texture myTexture, float scaleX, float scaleY, int type){
-		this.type = type;
+		this.type = (byte)type;
 		this.vertex3D = vertex3D;
 		this.myTexture = myTexture;
 		this.scaleX = scaleX;
 		this.scaleY = scaleY;
-		L = vertex3D.length;
+		L = (byte)vertex3D.length;
 		diffuse_I = 31;
 		shadowBias = 30000;
 		

@@ -1309,14 +1309,14 @@ public class stealthTank extends solidObject{
 						myDamageModified = myDamage;
 					
 						if(secondaryTargets[i].type==0 || targetObject.type==1){
-							myDamageModified=(int)(myDamage*3);
+							myDamageModified=(int)(myDamage*2);
 							
 						}else if(targetObject.type==6){
 							myDamageModified=(int)(myDamage*1.75);
 						}else if(targetObject.type == 2 || targetObject.type == 3){
 							myDamageModified=(int)(myDamage*0.3);
 						}else if(secondaryTargets[i].type == 7) {
-							myDamageModified=0;  //heavy tank is immue to secondary attack
+							myDamageModified=(int)(myDamage*0.2);  
 						}
 						
 						

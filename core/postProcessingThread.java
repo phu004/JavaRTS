@@ -187,6 +187,12 @@ public class postProcessingThread implements Runnable{
 		eyeDirection = new vector(0,0,0);
 	}
 	
+	public static void reset() {
+		theMiniMap.reset();
+	}
+	
+	
+	
 	public void run(){
 		if(frameIndex == 0)
 			init();
@@ -413,6 +419,7 @@ public class postProcessingThread implements Runnable{
 			
 			//draw health bar/Group info/unit level  for every selected unit 
 			for(int i = 0; i < 100; i++){
+				
 				if(currentSelectedUnitsInfo[i][0] != -1){
 					ObjectType = (currentSelectedUnitsInfo[i][0] & 0xff);
 					groupNo = ((currentSelectedUnitsInfo[i][0] & 0xff00) >> 8);
@@ -425,7 +432,7 @@ public class postProcessingThread implements Runnable{
 					
 					//draw group info
 					if(groupNo != 255){
-						theTextRenderer.drawText_outline(xPos, yPos + 3, ""+(groupNo+1), currentScreen, 0xffffff, 0);
+						theTextRenderer.drawText_outline(xPos, yPos + 3, String.valueOf(groupNo+1), currentScreen, 0xffffff, 0);
 					}
 					if(level != 0){
 						theTextRenderer.drawStarCharacter(xPos + healthBarLength - 13, yPos + 5, level, currentScreen, 0xffff33, 0);

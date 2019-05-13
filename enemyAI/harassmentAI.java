@@ -139,7 +139,7 @@ public class harassmentAI {
 			for(int i = 0; i < squad.length; i++) {
 				if(squad[i] != null && squad[i].currentHP > 0 ) {
 					numberOfSquad++;
-					if(squad[i].secondaryDestinationX != gatherLocation.x || squad[i].secondaryDestinationY != gatherLocation.z || (squad[i].movement.x == 0 && squad[i].movement.z == 0 && squad[i].currentMovementStatus == solidObject.freeToMove)){
+					if(squad[i].secondaryDestinationX != gatherLocation.x || squad[i].secondaryDestinationY != gatherLocation.z){
 						squad[i].attackMoveTo(gatherLocation.x,gatherLocation.z);
 						squad[i].currentCommand = solidObject.attackMove;
 						squad[i].secondaryCommand = solidObject.attackMove;
@@ -214,10 +214,25 @@ public class harassmentAI {
 				harassDirection.unit();
 				
 				if(scout != null) {
+					
+					boolean squadIsUnderAttack = false;
+					for(int i = 0; i < squad.length; i++) {
+						if(squad[i] != null && squad[i].underAttackCountDown > 0) {
+							squadIsUnderAttack = true;
+						}
+					}
+					if(scout.underAttackCountDown > 0)
+						squadIsUnderAttack = true;
 				
-					scout.moveTo(squadCenter.x + harassDirection.x*1.75f, squadCenter.z + harassDirection.z*1.75f);
-					scout.currentCommand = solidObject.move;
-					scout.secondaryCommand = solidObject.StandBy;
+					if(!squadIsUnderAttack) {
+						scout.moveTo(squadCenter.x + harassDirection.x*1.5f, squadCenter.z + harassDirection.z*1.5f);
+						scout.currentCommand = solidObject.move;
+						scout.secondaryCommand = solidObject.StandBy;
+					}else if(miniFrameAI%30 == 29){
+						scout.attackMoveTo(squadCenter.x, squadCenter.z);
+						scout.currentCommand = solidObject.attackMove;
+						scout.secondaryCommand = solidObject.attackMove;
+					}
 				}
 			}
 			

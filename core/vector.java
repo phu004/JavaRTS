@@ -10,9 +10,9 @@ public final class vector{
 	//2d position on screen (from light point of view)
 	public float screenX_lightspace, screenY_lightspace;
 
-	public final static int Z_length = 650;
+	public static final int Z_length = 650;
 	
-	public final int orthogonalScale = 220;
+	public static final int orthogonalScale = 220;
 
 	public static float old_X, old_Y, old_Z, zInverse, lengthInverse;
 	

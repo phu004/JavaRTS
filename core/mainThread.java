@@ -59,7 +59,7 @@ public class mainThread extends JFrame implements KeyListener, ActionListener, M
 	public static final int endGameMenu = 3;
 	
 	public static String timeString;
-	public static boolean fogOfWarDisabled;
+	public static boolean fogOfWarDisabled = false;
 	
 	public mainThread(){
 		setTitle("Battle Tank 3");

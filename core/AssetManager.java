@@ -230,9 +230,9 @@ public class AssetManager {
 				//techCenter.rocketTankResearched_enemy = true;
 				
 				//}else {
-					//heavyTank l = new heavyTank(new vector(j*0.25f+ 1.125f,-0.3f, 22.125f - i*0.25f), 90, 1);
+					heavyTank l = new heavyTank(new vector(j*0.25f+ 1.125f,-0.3f, 22.125f - i*0.25f), 90, 1);
 					
-					//addHeavyTank(l);
+					addHeavyTank(l);
 				//}
 				
 				
@@ -245,13 +245,13 @@ public class AssetManager {
 				//harvester l = new harvester(new vector(i*0.25f+ 1.125f,-0.3f, 17.375f - 0.25f*j), 90, 0);
 				//addHarvester(l);
 				//l.hasMultiShotUpgrade = true;
-				//stealthTank l = new stealthTank(new vector(i*0.25f + 1.125f,-0.3f, 0.5f + 18.625f + j*0.25f), 90, 0);
+				lightTank l = new lightTank(new vector(i*0.25f + 1.125f,-0.3f, 0.5f + 18.625f + j*0.25f), 90, 0);
 				
 				//l.attackRange = 1.99f;
 		
 				//lightTank.tileCheckList_player = lightTank.generateTileCheckList(6);
 		
-				//addStealthTank(l);
+				addLightTank(l);
 				//if(j == 0 && i == 0)
 				//addMissileTurret(new missileTurret(i*0.25f -0.125f + 1, -0.65f, 0.25f + 17.125f + j*0.25f, 0));
 			
@@ -319,6 +319,10 @@ public class AssetManager {
 		
 		mainThread.gridMap.reset();
 		solidObject.globalUniqID = 0;
+		
+		postProcessingThread.reset();
+		
+		System.gc(); 
 	}
 	
 	

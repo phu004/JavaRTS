@@ -1,5 +1,6 @@
 package gui;
 
+import core.gameData;
 import core.mainThread;
 import core.postProcessingThread;
 import core.vector;
@@ -11,6 +12,8 @@ public class MiniMap {
 	public boolean[][] bitmapVision;
 	public static vector corner1, corner2, corner3, corner4;
 	public static boolean isDrawingWindow;
+	public int[][] warningSigns;
+	public int[] warningSignLife;
 	
 	
 	public void init(){
@@ -36,6 +39,14 @@ public class MiniMap {
 		corner2 = new vector(0,0,0);
 		corner3 = new vector(0,0,0);
 		corner4 = new vector(0,0,0);
+		
+		warningSigns = new int[5][2];
+		warningSignLife = new int[5];
+	}
+	
+	public void reset() {
+		warningSigns = new int[5][2];
+		warningSignLife = new int[5];
 	}
 	
 	
@@ -57,9 +68,79 @@ public class MiniMap {
 		//draw unit positions on minimap
 		drawUnit(screen, minimapBitmap, unitsForMiniMap, unitsForMiniMapCount);
 		
+		//draw warning signs
+		drawWarningSigns(screen);
+		
 		//draw view window
 		drawViewWindow(screen);
 		
+	}
+	
+	public void drawWarningSigns(int[] screen) {
+		for(int i = 0; i < warningSignLife.length; i++) {
+			if(warningSignLife[i] > 0) {
+				warningSignLife[i]--;
+				
+				
+				//calculate the radius and angle base on the remining life in the warning sign
+				
+				int extenedR = (warningSignLife[i]- 325)*3;
+				if(extenedR < 0)
+					extenedR = 0;
+				float r = 12 + extenedR;
+				int angle = (warningSignLife[i]*6)%360;
+		
+				//calculate the coordinate of the 3 defining points of the warning sign
+				int centerX = warningSigns[i][0];
+				int centerY = warningSigns[i][1];
+				
+				int xPos1 = centerX + (int)(r*gameData.cos[angle]);
+				int yPos1 = centerY + (int)(r*gameData.sin[angle]);
+				
+				angle = (angle + 120)%360;
+				
+				int xPos2 = centerX + (int)(r*gameData.cos[angle]);
+				int yPos2 = centerY + (int)(r*gameData.sin[angle]);
+				
+				drawLine(xPos1, yPos1, xPos2,yPos2, screen, 0x660000);
+				
+				angle = (angle + 120)%360;
+				
+				int xPos3 = centerX + (int)(r*gameData.cos[angle]);
+				int yPos3 = centerY + (int)(r*gameData.sin[angle]);
+				
+				drawLine(xPos3, yPos3, xPos2,yPos2, screen, 0x660000);
+				
+				drawLine(xPos3, yPos3, xPos1,yPos1, screen, 0x660000);
+			}
+		}
+	}
+	
+	public void spawnWarningSign(int xPos, int yPos) {
+		boolean closeToExisingWarningSign = false;
+		for(int j = 0; j < warningSigns.length; j++) {
+			if(warningSignLife[j] > 0) {
+				//check if the spawn location is too lose to exisiting
+				int x = warningSigns[j][0];
+				int y = warningSigns[j][1];
+				double d = Math.sqrt((x - xPos)*(x - xPos) + (y - yPos)*(y - yPos));
+				if(d < 10) {
+					closeToExisingWarningSign = true;
+					break;
+				}
+			}
+		}
+		
+		if(!closeToExisingWarningSign) {
+			for(int i = 0; i < warningSigns.length; i++) {
+				if(warningSignLife[i] == 0) {
+					warningSigns[i][0] = xPos;
+					warningSigns[i][1] = yPos;
+					warningSignLife[i] = 350;
+					break;
+				}
+			}
+		}
 	}
 	
 	public void drawViewWindow(int[] screen){
@@ -76,14 +157,10 @@ public class MiniMap {
 		yPos4 = 127 - (int)(corner4.z*64/16);
 		
 		
-		drawLine(xPos1+1, yPos1, xPos2-1,yPos2, screen);
-		drawLine(xPos2, yPos2, xPos3,yPos3, screen);
-		drawLine(xPos3-1, yPos3, xPos4+1,yPos4, screen);
-		drawLine(xPos4, yPos4, xPos1,yPos1, screen);
-		
-		
-		
-		
+		drawLine(xPos1+1, yPos1, xPos2-1,yPos2, screen, 0xbfbfbf);
+		drawLine(xPos2, yPos2, xPos3,yPos3, screen, 0xbfbfbf);
+		drawLine(xPos3-1, yPos3, xPos4+1,yPos4, screen, 0xbfbfbf);
+		drawLine(xPos4, yPos4, xPos1,yPos1, screen, 0xbfbfbf);
 	}
 	
 	public void findCorners(){
@@ -95,7 +172,7 @@ public class MiniMap {
 		
 	}
 	
-	public void drawLine(int xPos1, int yPos1, int xPos2, int yPos2, int[] screen){
+	public void drawLine(int xPos1, int yPos1, int xPos2, int yPos2, int[] screen, int lineColor){
 		int start = 381 * 768 + 3;
 		int  x, y;
 		int xDirection, yDirection;
@@ -121,7 +198,7 @@ public class MiniMap {
 				if(x < 0 || x > 127 || y < 0 || y > 127)
 					continue;
 				color = screen[start + x + y*768];
-				screen[start + x + y*768] = ((((color&0xFEFEFE)>>1)&0xFEFEFE)>>1) +  0xbfbfbf;
+				screen[start + x + y*768] = ((((color&0xFEFEFE)>>1)&0xFEFEFE)>>1) +  lineColor;
 			}
 			
 		}else{
@@ -133,7 +210,7 @@ public class MiniMap {
 				if(x < 0 || x > 127 || y < 0 || y > 127)
 					continue;
 				color = screen[start + x + y*768];
-				screen[start + x + y*768] = ((((color&0xFEFEFE)>>1)&0xFEFEFE)>>1) +  0xbfbfbf;
+				screen[start + x + y*768] = ((((color&0xFEFEFE)>>1)&0xFEFEFE)>>1) +  lineColor;
 				
 			}
 		}
@@ -172,6 +249,7 @@ public class MiniMap {
 					color = friendlyUnitColor;
 				if(unitsForMiniMap[i][4] == 10001){
 					color = underAttackColor;
+					spawnWarningSign(xPos, yPos);
 				}
 				
 				if((screen[index]>>24) == 0)

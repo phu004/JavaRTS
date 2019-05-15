@@ -1309,7 +1309,7 @@ public class stealthTank extends solidObject{
 						myDamageModified = myDamage;
 					
 						if(secondaryTargets[i].type==0 || targetObject.type==1){
-							myDamageModified=(int)(myDamage*2);
+							myDamageModified=(int)(myDamage*3);
 							
 						}else if(targetObject.type==6){
 							myDamageModified=(int)(myDamage*1.75);

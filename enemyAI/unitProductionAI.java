@@ -167,7 +167,7 @@ public class unitProductionAI {
 		boolean playerArmyCanBeCounteredWithLightTanks = mainThread.ec.theMapAwarenessAI.playerArmyCanBeCounteredWithLightTanks;
 		boolean playerArmyCanBeCounteredWithStealthTanks = mainThread.ec.theMapAwarenessAI.playerArmyCanBeCounteredWithStealthTanks;
 		
-		int timeToBuildHeavyTank = 400;
+		int timeToBuildHeavyTank = 500;
 		int timeToBuildStealthTank = 200;
 		if(mainThread.ec.theMapAwarenessAI.canRushPlayer) {
 			//when AI decides to rush the player, then dont build higher tier units so it can mass produce light tanks
@@ -186,13 +186,12 @@ public class unitProductionAI {
 				 && !(playerHasMostlyHeavyTanks && numberOfStealthTanks_player < numberOfHeavyTanks_AI*2) 
 				 && (playIsRushingHighTierUnits ||  maxNumberOfStealthTanks_playerInLastFiveMinutes*4 > numberOfHeavyTanks_AI))){
 			currentProductionOrder = produceHeavyTank; 
-		}else if(theBaseInfo.canBuildStealthTank && ((numberOfStealthTanksControlledByCombatAI < 1)  || (playerDoesntHaveMassHeavyTanks && !playerHasMostlyHeavyTanks && !playerArmyCanBeCounteredWithLightTanks && !(numberOfStealthTanksControlledByCombatAI >= 8 &&  frameAI < 600) && !(numberOfStealthTanksControlledByCombatAI >= 16 &&  frameAI > 600)
+		}else if(theBaseInfo.canBuildStealthTank && ((numberOfStealthTanksControlledByCombatAI < 1)  || (playerDoesntHaveMassHeavyTanks && !playerHasMostlyHeavyTanks && !playerArmyCanBeCounteredWithLightTanks && !(numberOfStealthTanksControlledByCombatAI >= 9 &&  frameAI < 600) && !(numberOfStealthTanksControlledByCombatAI >= 18 &&  frameAI > 600)
 				 && (playerHasMostlyLightTanks || playerLikelyCanNotProduceHighTierUnits || playerDoesntHaveMassHeavyTanks || playerHasMostlyLightAndStealthTanks) && !playerHasMostlyHeavyTanks && (frameAI > timeToBuildStealthTank || numberOfLightTanks_player > 8)))){
 			currentProductionOrder = produceStealthTank;
 		}else{
 			currentProductionOrder = produceLightTank;
 		}
-	
 		
 		//make decision on what tech to research
 		if(mainThread.ec.theBuildingManagerAI.theBaseInfo.numberOfCommunicationCenter > 0) {

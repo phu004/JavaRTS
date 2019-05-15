@@ -122,7 +122,7 @@ public class mainThread extends JFrame implements KeyListener, ActionListener, M
 		}
 		
 		frameIndex = 0;
-		frameInterval = 28;
+		frameInterval = 25;
 		lastDraw = 0;
 	
 		//create main thread
@@ -201,7 +201,7 @@ public class mainThread extends JFrame implements KeyListener, ActionListener, M
 			if(gameStarted)
 				gameFrame++;
 			
-			timeString = secondsToString((int)(gameFrame*0.028));
+			timeString = secondsToString((int)(gameFrame*0.025));
 			
 			//handle user's interaction with game GUI
 			if(gameFrame == 1 && gameStarted){

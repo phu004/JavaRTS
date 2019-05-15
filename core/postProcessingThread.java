@@ -726,6 +726,7 @@ public class postProcessingThread implements Runnable{
 			//draw mini map
 			theMiniMap.draw(currentScreen, minimapBitmap, unitsForMiniMap, unitsForMiniMapCount);
 			theSideBar.draw(currentScreen, sideBarInfo);
+			
 		}
 		
 	}

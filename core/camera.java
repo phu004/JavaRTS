@@ -144,12 +144,7 @@ public class camera{
 		position.add(-view_Direction.x*3, 0 , -view_Direction.z*3);
 		
 		
-		MOVE_LEFT = false;
-		MOVE_RIGHT = false;
-		MOVE_UP = false;
-		MOVE_DOWN = false;
-		TURN_LEFT = false;
-		TURN_RIGHT = false;
+		
 		
 	}
 

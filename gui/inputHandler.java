@@ -169,6 +169,13 @@ public class inputHandler {
 		
 		//handle input when game is running
 		if(!mainThread.gamePaused && mainThread.gameStarted){
+			camera.MOVE_LEFT = false;
+			camera.MOVE_RIGHT = false;
+			camera.MOVE_UP = false;
+			camera.MOVE_DOWN = false;
+			camera.TURN_LEFT = false;
+			camera.TURN_RIGHT = false;
+			
 			if(!mainThread.pc.isSelectingUnit){
 				mouse_x0 = mouse_x;
 				mouse_y0 = mouse_y;

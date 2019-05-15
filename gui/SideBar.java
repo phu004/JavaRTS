@@ -9,7 +9,6 @@ import core.mainThread;
 import core.postProcessingThread;
 
 public class SideBar {
-	public String imageFolder = "";
 	
 	public int[][] iconImages;
 	public int[][] iconImages_dark;
@@ -630,7 +629,7 @@ public class SideBar {
 	public void loadTexture(String imgName, int[] buffer, int width, int height, int[] buffer_dark){
 		Image img = null;
 		try{
-			img = ImageIO.read(getClass().getResource(imageFolder + imgName));
+			img = ImageIO.read(getClass().getResource(imgName));
 		}catch(Exception e){
 			e.printStackTrace();
 		}

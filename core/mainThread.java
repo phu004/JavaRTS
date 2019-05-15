@@ -15,8 +15,8 @@ import gui.*;
 
 public class mainThread extends JFrame implements KeyListener, ActionListener, MouseMotionListener, MouseListener, FocusListener{
 
-	public static int[] screen;
-	public static int[] screen2;
+	public static int[] screen, bufferScreen;
+	public static int[] screen2, buffer2Screen;
 	public static int[] zBuffer;
 	public static int[] zBuffer2;
 	public static BufferedImage doubleBuffer;
@@ -39,6 +39,7 @@ public class mainThread extends JFrame implements KeyListener, ActionListener, M
 	public static playerCommander pc;
 	public static enemyCommander ec;
 	public static AssetManager theAssetManager;
+	public static gameCursor theGameCursor;
 	public static grid gridMap;
 	public static postProcessingThread PPT;
 	public static Object PPT_Lock;
@@ -59,7 +60,8 @@ public class mainThread extends JFrame implements KeyListener, ActionListener, M
 	public static final int endGameMenu = 3;
 	
 	public static String timeString;
-	public static boolean fogOfWarDisabled = false;
+	public static boolean fogOfWarDisabled;
+
 	
 	public mainThread(){
 		setTitle("Battle Tank 3");
@@ -75,14 +77,28 @@ public class mainThread extends JFrame implements KeyListener, ActionListener, M
 		setLocation(dim.width/2-this.getSize().width/2, dim.height/2-this.getSize().height/2);
     	setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
     	
+    	//hide mouse cursor
+    	// Transparent 16 x 16 pixel cursor image.
+    	BufferedImage cursorImg = new BufferedImage(16, 16, BufferedImage.TYPE_INT_ARGB);
+
+    	// Create a new blank cursor.
+    	Cursor blankCursor = Toolkit.getDefaultToolkit().createCustomCursor(
+    	    cursorImg, new Point(0, 0), "blank cursor");
+
+    	// Set the blank cursor to the JFrame.
+    	this.getContentPane().setCursor(blankCursor);
+    
+    	
 		//create screen buffer
 		doubleBuffer =  new BufferedImage(768, 512, BufferedImage.TYPE_INT_RGB);
 		DataBuffer dest = doubleBuffer.getRaster().getDataBuffer();
 		screen = ((DataBufferInt)dest).getData();
+		bufferScreen = screen;
 		
 		doubleBuffer2 =  new BufferedImage(768, 512, BufferedImage.TYPE_INT_RGB);
 		DataBuffer dest2 = doubleBuffer2.getRaster().getDataBuffer();
 		screen2 = ((DataBufferInt)dest2).getData();
+		buffer2Screen = screen2;
 		
 		//create depth buffer
 		zBuffer = new int[393216];
@@ -172,6 +188,9 @@ public class mainThread extends JFrame implements KeyListener, ActionListener, M
 				
 			theAssetManager = new AssetManager();
 			theAssetManager.init();
+			
+			theGameCursor = new gameCursor();
+			theGameCursor.init();
 		}
 		
 		frameIndex++;		
@@ -229,11 +248,18 @@ public class mainThread extends JFrame implements KeyListener, ActionListener, M
 			
 			if(frameIndex %2 == 0 && frameIndex > 3){
 				bf = doubleBuffer;
-				paintComponent(panel.getGraphics());
+				//draw mouse cursor 
+				theGameCursor.updateAndDraw(bufferScreen);
+				
+		
 			}else if(frameIndex != 1 && frameIndex > 3){
 				bf = doubleBuffer2;
-				paintComponent(panel.getGraphics());
+				//draw mouse cursor 
+				theGameCursor.updateAndDraw(buffer2Screen);
 			}
+			
+			if(frameIndex > 3)
+				paintComponent(panel.getGraphics());
 			
 			swapResources();
 		
@@ -247,7 +273,7 @@ public class mainThread extends JFrame implements KeyListener, ActionListener, M
 	public void paintComponent(Graphics g){		
 		
 		//copy the pixel information to the video memory
-		Graphics2D g2 =(Graphics2D)bf.getGraphics(); //(Graphics2D)g;
+		//Graphics2D g2 =(Graphics2D)bf.getGraphics(); //(Graphics2D)g;
 		
 		//display polygon count and frame rate
 		//g2.setColor(Color.WHITE);

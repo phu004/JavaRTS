@@ -77,16 +77,7 @@ public class mainThread extends JFrame implements KeyListener, ActionListener, M
 		setLocation(dim.width/2-this.getSize().width/2, dim.height/2-this.getSize().height/2);
     	setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
     	
-    	//hide mouse cursor
-    	// Transparent 16 x 16 pixel cursor image.
-    	BufferedImage cursorImg = new BufferedImage(16, 16, BufferedImage.TYPE_INT_ARGB);
-
-    	// Create a new blank cursor.
-    	Cursor blankCursor = Toolkit.getDefaultToolkit().createCustomCursor(
-    	    cursorImg, new Point(0, 0), "blank cursor");
-
-    	// Set the blank cursor to the JFrame.
-    	this.getContentPane().setCursor(blankCursor);
+    	
     
     	
 		//create screen buffer
@@ -191,6 +182,17 @@ public class mainThread extends JFrame implements KeyListener, ActionListener, M
 			
 			theGameCursor = new gameCursor();
 			theGameCursor.init();
+			
+			//hide mouse cursor
+	    	// Transparent 16 x 16 pixel cursor image.
+	    	BufferedImage cursorImg = new BufferedImage(16, 16, BufferedImage.TYPE_INT_ARGB);
+
+	    	// Create a new blank cursor.
+	    	Cursor blankCursor = Toolkit.getDefaultToolkit().createCustomCursor(
+	    	    cursorImg, new Point(0, 0), "blank cursor");
+
+	    	// Set the blank cursor to the JFrame.
+	    	this.getContentPane().setCursor(blankCursor);
 		}
 		
 		frameIndex++;		

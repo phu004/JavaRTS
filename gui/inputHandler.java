@@ -21,7 +21,7 @@ public class inputHandler {
 	                      rightMouseButtonPressed, 
 	                      leftMouseButtonReleased, 
 	                      rightMouseButtonReleased, 
-	                      H_pressed,
+	                      S_pressed,
 	                      A_pressed,
 	                      C_pressed,
 	                      F_pressed,
@@ -55,9 +55,9 @@ public class inputHandler {
 				
 				
 				
-				if(c == 'h' || c == 'H'){
+				if(c == 's' || c == 'S'){
 					
-					H_pressed = true;
+					S_pressed = true;
 				}
 				
 				if(c == 'a' || c == 'A'){
@@ -90,8 +90,8 @@ public class inputHandler {
 			char c = inputBuffer[inputBufferIndex];
 			
 			
-			if(c == 'h' || c == 'H'){
-				H_pressed = true;
+			if(c == 's' || c == 'S'){
+				S_pressed = true;
 			}
 			
 			if(c == 'a' || c == 'A'){
@@ -121,8 +121,8 @@ public class inputHandler {
 		if(keyReleaseBufferIndex > theCounter){
 			while(keyReleaseBufferIndex < 1024){
 				char c = keyReleaseBuffer[keyReleaseBufferIndex];
-				if(c == 'h' || c == 'H'){
-					H_pressed = false;
+				if(c == 's' || c == 'S'){
+					S_pressed = false;
 				}
 				
 				if(c == 'a' || c == 'A'){
@@ -145,8 +145,8 @@ public class inputHandler {
 		}
 		while(keyReleaseBufferIndex < theCounter){
 			char c = keyReleaseBuffer[keyReleaseBufferIndex];
-			if(c == 'h' || c == 'H'){
-				H_pressed = false;
+			if(c == 's' || c == 'S'){
+				S_pressed = false;
 			}
 			
 			if(c == 'a' || c == 'A'){
@@ -277,7 +277,7 @@ public class inputHandler {
 			}
 			
 			//handle hotheys
-			if(H_pressed){
+			if(S_pressed){
 				
 				mainThread.pc.holdKeyPressed = true;
 			}
@@ -364,7 +364,7 @@ public class inputHandler {
 		
 		
 		A_pressed = false;
-		H_pressed = false;
+		S_pressed = false;
 		C_pressed = false;
 		F_pressed = false;
 		numberTyped = 0;

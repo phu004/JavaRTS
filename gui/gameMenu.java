@@ -88,7 +88,7 @@ public class gameMenu {
 				   + "\"Left Click\" -- Select a unit. Left click + mouse drag can be used to select up to \n100 units at a time. Double left click on a unit will automatically select surrounding \nunits of the same type.\n\n"
 				   + "\"Right Click\" -- Issue a move or attack command to the selected unit(s). You can \nalso use right click to set rally point or cancel build progress.\n\n"
 				   + "\"a\" -- Force attack a unit. If no unit is under the cursor, then the selected units will \nbe set to attack move to the cursor location.\n\n"
-				   + "\"h\" -- stop current action for the selected unit(s).\n\n"
+				   + "\"s\" -- stop current action for the selected unit(s).\n\n"
 				   + "\"Ctrl + number\" -- Create a control group and assigned the number to the group.\n\n"
 				   + "\"Ctrl + Left Click\" -- Add/Remove a unit to/from the selected units.\n\n"
 				   + "\"Ctrl + Mouse Drag\" -- Add units in the dragging box to the selected units.\n\n\n"

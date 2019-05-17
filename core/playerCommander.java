@@ -47,6 +47,15 @@ public class playerCommander {
 	
 	public baseInfo theBaseInfo;
 	
+	public boolean mouseOverSelectableUnit;
+	public int mouseOverUnitType;
+	public int mouseOverUnitTeam;
+	public boolean mouseOverUnitIsSelected;
+	public boolean hasConVehicleSelected;
+	public boolean hasHarvesterSelected;
+	public boolean hasTroopsSelected;
+	public boolean hasTowerSelected;
+	
 	public void init(){
 		selectedUnits = new solidObject[100];
 		groups = new solidObject[5][100];
@@ -382,7 +391,16 @@ public class playerCommander {
 		}
 		
 		if(holdKeyPressed){
-			holdAllSelectedUnit();
+			
+			if(attackKeyPressed) {
+	
+				attackKeyPressed = false;
+				
+			}else {
+			
+				attackKeyPressed = false;
+				holdAllSelectedUnit();
+			}
 		}
 		
 		if(toggleConyard) {
@@ -497,10 +515,31 @@ public class playerCommander {
 			area.setBounds(xPos, yPos, 100, 100);
 			areaSmall.setBounds(xPos_small, yPos_small, 60,60);
 			addMouseHoverUnitToDisplayInfo(area, areaSmall);
-			
 		}
 	
 		theSideBarManager.update();
+		
+		hasConVehicleSelected = false;
+		hasHarvesterSelected = false;
+		hasTroopsSelected = false;
+		hasTowerSelected = false;
+		
+		for(int i = 0; i < selectedUnits.length; i++){
+			if(selectedUnits[i] != null && selectedUnits[i].teamNo == 0 && selectedUnits[i].currentHP > 0){
+				if(selectedUnits[i].type == 0 || selectedUnits[i].type == 1 || selectedUnits[i].type == 6 || selectedUnits[i].type == 7) {
+					hasTroopsSelected = true;
+				}else if(selectedUnits[i].type == 2) {
+					hasHarvesterSelected = true;
+				}else if(selectedUnits[i].type == 3) {
+					hasConVehicleSelected = true;
+				}else if(selectedUnits[i].type == 200 || selectedUnits[i].type == 199) {
+					hasTowerSelected = true;
+				}
+					
+			}
+		}
+		
+		
 		
 		leftMouseButtonPressed = false;
 		rightMouseButtonPressed = false;
@@ -605,6 +644,8 @@ public class playerCommander {
 	
 	public void addMouseHoverUnitToDisplayInfo(Rectangle unitArea, Rectangle unitAreaSmall){
 		solidObject theSelected = null;
+		mouseOverSelectableUnit = false;
+		mouseOverUnitIsSelected = false;
 		for(int i = 0; i < theAssetManager.visibleUnitCount; i++){
 			if(unitArea.contains(theAssetManager.visibleUnit[i].tempCentre.screenX,  theAssetManager.visibleUnit[i].tempCentre.screenY)){
 				if((theAssetManager.visibleUnit[i].type < 100 || theAssetManager.visibleUnit[i].type >= 199) && !unitAreaSmall.contains(theAssetManager.visibleUnit[i].tempCentre.screenX,  theAssetManager.visibleUnit[i].tempCentre.screenY))
@@ -619,7 +660,17 @@ public class playerCommander {
 			}
 		}
 		
-		if(theSelected != null && !theSelected.isSelected && theSelected.isSelectable){
+		if(theSelected != null  && theSelected.isSelectable && !cursorIsInMiniMap() && !cursorIsInSideBar()) {
+			mouseOverSelectableUnit = true;
+			mouseOverUnitType = theSelected.type;
+			mouseOverUnitTeam = theSelected.teamNo;
+			if(theSelected.isSelected) {
+				mouseOverUnitIsSelected = true;
+			}
+				
+		}
+		
+		if(theSelected != null && !theSelected.isSelected && theSelected.isSelectable && !cursorIsInMiniMap() && !cursorIsInSideBar()){
 			mainThread.theAssetManager.selectedUnitsInfo[99][0] =  theSelected.level << 16 | theSelected.groupNo << 8 | theSelected.type;
 			mainThread.theAssetManager.selectedUnitsInfo[99][1] = (int)theSelected.tempCentre.screenX;
 			mainThread.theAssetManager.selectedUnitsInfo[99][2] = (int)theSelected.tempCentre.screenY;

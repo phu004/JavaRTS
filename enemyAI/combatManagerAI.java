@@ -384,9 +384,12 @@ public class combatManagerAI {
 			//check if the troops is near a concentration of player's static defense.
 			//If true, then check if AI has enough troops to deal with the static defense.
 			staticDefenseAhead = false;
+			int staticDefenseThreshold = 0;
+			if(frameAI > 600 && mainThread.ec.theUnitProductionAI.numberOfUnitInCombatRadius > 15)
+				staticDefenseThreshold = 4;
 			double distanceToTower = 999;
 			for(int i = 0; i < mainThread.ec.theMapAwarenessAI.playerStaticDefenseLocations.length; i++) {
-				if(mainThread.ec.theMapAwarenessAI.playerStaticDefenseSize[i] > 0) {
+				if(mainThread.ec.theMapAwarenessAI.playerStaticDefenseSize[i] > staticDefenseThreshold) {
 					
 					float xPos = mainThread.ec.theMapAwarenessAI.playerStaticDefenseLocations[i].x;
 					float zPos = mainThread.ec.theMapAwarenessAI.playerStaticDefenseLocations[i].z;

@@ -137,7 +137,8 @@ public class gameCursor {
 				}else if((hasTroopsSelected || hasTowerSelected) && attackKeyPressed) {
 					drawActionIcon(mouseX, mouseY, 1);
 				}else if(hasHarvesterSelected && (mouseOverUnitType == 102 || mouseOverUnitType == 103)) {
-					drawActionIcon(mouseX, mouseY, 2);
+					//drawActionIcon(mouseX, mouseY, 2);
+					drawIcon(cursorIcon, mouseX, mouseY);
 				}else {
 					drawIcon(cursorIcon, mouseX, mouseY);
 				}

@@ -63,7 +63,7 @@ public class mainThread extends JFrame implements KeyListener, ActionListener, M
 	public static boolean fogOfWarDisabled;
 	public static Robot myRobot;
 	
-	public static boolean capturedMouse;
+	public static boolean capturedMouse, mouseLeftScreen, focusLost;
 	public static int mouseX, mouseY, centerScreenX, centerScreenY, currentMouseX, currentMouseY;
 	
 	public mainThread(){
@@ -216,11 +216,12 @@ public class mainThread extends JFrame implements KeyListener, ActionListener, M
 
 	    	// Set the blank cursor to the JFrame.
 	    	this.getContentPane().setCursor(blankCursor);
+	    	
 		}
 		
 		frameIndex++;	
 
-		if(capturedMouse) {
+		if(capturedMouse && !mouseLeftScreen && !focusLost) {
 			currentMouseX = MouseInfo.getPointerInfo().getLocation().x;
 			currentMouseY = MouseInfo.getPointerInfo().getLocation().y;
 			
@@ -380,7 +381,7 @@ public class mainThread extends JFrame implements KeyListener, ActionListener, M
 
 
 	public void mouseDragged(MouseEvent e) {
-		if(capturedMouse) {
+		if(capturedMouse && !focusLost) {
 		
 		}else {
 			inputHandler.mouse_x = e.getX();
@@ -390,7 +391,7 @@ public class mainThread extends JFrame implements KeyListener, ActionListener, M
 
 
 	public void mouseMoved(MouseEvent e) {
-		if(capturedMouse) {
+		if(capturedMouse && !focusLost) {
 			
 		}else {
 			inputHandler.mouse_x = e.getX();
@@ -405,12 +406,16 @@ public class mainThread extends JFrame implements KeyListener, ActionListener, M
 
 	@Override
 	public void mouseEntered(MouseEvent arg0) {
+		mouseLeftScreen = false;
 		inputHandler.mouseIsInsideScreen = true;
 	}
 
 
 	@Override
 	public void mouseExited(MouseEvent arg0) {
+		mouseLeftScreen = true;
+		
+		
 		inputHandler.mouseIsInsideScreen = false;
 	
 		if(capturedMouse)
@@ -624,7 +629,7 @@ public class mainThread extends JFrame implements KeyListener, ActionListener, M
 	public void focusGained(FocusEvent arg0) {
 		// TODO Auto-generated method stub
 		
-		
+		focusLost = false;
 		
 	}
 
@@ -632,7 +637,7 @@ public class mainThread extends JFrame implements KeyListener, ActionListener, M
 	@Override
 	public void focusLost(FocusEvent arg0) {
 		// TODO Auto-generated method stub
-		
+		focusLost = true;
 		
 	}
 

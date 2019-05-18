@@ -45,6 +45,9 @@ public class inputHandler {
 		if(escapePressedCooldown > 0)
 			escapePressedCooldown --;
 		
+		if(mainThread.capturedMouse)
+			mouseIsInsideScreen = true;
+		
 		//read input char
 		int theCounter = inputCounter;  
 		
@@ -181,12 +184,12 @@ public class inputHandler {
 				mouse_y0 = mouse_y;
 				if(!mouseIsInsideScreen || !mouseMovementArea.contains(mouse_x0, mouse_y0)){
 					
-					if(mainThread.pc.cursorIsInMiniMap() || mainThread.pc.cursorIsInSideBar()){
+					if(mainThread.pc.cursorIsInMiniMap() || mainThread.pc.cursorIsInSideBar() || mainThread.capturedMouse){
 						if(mouse_x0 < 10)
 							camera.MOVE_LEFT = true;
 						if(mouse_x0 > 758)
 							camera.MOVE_RIGHT = true;
-						if(mouse_y0 < 20)
+						if(mouse_y0 < 10)
 							camera.MOVE_UP = true;
 						if(mouse_y0 > 502)
 							camera.MOVE_DOWN = true;
@@ -337,6 +340,18 @@ public class inputHandler {
 					mainThread.gameFrame = 0;
 					mainThread.ec.difficulty = 2;
 				}
+				
+				
+				
+				
+				
+				if(mainThread.buttonAction == "enableFogOfWar") {
+					mainThread.fogOfWarDisabled = false;
+					
+				}else if(mainThread.buttonAction == "disableFogOfWar") {
+					mainThread.fogOfWarDisabled = true;
+					
+				}
 			}
 			
 			//abort current game when the abort button is pressed
@@ -345,7 +360,23 @@ public class inputHandler {
 				mainThread.gameFrame = 0;
 				mainThread.gamePaused = false;
 				mainThread.theAssetManager.destoryAsset();
+				
+				camera.MOVE_LEFT = false;
+				camera.MOVE_RIGHT = false;
+				camera.MOVE_UP = false;
+				camera.MOVE_DOWN = false;
+				camera.TURN_LEFT = false;
+				camera.TURN_RIGHT = false;
 			}
+			
+			//toggle mouse capture mode
+			if(mainThread.buttonAction == "enableMouseCapture") {
+				mainThread.capturedMouse = true;
+			}else if(mainThread.buttonAction == "disableMouseCapture") {
+				mainThread.capturedMouse = false;
+			}
+			
+
 		}
 		
 

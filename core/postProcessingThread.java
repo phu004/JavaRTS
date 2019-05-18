@@ -83,6 +83,7 @@ public class postProcessingThread implements Runnable{
 	
 	public static String timeString;
 	public static boolean fogOfWarDisabled;
+	public static boolean capturedMouse;
 	
 	//A pool of vectors which will be used for vector arithmetic
 	public static vector 
@@ -966,6 +967,9 @@ public class postProcessingThread implements Runnable{
 		
 		timeString = mainThread.timeString;
 		fogOfWarDisabled = mainThread.fogOfWarDisabled;
+		capturedMouse = mainThread.capturedMouse;
+		
+		
 		
 		currentScreen = mainThread.screen;
 		currentZbuffer = mainThread.zBuffer;

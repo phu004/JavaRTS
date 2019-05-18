@@ -61,7 +61,10 @@ public class mainThread extends JFrame implements KeyListener, ActionListener, M
 	
 	public static String timeString;
 	public static boolean fogOfWarDisabled;
-
+	public static Robot myRobot;
+	
+	public static boolean capturedMouse;
+	public static int mouseX, mouseY, centerScreenX, centerScreenY, currentMouseX, currentMouseY;
 	
 	public mainThread(){
 		setTitle("Battle Tank 3");
@@ -77,7 +80,8 @@ public class mainThread extends JFrame implements KeyListener, ActionListener, M
 		setLocation(dim.width/2-this.getSize().width/2, dim.height/2-this.getSize().height/2);
     	setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
     	
-    	
+    	mouseX = 384;
+    	mouseY = 256;
     
     	
 		//create screen buffer
@@ -115,7 +119,14 @@ public class mainThread extends JFrame implements KeyListener, ActionListener, M
 		frameIndex = 0;
 		frameInterval = 25;
 		lastDraw = 0;
-	
+		try {
+			myRobot = new Robot();
+		} catch (AWTException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		
+		
 		//create main thread
 		t = new Ticker(0);
 		t.addActionListener(this);
@@ -147,6 +158,8 @@ public class mainThread extends JFrame implements KeyListener, ActionListener, M
 	//thread is always lag the main thread by 1 frame. However it is barely noticeable.
 	
 	public void actionPerformed(ActionEvent e){	
+		
+		
 		if(frameIndex == 0) {
 			
 			//Add key handler
@@ -183,6 +196,16 @@ public class mainThread extends JFrame implements KeyListener, ActionListener, M
 			theGameCursor = new gameCursor();
 			theGameCursor.init();
 			
+			currentMouseX = getLocationOnScreen().x + 384;
+			currentMouseY = getLocationOnScreen().y + 256;
+			
+			centerScreenX = getLocationOnScreen().x + 384;
+			centerScreenY = getLocationOnScreen().y + 256;
+			
+			
+			if(capturedMouse)
+				myRobot.mouseMove(centerScreenX, centerScreenY);
+			
 			//hide mouse cursor
 	    	// Transparent 16 x 16 pixel cursor image.
 	    	BufferedImage cursorImg = new BufferedImage(16, 16, BufferedImage.TYPE_INT_ARGB);
@@ -195,8 +218,21 @@ public class mainThread extends JFrame implements KeyListener, ActionListener, M
 	    	this.getContentPane().setCursor(blankCursor);
 		}
 		
-		frameIndex++;		
+		frameIndex++;	
 		
+		if(capturedMouse) {
+			if(mouseX < 0)
+				mouseX = 0;
+			if(mouseX >= 768)
+				mouseX = 767;
+			if(mouseY < 0)
+				mouseY = 0;
+			if(mouseY >= 512)
+				mouseY = 511;
+			
+			inputHandler.mouse_x = mouseX;
+			inputHandler.mouse_y = mouseY;
+		}
 		inputHandler.processInput();
 		
 		if(!gamePaused) {
@@ -333,16 +369,40 @@ public class mainThread extends JFrame implements KeyListener, ActionListener, M
 
 
 	public void mouseDragged(MouseEvent e) {
-		inputHandler.mouse_x = e.getX();
-		inputHandler.mouse_y = e.getY();
+		if(capturedMouse) {
+			currentMouseX = MouseInfo.getPointerInfo().getLocation().x;
+			currentMouseY = MouseInfo.getPointerInfo().getLocation().y;
+			
+			int deltaX = currentMouseX - centerScreenX;
+			int deltaY = currentMouseY - centerScreenY;
 		
+			mouseX+=deltaX;
+			mouseY+=deltaY;
+			
+			myRobot.mouseMove(centerScreenX, centerScreenY);
+		}else {
+			inputHandler.mouse_x = e.getX();
+			inputHandler.mouse_y = e.getY();
+		}
 	}
 
 
 	public void mouseMoved(MouseEvent e) {
-		inputHandler.mouse_x = e.getX();
-		inputHandler.mouse_y = e.getY();
-	
+		if(capturedMouse) {
+			currentMouseX = MouseInfo.getPointerInfo().getLocation().x;
+			currentMouseY = MouseInfo.getPointerInfo().getLocation().y;
+			
+			int deltaX = currentMouseX - centerScreenX;
+			int deltaY = currentMouseY - centerScreenY;
+		
+			mouseX+=deltaX;
+			mouseY+=deltaY;
+			
+			myRobot.mouseMove(centerScreenX, centerScreenY);
+		}else {
+			inputHandler.mouse_x = e.getX();
+			inputHandler.mouse_y = e.getY();
+		}
 	}
 
 
@@ -359,6 +419,9 @@ public class mainThread extends JFrame implements KeyListener, ActionListener, M
 	@Override
 	public void mouseExited(MouseEvent arg0) {
 		inputHandler.mouseIsInsideScreen = false;
+	
+		if(capturedMouse)
+			inputHandler.mouseIsInsideScreen = true;
 	}
 
 

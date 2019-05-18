@@ -9,6 +9,8 @@ public class button {
 	public char[] theText;
 	public boolean display, cursorIsOnTop;
 	public int actionCooldown;
+	public int red, green, blue;
+	public boolean disabled;
 	
 	public button(String name, String text, int xPos, int yPos, int width, int height) {
 		this.name = name;
@@ -18,6 +20,7 @@ public class button {
 		this.width = width;
 		this.height = height;
 		theText = text.toCharArray();
+		
 	}
 	
 	public boolean checkIfCursorIsOnTop(int mouse_x, int mouse_y) {
@@ -27,6 +30,17 @@ public class button {
 	}
 	
 	public void draw(int[] screen) {
+		if(disabled) {
+			red = 55;
+			green = 55;
+			blue = 55;
+		}else {
+			red = 255;
+			green = 255;
+			blue = 255;
+		}
+			
+		
 		if(display == false) {
 			cursorIsOnTop = false;
 			return;
@@ -59,7 +73,7 @@ public class button {
 		}
 		
 		//draw highlight of cursor is on top of the button
-		if(cursorIsOnTop) {
+		if(cursorIsOnTop && !disabled) {
 			
 			R = 239;
 			G = 253;
@@ -177,9 +191,9 @@ public class button {
 		//draw text
 		textRenderer tRenderer = postProcessingThread.theTextRenderer;
 		if(text != "x")
-			tRenderer.drawMenuText(xPos+ (width-tRenderer.getMenuTextWidth(theText))/2,yPos+6,theText, screen, 255,255,255,11);
+			tRenderer.drawMenuText(xPos+ (width-tRenderer.getMenuTextWidth(theText))/2,yPos+6,theText, screen, red,green,blue,11);
 		else{
-			tRenderer.drawMenuText(xPos+ (width-tRenderer.getMenuTextWidth(theText))/2-1,yPos,theText, screen, 255,255,255, 11);
+			tRenderer.drawMenuText(xPos+ (width-tRenderer.getMenuTextWidth(theText))/2-1,yPos,theText, screen, red,green,blue, 11);
 		}
 		
 		

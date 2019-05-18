@@ -12,6 +12,7 @@ public class gameCursor {
 	
 	public int[][] arrowIcons;
 	public int[][] smallArrowIcons;
+	public int[] smallArrowIcons4;
 	public int[] cursorIcon;
 	public int[] screen;
 	
@@ -31,6 +32,9 @@ public class gameCursor {
 		
 		cursorIcon = new int[24*24];
 		loadTexture(folder + "cursor.png", cursorIcon, 24,24);
+		
+		smallArrowIcons4 = new int[20*20];
+		loadTexture(folder + "smallArrow4.png", smallArrowIcons4, 20,20);
 	}
 
 	public void updateAndDraw(int[] screen) {
@@ -49,6 +53,8 @@ public class gameCursor {
 		boolean attackKeyPressed = mainThread.pc.attackKeyPressed;
 		boolean cursorIsInMiniMap =  mainThread.pc.cursorIsInMiniMap();
 		boolean cursorIsInSideBar = mainThread.pc.cursorIsInSideBar();
+		
+		
 		
 		
 		if(!mainThread.gamePaused  && mainThread.gameStarted) {
@@ -152,7 +158,10 @@ public class gameCursor {
 				}else if(hasTroopsSelected && attackKeyPressed) {
 					drawActionIcon(mouseX, mouseY, 1);
 				}
+			}else if(cursorIsInMiniMap && attackKeyPressed && hasTroopsSelected){
+				drawMinimapAttackIcon(mouseX, mouseY);
 			}else {
+			
 				//draw default  icon
 				
 				drawIcon(cursorIcon, mouseX, mouseY);
@@ -180,6 +189,38 @@ public class gameCursor {
 			e.printStackTrace();
 			
 		}
+	}
+	
+	public void drawMinimapAttackIcon(int xPos, int yPos) {
+		int arrowColor = 240 << 16 | 76 << 8 | 34;
+		int index = 0;
+		int color = 0;
+		int blue = 0;
+		int red = 0;
+		
+		int start = xPos - 10 + (yPos-10)*768;
+		for(int i = 0; i < 20; i++) {
+			for(int j = 0; j < 20; j++) {
+				index = start + j + i*768;
+				if(index > 0 && index < 393216) {
+					color = smallArrowIcons4[j+i*20];
+					
+					blue = color&0xff;
+					red =  (color&0xff0000) >> 16;
+					if(red < 100 && blue > 100)
+						continue;
+					
+					if(!pixelInsideSideArea(index))
+						continue;
+
+					if(red > 150)
+						color = arrowColor;
+					screen[index] = color;
+				}
+			}
+		}
+			
+		
 	}
 	
 	public void drawActionIcon(int xPos, int yPos, int type) {

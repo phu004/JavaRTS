@@ -15,6 +15,7 @@ public class gameMenu {
 	public static final int difficulitySelectionMenu = 1;
 	public static final int helpMenu = 2;
 	public static final int endGameMenu = 3;
+	public static final int optionMenu = 4;
 	public int[] screen; 
 	public int[] screenBlurBuffer;
 	public boolean gameStarted, gamePaused, gameEnded;
@@ -23,9 +24,10 @@ public class gameMenu {
 	
 	public int[] titleImage, lightTankImage, rocketTankImage, stealthTankImage, heavyTankImage;
 	
-	public button newGame, unpauseGame, showHelp, quitGame, abortGame, easyGame, normalGame, hardGame, quitDifficulty, quitHelpMenu, nextPage, previousPage;
+	public button newGame, unpauseGame, showHelp, showOptions, quitGame, abortGame, easyGame, normalGame, hardGame, quitDifficulty, quitHelpMenu, quitOptionMenu, nextPage, previousPage,
+	              enableMouseCapture, disableMouseCapture, enableFogOfWar, disableFogOfWar;
 	
-	public char[] easyDescription, normalDescription, hardDescription, helpPage1, helpPage2, helpPage3, helpPage4;
+	public char[] easyDescription, normalDescription, hardDescription, helpPage1, helpPage2, helpPage3, helpPage4, mouseMode;
 	
 	public int currentHelpPage;
 	
@@ -60,6 +62,9 @@ public class gameMenu {
 		
 		showHelp = new button("showHelp", "Help", 324, 160, 120, 28);
 		buttons.add(showHelp);
+		
+		showOptions = new button("showOptions", "Options", 324, 210, 120, 28);
+		buttons.add(showOptions);
 		
 		quitGame = new button("quitGame", "Quit Game", 324, 345, 120, 28);
 		buttons.add(quitGame);
@@ -122,17 +127,34 @@ public class gameMenu {
 				   + "page: https://github.com/phu004/JavaRTS. If you are intersted in other projects of\n"
 				   + "mine, feel free to check out my YouTube channel, user name is \"Pan Hu\".\n\n"
 				   + "Have a nice Day!\n\n\n\n\n\n"
-				   + "                                                  4/4"
-				    ).toCharArray();
+				   + "                                                  4/4").toCharArray();
+		
+		mouseMode = ("                                    Options \n\n\nMouse capture. When enabled the game will prevent \nthe mouse cursor from leaving the current window.\n\n\n"
+				   + "Fog of war. When enabled, enemy units that are not \nin vision will be hidden. Note that your score will NOT \nbe saved when this option is disabled.").toCharArray();
 		
 		quitHelpMenu = new button("quitHelpMenu", "x", 670, 80, 18,16);
 		buttons.add(quitHelpMenu);
+		
+		quitOptionMenu = new button("quitOptionMenu", "x", 620, 80, 18,16);
+		buttons.add(quitOptionMenu);
 		
 		nextPage = new button("nextPage", "Next Page", 550, 450, 120, 28);
 		buttons.add(nextPage);
 		
 		previousPage = new button("previousPage", "Previous Page", 98, 450, 120, 28);
 		buttons.add(previousPage);
+		
+		enableMouseCapture = new button("enableMouseCapture", "Disabled", 545, 145, 80, 25);
+		buttons.add(enableMouseCapture);
+		
+		disableMouseCapture = new button("disableMouseCapture", "Enabled", 545, 145, 80, 25);
+		buttons.add(disableMouseCapture);
+		
+		enableFogOfWar = new button("enableFogOfWar", "Disabled", 545, 215, 80, 25);
+		buttons.add(enableFogOfWar);
+		
+		disableFogOfWar = new button("disableFogOfWar", "Enabled", 545, 215, 80, 25);
+		buttons.add(disableFogOfWar);
 	}
 	
 	
@@ -186,6 +208,7 @@ public class gameMenu {
 			}
 			
 			showHelp.display = true;
+			showOptions.display = true;
 			
 		}else if(menuStatus == difficulitySelectionMenu) {
 			if(postProcessingThread.escapeKeyPressed) {
@@ -197,13 +220,13 @@ public class gameMenu {
 				
 				textRenderer tRenderer = postProcessingThread.theTextRenderer;
 				easyGame.display = true;
-				tRenderer.drawMenuText(285,118,easyDescription, screen, 255,255,50, 0);
+				tRenderer.drawMenuText(285,118,easyDescription, screen, 255,255,255, 0);
 				
 				normalGame.display = true;
-				tRenderer.drawMenuText(285,188,normalDescription, screen, 255,255,50,0);
+				tRenderer.drawMenuText(285,188,normalDescription, screen, 255,255,255,0);
 				
 				hardGame.display = true;
-				tRenderer.drawMenuText(285,265,hardDescription, screen, 255,255,50,0);
+				tRenderer.drawMenuText(285,265,hardDescription, screen, 255,255,255,0);
 				
 				quitDifficulty.display = true;
 			}
@@ -245,6 +268,50 @@ public class gameMenu {
 				
 				quitHelpMenu.display = true;
 			}
+			
+			
+		}else if(menuStatus == optionMenu) {
+			if(postProcessingThread.escapeKeyPressed) {
+				menuStatus = mainMenu;
+			
+			}else{
+				if(gameSuspendCount > 0) {
+					drawBluredBackground();
+				}
+			
+				drawTitle();
+				drawMenuFrame(520, 380);
+				
+				textRenderer tRenderer = postProcessingThread.theTextRenderer;
+				tRenderer.drawMenuText(135,95,mouseMode, screen, 255,255,255,0);
+				
+				if(postProcessingThread.capturedMouse == true) {
+					disableMouseCapture.display = true;
+					enableMouseCapture.display = false;
+				}else {
+					disableMouseCapture.display = false;
+					enableMouseCapture.display = true;
+				}
+				
+				if(postProcessingThread.fogOfWarDisabled) {
+					disableFogOfWar.display = false;
+					enableFogOfWar.display = true;
+				}else {
+					disableFogOfWar.display = true;
+					enableFogOfWar.display = false;
+				}
+				
+				quitOptionMenu.display = true;
+				
+				if(postProcessingThread.gameStarted) {
+					disableFogOfWar.disabled  = true;
+					enableFogOfWar.disabled = true;
+				}else {
+					disableFogOfWar.disabled  = false;
+					enableFogOfWar.disabled = false;
+				}
+			}
+			
 		}
 		
 		
@@ -260,12 +327,13 @@ public class gameMenu {
 					if(buttons.get(i).actionCooldown == 0 && buttons.get(i).display == true) {
 						buttons.get(i).actionCooldown = 5;
 						
-						
 						if(buttons.get(i).name == "newGame") {
 							menuStatus = difficulitySelectionMenu;
 						}else if(buttons.get(i).name == "showHelp") {
 							menuStatus = helpMenu;
-						}else if(buttons.get(i).name == "quitDifficulty" || buttons.get(i).name == "quitHelpMenu") {
+						}else if(buttons.get(i).name == "showOptions") {
+							menuStatus = optionMenu;
+						}else if(buttons.get(i).name == "quitDifficulty" || buttons.get(i).name == "quitHelpMenu" || buttons.get(i).name == "quitOptionMenu") {
 							menuStatus = mainMenu;
 						}else if(buttons.get(i).name == "nextPage") {
 							currentHelpPage++;
@@ -475,7 +543,6 @@ public class gameMenu {
 		for(int i = 0; i < 17; i++) {
 			int delta = (int)((d/17)*i);
 			for(int j = 20-delta-1; j < 20-delta; j++) {
-				int pixel = screen[pos - 17*768 + j + i* 768];
 				screen[pos - 17*768 + j + i* 768] = ((R1) << 16 | (G1) << 8 | (B1));
 			}
 		}

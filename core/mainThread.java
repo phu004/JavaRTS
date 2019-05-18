@@ -219,8 +219,19 @@ public class mainThread extends JFrame implements KeyListener, ActionListener, M
 		}
 		
 		frameIndex++;	
-		
+
 		if(capturedMouse) {
+			currentMouseX = MouseInfo.getPointerInfo().getLocation().x;
+			currentMouseY = MouseInfo.getPointerInfo().getLocation().y;
+			
+			int deltaX = currentMouseX - centerScreenX;
+			int deltaY = currentMouseY - centerScreenY;
+		
+			mouseX+=deltaX;
+			mouseY+=deltaY;
+			
+			myRobot.mouseMove(centerScreenX, centerScreenY);
+			
 			if(mouseX < 0)
 				mouseX = 0;
 			if(mouseX >= 768)
@@ -370,16 +381,7 @@ public class mainThread extends JFrame implements KeyListener, ActionListener, M
 
 	public void mouseDragged(MouseEvent e) {
 		if(capturedMouse) {
-			currentMouseX = MouseInfo.getPointerInfo().getLocation().x;
-			currentMouseY = MouseInfo.getPointerInfo().getLocation().y;
-			
-			int deltaX = currentMouseX - centerScreenX;
-			int deltaY = currentMouseY - centerScreenY;
 		
-			mouseX+=deltaX;
-			mouseY+=deltaY;
-			
-			myRobot.mouseMove(centerScreenX, centerScreenY);
 		}else {
 			inputHandler.mouse_x = e.getX();
 			inputHandler.mouse_y = e.getY();
@@ -389,16 +391,7 @@ public class mainThread extends JFrame implements KeyListener, ActionListener, M
 
 	public void mouseMoved(MouseEvent e) {
 		if(capturedMouse) {
-			currentMouseX = MouseInfo.getPointerInfo().getLocation().x;
-			currentMouseY = MouseInfo.getPointerInfo().getLocation().y;
 			
-			int deltaX = currentMouseX - centerScreenX;
-			int deltaY = currentMouseY - centerScreenY;
-		
-			mouseX+=deltaX;
-			mouseY+=deltaY;
-			
-			myRobot.mouseMove(centerScreenX, centerScreenY);
 		}else {
 			inputHandler.mouse_x = e.getX();
 			inputHandler.mouse_y = e.getY();

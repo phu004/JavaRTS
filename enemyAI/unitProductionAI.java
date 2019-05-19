@@ -112,7 +112,7 @@ public class unitProductionAI {
 			
 			rallyPoint.set(x - 2f, 0, z - 1.5f);
 			
-			if(frameAI < 240) {
+			if(frameAI < 240 && mainThread.ec.difficulty == 2) {
 				rallyPoint.set(mainThread.theAssetManager.goldMines[5].centre);
 			}
 		}else {
@@ -147,113 +147,127 @@ public class unitProductionAI {
 		}
 		
 		
-		//make decision on what unit to produce
-		int numberOfPlayerGunTurrets=   mainThread.ec.theMapAwarenessAI.numberOfGunTurret_player;
-		int numberOfPlayerMissileTurrets=  mainThread.ec.theMapAwarenessAI.numberOfMissileTurret_player;
-		int numberOfLightTanks_player = mainThread.ec.theMapAwarenessAI.numberOfLightTanks_player;
-		int numberOfRocketTanks_player = mainThread.ec.theMapAwarenessAI.numberOfRocketTanks_player;
-		int numberOfStealthTanks_player = mainThread.ec.theMapAwarenessAI.numberOfStealthTanks_player;
-		int numberOfHeavyTanks_player = mainThread.ec.theMapAwarenessAI.numberOfHeavyTanks_player;
-		int maxNumberOfStealthTanks_playerInLastFiveMinutes =  mainThread.ec.theMapAwarenessAI.maxNumberOfStealthTanks_playerInLastFiveMinutes;
-		
-		boolean playerHasMostlyLightTanks = mainThread.ec.theMapAwarenessAI.playerHasMostlyLightTanks;
-		boolean playerHasMostlyHeavyTanks =  mainThread.ec.theMapAwarenessAI.playerHasMostlyHeavyTanks;
-		boolean playIsRushingHighTierUnits = mainThread.ec.theMapAwarenessAI.playIsRushingHighTierUnits;
-		boolean playerLikelyCanNotProduceHighTierUnits = mainThread.ec.theMapAwarenessAI.playerLikelyCanNotProduceHighTierUnits;
-		boolean playerDoesntHaveMassHeavyTanks = mainThread.ec.theMapAwarenessAI.playerDoesntHaveMassHeavyTanks;
-		boolean playerHasManyLightTanksButNoHeavyTank = mainThread.ec.theMapAwarenessAI.playerHasManyLightTanksButNoHeavyTank;
-		boolean playerHasMostlyHeavyAndStealthTanks = mainThread.ec.theMapAwarenessAI.playerHasMostlyHeavyAndStealthTanks;
-		boolean playerHasMostlyLightAndStealthTanks = mainThread.ec.theMapAwarenessAI.playerHasMostlyLightAndStealthTanks;
-		boolean playerArmyCanBeCounteredWithLightTanks = mainThread.ec.theMapAwarenessAI.playerArmyCanBeCounteredWithLightTanks;
-		boolean playerArmyCanBeCounteredWithStealthTanks = mainThread.ec.theMapAwarenessAI.playerArmyCanBeCounteredWithStealthTanks;
-		
-		int timeToBuildHeavyTank = 500;
-		int timeToBuildStealthTank = 200;
-		if(mainThread.ec.theMapAwarenessAI.canRushPlayer) {
-			//when AI decides to rush the player, then dont build higher tier units so it can mass produce light tanks
-			timeToBuildHeavyTank = 500;
-			timeToBuildStealthTank = 300;
-		}
-		
-		boolean b1 = (numberOfRocketTanks_AI < 3 && !playerHasMostlyHeavyTanks  && (frameAI > 400 || frameAI > 170 && frameAI < 240 && mainThread.ec.theMapAwarenessAI.numberOfConstructionYard_player > 0) && !playerHasMostlyLightTanks);
-		boolean b2 = (numberOfRocketTanks_AI < numberOfPlayerGunTurrets + numberOfPlayerMissileTurrets*1.5);
-		if( b1 || b2){
-			currentProductionOrder = produceRocketTank;
-		}else if(theBaseInfo.canBuildHeavyTank && numberOfHeavyTanksControlledByCombatAI < 20 && !(numberOfStealthTanksControlledByCombatAI < 1) && !playerHasMostlyHeavyTanks && !playerHasMostlyLightTanks && !playerHasMostlyLightAndStealthTanks && !playerArmyCanBeCounteredWithLightTanks && !playerArmyCanBeCounteredWithStealthTanks &&
-				 (playerHasMostlyHeavyAndStealthTanks || (frameAI > timeToBuildHeavyTank && numberOfHeavyTanks_AI < 3) ||
-				 !playerHasManyLightTanksButNoHeavyTank
-				 && !(numberOfHeavyTanks_player == 0 && maxNumberOfStealthTanks_playerInLastFiveMinutes < 3 &&  frameAI > 600)  
-				 && !(playerHasMostlyHeavyTanks && numberOfStealthTanks_player < numberOfHeavyTanks_AI*2) 
-				 && (playIsRushingHighTierUnits ||  maxNumberOfStealthTanks_playerInLastFiveMinutes*4 > numberOfHeavyTanks_AI))){
-			currentProductionOrder = produceHeavyTank; 
-		}else if(theBaseInfo.canBuildStealthTank && ((numberOfStealthTanksControlledByCombatAI < 1)  || (playerDoesntHaveMassHeavyTanks && !playerHasMostlyHeavyTanks && !playerArmyCanBeCounteredWithLightTanks && !(numberOfStealthTanksControlledByCombatAI >= 9 &&  frameAI < 600) && !(numberOfStealthTanksControlledByCombatAI >= 18 &&  frameAI > 600)
-				 && (playerHasMostlyLightTanks || playerLikelyCanNotProduceHighTierUnits || playerDoesntHaveMassHeavyTanks || playerHasMostlyLightAndStealthTanks) && !playerHasMostlyHeavyTanks && (frameAI > timeToBuildStealthTank || numberOfLightTanks_player > 8)))){
-			currentProductionOrder = produceStealthTank;
-		}else{
-			currentProductionOrder = produceLightTank;
-		}
-		
-		//make decision on what tech to research
-		if(mainThread.ec.theBuildingManagerAI.theBaseInfo.numberOfCommunicationCenter > 0) {
-			if(mainThread.ec.theDefenseManagerAI.needMissileTurret || theBaseInfo.currentCredit > 1500 && frameAI > 450) {
-				if(!communicationCenter.rapidfireResearched_enemy) {
-					if(communicationCenter.rapidfireResearchProgress_enemy == 255){
-						communicationCenter.researchRapidfire(1);
-						System.out.println("----------------------------AI starts researching rapid fire ability------------------------------------");
+		if(mainThread.ec.difficulty > 0) {
+			//make decision on what unit to produce
+			int numberOfPlayerGunTurrets=   mainThread.ec.theMapAwarenessAI.numberOfGunTurret_player;
+			int numberOfPlayerMissileTurrets=  mainThread.ec.theMapAwarenessAI.numberOfMissileTurret_player;
+			int numberOfLightTanks_player = mainThread.ec.theMapAwarenessAI.numberOfLightTanks_player;
+			int numberOfRocketTanks_player = mainThread.ec.theMapAwarenessAI.numberOfRocketTanks_player;
+			int numberOfStealthTanks_player = mainThread.ec.theMapAwarenessAI.numberOfStealthTanks_player;
+			int numberOfHeavyTanks_player = mainThread.ec.theMapAwarenessAI.numberOfHeavyTanks_player;
+			int maxNumberOfStealthTanks_playerInLastFiveMinutes =  mainThread.ec.theMapAwarenessAI.maxNumberOfStealthTanks_playerInLastFiveMinutes;
+			
+			boolean playerHasMostlyLightTanks = mainThread.ec.theMapAwarenessAI.playerHasMostlyLightTanks;
+			boolean playerHasMostlyHeavyTanks =  mainThread.ec.theMapAwarenessAI.playerHasMostlyHeavyTanks;
+			boolean playIsRushingHighTierUnits = mainThread.ec.theMapAwarenessAI.playIsRushingHighTierUnits;
+			boolean playerLikelyCanNotProduceHighTierUnits = mainThread.ec.theMapAwarenessAI.playerLikelyCanNotProduceHighTierUnits;
+			boolean playerDoesntHaveMassHeavyTanks = mainThread.ec.theMapAwarenessAI.playerDoesntHaveMassHeavyTanks;
+			boolean playerHasManyLightTanksButNoHeavyTank = mainThread.ec.theMapAwarenessAI.playerHasManyLightTanksButNoHeavyTank;
+			boolean playerHasMostlyHeavyAndStealthTanks = mainThread.ec.theMapAwarenessAI.playerHasMostlyHeavyAndStealthTanks;
+			boolean playerHasMostlyLightAndStealthTanks = mainThread.ec.theMapAwarenessAI.playerHasMostlyLightAndStealthTanks;
+			boolean playerArmyCanBeCounteredWithLightTanks = mainThread.ec.theMapAwarenessAI.playerArmyCanBeCounteredWithLightTanks;
+			boolean playerArmyCanBeCounteredWithStealthTanks = mainThread.ec.theMapAwarenessAI.playerArmyCanBeCounteredWithStealthTanks;
+			
+			int timeToBuildHeavyTank = 500;
+			int timeToBuildStealthTank = 200;
+			if(mainThread.ec.theMapAwarenessAI.canRushPlayer) {
+				//when AI decides to rush the player, then dont build higher tier units so it can mass produce light tanks
+				timeToBuildHeavyTank = 500;
+				timeToBuildStealthTank = 300;
+			}
+			
+			boolean b1 = (numberOfRocketTanks_AI < 3 && !playerHasMostlyHeavyTanks  && (frameAI > 400 || frameAI > 170 && frameAI < 240 && mainThread.ec.theMapAwarenessAI.numberOfConstructionYard_player > 0) && !playerHasMostlyLightTanks);
+			boolean b2 = (numberOfRocketTanks_AI < numberOfPlayerGunTurrets + numberOfPlayerMissileTurrets*1.5);
+			if( b1 || b2){
+				currentProductionOrder = produceRocketTank;
+			}else if(theBaseInfo.canBuildHeavyTank && numberOfHeavyTanksControlledByCombatAI < 20 && !(numberOfStealthTanksControlledByCombatAI < 1) && !playerHasMostlyHeavyTanks && !playerHasMostlyLightTanks && !playerHasMostlyLightAndStealthTanks && !playerArmyCanBeCounteredWithLightTanks && !playerArmyCanBeCounteredWithStealthTanks &&
+					 (playerHasMostlyHeavyAndStealthTanks || (frameAI > timeToBuildHeavyTank && numberOfHeavyTanks_AI < 3) ||
+					 !playerHasManyLightTanksButNoHeavyTank
+					 && !(numberOfHeavyTanks_player == 0 && maxNumberOfStealthTanks_playerInLastFiveMinutes < 3 &&  frameAI > 600)  
+					 && !(playerHasMostlyHeavyTanks && numberOfStealthTanks_player < numberOfHeavyTanks_AI*2) 
+					 && (playIsRushingHighTierUnits ||  maxNumberOfStealthTanks_playerInLastFiveMinutes*4 > numberOfHeavyTanks_AI))){
+				currentProductionOrder = produceHeavyTank; 
+			}else if(theBaseInfo.canBuildStealthTank && ((numberOfStealthTanksControlledByCombatAI < 1)  || (playerDoesntHaveMassHeavyTanks && !playerHasMostlyHeavyTanks && !playerArmyCanBeCounteredWithLightTanks && !(numberOfStealthTanksControlledByCombatAI >= 9 &&  frameAI < 600) && !(numberOfStealthTanksControlledByCombatAI >= 18 &&  frameAI > 600)
+					 && (playerHasMostlyLightTanks || playerLikelyCanNotProduceHighTierUnits || playerDoesntHaveMassHeavyTanks || playerHasMostlyLightAndStealthTanks) && !playerHasMostlyHeavyTanks && (frameAI > timeToBuildStealthTank || numberOfLightTanks_player > 8)))){
+				currentProductionOrder = produceStealthTank;
+			}else{
+				currentProductionOrder = produceLightTank;
+			}
+			
+			//make decision on what tech to research
+			if(mainThread.ec.theBuildingManagerAI.theBaseInfo.numberOfCommunicationCenter > 0 && mainThread.ec.difficulty > 1) {
+				if(mainThread.ec.theDefenseManagerAI.needMissileTurret || theBaseInfo.currentCredit > 1500 && frameAI > 450) {
+					if(!communicationCenter.rapidfireResearched_enemy) {
+						if(communicationCenter.rapidfireResearchProgress_enemy == 255){
+							communicationCenter.researchRapidfire(1);
+							System.out.println("----------------------------AI starts researching rapid fire ability------------------------------------");
+						}
+					}
+				}
+				
+				if(mainThread.ec.theEconomyManagerAI.numberOfharvesters >= 6 && theBaseInfo.currentCredit > 1500 &&  mainThread.ec.difficulty > 1) {
+					if(!communicationCenter.harvesterSpeedResearched_enemy) {
+						if(communicationCenter.harvesterSpeedResearchProgress_enemy == 255){
+							communicationCenter.researchHarvesterSpeed(1);
+							System.out.println("----------------------------AI starts researching harvester  speed ability------------------------------------");
+						}
 					}
 				}
 			}
 			
-			if(mainThread.ec.theEconomyManagerAI.numberOfharvesters >= 6 && theBaseInfo.currentCredit > 1500) {
-				if(!communicationCenter.harvesterSpeedResearched_enemy) {
-					if(communicationCenter.harvesterSpeedResearchProgress_enemy == 255){
-						communicationCenter.researchHarvesterSpeed(1);
-						System.out.println("----------------------------AI starts researching harvester  speed ability------------------------------------");
+			if(mainThread.ec.theBuildingManagerAI.theBaseInfo.numberOfTechCenter > 0){	
+						
+				//Immediately  start  stealth tank upgrades  when a tech center is built
+				if(!techCenter.stealthTankResearched_enemy){
+					if(techCenter.stealthTankResearchProgress_enemy == 255){
+						techCenter.cancelResearch(1);
+						techCenter.researchStealthTank(1);
+						System.out.println("----------------------------AI starts researching stealth tank------------------------------------");
 					}
 				}
-			}
-		}
-		
-		if(mainThread.ec.theBuildingManagerAI.theBaseInfo.numberOfTechCenter > 0){	
-					
-			//Immediately  start  stealth tank upgrades  when a tech center is built
-			if(!techCenter.stealthTankResearched_enemy){
-				if(techCenter.stealthTankResearchProgress_enemy == 255){
-					techCenter.cancelResearch(1);
-					techCenter.researchStealthTank(1);
-					System.out.println("----------------------------AI starts researching stealth tank------------------------------------");
-				}
-			}
-		
 			
-			if(numberOfLightTanks_AI >= 15  && theBaseInfo.currentCredit > 1000){
-				if(!techCenter.lightTankResearched_enemy){
-					if(techCenter.lightTankResearchProgress_enemy >= 240 && techCenter.stealthTankResearchProgress_enemy >= 240 && techCenter.rocketTankResearchProgress_enemy >= 240 && techCenter.heavyTankResearchProgress_enemy >= 240){
-						techCenter.researchLightTank(1);
-						System.out.println("----------------------------AI starts researching light tank------------------------------------");
+				
+				if(numberOfLightTanks_AI >= 15  && theBaseInfo.currentCredit > 1000){
+					if(!techCenter.lightTankResearched_enemy){
+						if(techCenter.lightTankResearchProgress_enemy >= 240 && techCenter.stealthTankResearchProgress_enemy >= 240 && techCenter.rocketTankResearchProgress_enemy >= 240 && techCenter.heavyTankResearchProgress_enemy >= 240){
+							techCenter.researchLightTank(1);
+							System.out.println("----------------------------AI starts researching light tank------------------------------------");
+						}
 					}
 				}
-			}
-			
-			if(numberOfRocketTanks_AI > 2 && theBaseInfo.currentCredit > 1250 && (numberOfPlayerGunTurrets > 0 || numberOfPlayerMissileTurrets > 0 || frameAI > 600)){
-				if(!techCenter.rocketTankResearched_enemy){
-					if(techCenter.lightTankResearchProgress_enemy >= 240 && techCenter.stealthTankResearchProgress_enemy >= 240 && techCenter.rocketTankResearchProgress_enemy >= 240 && techCenter.heavyTankResearchProgress_enemy >= 240){
-
-						techCenter.researchRocketTank(1);
-						System.out.println("----------------------------AI starts researching rocket tank------------------------------------");
+				
+				if(numberOfRocketTanks_AI > 2 && theBaseInfo.currentCredit > 1250 && (numberOfPlayerGunTurrets > 0 || numberOfPlayerMissileTurrets > 0 || frameAI > 600)){
+					if(!techCenter.rocketTankResearched_enemy){
+						if(techCenter.lightTankResearchProgress_enemy >= 240 && techCenter.stealthTankResearchProgress_enemy >= 240 && techCenter.rocketTankResearchProgress_enemy >= 240 && techCenter.heavyTankResearchProgress_enemy >= 240){
+	
+							techCenter.researchRocketTank(1);
+							System.out.println("----------------------------AI starts researching rocket tank------------------------------------");
+						}
 					}
 				}
-			}
-			
-			if(numberOfHeavyTanks_AI > 5 && theBaseInfo.currentCredit > 1000){
-				if(!techCenter.heavyTankResearched_enemy){
-					if(techCenter.lightTankResearchProgress_enemy >= 240 && techCenter.stealthTankResearchProgress_enemy >= 240 && techCenter.rocketTankResearchProgress_enemy >= 240 && techCenter.heavyTankResearchProgress_enemy >= 240){
-						techCenter.researchHeavyTank(1);
-						System.out.println("----------------------------AI starts researching heavy tank------------------------------------");
+				
+				if(numberOfHeavyTanks_AI > 5 && theBaseInfo.currentCredit > 1000){
+					if(!techCenter.heavyTankResearched_enemy){
+						if(techCenter.lightTankResearchProgress_enemy >= 240 && techCenter.stealthTankResearchProgress_enemy >= 240 && techCenter.rocketTankResearchProgress_enemy >= 240 && techCenter.heavyTankResearchProgress_enemy >= 240){
+							techCenter.researchHeavyTank(1);
+							System.out.println("----------------------------AI starts researching heavy tank------------------------------------");
+						}
 					}
 				}
+				
+				
 			}
-			
+		}else {
+			int roll = gameData.getRandom();
+			if(roll < 612) {
+				currentProductionOrder = produceLightTank;
+			}else if(roll >= 612 && roll < 700) {
+				currentProductionOrder = produceRocketTank;
+			}else if(roll >= 700 && roll < 900) {
+				currentProductionOrder = produceStealthTank;
+			}else {
+				currentProductionOrder = produceHeavyTank;
+			}
 			
 		}
 		
@@ -301,7 +315,8 @@ public class unitProductionAI {
 		for(int i = 0; i < lightTanksControlledByCombatAI.length; i++){
 			if(lightTanksControlledByCombatAI[i] == null || (lightTanksControlledByCombatAI[i] != null && lightTanksControlledByCombatAI[i].currentHP <=0)){
 				lightTanksControlledByCombatAI[i] = o;
-				mainThread.ec.theDefenseManagerAI.addUnitToDefenders(o);
+				if(mainThread.ec.difficulty > 0)
+					mainThread.ec.theDefenseManagerAI.addUnitToDefenders(o);
 				break;
 			}
 		}
@@ -340,8 +355,8 @@ public class unitProductionAI {
 		for(int i = 0; i < stealthTanksControlledByCombatAI.length; i++){
 			if(stealthTanksControlledByCombatAI[i] == null || (stealthTanksControlledByCombatAI[i] != null && stealthTanksControlledByCombatAI[i].currentHP <=0)){
 				stealthTanksControlledByCombatAI[i] = o;
-			
-				mainThread.ec.theDefenseManagerAI.addUnitToDefenders(o);
+				if(mainThread.ec.difficulty > 0)
+					mainThread.ec.theDefenseManagerAI.addUnitToDefenders(o);
 				break;
 			}
 		}

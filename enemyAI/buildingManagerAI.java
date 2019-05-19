@@ -173,7 +173,7 @@ public class buildingManagerAI {
 		
 		
 		//build more factory if we have plenty of money in the bank 
-		if(theBaseInfo.currentCredit > 2200 && theBaseInfo.canBuildFactory && theBaseInfo.numberOfFactory < 5 && theBaseInfo.numberOfFactory <= mainThread.ec.theEconomyManagerAI.numberOfharvesters/2){
+		if(theBaseInfo.currentCredit > 2200 && mainThread.ec.difficulty > 0 && theBaseInfo.canBuildFactory && theBaseInfo.numberOfFactory < 5 && theBaseInfo.numberOfFactory <= mainThread.ec.theEconomyManagerAI.numberOfharvesters/2){
 			addBuildingToQueue(105);
 		}
 		

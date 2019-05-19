@@ -80,98 +80,100 @@ public class defenseManagerAI {
 		lightTanksControlledByCombatAI = mainThread.ec.theUnitProductionAI.lightTanksControlledByCombatAI;
 		
 		//after 500 seconds mark, borrow 2 stealth tanks from combat manager, and send them to guard western and southern side of the main base
-		if(frameAI >= 450 && mainThread.ec.theCombatManagerAI.checkIfAIHasBiggerForce(0.8f)) {
-			for(int i = 0; i < 2; i++) {
-				if(observers[i] == null || observers[i].currentHP <=0) {
-					for(int j = 0; j < stealthTanksControlledByCombatAI.length; j++) {
-						if(stealthTanksControlledByCombatAI[j] != null && stealthTanksControlledByCombatAI[j].currentHP == 80 && stealthTanksControlledByCombatAI[j].attackStatus != solidObject.isAttacking) {
-							observers[i] = stealthTanksControlledByCombatAI[j];
-							stealthTanksControlledByCombatAI[j] = null;
-							float xPos = 20f;
-							float zPos = 30.5f;
-							
-							if(i == 1) {
-								xPos = 30f;
-								zPos = 20f;
-							}
-							
-							
-							if(frameAI > 1000) {
-								xPos = 0.25f;
-								zPos = 20.5f;
+		if(mainThread.ec.difficulty == 2) {
+			if(frameAI >= 450 && mainThread.ec.theCombatManagerAI.checkIfAIHasBiggerForce(0.8f)) {
+				for(int i = 0; i < 2; i++) {
+					if(observers[i] == null || observers[i].currentHP <=0) {
+						for(int j = 0; j < stealthTanksControlledByCombatAI.length; j++) {
+							if(stealthTanksControlledByCombatAI[j] != null && stealthTanksControlledByCombatAI[j].currentHP == 80 && stealthTanksControlledByCombatAI[j].attackStatus != solidObject.isAttacking) {
+								observers[i] = stealthTanksControlledByCombatAI[j];
+								stealthTanksControlledByCombatAI[j] = null;
+								float xPos = 20f;
+								float zPos = 30.5f;
 								
 								if(i == 1) {
-									xPos = 18.75f;
-									zPos = 5f;
+									xPos = 30f;
+									zPos = 20f;
 								}
+								
+								
+								if(frameAI > 1000) {
+									xPos = 0.25f;
+									zPos = 20.5f;
+									
+									if(i == 1) {
+										xPos = 18.75f;
+										zPos = 5f;
+									}
+								}
+								
+								observers[i].moveTo(xPos, zPos);
+								observers[i].currentCommand = solidObject.move;
+								observers[i].secondaryCommand = solidObject.StandBy;
+								break;
 							}
-							
-							observers[i].moveTo(xPos, zPos);
-							observers[i].currentCommand = solidObject.move;
-							observers[i].secondaryCommand = solidObject.StandBy;
-							break;
 						}
 					}
 				}
 			}
-		}
-		
-		//keep an eye on player units and avoid being detected
-		for(int i = 0; i < observers.length; i++) {
-			if(observers[i] != null) {
-				
-				if(!evadePlayerUnit(i)) {
-					float xPos = 0;
-					float zPos = 0;
+			
+			//keep an eye on player units and avoid being detected
+			for(int i = 0; i < observers.length; i++) {
+				if(observers[i] != null) {
 					
-					//if there is no player units in sight, return to patrol position
-					if(i == 0) {
-						if(frameAI%28 < 14) {
-							xPos = 15.5f;
-							zPos = 30.5f;
-						}else {
-							xPos = 15.5f;
-							zPos = 24.5f;
-						}
+					if(!evadePlayerUnit(i)) {
+						float xPos = 0;
+						float zPos = 0;
 						
-						if(frameAI > 1000) {
-							if(frameAI%18 < 9) {
-								xPos = 0.25f;
-								zPos = 20.5f;
+						//if there is no player units in sight, return to patrol position
+						if(i == 0) {
+							if(frameAI%28 < 14) {
+								xPos = 15.5f;
+								zPos = 30.5f;
 							}else {
-								xPos = 5f;
-							    zPos = 20.5f;
+								xPos = 15.5f;
+								zPos = 24.5f;
 							}
-						}
 							
+							if(frameAI > 1000) {
+								if(frameAI%18 < 9) {
+									xPos = 0.25f;
+									zPos = 20.5f;
+								}else {
+									xPos = 5f;
+								    zPos = 20.5f;
+								}
+							}
+								
+						}
+						
+						if(i == 1) {
+							
+							if(frameAI%30 < 15) {
+								xPos = 29.25f;
+								zPos = 17f;
+							}else {
+								xPos = 29.25f;
+								zPos = 10f;
+							}
+							
+							if(frameAI > 1000) {
+								if(frameAI%14 < 7) {
+									xPos = 18.75f;
+									zPos = 5f;
+								}else {
+									xPos = 18.75f;
+									zPos = 0.5f;
+								}
+							}
+							
+						}
+						observers[i].moveTo(xPos, zPos);
+						observers[i].currentCommand = solidObject.move;
+						observers[i].secondaryCommand = solidObject.StandBy;
 					}
 					
-					if(i == 1) {
-						
-						if(frameAI%30 < 15) {
-							xPos = 29.25f;
-							zPos = 17f;
-						}else {
-							xPos = 29.25f;
-							zPos = 10f;
-						}
-						
-						if(frameAI > 1000) {
-							if(frameAI%14 < 7) {
-								xPos = 18.75f;
-								zPos = 5f;
-							}else {
-								xPos = 18.75f;
-								zPos = 0.5f;
-							}
-						}
-						
-					}
-					observers[i].moveTo(xPos, zPos);
-					observers[i].currentCommand = solidObject.move;
-					observers[i].secondaryCommand = solidObject.StandBy;
 				}
-				
 			}
 		}
 		

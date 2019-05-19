@@ -129,15 +129,6 @@ public class combatManagerAI {
 		combatCenterX = mainThread.ec.theUnitProductionAI.combatAICenterX;
 		combatCenterZ = mainThread.ec.theUnitProductionAI.combatAICenterZ;
 		
-		
-		//System.out.println(combatCenterX + "   "  + combatCenterZ + "   " + currentState + "   "  + numberOfUnitInCombatRadius);
-		
-		
-		if(Float.isNaN(combatCenterX) || Float.isNaN(combatCenterZ)) {
-		//	combatCenterX = 0;
-		//	combatCenterZ= 0;
-		}
-		
 	
 		boolean frontalTroopIverwhelmed = false;
 		boolean shouldAttack = false;
@@ -161,7 +152,7 @@ public class combatManagerAI {
 		if(currentState == booming){			
 			//enemy AI compares its own  force with player's force, then make a decision whether it should attack or not 
 			attackTime = standardAttackTime;
-			if(mainThread.ec.theMapAwarenessAI.canRushPlayer)
+			if(mainThread.ec.theMapAwarenessAI.canRushPlayer && mainThread.ec.difficulty > 0)
 				attackTime = rushAttackTime;
 			
 			int targetPlayerExpension = mainThread.ec.theMapAwarenessAI.targetPlayerExpension;
@@ -403,8 +394,12 @@ public class combatManagerAI {
 				}
 			}
 			
+			if(mainThread.ec.difficulty < 1)
+				staticDefenseAhead = false;
+			
+			
 			//if a rush tactics is denied by the player (e.g player builds static defenses around natural), then briefly suspend the attacking force (wait for rocket tanks to take out the static defenses)
-			if(frameAI < standardAttackTime && mainThread.ec.theMapAwarenessAI.canRushPlayer && distanceToTower < 2){
+			if(frameAI < standardAttackTime && mainThread.ec.theMapAwarenessAI.canRushPlayer && distanceToTower < 2 && mainThread.ec.difficulty > 0){
 				if(Math.abs(attackPosition.x - myRallyPointX) > 12 || Math.abs(attackPosition.z - myRallyPointZ) > 12) {
 					for(int i = 0; i < troopsControlledByCombatAI.length; i++) {
 						if(troopsControlledByCombatAI[i] != null && troopsControlledByCombatAI[i].currentHP > 0 && troopsControlledByCombatAI[i].type != 1) {
@@ -625,47 +620,54 @@ public class combatManagerAI {
 
 			for(int i = 0; i < mainThread.ec.theUnitProductionAI.numberOfCombatUnit; i++){
 				if(team[i] != null && team[i].currentHP > 0){
-					//stop chasing player unit if it has got out of sight 
-					if(team[i].targetObject != null && team[i].targetObject.currentHP >0) {
-						int targetPositionIndex = (int)(team[i].targetObject.centre.x*64)/16 + (127 - (int)(team[i].targetObject.centre.z*64)/16)*128;
-						
-						if(team[i].attackStatus != solidObject.isAttacking && team[i].underAttackCountDown  == 0 && (!mainThread.ec.visionMap[targetPositionIndex] || team[i].targetObject.isCloaked))
-							team[i].targetObject = null;
-					}
 					
-					//marching forward
-					if(team[i].targetObject == null || team[i].targetObject.currentHP <=0){
-				
-						
-						
-						if(staticDefenseAhead) {
-							if(team[i].type == 1) {
-								team[i].attackMoveTo(team[i].centre.x + attackDirection.x*teamRadius, team[i].centre.z + attackDirection.z*teamRadius); 
-							}else {
-								team[i].attackMoveTo(combatCenterX, combatCenterZ); 
-							}
+					if(mainThread.ec.difficulty > 0) {
+						//stop chasing player unit if it has got out of sight 
+						if(team[i].targetObject != null && team[i].targetObject.currentHP >0) {
+							int targetPositionIndex = (int)(team[i].targetObject.centre.x*64)/16 + (127 - (int)(team[i].targetObject.centre.z*64)/16)*128;
 							
-							
-						}else if(!(team[i].currentMovementStatus ==  solidObject.hugRight || team[i].currentMovementStatus == solidObject.hugLeft)){
-						
-							double d = Math.sqrt((team[i].centre.x -  combatCenterX)*(team[i].centre.x -  combatCenterX) + (team[i].centre.z -  combatCenterZ)*(team[i].centre.z -  combatCenterZ))*3;
-							
-							if(d > teamRadius){
-								if(staticDefenseNearAttackPosition || !playerForceIsMuchWeakerThanAI || mainThread.ec.theMapAwarenessAI.playerAssetDestoryedCountDown == 0)
-									team[i].attackMoveTo(gatherPoint.x, gatherPoint.z); 
-								else
-									team[i].attackMoveTo(attackPosition.x, attackPosition.z); 
-								
-							}else{
-								team[i].attackMoveTo(team[i].centre.x + attackDirection.x*teamRadius, team[i].centre.z + attackDirection.z*teamRadius); 
-								
-							}
+							if(team[i].attackStatus != solidObject.isAttacking && team[i].underAttackCountDown  == 0 && (!mainThread.ec.visionMap[targetPositionIndex] || team[i].targetObject.isCloaked))
+								team[i].targetObject = null;
 						}
-
+						
+						//marching forward
+						if(team[i].targetObject == null || team[i].targetObject.currentHP <=0){
+					
+							
+							
+							if(staticDefenseAhead) {
+								if(team[i].type == 1) {
+									team[i].attackMoveTo(team[i].centre.x + attackDirection.x*teamRadius, team[i].centre.z + attackDirection.z*teamRadius); 
+								}else {
+									team[i].attackMoveTo(combatCenterX, combatCenterZ); 
+								}
+								
+								
+							}else if(!(team[i].currentMovementStatus ==  solidObject.hugRight || team[i].currentMovementStatus == solidObject.hugLeft)){
+							
+								double d = Math.sqrt((team[i].centre.x -  combatCenterX)*(team[i].centre.x -  combatCenterX) + (team[i].centre.z -  combatCenterZ)*(team[i].centre.z -  combatCenterZ))*3;
+								
+								if(d > teamRadius){
+									if(staticDefenseNearAttackPosition || !playerForceIsMuchWeakerThanAI || mainThread.ec.theMapAwarenessAI.playerAssetDestoryedCountDown == 0)
+										team[i].attackMoveTo(gatherPoint.x, gatherPoint.z); 
+									else
+										team[i].attackMoveTo(attackPosition.x, attackPosition.z); 
+									
+								}else{
+									team[i].attackMoveTo(team[i].centre.x + attackDirection.x*teamRadius, team[i].centre.z + attackDirection.z*teamRadius); 
+									
+								}
+							}
+	
+							team[i].currentCommand = solidObject.attackMove;
+							team[i].secondaryCommand = solidObject.attackMove;
+							
+						}
+					}else {
+						team[i].attackMoveTo(attackPosition.x, attackPosition.z);
 						team[i].currentCommand = solidObject.attackMove;
 						team[i].secondaryCommand = solidObject.attackMove;
-						
-					}	
+					}
 				}
 			}
 			
@@ -729,6 +731,8 @@ public class combatManagerAI {
 	
 	public boolean checkIfAIHasBiggerForce(float ratio){
 		
+		
+		
 		int numberOfLightTanks_AI = mainThread.ec.theUnitProductionAI.numberOfLightTanksControlledByCombatAI;
 		int numberOfRocketTanks_AI = mainThread.ec.theUnitProductionAI.numberOfRocketTanksControlledByCombatAI;
 		int numberOfStealthTanks_AI = mainThread.ec.theUnitProductionAI.numberOfStealthTanksControlledByCombatAI;
@@ -767,6 +771,8 @@ public class combatManagerAI {
 		
 		//System.out.println("unrevealedPlayerForceStrength" + unrevealedPlayerForceStrength +  "    "  + "enemyAIForceStrength " + enemyAIForceStrength + "    "  + "playerForceStrength" + playerForceStrength);
 			
+		
+		
 		return enemyAIForceStrength > 0 && playerForceStrength/enemyAIForceStrength < ratio;
 	}
 	

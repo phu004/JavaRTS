@@ -162,6 +162,10 @@ public class baseExpensionAI {
 			}
 		}
 		
+		if(mainThread.ec.difficulty == 1)
+			lowGoldmineThreshold = 22500;
+		else if(mainThread.ec.difficulty == 0)
+			lowGoldmineThreshold = 15000;
 		
 		if(myMCV == null && expensionGoldMine.goldDeposite >= 17500 && (mainThread.ec.theEconomyManagerAI.preferedGoldMine.goldDeposite < lowGoldmineThreshold || 
 			(!hasRefineryNearTheGoldmine(mainThread.ec.theEconomyManagerAI.preferedGoldMine) && !hasConstructionYardNearGoldMine(mainThread.ec.theEconomyManagerAI.preferedGoldMine)) ||
@@ -428,6 +432,9 @@ public class baseExpensionAI {
 	
 	//3 stealth tanks will make a perfect scout team for the base expansion exploration 
 	public boolean needStealthTank(){
+		if(mainThread.ec.difficulty == 0)
+			return false;
+		
 		for(int i = 0; i < scouts.length; i++){
 			if((scouts[i] == null || scouts[i].currentHP <=0) && frameAI > 800){
 				return true;

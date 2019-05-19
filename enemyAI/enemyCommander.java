@@ -105,7 +105,8 @@ public class enemyCommander {
 		}
 		
 		if(mainThread.gameFrame % 30 == 3){
-			theScoutingManagerAI.processAI();
+			if(difficulty > 0)
+				theScoutingManagerAI.processAI();
 		}
 		
 		if(mainThread.gameFrame % 30 == 4){
@@ -121,16 +122,18 @@ public class enemyCommander {
 		}
 		
 		if(mainThread.gameFrame % 30 == 7){
-			theDefenseManagerAI.processAI();
+			if(difficulty > 0)
+				theDefenseManagerAI.processAI();
 		}
 		
 		
+			
+		
+		
+		if(difficulty == 2){
 			theHarassmentAI.processAI();
-		
-		
-		//if(mainThread.frameIndex % 5  == 0){
 			theMicroManagementAI.processAI();
-		//}
+		}
 		
 	}
 	

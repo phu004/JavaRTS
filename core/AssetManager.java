@@ -318,6 +318,7 @@ public class AssetManager {
 		rockets = null;
 		
 		mainThread.gridMap.reset();
+		mainThread.totalGameTime = 0;
 		solidObject.globalUniqID = 0;
 		
 		postProcessingThread.reset();

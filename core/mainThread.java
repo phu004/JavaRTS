@@ -26,7 +26,8 @@ public class mainThread extends JFrame implements KeyListener, ActionListener, M
 	public static int frameInterval;
 	public static int frameIndex;
 	public static int gameFrame;
-	public static long lastDraw;
+	public static long lastDraw, lastFrameTime, frameTime, totalGameTime;
+	public static long delta;
 	public static int sleepTime;
 	public static int framePerSecond, cpuUsage;
 	public static double thisTime, lastTime;
@@ -250,8 +251,9 @@ public class mainThread extends JFrame implements KeyListener, ActionListener, M
 		if(!gamePaused) {
 			if(gameStarted)
 				gameFrame++;
-			
-			timeString = secondsToString((int)(gameFrame*0.025));
+			if(gameFrame > 0)
+				totalGameTime+=frameTime;
+			timeString = secondsToString((int)(totalGameTime/1000000000));
 			
 			//handle user's interaction with game GUI
 			if(gameFrame == 1 && gameStarted){
@@ -588,16 +590,31 @@ public class mainThread extends JFrame implements KeyListener, ActionListener, M
 	}
 	
 	public void regulateFramerate(){
-		if(frameIndex%35==0){
-			double thisTime = System.currentTimeMillis();
-			framePerSecond = (int)(1000/((thisTime - lastTime)/35));
-			lastTime = thisTime;
-		}
+		//if(frameIndex%35==0){
+		//	double thisTime = System.currentTimeMillis();
+		//	framePerSecond = (int)(1000/((thisTime - lastTime)/35));
+		//	lastTime = thisTime;
+		//}
 
-		long sleeptime = frameInterval - (System.currentTimeMillis() - lastDraw);
-		if(sleeptime > 0)
+		long currentTime = System.nanoTime();
+		
+		frameTime = currentTime - lastFrameTime;
 		try {
-			Thread.sleep(sleeptime);
+			long timeSpent = currentTime - lastDraw;
+			
+			
+			int sleeptime = (int)(frameInterval - timeSpent/1000000);
+			
+			
+			if(delta >= 1000000) {
+				sleeptime-=1;
+				delta-=1000000;
+				
+			}
+			
+			if(sleeptime > 0)
+				Thread.sleep(sleeptime);
+			delta+=timeSpent%1000000;
 			
 		} catch (InterruptedException e1) {
 			// TODO Auto-generated catch block
@@ -618,7 +635,8 @@ public class mainThread extends JFrame implements KeyListener, ActionListener, M
 		
 		
 		
-		lastDraw=System.currentTimeMillis();
+		lastDraw=System.nanoTime();
+		lastFrameTime= currentTime;
 	}
 	
 	public static String secondsToString(int pTime) {

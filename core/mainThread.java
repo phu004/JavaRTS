@@ -28,7 +28,7 @@ public class mainThread extends JFrame implements KeyListener, ActionListener, M
 	public static int gameFrame;
 	public static long lastDraw;
 	public static long delta;
-	public static int sleepTime;
+	public static long sleepTime;
 	public static int framePerSecond, cpuUsage;
 	public static double thisTime, lastTime;
 	public static boolean JavaRTSLoaded;
@@ -589,48 +589,19 @@ public class mainThread extends JFrame implements KeyListener, ActionListener, M
 	}
 	
 	public void regulateFramerate(){
-		//if(frameIndex%35==0){
-		//	double thisTime = System.currentTimeMillis();
-		//	framePerSecond = (int)(1000/((thisTime - lastTime)/35));
-		//	lastTime = thisTime;
-		//}
-
-		long currentTime = System.nanoTime();
+		//frameInterval is a constant 25 milliseconds.
+		sleepTime = frameInterval - (System.currentTimeMillis()-lastDraw);
+		
 		try {
-			long timeSpent = currentTime - lastDraw;
-			
-			int sleeptime = (int)(frameInterval - timeSpent/1000000);
-			
-			
-			if(delta >= 1000000) {
-				sleeptime--;
-				delta-=1000000;
-			}
-			
-			if(sleeptime > 0)
-				Thread.sleep(sleeptime);
-			delta+=timeSpent%1000000;
+			if(sleepTime > 0)
+				Thread.sleep(sleepTime);
 			
 		} catch (InterruptedException e1) {
 			// TODO Auto-generated catch block
 			e1.printStackTrace();
 		}
-
-		/*sleepTime = 0; 
-		while(System.currentTimeMillis()-lastDraw<frameInterval){
-
-			try {
-				Thread.sleep(1);
-				sleepTime++;
-			} catch (InterruptedException e1) {
-				// TODO Auto-generated catch block
-				e1.printStackTrace();
-			}
-		}*/
 		
-		
-		
-		lastDraw=System.nanoTime();
+		lastDraw=System.currentTimeMillis();
 	}
 	
 	public static String secondsToString(int pTime) {

@@ -26,7 +26,7 @@ public class mainThread extends JFrame implements KeyListener, ActionListener, M
 	public static int frameInterval;
 	public static int frameIndex;
 	public static int gameFrame;
-	public static long lastDraw, lastFrameTime, frameTime, totalGameTime;
+	public static long lastDraw;
 	public static long delta;
 	public static int sleepTime;
 	public static int framePerSecond, cpuUsage;
@@ -251,9 +251,8 @@ public class mainThread extends JFrame implements KeyListener, ActionListener, M
 		if(!gamePaused) {
 			if(gameStarted)
 				gameFrame++;
-			if(gameFrame > 0)
-				totalGameTime+=frameTime;
-			timeString = secondsToString((int)(totalGameTime/1000000000));
+			
+			timeString = secondsToString((int)(gameFrame*0.025));
 			
 			//handle user's interaction with game GUI
 			if(gameFrame == 1 && gameStarted){
@@ -597,19 +596,15 @@ public class mainThread extends JFrame implements KeyListener, ActionListener, M
 		//}
 
 		long currentTime = System.nanoTime();
-		
-		frameTime = currentTime - lastFrameTime;
 		try {
 			long timeSpent = currentTime - lastDraw;
-			
 			
 			int sleeptime = (int)(frameInterval - timeSpent/1000000);
 			
 			
 			if(delta >= 1000000) {
-				sleeptime-=1;
+				sleeptime--;
 				delta-=1000000;
-				
 			}
 			
 			if(sleeptime > 0)
@@ -636,7 +631,6 @@ public class mainThread extends JFrame implements KeyListener, ActionListener, M
 		
 		
 		lastDraw=System.nanoTime();
-		lastFrameTime= currentTime;
 	}
 	
 	public static String secondsToString(int pTime) {

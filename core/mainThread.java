@@ -594,8 +594,17 @@ public class mainThread extends JFrame implements KeyListener, ActionListener, M
 			lastTime = thisTime;
 		}
 
+		long sleeptime = frameInterval - (System.currentTimeMillis() - lastDraw);
+		if(sleeptime > 0)
+		try {
+			Thread.sleep(sleeptime);
+			
+		} catch (InterruptedException e1) {
+			// TODO Auto-generated catch block
+			e1.printStackTrace();
+		}
 
-		sleepTime = 0; 
+		/*sleepTime = 0; 
 		while(System.currentTimeMillis()-lastDraw<frameInterval){
 
 			try {
@@ -605,7 +614,7 @@ public class mainThread extends JFrame implements KeyListener, ActionListener, M
 				// TODO Auto-generated catch block
 				e1.printStackTrace();
 			}
-		}
+		}*/
 		
 		
 		

@@ -245,13 +245,13 @@ public class AssetManager {
 				//harvester l = new harvester(new vector(i*0.25f+ 1.125f,-0.3f, 17.375f - 0.25f*j), 90, 0);
 				//addHarvester(l);
 				//l.hasMultiShotUpgrade = true;
-				//lightTank l = new lightTank(new vector(i*0.25f + 1.125f,-0.3f, 0.5f + 18.625f + j*0.25f), 90, 0);
+				lightTank l = new lightTank(new vector(i*0.25f + 1.125f,-0.3f, 0.5f + 18.625f + j*0.25f), 90, 0);
 				
 				//l.attackRange = 1.99f;
 		
 				//lightTank.tileCheckList_player = lightTank.generateTileCheckList(6);
 		
-				//addLightTank(l);
+				addLightTank(l);
 				//if(j == 0 && i == 0)
 				//addMissileTurret(new missileTurret(i*0.25f -0.125f + 1, -0.65f, 0.25f + 17.125f + j*0.25f, 0));
 			
@@ -565,6 +565,8 @@ public class AssetManager {
 		Terrain.update();
 		
 		
+		int numberOfPlayerBuildings = 0;
+		int numberOfAIBuildings = 0;
 		//start drawing
 		//maximize the zbuffer value in the  area that are occupied by  UI, so the drawing process will not waste time filling the pixels which would eventually get overdrawn 
 		if(mainThread.gameStarted) {
@@ -576,10 +578,6 @@ public class AssetManager {
 					mainThread.zBuffer[start2 + x + y*768]	= Integer.MAX_VALUE;
 				}
 			}
-		
-		
-	
-		
 		
 			for(int i = 0; i < 200; i ++)
 				bullets[i].updateAndDraw();
@@ -604,33 +602,63 @@ public class AssetManager {
 			}
 			
 			for(int i = 0; i < powerPlants.length; i++){
-				if(powerPlants[i] != null)
+				if(powerPlants[i] != null) {
 					powerPlants[i].draw();
+					if(powerPlants[i].teamNo == 0)
+						numberOfPlayerBuildings++;
+					else
+						numberOfAIBuildings++;
+				}
 			}
 			
 			for(int i = 0; i < gunTurrets.length; i++){
-				if(gunTurrets[i] != null)
+				if(gunTurrets[i] != null) {
 					gunTurrets[i].draw();
+					if(gunTurrets[i].teamNo == 0)
+						numberOfPlayerBuildings++;
+					else
+						numberOfAIBuildings++;
+				}
 			}
 			
 			for(int i = 0; i < missileTurrets.length; i++){
-				if(missileTurrets[i] != null)
+				if(missileTurrets[i] != null) {
 					missileTurrets[i].draw();
+					if(missileTurrets[i].teamNo == 0)
+						numberOfPlayerBuildings++;
+					else
+						numberOfAIBuildings++;
+				}
 			}
 			
 			for(int i = 0; i < communicationCenters.length; i++){
-				if(communicationCenters[i] != null)
+				if(communicationCenters[i] != null) {
 					communicationCenters[i].draw();
+					if(communicationCenters[i].teamNo == 0)
+						numberOfPlayerBuildings++;
+					else
+						numberOfAIBuildings++;
+				}
 			}
 			
 			for(int i = 0; i < techCenters.length; i++){
-				if(techCenters[i] != null)
+				if(techCenters[i] != null) {
 					techCenters[i].draw();
+					if(techCenters[i].teamNo == 0)
+						numberOfPlayerBuildings++;
+					else
+						numberOfAIBuildings++;
+				}
 			}
 			
 			for(int i = 0; i < refineries.length; i++){
-				if(refineries[i] != null)
+				if(refineries[i] != null) {
 					refineries[i].draw();
+					if(refineries[i].teamNo == 0)
+						numberOfPlayerBuildings++;
+					else
+						numberOfAIBuildings++;
+				}
 			}
 			
 			for(int i = 0; i < rocketTanks.length; i++){
@@ -644,13 +672,23 @@ public class AssetManager {
 			}
 			
 			for(int i = 0; i < constructionVehicles.length; i++){
-				if(constructionVehicles[i] != null)
+				if(constructionVehicles[i] != null) {
 					constructionVehicles[i].draw();
+					if(constructionVehicles[i].teamNo == 0)
+						numberOfPlayerBuildings++;
+					else
+						numberOfAIBuildings++;
+				}
 			}
 			
 			for(int i = 0; i < constructionYards.length; i++){
-				if(constructionYards[i] != null)
+				if(constructionYards[i] != null) {
 					constructionYards[i].draw();
+					if(constructionYards[i].teamNo == 0)
+						numberOfPlayerBuildings++;
+					else
+						numberOfAIBuildings++;
+				}
 			}
 			
 			for(int i = 0; i < 200; i ++)
@@ -706,6 +744,18 @@ public class AssetManager {
 					selectedUnitsInfo[i][5] = mainThread.pc.selectedUnits[i].progressStatus;
 				}else{
 					selectedUnitsInfo[i][0] = -1;
+				}
+			}
+			
+			//check end game condition
+			//game ends when either player or the AI have lost all the buildings and construction vehicles
+			if(!mainThread.playerVictory && !mainThread.AIVictory && !mainThread.afterMatch) {
+				if(numberOfAIBuildings == 0) {
+					mainThread.playerVictory = true;
+					mainThread.gamePaused = true;
+				}else if(numberOfPlayerBuildings == 0) {
+					mainThread.AIVictory = true;
+					mainThread.gamePaused = true;
 				}
 			}
 		}

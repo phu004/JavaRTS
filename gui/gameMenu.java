@@ -18,7 +18,6 @@ public class gameMenu {
 	public static final int optionMenu = 4;
 	public int[] screen; 
 	public int[] screenBlurBuffer;
-	public boolean gameStarted, gamePaused, gameEnded;
 	
 	public String imageFolder = "";
 	
@@ -158,11 +157,9 @@ public class gameMenu {
 	}
 	
 	
-	public void updateAndDraw(int[] screen, boolean gameStarted, boolean gamePaused, boolean gameEnded) {
+	public void updateAndDraw(int[] screen, boolean gameStarted, boolean gamePaused, boolean playerVictory, boolean AIVictory) {
 		this.screen = screen;
-		this.gameStarted = gameStarted;
-		this.gamePaused = gamePaused;
-		this.gameEnded = gameEnded;
+	
 		
 		if(gamePaused){
 			gameSuspendCount++;
@@ -176,8 +173,15 @@ public class gameMenu {
 		}
 		
 		
-		//only show game menu when the game is not started or game is paused or game has ended
-		if(!(!gameStarted || gamePaused || gameEnded))
+		if(playerVictory || AIVictory) {
+			if(gameSuspendCount > 0) {
+				drawBluredBackground();
+			}
+			return;
+		}
+		
+		//only show game menu when the game is not started or game is paused
+		if(!(!gameStarted || gamePaused))
 			return;
 		
 		//make all buttons off screen and reduce their action cooldown

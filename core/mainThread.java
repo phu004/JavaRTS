@@ -32,7 +32,7 @@ public class mainThread extends JFrame implements KeyListener, ActionListener, M
 	public static int framePerSecond, cpuUsage;
 	public static double thisTime, lastTime;
 	public static boolean JavaRTSLoaded;
-	public static boolean gamePaused, gameStarted, gameEnded;
+	public static boolean gamePaused, gameStarted, playerVictory, AIVictory, afterMatch;
 	public static texture[] textures;
 	public static byte[][] lightMapTextures;
 	public static int[][] lightMapTexturesInfo;

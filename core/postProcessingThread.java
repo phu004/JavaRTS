@@ -75,7 +75,7 @@ public class postProcessingThread implements Runnable{
 	
 	public static textRenderer theTextRenderer;
 	
-	public static boolean gamePaused, gameStarted, gameEnded;
+	public static boolean gamePaused, gameStarted, playerVictory, AIVictory;
 	
 	public static int mouse_x, mouse_y;
 	public static boolean leftMouseButtonReleased, escapeKeyPressed;
@@ -219,7 +219,7 @@ public class postProcessingThread implements Runnable{
 			if(!gamePaused)
 				doPostProcesssing();
 
-			theGameMenu.updateAndDraw(currentScreen, gameStarted, gamePaused, gameEnded);
+			theGameMenu.updateAndDraw(currentScreen, gameStarted, gamePaused, playerVictory, AIVictory);
 			
 			frameIndex++;
 			
@@ -963,7 +963,8 @@ public class postProcessingThread implements Runnable{
 		
 		gamePaused = mainThread.gamePaused;
 		gameStarted = mainThread.gameStarted;
-		gameEnded = mainThread.gameEnded;
+		playerVictory = mainThread.playerVictory;
+		AIVictory = mainThread.AIVictory;
 		
 		timeString = mainThread.timeString;
 		fogOfWarDisabled = mainThread.fogOfWarDisabled;

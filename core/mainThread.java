@@ -598,6 +598,31 @@ public class mainThread extends JFrame implements KeyListener, ActionListener, M
 			if(sleepTime > 0) {
 				Thread.sleep(takeOne);
 				
+				if(capturedMouse && !mouseLeftScreen && !focusLost) {
+					currentMouseX = MouseInfo.getPointerInfo().getLocation().x;
+					currentMouseY = MouseInfo.getPointerInfo().getLocation().y;
+					
+					int deltaX = currentMouseX - centerScreenX;
+					int deltaY = currentMouseY - centerScreenY;
+				
+					mouseX+=deltaX;
+					mouseY+=deltaY;
+					
+					myRobot.mouseMove(centerScreenX, centerScreenY);
+					
+					if(mouseX < 0)
+						mouseX = 0;
+					if(mouseX >= 768)
+						mouseX = 767;
+					if(mouseY < 0)
+						mouseY = 0;
+					if(mouseY >= 512)
+						mouseY = 511;
+					
+					inputHandler.mouse_x = mouseX;
+					inputHandler.mouse_y = mouseY;
+				}
+				
 				if(frameIndex %2 == 0 && frameIndex > 3){
 					bf = doubleBuffer;
 					//draw mouse cursor 

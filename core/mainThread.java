@@ -593,8 +593,33 @@ public class mainThread extends JFrame implements KeyListener, ActionListener, M
 		sleepTime = frameInterval - (System.currentTimeMillis()-lastDraw);
 		
 		try {
-			if(sleepTime > 0)
-				Thread.sleep(sleepTime);
+			long takeOne = sleepTime/2;
+			
+			if(sleepTime > 0) {
+				Thread.sleep(takeOne);
+				
+				if(frameIndex %2 == 0 && frameIndex > 3){
+					bf = doubleBuffer;
+					//draw mouse cursor 
+					theGameCursor.updateAndDraw(bufferScreen);
+					
+			
+				}else if(frameIndex != 1 && frameIndex > 3){
+					bf = doubleBuffer2;
+					//draw mouse cursor 
+					theGameCursor.updateAndDraw(buffer2Screen);
+				}
+				
+				if(frameIndex > 3)
+					panel.getGraphics().drawImage(bf, 0, 0, this);
+				
+				sleepTime = frameInterval - (System.currentTimeMillis()-lastDraw);
+				if(sleepTime > 0) 
+					Thread.sleep(sleepTime);
+			}
+			
+			
+				
 			
 		} catch (InterruptedException e1) {
 			// TODO Auto-generated catch block

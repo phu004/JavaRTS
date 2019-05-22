@@ -120,6 +120,11 @@ public class postProcessingThread implements Runnable{
 	public static vector eyeDirection;
 	
 	public static void init(){
+		
+		//init game menu
+		theGameMenu = new gameMenu();
+		theGameMenu.init();
+		
 		//create font bitmaps
 		theTextRenderer = new textRenderer();
 		theTextRenderer.init();
@@ -139,11 +144,6 @@ public class postProcessingThread implements Runnable{
 		//init sidebar interface
 		theSideBar = new SideBar();
 		theSideBar.init();
-		
-		//init game menu
-		theGameMenu = new gameMenu();
-		theGameMenu.init();
-		
 		
 		unitInfoTable = new int[201][4];
 		

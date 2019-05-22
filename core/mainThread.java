@@ -12,7 +12,7 @@ import javax.swing.JPanel;
 
 import enemyAI.*;
 import gui.*;
-import java.sql.*;
+
 
 public class mainThread extends JFrame implements KeyListener, ActionListener, MouseMotionListener, MouseListener, FocusListener{
 
@@ -69,17 +69,6 @@ public class mainThread extends JFrame implements KeyListener, ActionListener, M
 	public static int mouseX, mouseY, centerScreenX, centerScreenY, currentMouseX, currentMouseY;
 	
 	public mainThread(){
-		
-		try {
-			Class.forName("com.mysql.jdbc.Driver");
-			Connection connect = DriverManager.getConnection("jdbc:mysql://remotemysql.com/TDYAgrQ1Ny?useSSL=false",  "TDYAgrQ1Ny", "SrexYcsOSv");
-			
-			connect.close();
-		} catch (Exception e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-		
 		
 		setTitle("Battle Tank 3");
 		panel= (JPanel) this.getContentPane();

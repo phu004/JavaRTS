@@ -23,7 +23,7 @@ public class gameMenu {
 	
 	public int[] titleImage, lightTankImage, rocketTankImage, stealthTankImage, heavyTankImage;
 	
-	public button newGame, unpauseGame, showHelp, showOptions, quitGame, abortGame, easyGame, normalGame, hardGame, quitDifficulty, quitHelpMenu, quitOptionMenu, nextPage, previousPage,
+	public button newGame, unpauseGame, showHelp, showOptions, showHighscores, quitGame, abortGame, easyGame, normalGame, hardGame, quitDifficulty, quitHelpMenu, quitOptionMenu, nextPage, previousPage,
 	              enableMouseCapture, disableMouseCapture, enableFogOfWar, disableFogOfWar;
 	
 	public char[] easyDescription, normalDescription, hardDescription, helpPage1, helpPage2, helpPage3, helpPage4, mouseMode;
@@ -31,6 +31,8 @@ public class gameMenu {
 	public int currentHelpPage;
 	
 	public ArrayList<button> buttons = new ArrayList<button>();
+	
+	public highscoreManager theHighscoreManager;
 	
 	public void init() {
 		if(titleImage == null) {
@@ -43,7 +45,9 @@ public class gameMenu {
 		if(screenBlurBuffer == null)
 			screenBlurBuffer = new int[512 * 768];
 	
-			
+		theHighscoreManager = new highscoreManager();
+		Thread   t   =   new   Thread(theHighscoreManager);
+		t.start();
 		
 		String folder = "../images/";
 		loadTexture(folder + "title.png", titleImage, 216, 35);
@@ -64,6 +68,9 @@ public class gameMenu {
 		
 		showOptions = new button("showOptions", "Options", 324, 210, 120, 28);
 		buttons.add(showOptions);
+		
+		showHighscores = new button("showHighscores", "Highscores", 324, 260, 120, 28);
+		buttons.add(showHighscores);
 		
 		quitGame = new button("quitGame", "Quit Game", 324, 345, 120, 28);
 		buttons.add(quitGame);
@@ -213,6 +220,7 @@ public class gameMenu {
 			
 			showHelp.display = true;
 			showOptions.display = true;
+			showHighscores.display = true;
 			
 		}else if(menuStatus == difficulitySelectionMenu) {
 			if(postProcessingThread.escapeKeyPressed) {

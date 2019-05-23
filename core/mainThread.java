@@ -13,7 +13,6 @@ import javax.swing.JPanel;
 import enemyAI.*;
 import gui.*;
 
-
 public class mainThread extends JFrame implements KeyListener, ActionListener, MouseMotionListener, MouseListener, FocusListener{
 
 	public static int[] screen, bufferScreen;
@@ -69,7 +68,6 @@ public class mainThread extends JFrame implements KeyListener, ActionListener, M
 	public static int mouseX, mouseY, centerScreenX, centerScreenY, currentMouseX, currentMouseY;
 	
 	public mainThread(){
-		
 		setTitle("Battle Tank 3");
 		panel= (JPanel) this.getContentPane();
 		panel.setPreferredSize(new Dimension(768, 512));
@@ -227,9 +225,6 @@ public class mainThread extends JFrame implements KeyListener, ActionListener, M
 		if(capturedMouse && !mouseLeftScreen && !focusLost) {
 			currentMouseX = MouseInfo.getPointerInfo().getLocation().x;
 			currentMouseY = MouseInfo.getPointerInfo().getLocation().y;
-			
-			centerScreenX = getLocationOnScreen().x + 384;
-			centerScreenY = getLocationOnScreen().y + 256;
 			
 			int deltaX = currentMouseX - centerScreenX;
 			int deltaY = currentMouseY - centerScreenY;

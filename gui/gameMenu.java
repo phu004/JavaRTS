@@ -16,6 +16,7 @@ public class gameMenu {
 	public static final int helpMenu = 2;
 	public static final int endGameMenu = 3;
 	public static final int optionMenu = 4;
+	public static final int highscoreMenu = 5;
 	public int[] screen; 
 	public int[] screenBlurBuffer;
 	
@@ -29,6 +30,7 @@ public class gameMenu {
 	public char[] easyDescription, normalDescription, hardDescription, helpPage1, helpPage2, helpPage3, helpPage4, mouseMode;
 	
 	public int currentHelpPage;
+	public int highscoreLevel;
 	
 	public ArrayList<button> buttons = new ArrayList<button>();
 	
@@ -48,6 +50,8 @@ public class gameMenu {
 		theHighscoreManager = new highscoreManager();
 		Thread   t   =   new   Thread(theHighscoreManager);
 		t.start();
+		
+		highscoreLevel = 1;
 		
 		String folder = "../images/";
 		loadTexture(folder + "title.png", titleImage, 216, 35);
@@ -324,12 +328,42 @@ public class gameMenu {
 				}
 			}
 			
+		}else if(menuStatus == highscoreMenu) {
+			if(postProcessingThread.escapeKeyPressed) {
+				menuStatus = mainMenu;
+				theHighscoreManager.task = theHighscoreManager.none;
+				if(theHighscoreManager.status == theHighscoreManager.idle) {
+					theHighscoreManager.result =  null;
+				}
+			
+			}else {
+				drawTitle();
+				drawMenuFrame(420, 360);
+				
+				if(theHighscoreManager.status == theHighscoreManager.processing) {
+					drawLoadingScreen(screen);
+				}else if(theHighscoreManager.status == theHighscoreManager.idle) {
+					if(theHighscoreManager.task == theHighscoreManager.none && theHighscoreManager.result == null) {
+						theHighscoreManager.task = theHighscoreManager.loadHighscores;
+						drawLoadingScreen(screen);
+					}else if(theHighscoreManager.task == theHighscoreManager.none && theHighscoreManager.result != null) {
+						//draw high scores
+					}
+				}else if(theHighscoreManager.status == theHighscoreManager.error) {
+					
+				}
+			}
 		}
 		
 		
 		updateButtons();
 		drawButtons();
 		
+	}
+	
+	public void drawLoadingScreen(int[] screen) {
+		textRenderer tRenderer = postProcessingThread.theTextRenderer;
+		tRenderer.drawMenuText(82,90,"busy".toCharArray(), screen, 255,255,255,0);
 	}
 	
 	public void updateButtons() {
@@ -351,6 +385,8 @@ public class gameMenu {
 							currentHelpPage++;
 						}else if(buttons.get(i).name == "previousPage") {
 							currentHelpPage--;
+						}else if(buttons.get(i).name == "showHighscores") {
+							menuStatus = highscoreMenu;
 						}
 						
 						postProcessingThread.buttonAction = buttons.get(i).name;

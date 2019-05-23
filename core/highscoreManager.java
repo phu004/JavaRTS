@@ -4,13 +4,21 @@ import java.sql.*;
 
 public class highscoreManager implements Runnable{
 	public Connection connect;
-	public int status;
 	public int counter;
+	
+	public int status;
 	public static final int idle = 0;
 	public static final int processing = 1;
 	public static final int error = 2;
 	
-
+	public int task;
+	public static final int none = 0;
+	public static final int loadHighscores = 1;
+	
+	public boolean isSleeping;
+	
+	public String[] result;
+	
 	public highscoreManager(){
 		status = processing;
 	}
@@ -36,7 +44,17 @@ public class highscoreManager implements Runnable{
 			
 			if(status == idle) {
 				
+				if(task !=  none) {
+					status = processing;
+					
+					//get high scroes from remote database
+					result = new String[] {};
+					
+					status = idle;
+					task = none;
+				}
 			}
+			
 			
 			try {
 				Thread.sleep(1000);
@@ -44,6 +62,7 @@ public class highscoreManager implements Runnable{
 				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
+			
 			counter++;
 		}
 		

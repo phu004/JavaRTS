@@ -1,6 +1,7 @@
 package gui;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.awt.Image;
 import java.awt.image.PixelGrabber;
 import javax.imageio.ImageIO;
@@ -24,8 +25,8 @@ public class gameMenu {
 	
 	public int[] titleImage, lightTankImage, rocketTankImage, stealthTankImage, heavyTankImage;
 	
-	public button newGame, unpauseGame, showHelp, showOptions, showHighscores, quitGame, abortGame, easyGame, normalGame, hardGame, quitDifficulty, quitHelpMenu, quitOptionMenu, nextPage, previousPage,
-	              enableMouseCapture, disableMouseCapture, enableFogOfWar, disableFogOfWar;
+	public button newGame, unpauseGame, showHelp, showOptions, showHighscores, quitGame, abortGame, easyGame, normalGame, hardGame, quitDifficulty, quitHelpMenu, quitOptionMenu, quitHighscoreMenu, nextPage, previousPage,
+	              enableMouseCapture, disableMouseCapture, enableFogOfWar, disableFogOfWar, confirmErrorLoadingHighscore;
 	
 	public char[] easyDescription, normalDescription, hardDescription, helpPage1, helpPage2, helpPage3, helpPage4, mouseMode;
 	
@@ -148,6 +149,9 @@ public class gameMenu {
 		quitOptionMenu = new button("quitOptionMenu", "x", 620, 80, 18,16);
 		buttons.add(quitOptionMenu);
 		
+		quitHighscoreMenu = new button("quitHighscoreMenu", "x", 570, 80, 18,16);
+		buttons.add(quitHighscoreMenu);
+		
 		nextPage = new button("nextPage", "Next Page", 550, 450, 120, 28);
 		buttons.add(nextPage);
 		
@@ -165,6 +169,9 @@ public class gameMenu {
 		
 		disableFogOfWar = new button("disableFogOfWar", "Enabled", 545, 215, 80, 25);
 		buttons.add(disableFogOfWar);
+		
+		confirmErrorLoadingHighscore = new button("confirmErrorLoadingHighscore", "Ok", 350, 280, 80, 25);
+		buttons.add(confirmErrorLoadingHighscore);
 	}
 	
 	
@@ -217,6 +224,7 @@ public class gameMenu {
 			if(!gameStarted) {
 				newGame.display = true;
 				quitGame.display = true;
+				showHighscores.display = true;
 			}else {
 				unpauseGame.display = true;
 				abortGame.display = true;
@@ -224,7 +232,7 @@ public class gameMenu {
 			
 			showHelp.display = true;
 			showOptions.display = true;
-			showHighscores.display = true;
+			
 			
 		}else if(menuStatus == difficulitySelectionMenu) {
 			if(postProcessingThread.escapeKeyPressed) {
@@ -330,15 +338,13 @@ public class gameMenu {
 			
 		}else if(menuStatus == highscoreMenu) {
 			if(postProcessingThread.escapeKeyPressed) {
-				menuStatus = mainMenu;
-				theHighscoreManager.task = theHighscoreManager.none;
-				if(theHighscoreManager.status == theHighscoreManager.idle) {
-					theHighscoreManager.result =  null;
-				}
+				quitHighscoreMenu();
 			
 			}else {
 				drawTitle();
 				drawMenuFrame(420, 360);
+				
+				textRenderer tRenderer = postProcessingThread.theTextRenderer;
 				
 				if(theHighscoreManager.status == theHighscoreManager.processing) {
 					drawLoadingScreen(screen);
@@ -347,11 +353,16 @@ public class gameMenu {
 						theHighscoreManager.task = theHighscoreManager.loadHighscores;
 						drawLoadingScreen(screen);
 					}else if(theHighscoreManager.task == theHighscoreManager.none && theHighscoreManager.result != null) {
-						//draw high scores
+						drawHighscore();
+					}else if(theHighscoreManager.isSleeping && theHighscoreManager.result == null) {
+						drawLoadingScreen(screen);
 					}
 				}else if(theHighscoreManager.status == theHighscoreManager.error) {
-					
+					tRenderer.drawMenuText(240,250,"Cannot load high scores, try again later.".toCharArray(), screen, 255,255,255,0);
+					confirmErrorLoadingHighscore.display=true;
 				}
+				
+				quitHighscoreMenu.display = true;
 			}
 		}
 		
@@ -361,9 +372,66 @@ public class gameMenu {
 		
 	}
 	
+	public void drawHighscore() {
+		
+		textRenderer tRenderer = postProcessingThread.theTextRenderer;
+		String[][] result =  theHighscoreManager.result;
+		int startRow = 0;
+		//draw high scores
+		if(highscoreLevel == 1) {
+			tRenderer.drawText_outline(280,100,"Highscores for normal difficulty", screen, 0xffffff,0);	
+			startRow = 10;
+		}
+		
+		tRenderer.drawText_outline(230,130," Rank           Player Name            Time", screen, 0xf2989d,0);
+		tRenderer.drawText_outline(230,135,"_____________________________________________", screen, 0xaaaaaa,0);
+		
+		for(int i = startRow; i < startRow + 10; i++) {
+			int color = 0xbbbbbb;
+			if(i -startRow == 0)
+				color = 0xffe559;
+			if(i -startRow == 1)
+				color = 0xe8e9ea;
+			if(i -startRow == 2)
+				color = 0xc99684;
+			if(i -startRow == 9)
+				tRenderer.drawText_outline(220,160 + (i -startRow)*25, "    " + (i -startRow + 1), screen, color,0);
+			else
+				tRenderer.drawText_outline(223,160 + (i -startRow)*25, "    " + (i -startRow + 1), screen, color,0);
+			
+			if(result[i][0] != null) {
+				int l = (30 - result[i][0].length())/2;
+				
+				tRenderer.drawText_outline(230,160 + (i -startRow)*25, "                                       " + result[i][1], screen, color,0);
+				tRenderer.drawText_outline(275 + l*7,160 + (i -startRow)*25, result[i][0], screen, color,0);
+			}
+		}
+		
+	}
+	
 	public void drawLoadingScreen(int[] screen) {
 		textRenderer tRenderer = postProcessingThread.theTextRenderer;
-		tRenderer.drawMenuText(82,90,"busy".toCharArray(), screen, 255,255,255,0);
+		
+		if(postProcessingThread.frameIndex%50 < 10) {
+			tRenderer.drawMenuText(360,250,"Loading....".toCharArray(), screen, 255,255,255,0);
+		}else if(postProcessingThread.frameIndex%50 >= 10 && postProcessingThread.frameIndex%50 < 20) {
+			tRenderer.drawMenuText(360,250,"Loading".toCharArray(), screen, 255,255,255,0);
+		}else if(postProcessingThread.frameIndex%50 >= 20 && postProcessingThread.frameIndex%50 < 30) {
+			tRenderer.drawMenuText(360,250,"Loading.".toCharArray(), screen, 255,255,255,0);
+		}else if(postProcessingThread.frameIndex%50 >= 30 && postProcessingThread.frameIndex%50 < 40) {
+			tRenderer.drawMenuText(360,250,"Loading..".toCharArray(), screen, 255,255,255,0);
+		}else {
+			tRenderer.drawMenuText(360,250,"Loading...".toCharArray(), screen, 255,255,255,0);
+		}
+	}
+	
+	public void quitHighscoreMenu() {
+		menuStatus = mainMenu;
+		theHighscoreManager.task = theHighscoreManager.none;
+		if(theHighscoreManager.status == theHighscoreManager.idle) {
+			theHighscoreManager.result =  null;
+		}
+		highscoreLevel = 1;
 	}
 	
 	public void updateButtons() {
@@ -387,6 +455,12 @@ public class gameMenu {
 							currentHelpPage--;
 						}else if(buttons.get(i).name == "showHighscores") {
 							menuStatus = highscoreMenu;
+							if(theHighscoreManager.status == theHighscoreManager.error) {
+								theHighscoreManager.counter = 0;
+								theHighscoreManager.status = theHighscoreManager.idle;
+							}
+						}else if(buttons.get(i).name == "quitHighscoreMenu" || buttons.get(i).name == "confirmErrorLoadingHighscore") {
+							quitHighscoreMenu();
 						}
 						
 						postProcessingThread.buttonAction = buttons.get(i).name;

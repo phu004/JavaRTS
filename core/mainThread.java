@@ -593,9 +593,8 @@ public class mainThread extends JFrame implements KeyListener, ActionListener, M
 		sleepTime = frameInterval - (System.currentTimeMillis()-lastDraw);
 		
 		try {
-			long takeOne = sleepTime/2;
-			
 			if(sleepTime > 0) {
+				long takeOne = sleepTime/2;
 				Thread.sleep(takeOne);
 				
 				if(capturedMouse && !mouseLeftScreen && !focusLost) {

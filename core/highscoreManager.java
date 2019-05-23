@@ -17,7 +17,7 @@ public class highscoreManager implements Runnable{
 	
 	public boolean isSleeping;
 	
-	public String[] result;
+	public String[][] result;
 	
 	public highscoreManager(){
 		status = processing;
@@ -47,24 +47,86 @@ public class highscoreManager implements Runnable{
 				if(task !=  none) {
 					status = processing;
 					
-					//get high scroes from remote database
-					result = new String[] {};
+					if(task == loadHighscores) {
+						//get high scores from remote database
+						Statement stmt;
+						try {
+							String[][] myResult = new String[30][2];
+							int numOfRows = 0;
+							
+							stmt = connect.createStatement();
+							ResultSet rs=stmt.executeQuery("select * from highscore where skillLevel = 0 order by finishingTime");  
+							while(rs.next()) {
+								myResult[numOfRows][0] = rs.getString(1);
+								myResult[numOfRows][1] = secondsToString(rs.getInt(2));
+							
+								numOfRows++;
+								if(numOfRows == 10)
+									break;
+							}
+							
+							numOfRows = 10;
+							rs=stmt.executeQuery("select * from highscore where skillLevel = 1 order by finishingTime");  
+							while(rs.next()) {
+								myResult[numOfRows][0] = rs.getString(1);
+								myResult[numOfRows][1] = secondsToString(rs.getInt(2));
+							
+								numOfRows++;
+								if(numOfRows == 20)
+									break;
+							}
+							
+							numOfRows = 20;
+							rs=stmt.executeQuery("select * from highscore where skillLevel = 2 order by finishingTime");  
+							while(rs.next()) {
+								myResult[numOfRows][0] = rs.getString(1);
+								myResult[numOfRows][1] = secondsToString(rs.getInt(2));
+							
+								numOfRows++;
+								if(numOfRows == 30)
+									break;
+							}
+							
+							result = myResult;
+							
+						} catch (SQLException e) {
+							// TODO Auto-generated catch block
+							e.printStackTrace();
+							status = error;
+							result = null;
+						}  
+					}
 					
-					status = idle;
+					if(status != error)
+						status = idle;
 					task = none;
 				}
 			}
 			
-			
+			isSleeping = true;
 			try {
 				Thread.sleep(1000);
 			} catch (InterruptedException e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
+			isSleeping = false;
 			
 			counter++;
 		}
 		
+	}
+	
+	public String secondsToString(int pTime) {
+	    int min = pTime/60;
+	    int sec = pTime-(min*60);
+
+	    String strMin = placeZeroIfNeede(min);
+	    String strSec = placeZeroIfNeede(sec);
+	    return String.format("%s:%s",strMin,strSec);
+	}
+
+	public String placeZeroIfNeede(int number) {
+	    return (number >=10)? Integer.toString(number):String.format("0%s",Integer.toString(number));
 	}
 }

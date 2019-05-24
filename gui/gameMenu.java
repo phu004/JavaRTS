@@ -26,7 +26,7 @@ public class gameMenu {
 	public int[] titleImage, lightTankImage, rocketTankImage, stealthTankImage, heavyTankImage;
 	
 	public button newGame, unpauseGame, showHelp, showOptions, showHighscores, quitGame, abortGame, easyGame, normalGame, hardGame, quitDifficulty, quitHelpMenu, quitOptionMenu, quitHighscoreMenu, nextPage, previousPage,
-	              enableMouseCapture, disableMouseCapture, enableFogOfWar, disableFogOfWar, confirmErrorLoadingHighscore;
+	              enableMouseCapture, disableMouseCapture, enableFogOfWar, disableFogOfWar, confirmErrorLoadingHighscore, normalToHardButton, normalToEasyButton;
 	
 	public char[] easyDescription, normalDescription, hardDescription, helpPage1, helpPage2, helpPage3, helpPage4, mouseMode;
 	
@@ -172,6 +172,12 @@ public class gameMenu {
 		
 		confirmErrorLoadingHighscore = new button("confirmErrorLoadingHighscore", "Ok", 350, 280, 80, 25);
 		buttons.add(confirmErrorLoadingHighscore);
+		
+		normalToHardButton = new button("normalToHardButton", "Hard", 503, 430, 80, 25);
+		buttons.add(normalToHardButton);
+		
+		normalToEasyButton = new button("normalToEasyButton", "Easy", 185, 430, 80, 25);
+		buttons.add(normalToEasyButton);
 	}
 	
 	
@@ -224,7 +230,6 @@ public class gameMenu {
 			if(!gameStarted) {
 				newGame.display = true;
 				quitGame.display = true;
-				showHighscores.display = true;
 			}else {
 				unpauseGame.display = true;
 				abortGame.display = true;
@@ -232,6 +237,7 @@ public class gameMenu {
 			
 			showHelp.display = true;
 			showOptions.display = true;
+			showHighscores.display = true;
 			
 			
 		}else if(menuStatus == difficulitySelectionMenu) {
@@ -341,6 +347,10 @@ public class gameMenu {
 				quitHighscoreMenu();
 			
 			}else {
+				if(gameSuspendCount > 0) {
+					drawBluredBackground();
+				}
+				
 				drawTitle();
 				drawMenuFrame(420, 360);
 				
@@ -354,6 +364,7 @@ public class gameMenu {
 						drawLoadingScreen(screen);
 					}else if(theHighscoreManager.task == theHighscoreManager.none && theHighscoreManager.result != null) {
 						drawHighscore();
+						
 					}else if(theHighscoreManager.isSleeping && theHighscoreManager.result == null) {
 						drawLoadingScreen(screen);
 					}
@@ -381,6 +392,14 @@ public class gameMenu {
 		if(highscoreLevel == 1) {
 			tRenderer.drawText_outline(280,100,"Highscores for normal difficulty", screen, 0xffffff,0);	
 			startRow = 10;
+			normalToHardButton.display = true;
+			normalToEasyButton.display = true;
+		}else if(highscoreLevel == 0) {
+			tRenderer.drawText_outline(280,100,"Highscores for easy difficulty", screen, 0xffffff,0);	
+			startRow = 0;
+		}else if(highscoreLevel == 2) {
+			tRenderer.drawText_outline(280,100,"Highscores for hard difficulty", screen, 0xffffff,0);	
+			startRow = 20;
 		}
 		
 		tRenderer.drawText_outline(230,130," Rank           Player Name            Time", screen, 0xf2989d,0);

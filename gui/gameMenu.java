@@ -26,7 +26,8 @@ public class gameMenu {
 	public int[] titleImage, lightTankImage, rocketTankImage, stealthTankImage, heavyTankImage;
 	
 	public button newGame, unpauseGame, showHelp, showOptions, showHighscores, quitGame, abortGame, easyGame, normalGame, hardGame, quitDifficulty, quitHelpMenu, quitOptionMenu, quitHighscoreMenu, nextPage, previousPage,
-	              enableMouseCapture, disableMouseCapture, enableFogOfWar, disableFogOfWar, confirmErrorLoadingHighscore, normalToHardButton, normalToEasyButton;
+	              enableMouseCapture, disableMouseCapture, enableFogOfWar, disableFogOfWar, confirmErrorLoadingHighscore, normalToHardButton, normalToEasyButton, hardToNormalButton, easyToNormalButton,
+	              backToMapDefeat, leaveGameDefeat;
 	
 	public char[] easyDescription, normalDescription, hardDescription, helpPage1, helpPage2, helpPage3, helpPage4, mouseMode;
 	
@@ -173,11 +174,23 @@ public class gameMenu {
 		confirmErrorLoadingHighscore = new button("confirmErrorLoadingHighscore", "Ok", 350, 280, 80, 25);
 		buttons.add(confirmErrorLoadingHighscore);
 		
-		normalToHardButton = new button("normalToHardButton", "Hard", 503, 430, 80, 25);
+		normalToHardButton = new button("normalToHardButton", ">", 543, 430, 40, 25);
 		buttons.add(normalToHardButton);
 		
-		normalToEasyButton = new button("normalToEasyButton", "Easy", 185, 430, 80, 25);
+		normalToEasyButton = new button("normalToEasyButton", "<", 185, 430, 40, 25);
 		buttons.add(normalToEasyButton);
+		
+		hardToNormalButton = new button("hardToNormalButton", "<", 185, 430, 40, 25);
+		buttons.add(hardToNormalButton);
+		
+		easyToNormalButton = new button("easyToNormalButton", ">", 543, 430, 40, 25);
+		buttons.add(easyToNormalButton);
+		
+		backToMapDefeat =  new button("backToMap", "Back to Map", 210, 235, 120, 25);
+		buttons.add(backToMapDefeat);
+		
+		leaveGameDefeat =  new button("abortGame", "Leave game", 440, 235, 120, 25);
+		buttons.add(leaveGameDefeat);
 	}
 	
 	
@@ -194,19 +207,8 @@ public class gameMenu {
 		if(gameSuspendCount == 1) {
 			for(int i = 0; i < 512*768; i++)
 				screenBlurBuffer[i] = screen[i];
+			
 		}
-		
-		
-		if(playerVictory || AIVictory) {
-			if(gameSuspendCount > 0) {
-				drawBluredBackground();
-			}
-			return;
-		}
-		
-		//only show game menu when the game is not started or game is paused
-		if(!(!gameStarted || gamePaused))
-			return;
 		
 		//make all buttons off screen and reduce their action cooldown
 		for (int i = 0; i < buttons.size(); i++) {
@@ -214,6 +216,34 @@ public class gameMenu {
 			if(buttons.get(i).actionCooldown > 0)
 				buttons.get(i).actionCooldown--;
 		}
+		
+		
+		if(playerVictory || AIVictory) {
+			if(gameSuspendCount > 0) {
+				drawBluredBackground();
+			}
+			
+			if(AIVictory) {
+				
+				drawMenuFrame(400, 100, 70);	
+				textRenderer tRenderer = postProcessingThread.theTextRenderer;
+				tRenderer.drawMenuText(320,178,"You are Defeated! ".toCharArray(), screen, 255,255,255, 0);
+				
+				backToMapDefeat.display = true;
+				leaveGameDefeat.display = true;
+			}
+			
+			updateButtons();
+			drawButtons();
+			
+			return;
+		}
+		
+		//only show game menu when the game is not started or game is paused
+		if(!(!gameStarted || gamePaused))
+			return;
+		
+		
 		
 		if(menuStatus == mainMenu) {
 			currentHelpPage = 0;
@@ -390,20 +420,22 @@ public class gameMenu {
 		int startRow = 0;
 		//draw high scores
 		if(highscoreLevel == 1) {
-			tRenderer.drawText_outline(280,100,"Highscores for normal difficulty", screen, 0xffffff,0);	
+			tRenderer.drawText_outline(270,100,"Highscores For Normal Difficulty", screen, 0xffffff,0);	
 			startRow = 10;
 			normalToHardButton.display = true;
 			normalToEasyButton.display = true;
 		}else if(highscoreLevel == 0) {
-			tRenderer.drawText_outline(280,100,"Highscores for easy difficulty", screen, 0xffffff,0);	
+			tRenderer.drawText_outline(270,100,"Highscores For Easy Difficulty", screen, 0xffffff,0);	
 			startRow = 0;
+			easyToNormalButton.display = true;
 		}else if(highscoreLevel == 2) {
-			tRenderer.drawText_outline(280,100,"Highscores for hard difficulty", screen, 0xffffff,0);	
+			tRenderer.drawText_outline(270,100,"Highscores For Hard Difficulty", screen, 0xffffff,0);	
 			startRow = 20;
+			hardToNormalButton.display = true;
 		}
 		
-		tRenderer.drawText_outline(230,130," Rank           Player Name            Time", screen, 0xf2989d,0);
-		tRenderer.drawText_outline(230,135,"_____________________________________________", screen, 0xaaaaaa,0);
+		tRenderer.drawText_outline(220,130," Rank           Player Name            Time", screen, 0xf2989d,0);
+		tRenderer.drawText_outline(220,135,"_____________________________________________", screen, 0xaaaaaa,0);
 		
 		for(int i = startRow; i < startRow + 10; i++) {
 			int color = 0xbbbbbb;
@@ -414,15 +446,15 @@ public class gameMenu {
 			if(i -startRow == 2)
 				color = 0xc99684;
 			if(i -startRow == 9)
-				tRenderer.drawText_outline(220,160 + (i -startRow)*25, "    " + (i -startRow + 1), screen, color,0);
+				tRenderer.drawText_outline(210,160 + (i -startRow)*25, "    " + (i -startRow + 1), screen, color,0);
 			else
-				tRenderer.drawText_outline(223,160 + (i -startRow)*25, "    " + (i -startRow + 1), screen, color,0);
+				tRenderer.drawText_outline(213,160 + (i -startRow)*25, "    " + (i -startRow + 1), screen, color,0);
 			
 			if(result[i][0] != null) {
 				int l = (30 - result[i][0].length())/2;
 				
-				tRenderer.drawText_outline(230,160 + (i -startRow)*25, "                                       " + result[i][1], screen, color,0);
-				tRenderer.drawText_outline(275 + l*7,160 + (i -startRow)*25, result[i][0], screen, color,0);
+				tRenderer.drawText_outline(220,160 + (i -startRow)*25, "                                       " + result[i][1], screen, color,0);
+				tRenderer.drawText_outline(265 + l*7,160 + (i -startRow)*25, result[i][0], screen, color,0);
 			}
 		}
 		
@@ -480,6 +512,16 @@ public class gameMenu {
 							}
 						}else if(buttons.get(i).name == "quitHighscoreMenu" || buttons.get(i).name == "confirmErrorLoadingHighscore") {
 							quitHighscoreMenu();
+						}else if(buttons.get(i).name == "normalToHardButton") {
+							highscoreLevel = 2;
+						}else if(buttons.get(i).name == "hardToNormalButton") {
+							highscoreLevel = 1;
+						}else if(buttons.get(i).name == "easyToNormalButton") {
+							highscoreLevel = 1;
+						}else if(buttons.get(i).name == "normalToEasyButton") {
+							highscoreLevel = 0;
+						}else if(buttons.get(i).name == "abortGame") {
+							menuStatus = mainMenu;
 						}
 						
 						postProcessingThread.buttonAction = buttons.get(i).name;
@@ -522,7 +564,15 @@ public class gameMenu {
 			screen[i] = screenBlurBuffer[i];
 	}
 	
-	public void drawMenuFrame(int width, int height) {
+	public void drawMenuFrame(int width, int height){
+		drawFrame(width, height, 0);
+	}
+	
+	public void drawMenuFrame(int width, int height, int topDistance){
+		drawFrame(width, height, topDistance);
+	}
+	
+	public void drawFrame(int width, int height, int topDistance) {
 	
 		
 		int R = 4;
@@ -537,7 +587,7 @@ public class gameMenu {
 		int G2 = 70;
 		int B2 = 99;
 		
-		int pos = (768 - width)/2 + 90 * 768;
+		int pos = (768 - width)/2 + (90+topDistance) * 768;
 		
 		
 		//background
@@ -566,43 +616,43 @@ public class gameMenu {
 		}
 		
 		//left 
-		pos = (768 - width)/2 + 90 * 768;
+		pos = (768 - width)/2 + (90+topDistance) * 768;
 		for(int i = 0; i < height + 17; i++) {
 			int pixel = screen[pos + i*768];
 			screen[pos + i*768] = pixel +  ((R/2) << 16 | (G/2) << 8 | (B/2));
 		}
 		
-		pos = (768 - width)/2 + 90 * 768+1;
+		pos = (768 - width)/2 + (90+topDistance) * 768+1;
 		for(int i = 0; i < height + 16; i++) {
 			screen[pos + i*768] = ((R1) << 16 | (G1) << 8 | (B1));
 		}
 		
-		pos = (768 - width)/2 + 90 * 768 + 2;
+		pos = (768 - width)/2 + (90+topDistance) * 768 + 2;
 		for(int i = 0; i < height + 15; i++) {
 			int pixel = screen[pos + i*768];
 			screen[pos + i*768] = pixel +  ((R/3) << 16 | (G/3) << 8 | (B/3));
 		}
 		
 		//bottom
-		pos = (768 - width)/2 + (90+height+14) * 768;
+		pos = (768 - width)/2 + ((90+topDistance)+height+14) * 768;
 		for(int i = 3; i < width - 18; i++) {
 			int pixel = screen[pos + i];
 			screen[pos + i] = pixel +  ((R/3) << 16 | (G/3) << 8 | (B/3));
 		}
 		
-		pos = (768 - width)/2 + (90+height+15) * 768;
+		pos = (768 - width)/2 + ((90+topDistance)+height+15) * 768;
 		for(int i = 2; i < width - 18; i++) {
 			screen[pos + i] = ((R1) << 16 | (G1) << 8 | (B1));
 		}
 		
-		pos = (768 - width)/2 + (90+height+16) * 768;
+		pos = (768 - width)/2 + ((90+topDistance)+height+16) * 768;
 		for(int i = 1; i < width - 18; i++) {
 			int pixel = screen[pos + i];
 			screen[pos + i] = pixel +  ((R/2) << 16 | (G/2) << 8 | (B/2));
 		}
 		
 		//bottom right
-		pos = (768 - width)/2 + width - 18 + (90+height+16) * 768;
+		pos = (768 - width)/2 + width - 18 + ((90+topDistance)+height+16) * 768;
 		for(int i = 2; i < 20; i++) {
 			int delta = (int)((17f/d)*i);
 			int pixel = screen[pos + i -2 + (-delta)*768];
@@ -625,36 +675,36 @@ public class gameMenu {
 		
 		
 		//right
-		pos = (768 - width)/2 + width -3 +  75 * 768;
+		pos = (768 - width)/2 + width -3 +  (75+topDistance) * 768;
 		for(int i = 0; i < height + 15; i++) {
 			int pixel = screen[pos + i*768];
 			screen[pos + i*768] = pixel +  ((R/2) << 16 | (G/2) << 8 | (B/2));
 		}
 		
-		pos = (768 - width)/2 + width -2+ 74 * 768;
+		pos = (768 - width)/2 + width -2+ (74+topDistance) * 768;
 		for(int i = 0; i < height + 16; i++) {
 			screen[pos + i*768] = ((R1) << 16 | (G1) << 8 | (B1));
 		}
 		
-		pos = (768 - width)/2 +  width - 1 + 73 * 768;
+		pos = (768 - width)/2 +  width - 1 + (73+topDistance) * 768;
 		for(int i = 0; i < height + 17; i++) {
 			int pixel = screen[pos + i*768];
 			screen[pos + i*768] = pixel +  ((R/3) << 16 | (G/3) << 8 | (B/3));
 		}
 		
 		//top
-		pos = (768 - width)/2 + (90-17) * 768;
+		pos = (768 - width)/2 + ((90+topDistance)-17) * 768;
 		for(int i = 20; i < width -1; i++) {
 			int pixel = screen[pos + i];
 			screen[pos + i] = pixel +  ((R/2) << 16 | (G/2) << 8 | (B/2));
 		}
 		
-		pos = (768 - width)/2 + (90-16) * 768;
+		pos = (768 - width)/2 + ((90+topDistance)-16) * 768;
 		for(int i = 20; i < width - 2; i++) {
 			screen[pos + i] = ((R1) << 16 | (G1) << 8 | (B1));
 		}
 		
-		pos = (768 - width)/2 + (90-15) * 768;
+		pos = (768 - width)/2 + ((90+topDistance)-15) * 768;
 		for(int i = 20; i < width - 3; i++) {
 			int pixel = screen[pos + i];
 			screen[pos + i] = pixel +  ((R/3) << 16 | (G/3) << 8 | (B/3));
@@ -662,7 +712,7 @@ public class gameMenu {
 		
 		
 		//top left
-		pos = (768 - width)/2 + 90 * 768;
+		pos = (768 - width)/2 + (90+topDistance) * 768;
 		for(int i = 0; i < 17; i++) {
 			int delta = (int)((d/17)*i);
 			for(int j = 20-delta-1; j < 20-delta; j++) {
@@ -671,7 +721,7 @@ public class gameMenu {
 			}
 		}
 		
-		pos = (768 - width)/2 + 2 + 90 * 768;
+		pos = (768 - width)/2 + 2 + (90+topDistance) * 768;
 		for(int i = 2; i < 17; i++) {
 			int delta = (int)((d/17)*i);
 			for(int j = 20-delta-1; j < 20-delta; j++) {
@@ -680,7 +730,7 @@ public class gameMenu {
 			}
 		}
 		
-		pos = (768 - width)/2 + 1 + 90 * 768;
+		pos = (768 - width)/2 + 1 + (90+topDistance) * 768;
 		for(int i = 0; i < 17; i++) {
 			int delta = (int)((d/17)*i);
 			for(int j = 20-delta-1; j < 20-delta; j++) {

@@ -68,6 +68,9 @@ public class AssetManager {
 	public rocket[] rockets;
 	public  polygon3D[] visionPolygon;
 	
+	public int numberOfPlayerBuildings;
+	public int numberOfAIBuildings;
+	
 	
 	public void init(){
 		
@@ -217,6 +220,8 @@ public class AssetManager {
 		addConstructionVehicle(new constructionVehicle(new vector(29.625f,-0.3f, 28.875f), 90, 1));	
 		constructionVehicles[1].expand();
 		
+		numberOfPlayerBuildings = 1;
+	    numberOfAIBuildings = 1;
 		
 		//testing only
 		for(int i = 0; i < 6; i ++){
@@ -245,7 +250,7 @@ public class AssetManager {
 				//harvester l = new harvester(new vector(i*0.25f+ 1.125f,-0.3f, 17.375f - 0.25f*j), 90, 0);
 				//addHarvester(l);
 				//l.hasMultiShotUpgrade = true;
-				lightTank l = new lightTank(new vector(i*0.25f + 1.125f,-0.3f, 0.5f + 18.625f + j*0.25f), 90, 0);
+				lightTank l = new lightTank(new vector(i*0.25f + 1.125f,-0.3f, 0.5f + 4.625f + j*0.25f), 90, 0);
 				
 				//l.attackRange = 1.99f;
 		
@@ -461,8 +466,68 @@ public class AssetManager {
 		}
 	}
 	
+	public void destoryAllUnit(int teamNo) {
+		for(int i = 0; i < lightTanks.length; i++){
+			if(lightTanks[i] != null && lightTanks[i].teamNo == teamNo){
+				lightTanks[i].currentHP = 0;
+				lightTanks[i].attacker = goldMines[0];
+			}
+		}
+		
+		for(int i = 0; i < rocketTanks.length; i++){
+			if(rocketTanks[i] != null && rocketTanks[i].teamNo == teamNo){
+				rocketTanks[i].currentHP = 0;
+				rocketTanks[i].attacker = goldMines[0];
+			}
+		}
+		
+		for(int i = 0; i < stealthTanks.length; i++){
+			if(stealthTanks[i] != null && stealthTanks[i].teamNo == teamNo){
+				stealthTanks[i].currentHP = 0;
+				stealthTanks[i].attacker = goldMines[0];
+			}
+		}
+		
+		for(int i = 0; i < heavyTanks.length; i++){
+			if(heavyTanks[i] != null && heavyTanks[i].teamNo == teamNo){
+				heavyTanks[i].currentHP = 0;
+				heavyTanks[i].attacker = goldMines[0];
+			}
+		}
+		
+		for(int i = 0; i < harvesters.length; i++){
+			if(harvesters[i] != null && harvesters[i].teamNo == teamNo){
+				harvesters[i].currentHP = 0;
+				harvesters[i].attacker = goldMines[0];
+			}
+		}
+	}
 	
 	public void updateAndDraw(){
+		
+		
+		//check end game condition
+		//game ends when either player or the AI have lost all the buildings and construction vehicles
+		if(mainThread.gameStarted) {
+			if(!mainThread.playerVictory && !mainThread.AIVictory && !mainThread.afterMatch) {
+				if(numberOfAIBuildings == 0) {
+					mainThread.playerVictory = true;
+					mainThread.gamePaused = true;
+					destoryAllUnit(1);
+				}else if(numberOfPlayerBuildings == 0) {
+					mainThread.AIVictory = true;
+					mainThread.gamePaused = true;
+					destoryAllUnit(0);
+				}
+				
+				
+			}
+			
+			if(mainThread.AIVictory || mainThread.playerVictory)
+				return;
+		}
+		
+		
 		polygonCount = 0;
 		visibleUnitCount = 0;
 		visionPolygonCount = 0;
@@ -565,11 +630,13 @@ public class AssetManager {
 		Terrain.update();
 		
 		
-		int numberOfPlayerBuildings = 0;
-		int numberOfAIBuildings = 0;
+		
 		//start drawing
 		//maximize the zbuffer value in the  area that are occupied by  UI, so the drawing process will not waste time filling the pixels which would eventually get overdrawn 
 		if(mainThread.gameStarted) {
+			numberOfPlayerBuildings = 0;
+			numberOfAIBuildings = 0;
+			
 			int start = 381 * 768 + 3;
 			int start2 = 381 * 768 + 635;
 			for(int y = 0; y < 131; y++){
@@ -747,17 +814,6 @@ public class AssetManager {
 				}
 			}
 			
-			//check end game condition
-			//game ends when either player or the AI have lost all the buildings and construction vehicles
-			if(!mainThread.playerVictory && !mainThread.AIVictory && !mainThread.afterMatch) {
-				if(numberOfAIBuildings == 0) {
-					mainThread.playerVictory = true;
-					mainThread.gamePaused = true;
-				}else if(numberOfPlayerBuildings == 0) {
-					mainThread.AIVictory = true;
-					mainThread.gamePaused = true;
-				}
-			}
 		}
 	
 	}

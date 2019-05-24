@@ -57,34 +57,44 @@ public class highscoreManager implements Runnable{
 							stmt = connect.createStatement();
 							ResultSet rs=stmt.executeQuery("select * from highscore where skillLevel = 0 order by finishingTime");  
 							while(rs.next()) {
-								myResult[numOfRows][0] = rs.getString(1);
-								myResult[numOfRows][1] = secondsToString(rs.getInt(2));
-							
-								numOfRows++;
-								if(numOfRows == 10)
-									break;
+								String playerName = rs.getString(1);
+								if(!hasDuplicateName(0, numOfRows, myResult, playerName)) {
+								
+									myResult[numOfRows][0] = playerName;
+									myResult[numOfRows][1] = secondsToString(rs.getInt(2));
+								
+									numOfRows++;
+									if(numOfRows == 10)
+										break;
+								}
 							}
 							
 							numOfRows = 10;
 							rs=stmt.executeQuery("select * from highscore where skillLevel = 1 order by finishingTime");  
 							while(rs.next()) {
-								myResult[numOfRows][0] = rs.getString(1);
-								myResult[numOfRows][1] = secondsToString(rs.getInt(2));
-							
-								numOfRows++;
-								if(numOfRows == 20)
-									break;
+								String playerName = rs.getString(1);
+								if(!hasDuplicateName(10, numOfRows, myResult, playerName)) {
+									myResult[numOfRows][0] = rs.getString(1);
+									myResult[numOfRows][1] = secondsToString(rs.getInt(2));
+								
+									numOfRows++;
+									if(numOfRows == 20)
+										break;
+								}
 							}
 							
 							numOfRows = 20;
 							rs=stmt.executeQuery("select * from highscore where skillLevel = 2 order by finishingTime");  
 							while(rs.next()) {
-								myResult[numOfRows][0] = rs.getString(1);
-								myResult[numOfRows][1] = secondsToString(rs.getInt(2));
-							
-								numOfRows++;
-								if(numOfRows == 30)
-									break;
+								String playerName = rs.getString(1);
+								if(!hasDuplicateName(20, numOfRows, myResult, playerName)) {
+									myResult[numOfRows][0] = rs.getString(1);
+									myResult[numOfRows][1] = secondsToString(rs.getInt(2));
+								
+									numOfRows++;
+									if(numOfRows == 30)
+										break;
+								}
 							}
 							
 							result = myResult;
@@ -115,6 +125,16 @@ public class highscoreManager implements Runnable{
 			counter++;
 		}
 		
+	}
+	
+	public boolean hasDuplicateName(int start,  int current, String[][] myResult,  String name) {
+		for(int i = start; i < current; i++) {
+			if(myResult[i][0].toLowerCase().equals(name.toLowerCase())) {
+				return true;
+			}
+		}
+		
+		return false;
 	}
 	
 	public String secondsToString(int pTime) {

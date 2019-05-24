@@ -318,8 +318,12 @@ public class inputHandler {
 		}else {
 			//handle event when game is paused
 			if(((escapeKeyPressed && escapePressedCooldown == 0)|| mainThread.buttonAction == "unpauseGame") &&  mainThread.gamePaused && mainThread.gameStarted && mainThread.menuStatus != mainThread.helpMenu) {
-				mainThread.gamePaused = false; //if game is paused, unpause the game when esc key is hit
-				escapePressedCooldown = 5;
+				
+				if(!mainThread.AIVictory && ! mainThread.playerVictory) {
+					mainThread.gamePaused = false; //if game is paused, unpause the game when esc key is hit
+					escapePressedCooldown = 5;
+				}
+				
 			}
 			
 			//quit the game when the quit button is pressed
@@ -359,6 +363,10 @@ public class inputHandler {
 				mainThread.gameStarted = false;
 				mainThread.gameFrame = 0;
 				mainThread.gamePaused = false;
+				mainThread.AIVictory = false;
+				mainThread.playerVictory = false;
+				mainThread.afterMatch = false;
+				mainThread.fogOfWarDisabled = false;
 				mainThread.theAssetManager.destoryAsset();
 				
 				camera.MOVE_LEFT = false;
@@ -367,6 +375,14 @@ public class inputHandler {
 				camera.MOVE_DOWN = false;
 				camera.TURN_LEFT = false;
 				camera.TURN_RIGHT = false;
+			}
+			
+			if(mainThread.gameStarted && mainThread.buttonAction == "backToMap") {
+				mainThread.AIVictory = false;
+				mainThread.playerVictory = false;
+				mainThread.afterMatch = true;
+				mainThread.gamePaused = false;
+				mainThread.fogOfWarDisabled = true;
 			}
 			
 			//toggle mouse capture mode

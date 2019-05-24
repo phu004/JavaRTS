@@ -216,8 +216,12 @@ public class postProcessingThread implements Runnable{
 				isWorking = true;
 			}
 			
-			if(!gamePaused)
+			
+			if(!gamePaused) {
 				doPostProcesssing();
+				
+			}
+		
 
 			theGameMenu.updateAndDraw(currentScreen, gameStarted, gamePaused, playerVictory, AIVictory);
 			

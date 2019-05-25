@@ -227,6 +227,9 @@ public class mainThread extends JFrame implements KeyListener, ActionListener, M
 			currentMouseX = MouseInfo.getPointerInfo().getLocation().x;
 			currentMouseY = MouseInfo.getPointerInfo().getLocation().y;
 			
+			centerScreenX = getLocationOnScreen().x + 384;
+			centerScreenY = getLocationOnScreen().y + 256;
+			
 			int deltaX = currentMouseX - centerScreenX;
 			int deltaY = currentMouseY - centerScreenY;
 		

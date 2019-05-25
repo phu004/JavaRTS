@@ -1067,7 +1067,7 @@ public class heavyTank extends solidObject{
 			
 			
 			if(targetObject.type == 6)
-				theDamage = 20;
+				theDamage = myDamage/3*4;
 			
 			firingPosition.set(0.022f, -0.4f, 0.2f);
 			firingPosition.rotate_XZ(360 - attackAngle);
@@ -1091,7 +1091,7 @@ public class heavyTank extends solidObject{
 		if(attackCoolDown == myAttackCooldown - 8 && targetObject.currentHP >0 && hasLineOfSightToTarget){
 			
 			if(targetObject.type == 6)
-				theDamage = 20;
+				theDamage = myDamage/3*4;
 			
 			firingPosition.set(-0.022f, -0.4f, 0.2f);
 			firingPosition.rotate_XZ(360 - attackAngle);

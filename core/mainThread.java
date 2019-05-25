@@ -603,7 +603,7 @@ public class mainThread extends JFrame implements KeyListener, ActionListener, M
 				
 				if(capturedMouse && !mouseLeftScreen && !focusLost) {
 					currentMouseX = MouseInfo.getPointerInfo().getLocation().x;
-					currentMouseY = MouseInfo.getPointerInfo().getLocation().y;
+					currentMouseY = MouseInfo.getPointerInfo().getLocation().y; 
 					
 					int deltaX = currentMouseX - centerScreenX;
 					int deltaY = currentMouseY - centerScreenY;

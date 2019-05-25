@@ -14,13 +14,17 @@ public class highscoreManager implements Runnable{
 	public int task;
 	public static final int none = 0;
 	public static final int loadHighscores = 1;
+	public static final int uploadScore = 2;
 	
 	public boolean isSleeping;
+	
+	public String playerName;
 	
 	public String[][] result;
 	
 	public highscoreManager(){
 		status = processing;
+		playerName = "";
 	}
 
 
@@ -57,7 +61,7 @@ public class highscoreManager implements Runnable{
 							stmt = connect.createStatement();
 							ResultSet rs=stmt.executeQuery("select * from highscore where skillLevel = 0 order by finishingTime");  
 							while(rs.next()) {
-								String playerName = rs.getString(1);
+								playerName = rs.getString(1);
 								if(!hasDuplicateName(0, numOfRows, myResult, playerName)) {
 								
 									myResult[numOfRows][0] = playerName;
@@ -72,7 +76,7 @@ public class highscoreManager implements Runnable{
 							numOfRows = 10;
 							rs=stmt.executeQuery("select * from highscore where skillLevel = 1 order by finishingTime");  
 							while(rs.next()) {
-								String playerName = rs.getString(1);
+								playerName = rs.getString(1);
 								if(!hasDuplicateName(10, numOfRows, myResult, playerName)) {
 									myResult[numOfRows][0] = rs.getString(1);
 									myResult[numOfRows][1] = secondsToString(rs.getInt(2));
@@ -86,7 +90,7 @@ public class highscoreManager implements Runnable{
 							numOfRows = 20;
 							rs=stmt.executeQuery("select * from highscore where skillLevel = 2 order by finishingTime");  
 							while(rs.next()) {
-								String playerName = rs.getString(1);
+								playerName = rs.getString(1);
 								if(!hasDuplicateName(20, numOfRows, myResult, playerName)) {
 									myResult[numOfRows][0] = rs.getString(1);
 									myResult[numOfRows][1] = secondsToString(rs.getInt(2));
@@ -98,13 +102,35 @@ public class highscoreManager implements Runnable{
 							}
 							
 							result = myResult;
+							playerName ="";
 							
-						} catch (SQLException e) {
+						} catch (Exception e) {
 							// TODO Auto-generated catch block
 							e.printStackTrace();
 							status = error;
 							result = null;
+							playerName = "";
 						}  
+					}else if(task == uploadScore) {
+						
+						try {
+							
+							// the mysql insert statement
+						    String query = " insert into highscore" + " values (?, ?, ?)";
+						    PreparedStatement preparedStmt = connect.prepareStatement(query);
+						    
+						    preparedStmt.setString (1, playerName);
+						    preparedStmt.setInt (2, (int)(mainThread.gameFrame*0.025));
+						    preparedStmt.setInt  (3, mainThread.ec.difficulty);
+						    preparedStmt.execute();
+							
+							
+						}catch (Exception e) {
+							// TODO Auto-generated catch block
+							e.printStackTrace();
+							status = error;
+							playerName = "";
+						} 
 					}
 					
 					if(status != error)

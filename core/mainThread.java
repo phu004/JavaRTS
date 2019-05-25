@@ -66,6 +66,7 @@ public class mainThread extends JFrame implements KeyListener, ActionListener, M
 	
 	public static boolean capturedMouse, mouseLeftScreen, focusLost;
 	public static int mouseX, mouseY, centerScreenX, centerScreenY, currentMouseX, currentMouseY;
+	public static char currentInputChar;
 	
 	public mainThread(){
 		setTitle("Battle Tank 3");

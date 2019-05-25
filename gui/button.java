@@ -11,6 +11,7 @@ public class button {
 	public int actionCooldown;
 	public int red, green, blue;
 	public boolean disabled;
+	public boolean messageMode;
 	
 	public button(String name, String text, int xPos, int yPos, int width, int height) {
 		this.name = name;
@@ -30,7 +31,7 @@ public class button {
 	}
 	
 	public void draw(int[] screen) {
-		if(disabled) {
+		if(disabled && !messageMode) {
 			red = 55;
 			green = 55;
 			blue = 55;

@@ -75,7 +75,7 @@ public class postProcessingThread implements Runnable{
 	
 	public static textRenderer theTextRenderer;
 	
-	public static boolean gamePaused, gameStarted, playerVictory, AIVictory;
+	public static boolean gamePaused, gameStarted, playerVictory, AIVictory, afterMatch;
 	
 	public static int mouse_x, mouse_y;
 	public static boolean leftMouseButtonReleased, escapeKeyPressed;
@@ -84,6 +84,8 @@ public class postProcessingThread implements Runnable{
 	public static String timeString;
 	public static boolean fogOfWarDisabled;
 	public static boolean capturedMouse;
+	
+	public static char currentInputChar;
 	
 	//A pool of vectors which will be used for vector arithmetic
 	public static vector 
@@ -561,123 +563,125 @@ public class postProcessingThread implements Runnable{
 			
 			
 			//reset fogOfWarBuffer
-			fogOfWarBuffer[0] = 0;
-			for(int i = 1; i < 393216; i+=i){
-				System.arraycopy(fogOfWarBuffer, 0, fogOfWarBuffer, i, 393216 - i >= i ? i : 393216 - i);
-				
-			}
-			
-			for(int i = 0; i < 512; i++){
-				xMin[i] = 378;
-				xMax[i] = 378;
-				
-			}
-			
-			float[] list;
-			//shaffule vision polygons
-			for(int i = 0; i < 400; i++){
-				temp = (gameData.getRandom() * visionPolygonCount) >> 10;
-				temp1 = (gameData.getRandom() * visionPolygonCount) >> 10;
-					
-				list = visionPolygonInfo[temp];
-				visionPolygonInfo[temp] = visionPolygonInfo[temp1];
-				visionPolygonInfo[temp1] = list;
-			}
-			
-			//update vision polygons
-			for(int i = 0; i < visionPolygonCount; i++){
-				tempVector1.set(visionPolygonInfo[i][1], visionPolygonInfo[i][2], visionPolygonInfo[i][3]);
-				if(visionPolygonInfo[i][0] != 0){
-					poly = mainThread.theAssetManager.visionPolygon[1];
-				}else{
-					poly = mainThread.theAssetManager.visionPolygon[(int)visionPolygonInfo[i][4]];
-				}
-				tempVector1.subtract(poly.centre);
-				for(int j = 0; j < 48; j++)
-					poly.vertex3D[j].add(tempVector1);
-				
-				
-				poly.centre.add(tempVector1);
-				poly.update_visionPolygon();
-				
-				rasterize(poly);	
-			}
-			
-			
-			
-			//blur fog of war buffer, use cross shaped kernel
-			int radius = 16;
-			int radiusBit = 5;
-			int destIndex = 0;
-			int index = 0;
-			for(int i = 0; i < 512; i++){
-				//init the first element in the row
-				temp = 0;
-				destIndex = i + 512 * 767 ;
-				
-				for(int j = 0; j < radius -1; j++){
-					temp+=fogOfWarBuffer[index + j];
-				}
-				temp+=43*radius;
-				fogOfWarBuffer2[destIndex] =  (byte)(temp >> radiusBit);
-				index++;
-				destIndex-=512;
-				
-				for(int j = 1; j < radius; j++, index++, destIndex -=512){
-					temp = temp + fogOfWarBuffer[index + radius -2] - 43;
-					fogOfWarBuffer2[destIndex] =  (byte)(temp >> radiusBit);
-				}
-				
-				for(int j = radius; j < 768 - radius; j++, index++, destIndex -=512){
-					temp = temp + fogOfWarBuffer[index + radius -2] - fogOfWarBuffer[index - radius];
-					fogOfWarBuffer2[destIndex] =  (byte)(temp >> radiusBit);
+			if(!afterMatch) {
+				fogOfWarBuffer[0] = 0;
+				for(int i = 1; i < 393216; i+=i){
+					System.arraycopy(fogOfWarBuffer, 0, fogOfWarBuffer, i, 393216 - i >= i ? i : 393216 - i);
 					
 				}
-				for(int j = 0; j < radius; j++, index++, destIndex -=512){
-					temp = temp - fogOfWarBuffer[index - radius] + 43;
+				
+				for(int i = 0; i < 512; i++){
+					xMin[i] = 378;
+					xMax[i] = 378;
+					
+				}
+				
+				float[] list;
+				//shaffule vision polygons
+				for(int i = 0; i < 400; i++){
+					temp = (gameData.getRandom() * visionPolygonCount) >> 10;
+					temp1 = (gameData.getRandom() * visionPolygonCount) >> 10;
+						
+					list = visionPolygonInfo[temp];
+					visionPolygonInfo[temp] = visionPolygonInfo[temp1];
+					visionPolygonInfo[temp1] = list;
+				}
+				
+				//update vision polygons
+				for(int i = 0; i < visionPolygonCount; i++){
+					tempVector1.set(visionPolygonInfo[i][1], visionPolygonInfo[i][2], visionPolygonInfo[i][3]);
+					if(visionPolygonInfo[i][0] != 0){
+						poly = mainThread.theAssetManager.visionPolygon[1];
+					}else{
+						poly = mainThread.theAssetManager.visionPolygon[(int)visionPolygonInfo[i][4]];
+					}
+					tempVector1.subtract(poly.centre);
+					for(int j = 0; j < 48; j++)
+						poly.vertex3D[j].add(tempVector1);
+					
+					
+					poly.centre.add(tempVector1);
+					poly.update_visionPolygon();
+					
+					rasterize(poly);	
+				}
+				
+				
+				
+				//blur fog of war buffer, use cross shaped kernel
+				int radius = 16;
+				int radiusBit = 5;
+				int destIndex = 0;
+				int index = 0;
+				for(int i = 0; i < 512; i++){
+					//init the first element in the row
+					temp = 0;
+					destIndex = i + 512 * 767 ;
+					
+					for(int j = 0; j < radius -1; j++){
+						temp+=fogOfWarBuffer[index + j];
+					}
+					temp+=43*radius;
 					fogOfWarBuffer2[destIndex] =  (byte)(temp >> radiusBit);
-				}
-			}
-			
-			destIndex = 0;
-			index = 0;
-			for(int i = 0; i < 768; i++){
-				//init the first element in the row
-				temp = 0;
-				destIndex = 767 - i;
-				
-				for(int j = 0; j < radius -1 ; j++){
-					temp+=fogOfWarBuffer2[index + j];
-				}
-				temp+=43*radius;
-				fogOfWarBuffer[destIndex] =  (byte)(temp >> radiusBit);
-				index++;
-				destIndex+=768;
-				
-				for(int j = 1; j < radius; j++, index++, destIndex +=768){
-					temp = temp + fogOfWarBuffer2[index + radius -2] - 43;
-					fogOfWarBuffer[destIndex] =  (byte)(temp >> radiusBit);
+					index++;
+					destIndex-=512;
+					
+					for(int j = 1; j < radius; j++, index++, destIndex -=512){
+						temp = temp + fogOfWarBuffer[index + radius -2] - 43;
+						fogOfWarBuffer2[destIndex] =  (byte)(temp >> radiusBit);
+					}
+					
+					for(int j = radius; j < 768 - radius; j++, index++, destIndex -=512){
+						temp = temp + fogOfWarBuffer[index + radius -2] - fogOfWarBuffer[index - radius];
+						fogOfWarBuffer2[destIndex] =  (byte)(temp >> radiusBit);
+						
+					}
+					for(int j = 0; j < radius; j++, index++, destIndex -=512){
+						temp = temp - fogOfWarBuffer[index - radius] + 43;
+						fogOfWarBuffer2[destIndex] =  (byte)(temp >> radiusBit);
+					}
 				}
 				
-				for(int j = radius; j < 512 - radius; j++, index++, destIndex +=768){
-					temp = temp + fogOfWarBuffer2[index + radius -2] - fogOfWarBuffer2[index - radius];
+				destIndex = 0;
+				index = 0;
+				for(int i = 0; i < 768; i++){
+					//init the first element in the row
+					temp = 0;
+					destIndex = 767 - i;
+					
+					for(int j = 0; j < radius -1 ; j++){
+						temp+=fogOfWarBuffer2[index + j];
+					}
+					temp+=43*radius;
 					fogOfWarBuffer[destIndex] =  (byte)(temp >> radiusBit);
+					index++;
+					destIndex+=768;
+					
+					for(int j = 1; j < radius; j++, index++, destIndex +=768){
+						temp = temp + fogOfWarBuffer2[index + radius -2] - 43;
+						fogOfWarBuffer[destIndex] =  (byte)(temp >> radiusBit);
+					}
+					
+					for(int j = radius; j < 512 - radius; j++, index++, destIndex +=768){
+						temp = temp + fogOfWarBuffer2[index + radius -2] - fogOfWarBuffer2[index - radius];
+						fogOfWarBuffer[destIndex] =  (byte)(temp >> radiusBit);
+					}
+					for(int j = 0; j < radius; j++, index++, destIndex +=768){
+						temp  = temp - fogOfWarBuffer2[index - radius] + 43;
+						fogOfWarBuffer[destIndex] =  (byte)(temp >> radiusBit);
+					}
 				}
-				for(int j = 0; j < radius; j++, index++, destIndex +=768){
-					temp  = temp - fogOfWarBuffer2[index - radius] + 43;
-					fogOfWarBuffer[destIndex] =  (byte)(temp >> radiusBit);
-				}
-			}
-			
-			
-			//blend fog of war to the frame buffer
-			for(int i = 0; i < 512 * 768; i++){
-				temp = fogOfWarBuffer[i];
-				if(temp < 112) {
-					r = (((currentScreen[i] & 0xff0000) >> 16) * (temp + 143)) >> 8;
-					g = (((currentScreen[i] & 0xff00) >> 8) * (temp + 143)) >> 8 ;
-					b = ((currentScreen[i] & 0xff) * (temp + 143)) >> 8;
-					currentScreen[i] = r << 16 | g << 8 | b;
+				
+				
+				//blend fog of war to the frame buffer
+				for(int i = 0; i < 512 * 768; i++){
+					temp = fogOfWarBuffer[i];
+					if(temp < 112) {
+						r = (((currentScreen[i] & 0xff0000) >> 16) * (temp + 143)) >> 8;
+						g = (((currentScreen[i] & 0xff00) >> 8) * (temp + 143)) >> 8 ;
+						b = ((currentScreen[i] & 0xff) * (temp + 143)) >> 8;
+						currentScreen[i] = r << 16 | g << 8 | b;
+					}
 				}
 			}
 		
@@ -969,11 +973,12 @@ public class postProcessingThread implements Runnable{
 		gameStarted = mainThread.gameStarted;
 		playerVictory = mainThread.playerVictory;
 		AIVictory = mainThread.AIVictory;
+		afterMatch = mainThread.afterMatch;
 		
 		timeString = mainThread.timeString;
 		fogOfWarDisabled = mainThread.fogOfWarDisabled;
 		capturedMouse = mainThread.capturedMouse;
-		
+		currentInputChar = mainThread.currentInputChar;
 		
 		
 		currentScreen = mainThread.screen;

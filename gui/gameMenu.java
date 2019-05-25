@@ -27,7 +27,7 @@ public class gameMenu {
 	
 	public button newGame, unpauseGame, showHelp, showOptions, showHighscores, quitGame, abortGame, easyGame, normalGame, hardGame, quitDifficulty, quitHelpMenu, quitOptionMenu, quitHighscoreMenu, nextPage, previousPage,
 	              enableMouseCapture, disableMouseCapture, enableFogOfWar, disableFogOfWar, confirmErrorLoadingHighscore, normalToHardButton, normalToEasyButton, hardToNormalButton, easyToNormalButton,
-	              backToMapDefeat, leaveGameDefeat;
+	              backToMapDefeat, leaveGameDefeat, backToMapVictory, leaveGameVictory, uploadScore;
 	
 	public char[] easyDescription, normalDescription, hardDescription, helpPage1, helpPage2, helpPage3, helpPage4, mouseMode;
 	
@@ -37,6 +37,11 @@ public class gameMenu {
 	public ArrayList<button> buttons = new ArrayList<button>();
 	
 	public highscoreManager theHighscoreManager;
+	
+	public char[] name;
+	public String nameString;
+	public static boolean uploadingScore, scoreUploaded;
+	
 	
 	public void init() {
 		if(titleImage == null) {
@@ -54,6 +59,9 @@ public class gameMenu {
 		t.start();
 		
 		highscoreLevel = 1;
+		name = new char[32]; 
+		for(int i = 0; i< 32; i++)
+			name[i] = 255;
 		
 		String folder = "../images/";
 		loadTexture(folder + "title.png", titleImage, 216, 35);
@@ -191,12 +199,21 @@ public class gameMenu {
 		
 		leaveGameDefeat =  new button("abortGame", "Leave game", 440, 235, 120, 25);
 		buttons.add(leaveGameDefeat);
+		
+		backToMapVictory =  new button("backToMap", "Back to Map", 135, 315, 120, 25);
+		buttons.add(backToMapVictory);
+		
+		leaveGameVictory =  new button("abortGame", "Leave game", 515, 315, 120, 25);
+		buttons.add(leaveGameVictory);
+		
+		uploadScore = new button("uploadScore", "Upload", 530, 250, 90, 25);
+		buttons.add(uploadScore);
 	}
 	
 	
 	public void updateAndDraw(int[] screen, boolean gameStarted, boolean gamePaused, boolean playerVictory, boolean AIVictory) {
 		this.screen = screen;
-	
+		textRenderer tRenderer = postProcessingThread.theTextRenderer;
 		
 		if(gamePaused){
 			gameSuspendCount++;
@@ -226,11 +243,103 @@ public class gameMenu {
 			if(AIVictory) {
 				
 				drawMenuFrame(400, 100, 70);	
-				textRenderer tRenderer = postProcessingThread.theTextRenderer;
-				tRenderer.drawMenuText(320,178,"You are Defeated! ".toCharArray(), screen, 255,255,255, 0);
+				tRenderer.drawMenuText(320,178,"You Are Defeated!".toCharArray(), screen, 255,255,255, 0);
 				
 				backToMapDefeat.display = true;
 				leaveGameDefeat.display = true;
+			}else if(playerVictory) {
+				drawMenuFrame(550, 210, 40);	
+				tRenderer.drawMenuText(320,138,"You are Victorious!".toCharArray(), screen, 255,255,255, 0);
+				
+				String difficulty = "Normal";
+				if(mainThread.ec.difficulty == 0)
+					difficulty = "Easy";
+				if(mainThread.ec.difficulty == 2)
+					difficulty = "Hard";
+				tRenderer.drawMenuText(205,198,("Difficulty:  "+ difficulty).toCharArray(), screen, 255,255,255, 0);
+				
+				String time = mainThread.timeString;
+				
+				tRenderer.drawMenuText(232,228,("Time:  "+ time).toCharArray(), screen, 255,255,255, 0);
+				
+				
+				if(!postProcessingThread.fogOfWarDisabled) {
+					tRenderer.drawMenuText(185,258,("Your Name:").toCharArray(), screen, 255,255,255, 0);
+					uploadScore.display = true;
+					uploadScore.disabled = true;
+					
+					//only accept 0-9, A-Z, a-Z, space and backspace characters
+					char c = postProcessingThread.currentInputChar;
+					
+					if(!uploadingScore && !scoreUploaded) {
+						if((c >= 48 && c < 57) || (c >= 65 && c <= 90) || (c >= 97 && c <= 122) || c == 8 || c == 32) {
+							if(c == 8) {
+								for(int i = 31; i >= 0; i--) {
+									if(name[i] != 255) {
+										name[i] = 255;
+										break;
+									}
+								}
+							}else {
+								for(int i = 0; i < 32; i++) {
+									if(name[i] == 255) {
+										name[i] = c;
+										break;
+									}
+								}
+							}
+						}
+					}
+					
+					//check if upload condition is met
+					for(int i = 0; i < 32; i++) {
+						if((name[i] >= 48 && name[i] < 57) || (name[i] >= 65 && name[i] <= 90) || (name[i] >= 97 && name[i] <= 122)) {
+							uploadScore.disabled = false;
+						}
+					}
+					
+					//draw name string
+					nameString = "";
+					for(int i = 0; i < 32; i++) {
+						if(name[i] != 255) {
+							nameString+=name[i];
+						}else {
+							break;
+						}
+					}
+					tRenderer.drawText_outline(282, 258, nameString, screen, 0xdddddd, 0);
+					
+					//draw place marker
+					if(postProcessingThread.frameIndex%30 > 15 && !uploadingScore && !scoreUploaded)
+						tRenderer.drawText_outline(282+nameString.length()*7, 258, "_", screen, 0xdddddd, 0);
+					
+					if(uploadingScore || scoreUploaded) {
+						uploadScore.disabled = true;
+					}
+					
+					if(uploadingScore && !scoreUploaded) {
+						if(theHighscoreManager.status == theHighscoreManager.idle && theHighscoreManager.playerName.equals("")) {
+							theHighscoreManager.playerName = nameString;
+							theHighscoreManager.task = theHighscoreManager.uploadScore;
+							
+						}else if(theHighscoreManager.status == theHighscoreManager.error) {
+							
+						}else if(theHighscoreManager.status == theHighscoreManager.idle && theHighscoreManager.task== theHighscoreManager.none && !theHighscoreManager.playerName.equals("")) {
+							scoreUploaded = true;
+							theHighscoreManager.playerName = "";
+						}
+					}
+					
+					if(scoreUploaded) {
+						uploadScore.text = "Uploaded!";
+						uploadScore.theText = uploadScore.text.toCharArray();
+						uploadScore.messageMode = true;
+					}
+					
+				}
+				
+				backToMapVictory.display = true;
+				leaveGameVictory.display = true;
 			}
 			
 			updateButtons();
@@ -277,8 +386,7 @@ public class gameMenu {
 			}else {
 				drawTitle();
 				drawMenuFrame(420, 260);
-				
-				textRenderer tRenderer = postProcessingThread.theTextRenderer;
+			
 				easyGame.display = true;
 				tRenderer.drawMenuText(285,118,easyDescription, screen, 255,255,255, 0);
 				
@@ -303,8 +411,6 @@ public class gameMenu {
 				
 				drawTitle();
 				drawMenuFrame(620, 380);
-				
-				textRenderer tRenderer = postProcessingThread.theTextRenderer;
 				
 				if(currentHelpPage == 0) {
 					tRenderer.drawMenuText(82,90,helpPage1, screen, 255,255,255,0);
@@ -342,7 +448,6 @@ public class gameMenu {
 				drawTitle();
 				drawMenuFrame(520, 380);
 				
-				textRenderer tRenderer = postProcessingThread.theTextRenderer;
 				tRenderer.drawMenuText(135,95,mouseMode, screen, 255,255,255,0);
 				
 				if(postProcessingThread.capturedMouse == true) {
@@ -383,8 +488,6 @@ public class gameMenu {
 				
 				drawTitle();
 				drawMenuFrame(420, 360);
-				
-				textRenderer tRenderer = postProcessingThread.theTextRenderer;
 				
 				if(theHighscoreManager.status == theHighscoreManager.processing) {
 					drawLoadingScreen(screen);
@@ -522,6 +625,15 @@ public class gameMenu {
 							highscoreLevel = 0;
 						}else if(buttons.get(i).name == "abortGame") {
 							menuStatus = mainMenu;
+							for(int j = 0; j< 32; j++)
+								name[j] = 255;
+							scoreUploaded = false;
+							uploadingScore = false;
+							uploadScore.text = "Upload";
+							uploadScore.theText = uploadScore.text.toCharArray();
+							uploadScore.messageMode = false;
+						}else if(buttons.get(i).name == "uploadScore") {
+							uploadingScore = true;
 						}
 						
 						postProcessingThread.buttonAction = buttons.get(i).name;

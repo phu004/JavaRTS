@@ -51,11 +51,13 @@ public class inputHandler {
 		//read input char
 		int theCounter = inputCounter;  
 		
+		mainThread.currentInputChar = 255;
+		
 		//handle over flow
 		if(inputBufferIndex > theCounter){
 			while(inputBufferIndex < 1024){
 				char c = inputBuffer[inputBufferIndex];
-				
+				mainThread.currentInputChar = c;
 				
 				
 				if(c == 's' || c == 'S'){
@@ -91,7 +93,7 @@ public class inputHandler {
 		
 		while(inputBufferIndex < theCounter){
 			char c = inputBuffer[inputBufferIndex];
-			
+			mainThread.currentInputChar = c;
 			
 			if(c == 's' || c == 'S'){
 				S_pressed = true;
@@ -124,6 +126,7 @@ public class inputHandler {
 		if(keyReleaseBufferIndex > theCounter){
 			while(keyReleaseBufferIndex < 1024){
 				char c = keyReleaseBuffer[keyReleaseBufferIndex];
+				
 				if(c == 's' || c == 'S'){
 					S_pressed = false;
 				}
@@ -148,6 +151,7 @@ public class inputHandler {
 		}
 		while(keyReleaseBufferIndex < theCounter){
 			char c = keyReleaseBuffer[keyReleaseBufferIndex];
+			
 			if(c == 's' || c == 'S'){
 				S_pressed = false;
 			}
@@ -168,6 +172,7 @@ public class inputHandler {
 			
 			keyReleaseBufferIndex++;
 		}
+		
 		
 		
 		//handle input when game is running
@@ -366,7 +371,6 @@ public class inputHandler {
 				mainThread.AIVictory = false;
 				mainThread.playerVictory = false;
 				mainThread.afterMatch = false;
-				mainThread.fogOfWarDisabled = false;
 				mainThread.theAssetManager.destoryAsset();
 				
 				camera.MOVE_LEFT = false;
@@ -382,7 +386,7 @@ public class inputHandler {
 				mainThread.playerVictory = false;
 				mainThread.afterMatch = true;
 				mainThread.gamePaused = false;
-				mainThread.fogOfWarDisabled = true;
+				
 			}
 			
 			//toggle mouse capture mode
@@ -423,6 +427,8 @@ public class inputHandler {
 		inputCounter++;
 		if(inputCounter == 1024)
 			inputCounter = 0;
+		
+		
 	}
 	
 	public static void handleKeyRelease(char c){

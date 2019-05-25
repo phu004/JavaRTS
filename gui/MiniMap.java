@@ -61,7 +61,7 @@ public class MiniMap {
 		drawBackground(screen, minimapBitmap);
 		
 		//remove fog of war for testing
-		if(postProcessingThread.fogOfWarDisabled)
+		if(postProcessingThread.fogOfWarDisabled || postProcessingThread.afterMatch)
 			for(int i = 0; i < minimapBitmap.length; i++)
 				minimapBitmap[i] = true;
 		
@@ -304,6 +304,9 @@ public class MiniMap {
 		
 		for(int i = 0 ;i < tempBitmap.length; i++){
 			tempBitmap[i] = false;
+			
+			if(postProcessingThread.afterMatch)
+				tempBitmap[i] = true;
 		}
 		
 		boolean[] vision;
@@ -352,7 +355,6 @@ public class MiniMap {
 				}
 			}
 		}
-		
 		
 		
 		for(int y = 0; y < 128; y++){

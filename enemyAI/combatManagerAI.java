@@ -70,6 +70,11 @@ public class combatManagerAI {
 		this.theBaseInfo = mainThread.ec.theBaseInfo;
 	
 		standardAttackTime = 500;
+		
+		if(mainThread.ec.difficulty  == 2)
+			standardAttackTime = 630;
+			
+			
 		rushAttackTime = 250 + gameData.getRandom()/5;
 		
 		goldMines = mainThread.theAssetManager.goldMines;

@@ -33,33 +33,39 @@ public class highscoreManager implements Runnable{
 		// TODO Auto-generated method stub
 		while(true) {
 			if(counter == 0) {
-				try {
-					
-					connect = DriverManager.getConnection("jdbc:mysql://remotemysql.com/TDYAgrQ1Ny?useSSL=false",  "TDYAgrQ1Ny", "SrexYcsOSv");
-					
+				
 					status = idle;
 					
-				} catch (Exception e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
-					status = error;
-				}
+				
 			}
 			
 			if(status == idle) {
 				
 				if(task !=  none) {
 					status = processing;
+					Statement stmt = null;
+					ResultSet rs = null;
+					
+					try {
+						
+						connect = DriverManager.getConnection("jdbc:mysql://remotemysql.com/TDYAgrQ1Ny?useSSL=false",  "TDYAgrQ1Ny", "SrexYcsOSv");
+						
+					} catch (Exception e) {
+						// TODO Auto-generated catch block
+						e.printStackTrace();
+						status = error;
+					}
+					
 					
 					if(task == loadHighscores) {
 						//get high scores from remote database
-						Statement stmt;
+						
 						try {
 							String[][] myResult = new String[30][2];
 							int numOfRows = 0;
 							
 							stmt = connect.createStatement();
-							ResultSet rs=stmt.executeQuery("select * from highscore where skillLevel = 0 order by finishingTime");  
+							rs=stmt.executeQuery("select * from highscore where skillLevel = 0 order by finishingTime");  
 							while(rs.next()) {
 								playerName = rs.getString(1);
 								if(!hasDuplicateName(0, numOfRows, myResult, playerName)) {
@@ -72,6 +78,7 @@ public class highscoreManager implements Runnable{
 										break;
 								}
 							}
+							rs.close();
 							
 							numOfRows = 10;
 							rs=stmt.executeQuery("select * from highscore where skillLevel = 1 order by finishingTime");  
@@ -86,6 +93,7 @@ public class highscoreManager implements Runnable{
 										break;
 								}
 							}
+							rs.close();
 							
 							numOfRows = 20;
 							rs=stmt.executeQuery("select * from highscore where skillLevel = 2 order by finishingTime");  
@@ -110,14 +118,32 @@ public class highscoreManager implements Runnable{
 							status = error;
 							result = null;
 							playerName = "";
-						}  
-					}else if(task == uploadScore) {
+						}finally {
+							 if (rs != null) {
+							        try {
+							            rs.close();
+							        } catch (SQLException e) { /* ignored */}
+							    }
+							 if (stmt != null) {
+							        try {
+							        	stmt.close();
+							        } catch (SQLException e) { /* ignored */}
+							    }
+							    if (connect != null) {
+							        try {
+							        	connect.close();
+							        } catch (SQLException e) { /* ignored */}
+							    }
+						}
 						
+						
+					}else if(task == uploadScore) {
+						PreparedStatement preparedStmt = null;
 						try {
 							
 							// the mysql insert statement
 						    String query = " insert into highscore" + " values (?, ?, ?)";
-						    PreparedStatement preparedStmt = connect.prepareStatement(query);
+						    preparedStmt = connect.prepareStatement(query);
 						    
 						    preparedStmt.setString (1, playerName);
 						    preparedStmt.setInt (2, (int)(mainThread.gameFrame*0.025));
@@ -130,6 +156,22 @@ public class highscoreManager implements Runnable{
 							e.printStackTrace();
 							status = error;
 							playerName = "";
+						}finally {
+							 if (rs != null) {
+							        try {
+							            rs.close();
+							        } catch (SQLException e) { /* ignored */}
+							    }
+							 if (preparedStmt != null) {
+							        try {
+							        	preparedStmt.close();
+							        } catch (SQLException e) { /* ignored */}
+							    }
+							    if (connect != null) {
+							        try {
+							        	connect.close();
+							        } catch (SQLException e) { /* ignored */}
+							    }
 						} 
 					}
 					

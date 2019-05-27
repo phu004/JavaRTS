@@ -59,6 +59,8 @@ public class mainThread extends JFrame implements KeyListener, ActionListener, M
 	public static final int difficulitySelectionMenu = 1;
 	public static final int helpMenu = 2;
 	public static final int endGameMenu = 3;
+	public static final int optionMenu = 4;
+	public static final int highscoreMenu = 5;
 	
 	public static String timeString;
 	public static boolean fogOfWarDisabled;

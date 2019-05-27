@@ -322,7 +322,11 @@ public class inputHandler {
 			
 		}else {
 			//handle event when game is paused
-			if(((escapeKeyPressed && escapePressedCooldown == 0)|| mainThread.buttonAction == "unpauseGame") &&  mainThread.gamePaused && mainThread.gameStarted && mainThread.menuStatus != mainThread.helpMenu) {
+			if(((escapeKeyPressed && escapePressedCooldown == 0)|| mainThread.buttonAction == "unpauseGame")   
+					&& mainThread.gamePaused && mainThread.gameStarted 
+					&& mainThread.menuStatus != mainThread.helpMenu
+					&& mainThread.menuStatus != mainThread.optionMenu
+					&& mainThread.menuStatus != mainThread.highscoreMenu) {
 				
 				if(!mainThread.AIVictory && ! mainThread.playerVictory) {
 					mainThread.gamePaused = false; //if game is paused, unpause the game when esc key is hit

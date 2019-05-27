@@ -770,6 +770,10 @@ public class AssetManager {
 			for(int i = 0; i < factories.length; i++){
 				if(factories[i] != null)
 					factories[i].draw();
+				if(factories[i].teamNo == 0)
+					numberOfPlayerBuildings++;
+				else
+					numberOfAIBuildings++;
 			}
 		}
 		

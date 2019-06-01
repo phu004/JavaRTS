@@ -363,6 +363,7 @@ public class mainThread extends JFrame implements KeyListener, ActionListener, M
 			inputHandler.escapeKeyPressed = true;
 			
 		inputHandler.readCharacter(e.getKeyChar());
+		
 	}
 
 	public void keyReleased(KeyEvent e){

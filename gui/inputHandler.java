@@ -369,11 +369,15 @@ public class inputHandler {
 	public static void readCharacter(char c){
 		inputBuffer[inputCounter] = c;
 		inputCounter++;
+		if(inputCounter == inputBuffer.length)
+			inputCounter = 0;
 	}
 	
 	public static void handleKeyRelease(char c){
 		keyReleaseBuffer[keyReleaseCounter] = c;
 		keyReleaseCounter++;
+		if(keyReleaseCounter == keyReleaseBuffer.length)
+			keyReleaseCounter = 0;
 	}
 	
 }

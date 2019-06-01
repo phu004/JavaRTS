@@ -33,8 +33,8 @@ public class inputHandler {
 	
 	public static final Rectangle mouseMovementArea = new Rectangle(30,20, 708, 472);
 	
-	public static char[] inputBuffer = new char[1024];
-	public static char[] keyReleaseBuffer = new char[1024];
+	public static char[] inputBuffer = new char[64];
+	public static char[] keyReleaseBuffer = new char[64];
 	
 	public static int inputCounter, inputBufferIndex, keyReleaseCounter, keyReleaseBufferIndex;
 	
@@ -52,45 +52,7 @@ public class inputHandler {
 		int theCounter = inputCounter;  
 		
 		mainThread.currentInputChar = 255;
-		
-		//handle over flow
-		if(inputBufferIndex > theCounter){
-			while(inputBufferIndex < 1024){
-				char c = inputBuffer[inputBufferIndex];
-				mainThread.currentInputChar = c;
-				
-				
-				if(c == 's' || c == 'S'){
-					
-					S_pressed = true;
-				}
-				
-				if(c == 'a' || c == 'A'){
-					A_pressed = true;
-				}
-				
-				if(c == 'c' || c == 'C'){
-					
-					C_pressed = true;
-				}
-				
-				if(c == 'f' || c == 'F'){
-					F_pressed = true;
-				}
-				
-				
-				if(c >=49 && c <=53){
-					numberTyped = c - 48;
-				}
-				
-				
-				inputBufferIndex++;
-				
-			}
-			inputBufferIndex = 0;
-		}
-		
-		
+			
 		while(inputBufferIndex < theCounter){
 			char c = inputBuffer[inputBufferIndex];
 			mainThread.currentInputChar = c;
@@ -118,37 +80,13 @@ public class inputHandler {
 			
 			inputBufferIndex++;
 		}
-	
+		
+		//clear key input buffer
+		inputBufferIndex = 0;
+		inputCounter = 0;
 		
 		//read released char
 		theCounter = keyReleaseCounter;
-		//handle over flow
-		if(keyReleaseBufferIndex > theCounter){
-			while(keyReleaseBufferIndex < 1024){
-				char c = keyReleaseBuffer[keyReleaseBufferIndex];
-				
-				if(c == 's' || c == 'S'){
-					S_pressed = false;
-				}
-				
-				if(c == 'a' || c == 'A'){
-					A_pressed = false;
-					userIsHoldingA = false;
-					
-				}
-				if(c == 'c' || c == 'C'){
-					C_pressed = false;
-					userIsHoldingC = false;
-					
-				}
-				if(c == 'f' || c == 'F'){
-					F_pressed = false;
-					userIsHoldingF = false;
-				}
-				keyReleaseBufferIndex++;
-			}
-			keyReleaseBufferIndex = 0;
-		}
 		while(keyReleaseBufferIndex < theCounter){
 			char c = keyReleaseBuffer[keyReleaseBufferIndex];
 			
@@ -173,7 +111,9 @@ public class inputHandler {
 			keyReleaseBufferIndex++;
 		}
 		
-		
+		//clear key release buffer
+		keyReleaseBufferIndex = 0;
+		keyReleaseCounter = 0;
 		
 		//handle input when game is running
 		if(!mainThread.gamePaused && mainThread.gameStarted){
@@ -429,17 +369,11 @@ public class inputHandler {
 	public static void readCharacter(char c){
 		inputBuffer[inputCounter] = c;
 		inputCounter++;
-		if(inputCounter == 1024)
-			inputCounter = 0;
-		
-		
 	}
 	
 	public static void handleKeyRelease(char c){
 		keyReleaseBuffer[keyReleaseCounter] = c;
 		keyReleaseCounter++;
-		if(keyReleaseCounter == 1024)
-			keyReleaseCounter = 0;
 	}
 	
 }

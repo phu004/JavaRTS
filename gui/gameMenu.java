@@ -650,7 +650,7 @@ public class gameMenu {
 	}
 	
 	public void drawBluredBackground() {
-		if(gameSuspendCount < 4) {
+		if(gameSuspendCount < 5) {
 			
 			for(int k = 0; k < 3; k++)
 			for(int i = 1; i < 511; i++ ) {

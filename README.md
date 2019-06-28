@@ -16,17 +16,7 @@ Some features about the AI:
 
 Feel free to grab anything you want here, including the source code and image files! 
 
-
----------------------------------------
-Update - 2018 Sep 05
-
-First time commmit. More to come.
-
-
-----------------------------------------
-Update -2019 June 27
-
-Project completed, demo avaliable on youtube: 
+Demo avaliable on youtube: 
 https://www.youtube.com/watch?v=hE69S2aLrjk&t=201s
 
 Some screenshots:

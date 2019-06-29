@@ -138,8 +138,9 @@ public class AssetManager {
 	}
 	
 	public void prepareAssetForNewGame(){
-				
-		camera.position.set(3,2f,-1.25f);
+
+		camera.position.x = 3;
+		camera.position.z = -1.25f;
 		camera.view_Direction.set(0, 0, 1);
 		camera.XZ_angle = 0;
 		

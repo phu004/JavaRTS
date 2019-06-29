@@ -57,7 +57,7 @@ public class camera{
 			}
 			
 			position.add(cameraMovement);
-		}
+		} 
 		
 		
 		position.add(view_Direction.x*3, 0 , view_Direction.z*3);

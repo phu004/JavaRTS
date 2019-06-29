@@ -137,6 +137,7 @@ public class AssetManager {
 		
 	}
 	
+	
 	public void prepareAssetForNewGame(){
 
 		camera.position.x = 3;

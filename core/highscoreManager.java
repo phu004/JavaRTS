@@ -48,7 +48,7 @@ public class highscoreManager implements Runnable{
 					
 					try {
 						
-						connect = DriverManager.getConnection("jdbc:mysql://remotemysql.com/TDYAgrQ1Ny?useSSL=false",  "TDYAgrQ1Ny", "SrexYcsOSv");
+						connect = DriverManager.getConnection("jdbc:mysql://sql3.freesqldatabase.com/sql3332665?useSSL=false",  "sql3332665", "ca1WAMQrkM");
 						
 					} catch (Exception e) {
 						// TODO Auto-generated catch block

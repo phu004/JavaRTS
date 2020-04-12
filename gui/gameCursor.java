@@ -152,10 +152,10 @@ public class gameCursor {
 			}else if(!mouseOverSelectableUnit && !cursorIsInMiniMap && !cursorIsInSideBar){
 				if(!hasHarvesterSelected && !hasTroopsSelected && !hasTowerSelected && !hasConVehicleSelected) {
 					drawIcon(cursorIcon, mouseX, mouseY);
-				}else if(((hasHarvesterSelected || hasConVehicleSelected) && !(hasTroopsSelected)) || (hasTroopsSelected && !attackKeyPressed) ) {
+				}else if(((hasHarvesterSelected || hasConVehicleSelected) && !(hasTroopsSelected)) || ((hasTroopsSelected || hasTowerSelected) && !attackKeyPressed) ) {
 					//drawActionIcon(mouseX, mouseY, 0);
 					drawIcon(cursorIcon, mouseX, mouseY);
-				}else if(hasTroopsSelected && attackKeyPressed) {
+				}else if((hasTroopsSelected || hasTowerSelected) && attackKeyPressed) {
 					drawActionIcon(mouseX, mouseY, 1);
 				}
 			}else if(cursorIsInMiniMap && attackKeyPressed && hasTroopsSelected){

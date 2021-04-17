@@ -58,6 +58,7 @@ public class highscoreManager implements Runnable{
 					}
 					
 					
+					
 					if(task == loadHighscores) {
 						//get high scores from remote database
 						

@@ -125,26 +125,28 @@ public class gameCursor {
 				
 				drawIcon(arrowIcons[5], cursorX, cursorY);
 			}else if(mouseOverSelectableUnit && !cursorIsInMiniMap && !cursorIsInSideBar){
-				if(!hasHarvesterSelected && !hasTroopsSelected && !hasTowerSelected) {
-					//if(!mouseOverUnitIsSelected)
-					//	drawSelectionIcon(mouseX, mouseY);
-					//else
+				if((hasTroopsSelected || hasTowerSelected) && mouseOverUnitTeam == 1) {
+					drawActionIcon(mouseX, mouseY, 1);
+				}else if(!hasHarvesterSelected && !hasTroopsSelected && !hasTowerSelected) {
+					if(!mouseOverUnitIsSelected)
+						drawSelectionIcon(mouseX, mouseY);
+					else
 						drawIcon(cursorIcon, mouseX, mouseY);
 				}else if(mouseOverUnitTeam == 0 && !(attackKeyPressed && (hasTroopsSelected || hasTowerSelected)) && !(hasHarvesterSelected &&  mouseOverUnitType == 102)) {
-					//if(!mouseOverUnitIsSelected)
-					//	drawSelectionIcon(mouseX, mouseY);
-					//else
+					if(!mouseOverUnitIsSelected)
+						drawSelectionIcon(mouseX, mouseY);
+					else
 						drawIcon(cursorIcon, mouseX, mouseY);
 				}else if(mouseOverUnitType == 103 && !hasHarvesterSelected && !((hasTroopsSelected || hasTowerSelected) && attackKeyPressed)) {
-					//if(!mouseOverUnitIsSelected)
-					//	drawSelectionIcon(mouseX, mouseY);
-					//else
+					if(!mouseOverUnitIsSelected)
+						drawSelectionIcon(mouseX, mouseY);
+					else
 						drawIcon(cursorIcon, mouseX, mouseY);
 				}else if((hasTroopsSelected || hasTowerSelected) && attackKeyPressed) {
 					drawActionIcon(mouseX, mouseY, 1);
 				}else if(hasHarvesterSelected && (mouseOverUnitType == 102 || mouseOverUnitType == 103)) {
-					//drawActionIcon(mouseX, mouseY, 2);
-					drawIcon(cursorIcon, mouseX, mouseY);
+					drawActionIcon(mouseX, mouseY, 2);
+					//drawIcon(cursorIcon, mouseX, mouseY);
 				}else {
 					drawIcon(cursorIcon, mouseX, mouseY);
 				}
@@ -153,17 +155,18 @@ public class gameCursor {
 				if(!hasHarvesterSelected && !hasTroopsSelected && !hasTowerSelected && !hasConVehicleSelected) {
 					drawIcon(cursorIcon, mouseX, mouseY);
 				}else if(((hasHarvesterSelected || hasConVehicleSelected) && !(hasTroopsSelected)) || ((hasTroopsSelected || hasTowerSelected) && !attackKeyPressed) ) {
-					//drawActionIcon(mouseX, mouseY, 0);
-					drawIcon(cursorIcon, mouseX, mouseY);
+					drawActionIcon(mouseX, mouseY, 0);
+					//drawIcon(cursorIcon, mouseX, mouseY);
 				}else if((hasTroopsSelected || hasTowerSelected) && attackKeyPressed) {
 					drawActionIcon(mouseX, mouseY, 1);
 				}
 			}else if(cursorIsInMiniMap && attackKeyPressed && hasTroopsSelected){
 				drawMinimapAttackIcon(mouseX, mouseY);
+			}else if(cursorIsInMiniMap && (hasTroopsSelected || hasConVehicleSelected || hasHarvesterSelected)){
+				drawMinimapMoveIcon(mouseX, mouseY);
 			}else {
 			
 				//draw default  icon
-				
 				drawIcon(cursorIcon, mouseX, mouseY);
 			}
 		}else {
@@ -219,8 +222,36 @@ public class gameCursor {
 				}
 			}
 		}
-			
+	}
+	
+	public void drawMinimapMoveIcon(int xPos, int yPos) {
+		int arrowColor = 34 << 16 | 200 << 8 | 76;
+		int index = 0;
+		int color = 0;
+		int blue = 0;
+		int red = 0;
 		
+		int start = xPos - 10 + (yPos-10)*768;
+		for(int i = 0; i < 20; i++) {
+			for(int j = 0; j < 20; j++) {
+				index = start + j + i*768;
+				if(index > 0 && index < 393216) {
+					color = smallArrowIcons4[j+i*20];
+					
+					blue = color&0xff;
+					red =  (color&0xff0000) >> 16;
+					if(red < 100 && blue > 100)
+						continue;
+					
+					if(!pixelInsideSideArea(index))
+						continue;
+
+					if(red > 150)
+						color = arrowColor;
+					screen[index] = color;
+				}
+			}
+		}
 	}
 	
 	public void drawActionIcon(int xPos, int yPos, int type) {

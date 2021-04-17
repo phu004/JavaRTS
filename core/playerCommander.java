@@ -355,6 +355,7 @@ public class playerCommander {
 			
 			
 			if(isSelectingUnit){
+				deSelectAll();
 				isSelectingUnit = false;
 				int width = Math.abs(endX - startX);
 				int height = Math.abs(endY - startY);

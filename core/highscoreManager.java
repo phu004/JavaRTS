@@ -35,6 +35,7 @@ public class highscoreManager implements Runnable{
 			if(counter == 0) {
 				
 					status = idle;
+							
 					
 				
 			}
@@ -48,7 +49,7 @@ public class highscoreManager implements Runnable{
 					
 					try {
 						
-						connect = DriverManager.getConnection("jdbc:mysql://sql3.freesqldatabase.com/sql3332665?useSSL=false",  "sql3332665", "ca1WAMQrkM");
+						connect = DriverManager.getConnection("jdbc:mysql://studdb-mysql.fos.auckland.ac.nz:3306/teaching_phu004_351_C_S1_2020",  "phu004", "phu004");
 						
 					} catch (Exception e) {
 						// TODO Auto-generated catch block

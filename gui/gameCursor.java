@@ -15,6 +15,8 @@ public class gameCursor {
 	public int[] smallArrowIcons4;
 	public int[] cursorIcon;
 	public int[] screen;
+	public int[][] iconOverWriteBuffer;
+	public int iconOverWriteBufferIndex;
 	
 	public void init() {
 		
@@ -35,6 +37,11 @@ public class gameCursor {
 		
 		smallArrowIcons4 = new int[20*20];
 		loadTexture(folder + "smallArrow4.png", smallArrowIcons4, 20,20);
+		
+		iconOverWriteBuffer = new int[1024][2];
+		for(int i = 0; i < 1024; i++) {
+			iconOverWriteBuffer[i][0] = -1;
+		}
 	}
 
 	public void updateAndDraw(int[] screen) {
@@ -55,10 +62,17 @@ public class gameCursor {
 		boolean cursorIsInSideBar = mainThread.pc.cursorIsInSideBar();
 		
 		
+		for(int i = 0; i < 1024; i++) {
+			if(iconOverWriteBuffer[i][0] == -1)
+				break;
+			
+			screen[iconOverWriteBuffer[i][0]] = iconOverWriteBuffer[i][1];
+			iconOverWriteBuffer[i][0] = -1;
+		}
+		iconOverWriteBufferIndex = 0;
 		
 		
 		if(!mainThread.gamePaused  && mainThread.gameStarted) {
-			
 			//draw arrow icons if the player is scrolling the screen with the mouse
 			int cursorX = 0;
 			int cursorY = 0;
@@ -152,9 +166,9 @@ public class gameCursor {
 				}
 			
 			}else if(!mouseOverSelectableUnit && !cursorIsInMiniMap && !cursorIsInSideBar){
-				if(!hasHarvesterSelected && !hasTroopsSelected && !hasTowerSelected && !hasConVehicleSelected) {
+				if(!hasHarvesterSelected && !hasTroopsSelected && !(hasTowerSelected && attackKeyPressed) && !hasConVehicleSelected) {
 					drawIcon(cursorIcon, mouseX, mouseY);
-				}else if(((hasHarvesterSelected || hasConVehicleSelected) && !(hasTroopsSelected)) || ((hasTroopsSelected || hasTowerSelected) && !attackKeyPressed) ) {
+				}else if(((hasHarvesterSelected || hasConVehicleSelected) && !(hasTroopsSelected)) || ((hasTroopsSelected) && !attackKeyPressed) ) {
 					drawActionIcon(mouseX, mouseY, 0);
 					//drawIcon(cursorIcon, mouseX, mouseY);
 				}else if((hasTroopsSelected || hasTowerSelected) && attackKeyPressed) {
@@ -165,7 +179,6 @@ public class gameCursor {
 			}else if(cursorIsInMiniMap && (hasTroopsSelected || hasConVehicleSelected || hasHarvesterSelected)){
 				drawMinimapMoveIcon(mouseX, mouseY);
 			}else {
-			
 				//draw default  icon
 				drawIcon(cursorIcon, mouseX, mouseY);
 			}
@@ -248,6 +261,9 @@ public class gameCursor {
 
 					if(red > 150)
 						color = arrowColor;
+					iconOverWriteBuffer[iconOverWriteBufferIndex][0] = index;
+					iconOverWriteBuffer[iconOverWriteBufferIndex][1] = screen[index];
+					iconOverWriteBufferIndex++;
 					screen[index] = color;
 				}
 			}
@@ -292,6 +308,9 @@ public class gameCursor {
 
 					if(red > 200)
 						color = arrowColor;
+					iconOverWriteBuffer[iconOverWriteBufferIndex][0] = index;
+					iconOverWriteBuffer[iconOverWriteBufferIndex][1] = screen[index];
+					iconOverWriteBufferIndex++;
 					screen[index] = color;
 				}
 			}
@@ -315,6 +334,9 @@ public class gameCursor {
 
 					if(red > 200)
 						color = arrowColor;
+					iconOverWriteBuffer[iconOverWriteBufferIndex][0] = index;
+					iconOverWriteBuffer[iconOverWriteBufferIndex][1] = screen[index];
+					iconOverWriteBufferIndex++;
 					screen[index] = color;
 				}
 			}
@@ -338,6 +360,9 @@ public class gameCursor {
 
 					if(red > 200)
 						color = arrowColor;
+					iconOverWriteBuffer[iconOverWriteBufferIndex][0] = index;
+					iconOverWriteBuffer[iconOverWriteBufferIndex][1] = screen[index];
+					iconOverWriteBufferIndex++;
 					screen[index] = color;
 				}
 			}
@@ -361,6 +386,10 @@ public class gameCursor {
 
 					if(red > 200)
 						color = arrowColor;
+					
+					iconOverWriteBuffer[iconOverWriteBufferIndex][0] = index;
+					iconOverWriteBuffer[iconOverWriteBufferIndex][1] = screen[index];
+					iconOverWriteBufferIndex++;
 					screen[index] = color;
 				}
 			}
@@ -402,7 +431,12 @@ public class gameCursor {
 				int red =  (color&0xff0000) >> 16;
 				if(red < 100 && blue > 100)
 					continue;
+				
+				iconOverWriteBuffer[iconOverWriteBufferIndex][0] = x + y*768;
+				iconOverWriteBuffer[iconOverWriteBufferIndex][1] = screen[x + y*768];
+				iconOverWriteBufferIndex++;
 				screen[x + y*768] = color;
+				
 			}
 		}
 		

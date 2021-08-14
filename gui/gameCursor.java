@@ -43,6 +43,7 @@ public class gameCursor {
 			iconOverWriteBuffer[i][0] = -1;
 		}
 	}
+	
 
 	public void updateAndDraw(int[] screen) {
 		this.screen = screen;

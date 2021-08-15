@@ -19,7 +19,7 @@ public class camera{
 	public static final vector viewDirection = new vector(0, 0, 1);
 	
 	//a rectangle that represents the screen area
-	public static final Rectangle screen = new Rectangle(0,0,768, 512);
+	public static Rectangle screen;
 	
 	public static vector cameraMovement;
 	
@@ -27,6 +27,9 @@ public class camera{
 	
 	
 	public camera(vector p, int XZ, int YZ){
+		
+		screen = new Rectangle(0,0,mainThread.screen_width, mainThread.screen_height);
+		
 		view_Direction = new vector(0, 0, 1);
 		position = p;
 		XZ_angle = XZ;
@@ -72,10 +75,7 @@ public class camera{
 		if(TURN_LEFT){
 			XZ_angle-=1;
 		}
-		
-		float x = position.x;
-		float z = position.z;
-		
+				
 		if(MOVE_LEFT){
 			left.cross(view_Direction, left_); 
 			left.unit();

@@ -16,10 +16,10 @@ public class stealthTank extends solidObject{
 	public static int maxHP = 80;
 	
 	//a screen space boundary which is used to test if the tank object is visible from camera point of view
-	public final static Rectangle visibleBoundary = new Rectangle(-70,-25,908, 597);
+	public final static Rectangle visibleBoundary = new Rectangle(-70,-25,screen_width+140, screen_height+85);
 	
 	//a screen space boundary which is used to test if the entire tank object is within the screen
-	public final static Rectangle screenBoundary = new Rectangle(40,40,688, 432); 
+	public final static Rectangle screenBoundary = new Rectangle(40,40,screen_width-90, screen_height-80); 
 	
 	//a screen space boundary which is used to test if the vision polygon of the  object is visible.
 	public final static Rectangle visionBoundary = new Rectangle(0,0,1000, 1500);
@@ -502,7 +502,7 @@ public class stealthTank extends solidObject{
 		tempCentre.updateLocation();
 		
 		visionBoundary.x = (int)(tempCentre.screenX - 500);
-		visionBoundary.y = (int)(tempCentre.screenY - 1000);
+		visionBoundary.y = (int)(tempCentre.screenY - 1200);
 		visionInsideScreen = camera.screen.intersects(visionBoundary);
 		
 		if(attackStatus == isAttacking && targetObject != null &&  targetObject.teamNo != teamNo)

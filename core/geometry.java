@@ -82,6 +82,10 @@ public class geometry {
 	//draw dot line
 	public static void drawLine(vector startPoint, vector endPoint, int color, byte shadowBit){
 		
+		int w = mainThread.screen_width;
+		int h = mainThread.screen_height;
+		int size = mainThread.screen_size;
+		
 		int[] screen = mainThread.screen;
 		
 		temp1.set(startPoint);
@@ -151,12 +155,12 @@ public class geometry {
 				x = xPos1 + i*xDirection;
 				y = (int)(yPos1 + slope*i*xDirection);
 				
-				if(x <0 || x > 767 || y < 0 || y > 511)
+				if(x <0 || x > (w-1) || y < 0 || y > (h-1))
 					continue;
 				
 				
-				screen[start + x + y*768] = color;
-				mainThread.shadowBitmap[start + x + y*768] = shadowBit;
+				screen[start + x + y*w] = color;
+				mainThread.shadowBitmap[start + x + y*w] = shadowBit;
 			}
 			
 		}else{
@@ -165,11 +169,11 @@ public class geometry {
 				y = yPos1 + i*yDirection;
 				x = (int)(xPos1 + slope*i*yDirection);
 				
-				if(x <0 || x > 767 || y < 0 || y > 511)
+				if(x <0 || x > (w-1) || y < 0 || y > (h-1))
 					continue;
 				
-				screen[start + x + y*768] = color;
-				mainThread.shadowBitmap[start + x + y*768] = shadowBit;
+				screen[start + x + y*w] = color;
+				mainThread.shadowBitmap[start + x + y*w] = shadowBit;
 				
 				
 			}
@@ -183,12 +187,12 @@ public class geometry {
 			for(int k = 0; k < 5; k++){
 				int xPos = xPos2 - 2 + k;
 				int yPos = yPos2 - 2 + j;
-				if(xPos < 0 || xPos > 767 || yPos < 0 || yPos > 511)
+				if(xPos < 0 || xPos > (w-1) || yPos < 0 || yPos > (h-1))
 					continue;
 				
-				index = xPos + yPos*768;
+				index = xPos + yPos*w;
 				
-				if(index >= 0 && index < 512*768){
+				if(index >= 0 && index < size){
 					screen[index] = color;
 					mainThread.shadowBitmap[index] = shadowBit;
 				}

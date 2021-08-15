@@ -16,13 +16,13 @@ public class lightPole extends solidObject{
 	public vector shadowvertex0, tempshadowvertex0,shadowvertex1, tempshadowvertex1,shadowvertex2, tempshadowvertex2,shadowvertex3, tempshadowvertex3;
 	
 	//a screen space boundary which is used to test if the  object is visible from camera point of view
-	public final static Rectangle visibleBoundary = new Rectangle(-50,-50,868, 612);
+	public final static Rectangle visibleBoundary = new Rectangle(-50,-50,screen_width+100, screen_height+100);
 		
 	//a screen space boundary which is used to test if the entire  object is within the screen
-	public final static Rectangle screenBoundary = new Rectangle(40,40,688, 432);
+	public final static Rectangle screenBoundary = new Rectangle(40,40,screen_width - 90, screen_height - 80);
 	
 	//screen space boundary which is used to test if the shadow of the  object is within the screen
-	public final static Rectangle shadowBoundary1 = new Rectangle(0,0,768, 512);
+	public final static Rectangle shadowBoundary1 = new Rectangle(0,0,screen_width, screen_height);
 	
 	//lightPole never moves
 	public final static vector movenment = new vector(0,0,0);
@@ -214,7 +214,7 @@ public class lightPole extends solidObject{
 		tempCentre.rotate_YZ(camera.YZ_angle); 
 		tempCentre.updateLocation();
 		
-		if(tempCentre.screenX > 918 || tempCentre.screenX < - 150 || tempCentre.screenY < - 150 || tempCentre.screenY > 662){
+		if(tempCentre.screenX > screen_width+150 || tempCentre.screenX < - 150 || tempCentre.screenY < - 150 || tempCentre.screenY > screen_height+150){
 			visible = false;
 			return;
 		}

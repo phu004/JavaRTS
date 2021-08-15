@@ -27,16 +27,16 @@ public class missileTurret extends solidObject{
 	public vector shadowvertex0, tempshadowvertex0,shadowvertex1, tempshadowvertex1,shadowvertex2, tempshadowvertex2,shadowvertex3, tempshadowvertex3;
 	
 	//a screen space boundary which is used to test if the  object is visible from camera point of view
-	public final static Rectangle visibleBoundary = new Rectangle(-85,-85,920, 762);  
+	public final static Rectangle visibleBoundary = new Rectangle(-85,-85,screen_width+152, screen_height+250);  
 		
 	//a screen space boundary which is used to test if the entire  object is within the screen
-	public final static Rectangle screenBoundary = new Rectangle(60,60,648, 402);  
+	public final static Rectangle screenBoundary = new Rectangle(60,60,screen_width-120, screen_height-110);  
 	
 	//screen space boundary which is used to test if the shadow of the  object is within the screen
-	public final static Rectangle shadowBoundary1 = new Rectangle(0,0,768, 512);  
+	public final static Rectangle shadowBoundary = new Rectangle(0,0,screen_width, screen_height);  
 	
 	//a screen space boundary which is used to test if the vision polygon of the  object is visible.
-	public final static Rectangle visionBoundary = new Rectangle(0,0,1600, 2000);
+		public final static Rectangle visionBoundary = new Rectangle(0,0,1000, 1500);
 	
 	//a bitmap representation of the vision of the power plant for enemy commander
 	public static boolean[] bitmapVisionForEnemy; 
@@ -571,10 +571,10 @@ public class missileTurret extends solidObject{
 			
 
 			//if the  object is visible then draw it on the shadow buffer from light point of view
-			if(shadowBoundary1.contains(tempshadowvertex0.screenX, tempshadowvertex0.screenY) ||
-					shadowBoundary1.contains(tempshadowvertex1.screenX, tempshadowvertex1.screenY) ||
-					shadowBoundary1.contains(tempshadowvertex2.screenX, tempshadowvertex2.screenY) ||
-					shadowBoundary1.contains(tempshadowvertex3.screenX, tempshadowvertex3.screenY) 
+			if(shadowBoundary.contains(tempshadowvertex0.screenX, tempshadowvertex0.screenY) ||
+					shadowBoundary.contains(tempshadowvertex1.screenX, tempshadowvertex1.screenY) ||
+					shadowBoundary.contains(tempshadowvertex2.screenX, tempshadowvertex2.screenY) ||
+					shadowBoundary.contains(tempshadowvertex3.screenX, tempshadowvertex3.screenY) 
 					){
 				for(int i = 0; i < polygons.length; i++){
 					polygons[i].update_lightspace();
@@ -618,8 +618,8 @@ public class missileTurret extends solidObject{
 		}
 		
 
-		visionBoundary.x = (int)(tempCentre.screenX - 800);
-		visionBoundary.y = (int)(tempCentre.screenY - 1000);
+		visionBoundary.x = (int)(tempCentre.screenX - 500);
+		visionBoundary.y = (int)(tempCentre.screenY - 1200);
 		visionInsideScreen = camera.screen.intersects(visionBoundary);
 		
 		

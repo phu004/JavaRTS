@@ -17,6 +17,9 @@ public class gameCursor {
 	public int[] screen;
 	public int[][] iconOverWriteBuffer;
 	public int iconOverWriteBufferIndex;
+	public static int screen_width = mainThread.screen_width;
+	public static int screen_height = mainThread.screen_height;
+	public static int screen_size = mainThread.screen_size;
 	
 	public void init() {
 		
@@ -78,23 +81,23 @@ public class gameCursor {
 			int cursorX = 0;
 			int cursorY = 0;
 			if(camera.MOVE_DOWN && !camera.MOVE_LEFT && ! camera.MOVE_RIGHT) {
-				drawIcon(arrowIcons[1], mouseX-12,489);
+				drawIcon(arrowIcons[1], mouseX-12,screen_height - 23);
 			}else if(camera.MOVE_UP && !camera.MOVE_LEFT && ! camera.MOVE_RIGHT) {
 				drawIcon(arrowIcons[3], mouseX-12,0);
 			}else if(camera.MOVE_LEFT && !camera.MOVE_UP && ! camera.MOVE_DOWN) {
 				drawIcon(arrowIcons[2], 0,mouseY-12);
 			}else if(camera.MOVE_RIGHT && !camera.MOVE_UP && ! camera.MOVE_DOWN) {
-				drawIcon(arrowIcons[0], 745,mouseY-12);
+				drawIcon(arrowIcons[0], screen_width-23 ,mouseY-12);
 			}else if(camera.MOVE_RIGHT && camera.MOVE_UP) {
-				if(mouseY> 768 - mouseX) {
-					cursorX = 747;
+				if(mouseY> screen_width - mouseX) {
+					cursorX = screen_width-21;
 					cursorY = mouseY-12;
 				}else {
 					cursorX = mouseX-12;
 					cursorY = -3;
 				}
-				if(cursorX > 747)
-					cursorX = 747;
+				if(cursorX > screen_width-21)
+					cursorX = screen_width-21;
 				if(cursorY < -3)
 					cursorY = -3;
 				drawIcon(arrowIcons[4], cursorX, cursorY);
@@ -112,31 +115,31 @@ public class gameCursor {
 					cursorY = -3;
 				drawIcon(arrowIcons[7], cursorX, cursorY);
 			}else if(camera.MOVE_LEFT && camera.MOVE_DOWN) {
-				if(512 - mouseY > mouseX) {
+				if(screen_height - mouseY > mouseX) {
 					cursorX = -3;
 					cursorY = mouseY-12;
 				}else {
 					cursorX = mouseX-12;
-					cursorY = 491;
+					cursorY = screen_height - 21;
 				}
 				
 				if(cursorX < -3)
 					cursorX = -3;
-				if(cursorY > 491)
-					cursorY = 491;
+				if(cursorY > screen_height - 21)
+					cursorY = screen_height - 21;
 				drawIcon(arrowIcons[6], cursorX, cursorY);
 			}else if(camera.MOVE_RIGHT && camera.MOVE_DOWN) {
-				if(512 - mouseY > 768 -mouseX) {
-					cursorX = 747;
+				if(screen_height - mouseY > screen_width -mouseX) {
+					cursorX = screen_width-21;
 					cursorY = mouseY-12;
 				}else {
 					cursorX = mouseX-12;
-					cursorY = 491;
+					cursorY = screen_height - 21;
 				}
-				if(cursorX >747)
-					cursorX = 747;
-				if(cursorY > 491)
-					cursorY = 491;
+				if(cursorX >screen_width-21)
+					cursorX = screen_width-21;
+				if(cursorY > screen_height - 21)
+					cursorY = screen_height - 21;
 				
 				drawIcon(arrowIcons[5], cursorX, cursorY);
 			}else if(mouseOverSelectableUnit && !cursorIsInMiniMap && !cursorIsInSideBar){
@@ -215,11 +218,11 @@ public class gameCursor {
 		int blue = 0;
 		int red = 0;
 		
-		int start = xPos - 10 + (yPos-10)*768;
+		int start = xPos - 10 + (yPos-10)*screen_width;
 		for(int i = 0; i < 20; i++) {
 			for(int j = 0; j < 20; j++) {
-				index = start + j + i*768;
-				if(index > 0 && index < 393216) {
+				index = start + j + i*screen_width;
+				if(index > 0 && index < screen_size) {
 					color = smallArrowIcons4[j+i*20];
 					
 					blue = color&0xff;
@@ -245,11 +248,11 @@ public class gameCursor {
 		int blue = 0;
 		int red = 0;
 		
-		int start = xPos - 10 + (yPos-10)*768;
+		int start = xPos - 10 + (yPos-10)*screen_width;
 		for(int i = 0; i < 20; i++) {
 			for(int j = 0; j < 20; j++) {
-				index = start + j + i*768;
-				if(index > 0 && index < 393216) {
+				index = start + j + i*screen_width;
+				if(index > 0 && index < screen_size) {
 					color = smallArrowIcons4[j+i*20];
 					
 					blue = color&0xff;
@@ -292,11 +295,11 @@ public class gameCursor {
 			arrowColor = 255 << 16 | 242 << 8 | 0;
 		
 		//draw up left arrow
-		int start = xPos - r + (yPos-r)*768;
+		int start = xPos - r + (yPos-r)*screen_width;
 		for(int i = 0; i < 20; i++) {
 			for(int j = 0; j < 20; j++) {
-				index = start + j + i*768;
-				if(index > 0 && index < 393216) {
+				index = start + j + i*screen_width;
+				if(index > 0 && index < screen_size) {
 					color = smallArrowIcons[2][j+i*20];
 					
 					blue = color&0xff;
@@ -318,11 +321,11 @@ public class gameCursor {
 		}
 		
 		//draw up right arrow
-		start = xPos + r + (yPos-r)*768;
+		start = xPos + r + (yPos-r)*screen_width;
 		for(int i = 0; i < 20; i++) {
 			for(int j = 0; j < 20; j++) {
-				index = start + j + i*768;
-				if(index > 0 && index < 393216) {
+				index = start + j + i*screen_width;
+				if(index > 0 && index < screen_size) {
 					color = smallArrowIcons[3][j+i*20];
 					
 					blue = color&0xff;
@@ -344,11 +347,11 @@ public class gameCursor {
 		}
 		
 		//draw down right arrow
-		start = xPos + r + (yPos + r)*768;
+		start = xPos + r + (yPos + r)*screen_width;
 		for(int i = 0; i < 20; i++) {
 			for(int j = 0; j < 20; j++) {
-				index = start + j + i*768;
-				if(index > 0 && index < 393216) {
+				index = start + j + i*screen_width;
+				if(index > 0 && index < screen_size) {
 					color = smallArrowIcons[0][j+i*20];
 					
 					blue = color&0xff;
@@ -370,11 +373,11 @@ public class gameCursor {
 		}
 		
 		//draw down left arrow
-		start = xPos -r + (yPos + r)*768;
+		start = xPos -r + (yPos + r)*screen_width;
 		for(int i = 0; i < 20; i++) {
 			for(int j = 0; j < 20; j++) {
-				index = start + j + i*768;
-				if(index > 0 && index < 393216) {
+				index = start + j + i*screen_width;
+				if(index > 0 && index < screen_size) {
 					color = smallArrowIcons[1][j+i*20];
 					
 					blue = color&0xff;
@@ -399,13 +402,13 @@ public class gameCursor {
 	}
 	
 	public boolean pixelInsideSideArea(int index){
-		int x = index%768;
-		int y = index/768;
+		int x = index%screen_width;
+		int y = index/screen_width;
 		
-		if(x >=3 && x <=133 && y >= 378 && y <= 509)
+		if(x >=3 && x <=133 && y >= screen_height-134 && y <= screen_height-3)
 			return true;
 		
-		if(x >=635 && x <=765 && y >= 378 && y <= 509)
+		if(x >=screen_width-133 && x <=screen_width-3 && y >= screen_height-134 && y <= screen_height-3)
 			return true;
 		
 		return false;
@@ -421,9 +424,9 @@ public class gameCursor {
 				int x = xPos +  j;
 				int y = yPos + i;
 				
-				if(x < 0 || x >= 768)
+				if(x < 0 || x >= screen_width)
 					continue;
-				if(y < 0 || y >= 512)
+				if(y < 0 || y >= screen_height)
 					continue;
 				
 				color = icon[j+i*24];
@@ -433,10 +436,10 @@ public class gameCursor {
 				if(red < 100 && blue > 100)
 					continue;
 				
-				iconOverWriteBuffer[iconOverWriteBufferIndex][0] = x + y*768;
-				iconOverWriteBuffer[iconOverWriteBufferIndex][1] = screen[x + y*768];
+				iconOverWriteBuffer[iconOverWriteBufferIndex][0] = x + y*screen_width;
+				iconOverWriteBuffer[iconOverWriteBufferIndex][1] = screen[x + y*screen_width];
 				iconOverWriteBufferIndex++;
-				screen[x + y*768] = color;
+				screen[x + y*screen_width] = color;
 				
 			}
 		}
@@ -453,195 +456,195 @@ public class gameCursor {
 		int darkGray = 0x222222;
 		
 		//draw top left
-		int start = xPos - r + (yPos-r)*768;
+		int start = xPos - r + (yPos-r)*screen_width;
 		for(int i = 0; i < w + 2; i++) {
-			index = start - 768 - 2 + i;
-			if(index > 0 && index < 393216 && !pixelInsideSideArea(index))
+			index = start - screen_width - 2 + i;
+			if(index > 0 && index < screen_size && !pixelInsideSideArea(index))
 				screen[index] = darkGray;
 		}
 		
 		for(int i = 0; i < w; i++) {
 			index = start + i;
-			if(index > 0 && index < 393216 && !pixelInsideSideArea(index))
+			if(index > 0 && index < screen_size && !pixelInsideSideArea(index))
 				screen[index] = lightGray;
 		}
 		
 		for(int i = 0; i < w; i++) {
-			index = start + 768 + i;
-			if(index > 0 && index < 393216 && !pixelInsideSideArea(index))
+			index = start + screen_width + i;
+			if(index > 0 && index < screen_size && !pixelInsideSideArea(index))
 				screen[index] = darkGray;
 		}
 		
 		for(int i = 0; i < 3; i++) {
-			index  = start + w - 768 + i*768;
-			if(index > 0 && index < 393216 && !pixelInsideSideArea(index))
+			index  = start + w - screen_width + i*screen_width;
+			if(index > 0 && index < screen_size && !pixelInsideSideArea(index))
 				screen[index] = darkGray;
 		}
 		
 		for(int i = 0; i < w + 1; i++) {
-			index = start - 2 + i*768;
-			if(index > 0 && index < 393216 && !pixelInsideSideArea(index))
+			index = start - 2 + i*screen_width;
+			if(index > 0 && index < screen_size && !pixelInsideSideArea(index))
 				screen[index] = darkGray;
 		}
 		
 		for(int i = 0; i < w; i++) {
-			index = start - 1 + i*768;
-			if(index > 0 && index < 393216 && !pixelInsideSideArea(index))
+			index = start - 1 + i*screen_width;
+			if(index > 0 && index < screen_size && !pixelInsideSideArea(index))
 				screen[index] = lightGray;
 		}
 		
 		for(int i = 0; i < w; i++) {
-			index = start + 768 + i*768;
-			if(index > 0 && index < 393216 && !pixelInsideSideArea(index))
+			index = start + screen_width + i*screen_width;
+			if(index > 0 && index < screen_size && !pixelInsideSideArea(index))
 				screen[index] = darkGray;
 		}
 		
-		index = start -1  + w*768;
-		if(index > 0 && index < 393216 && !pixelInsideSideArea(index))
+		index = start -1  + w*screen_width;
+		if(index > 0 && index < screen_size && !pixelInsideSideArea(index))
 			screen[index] = 0x0;
 		
 		//draw top right
-		start = xPos + r + (yPos-r)*768;
+		start = xPos + r + (yPos-r)*screen_width;
 		for(int i = 0; i < w + 2; i++) {
-			index = start - 768 + 2 - i;
-			if(index > 0 && index < 393216 && !pixelInsideSideArea(index))
+			index = start - screen_width + 2 - i;
+			if(index > 0 && index < screen_size && !pixelInsideSideArea(index))
 				screen[index] = darkGray;
 		}
 		
 		for(int i = 0; i < w; i++) {
 			index = start - i;
-			if(index > 0 && index < 393216  && !pixelInsideSideArea(index))
+			if(index > 0 && index < screen_size  && !pixelInsideSideArea(index))
 				screen[index] = lightGray;
 		}
 		
 		for(int i = 0; i < w; i++) {
-			index = start + 768 - i;
-			if(index > 0 && index < 393216  && !pixelInsideSideArea(index))
+			index = start + screen_width - i;
+			if(index > 0 && index < screen_size  && !pixelInsideSideArea(index))
 				screen[index] = darkGray;
 		}
 		
 		for(int i = 0; i < 3; i++) {
-			index  = start - w - 768 + i*768;
-			if(index > 0 && index < 393216  && !pixelInsideSideArea(index))
+			index  = start - w - screen_width + i*screen_width;
+			if(index > 0 && index < screen_size  && !pixelInsideSideArea(index))
 				screen[index] = darkGray;
 		}
 		
 		for(int i = 0; i < w + 1; i++) {
-			index = start + 2 + i*768;
-			if(index > 0 && index < 393216  && !pixelInsideSideArea(index))
+			index = start + 2 + i*screen_width;
+			if(index > 0 && index < screen_size  && !pixelInsideSideArea(index))
 				screen[index] = darkGray;
 		}
 		
 		for(int i = 0; i < w; i++) {
-			index = start + 1 + i*768;
-			if(index > 0 && index < 393216  && !pixelInsideSideArea(index))
+			index = start + 1 + i*screen_width;
+			if(index > 0 && index < screen_size  && !pixelInsideSideArea(index))
 				screen[index] = lightGray;
 		}
 		
 		for(int i = 0; i < w; i++) {
-			index = start + 768 + i*768;
-			if(index > 0 && index < 393216  && !pixelInsideSideArea(index))
+			index = start + screen_width + i*screen_width;
+			if(index > 0 && index < screen_size  && !pixelInsideSideArea(index))
 				screen[index] = darkGray;
 		}
 		
-		index = start +1  + w*768;
-		if(index > 0 && index < 393216  && !pixelInsideSideArea(index))
+		index = start +1  + w*screen_width;
+		if(index > 0 && index < screen_size  && !pixelInsideSideArea(index))
 			screen[index] = 0x0;
 		
 		//draw bottom left
-		start = xPos - r + (yPos+r)*768;
+		start = xPos - r + (yPos+r)*screen_width;
 		for(int i = 0; i < w + 2; i++) {
-			index = start + 768 - 2 + i;
-			if(index > 0 && index < 393216  && !pixelInsideSideArea(index))
+			index = start + screen_width - 2 + i;
+			if(index > 0 && index < screen_size  && !pixelInsideSideArea(index))
 				screen[index] = darkGray;
 		}
 		
 		for(int i = 0; i < w; i++) {
 			index = start + i;
-			if(index > 0 && index < 393216  && !pixelInsideSideArea(index))
+			if(index > 0 && index < screen_size  && !pixelInsideSideArea(index))
 				screen[index] = lightGray;
 		}
 		
 		for(int i = 0; i < w; i++) {
-			index = start - 768 + i;
-			if(index > 0 && index < 393216 && !pixelInsideSideArea(index))
+			index = start - screen_width + i;
+			if(index > 0 && index < screen_size && !pixelInsideSideArea(index))
 				screen[index] = darkGray;
 		}
 		
 		for(int i = 0; i < 3; i++) {
-			index  = start + w + 768 - i*768;
-			if(index > 0 && index < 393216 && !pixelInsideSideArea(index))
+			index  = start + w + screen_width - i*screen_width;
+			if(index > 0 && index < screen_size && !pixelInsideSideArea(index))
 				screen[index] = darkGray;
 		}
 		
 		for(int i = 0; i < w + 1; i++) {
-			index = start - 2 - i*768;
-			if(index > 0 && index < 393216 && !pixelInsideSideArea(index))
+			index = start - 2 - i*screen_width;
+			if(index > 0 && index < screen_size && !pixelInsideSideArea(index))
 				screen[index] = darkGray;
 		}
 		
 		for(int i = 0; i < w; i++) {
-			index = start - 1 - i*768;
-			if(index > 0 && index < 393216 && !pixelInsideSideArea(index))
+			index = start - 1 - i*screen_width;
+			if(index > 0 && index < screen_size && !pixelInsideSideArea(index))
 				screen[index] = lightGray;
 		}
 		
 		for(int i = 0; i < w; i++) {
-			index = start - 768 - i*768;
-			if(index > 0 && index < 393216 && !pixelInsideSideArea(index))
+			index = start - screen_width - i*screen_width;
+			if(index > 0 && index < screen_size && !pixelInsideSideArea(index))
 				screen[index] = darkGray;
 		}
 		
-		index = start -1  - w*768;
-		if(index > 0 && index < 393216 && !pixelInsideSideArea(index))
+		index = start -1  - w*screen_width;
+		if(index > 0 && index < screen_size && !pixelInsideSideArea(index))
 			screen[index] = 0x0;
 		
 		//draw bottom right
-		start = xPos + r + (yPos+r)*768;
+		start = xPos + r + (yPos+r)*screen_width;
 		for(int i = 0; i < w + 2; i++) {
-			index = start + 768 + 2 - i;
-			if(index > 0 && index < 393216 && !pixelInsideSideArea(index))
+			index = start + screen_width + 2 - i;
+			if(index > 0 && index < screen_size && !pixelInsideSideArea(index))
 				screen[index] = darkGray;
 		}
 		
 		for(int i = 0; i < w; i++) {
 			index = start - i;
-			if(index > 0 && index < 393216 && !pixelInsideSideArea(index))
+			if(index > 0 && index < screen_size && !pixelInsideSideArea(index))
 				screen[index] = lightGray;
 		}
 		
 		for(int i = 0; i < w; i++) {
-			index = start - 768 - i;
-			if(index > 0 && index < 393216 && !pixelInsideSideArea(index))
+			index = start - screen_width - i;
+			if(index > 0 && index < screen_size && !pixelInsideSideArea(index))
 				screen[index] = darkGray;
 		}
 		
 		for(int i = 0; i < 3; i++) {
-			index  = start - w + 768 - i*768;
-			if(index > 0 && index < 393216 && !pixelInsideSideArea(index))
+			index  = start - w + screen_width - i*screen_width;
+			if(index > 0 && index < screen_size && !pixelInsideSideArea(index))
 				screen[index] = darkGray;
 		}
 		
 		for(int i = 0; i < w + 1; i++) {
-			index = start + 2 - i*768;
-			if(index > 0 && index < 393216 && !pixelInsideSideArea(index))
+			index = start + 2 - i*screen_width;
+			if(index > 0 && index < screen_size && !pixelInsideSideArea(index))
 				screen[index] = darkGray;
 		}
 		
 		for(int i = 0; i < w; i++) {
-			index = start + 1 - i*768;
-			if(index > 0 && index < 393216 && !pixelInsideSideArea(index))
+			index = start + 1 - i*screen_width;
+			if(index > 0 && index < screen_size && !pixelInsideSideArea(index))
 				screen[index] = lightGray;
 		}
 		
 		for(int i = 0; i < w; i++) {
-			index = start - 768 - i*768;
-			if(index > 0 && index < 393216 && !pixelInsideSideArea(index))
+			index = start - screen_width - i*screen_width;
+			if(index > 0 && index < screen_size && !pixelInsideSideArea(index))
 				screen[index] = darkGray;
 		}
 		
-		index = start +1  - w*768;
-		if(index > 0 && index < 393216 && !pixelInsideSideArea(index))
+		index = start +1  - w*screen_width;
+		if(index > 0 && index < screen_size && !pixelInsideSideArea(index))
 			screen[index] = 0x0;
 
 	}

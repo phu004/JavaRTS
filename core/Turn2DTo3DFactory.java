@@ -49,7 +49,7 @@ public class Turn2DTo3DFactory {
 		B.cross(O,U);
 		C.cross(U,V);
 		
-		W.set(x-384, -y + 256, 650);
+		W.set(x-mainThread.screen_width/2, -y + mainThread.screen_height/2, vector.Z_length);
 		
 		X = A.dot(W)/C.dot(W);
 		Y = B.dot(W)/C.dot(W);

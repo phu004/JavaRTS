@@ -54,14 +54,15 @@ public class grid {
 	
 	
 	public void draw(){
-		int pos = 2 + 20 * 768;
+		int w = mainThread.screen_width;
+		int pos = 2 + 20 * w;
 		boolean tile;
 		int[] screen = mainThread.screen2;
 		for(int i = 0; i < 128; i++){
 			for(int j = 0; j < 128; j++){
 				tile = previousObstacleMap[j + i*128];
 				if(!tile)
-					screen[pos + j + i*768] = 0; 
+					screen[pos + j + i*w] = 0; 
 				
 			}
 		}

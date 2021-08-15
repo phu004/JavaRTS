@@ -115,6 +115,9 @@ public abstract class solidObject{
 	public final static int notInRange = 2;
 	public float attackRange, groupAttackRange;
 	
+	public static int screen_width = mainThread.screen_width;
+	public static int screen_height = mainThread.screen_height;
+	
 	public int experience, level;
 	
 	//wether this object is under attack;

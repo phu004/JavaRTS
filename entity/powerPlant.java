@@ -29,13 +29,13 @@ public class powerPlant extends solidObject{
 	public vector shadowvertex0, tempshadowvertex0,shadowvertex1, tempshadowvertex1,shadowvertex2, tempshadowvertex2,shadowvertex3, tempshadowvertex3;
 	
 	//a screen space boundary which is used to test if the  object is visible from camera point of view
-	public final static Rectangle visibleBoundary = new Rectangle(-85,-85,920, 762);  
+	public final static Rectangle visibleBoundary = new Rectangle(-85,-85,screen_width+152, screen_height+250);  
 		
 	//a screen space boundary which is used to test if the entire  object is within the screen
-	public final static Rectangle screenBoundary = new Rectangle(60,60,648, 402);  
+	public final static Rectangle screenBoundary = new Rectangle(60,60,screen_width-120, screen_height-110);  
 	
 	//screen space boundary which is used to test if the shadow of the  object is within the screen
-	public final static Rectangle shadowBoundary1 = new Rectangle(0,0,768, 512);  
+	public final static Rectangle shadowBoundary1 = new Rectangle(0,0,screen_width, screen_height);  
 	
 	//a screen space boundary which is used to test if the vision polygon of the  object is visible.
 	public final static Rectangle visionBoundary = new Rectangle(0,0,1600, 2000);
@@ -768,7 +768,7 @@ public class powerPlant extends solidObject{
 		}
 		
 		visionBoundary.x = (int)(tempCentre.screenX - 800);
-		visionBoundary.y = (int)(tempCentre.screenY - 1000);
+		visionBoundary.y = (int)(tempCentre.screenY - 1200);
 		visionInsideScreen = camera.screen.intersects(visionBoundary);
 		
 		

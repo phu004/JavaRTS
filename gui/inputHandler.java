@@ -40,6 +40,9 @@ public class inputHandler {
 	
 	public static int escapePressedCooldown;
 	
+	public static int screen_width = mainThread.screen_width;
+	public static int screen_height = mainThread.screen_height;
+	
 	public static void processInput(){
 		
 		if(escapePressedCooldown > 0)
@@ -192,22 +195,22 @@ public class inputHandler {
 					if(mainThread.pc.cursorIsInMiniMap() || mainThread.pc.cursorIsInSideBar() || mainThread.capturedMouse){
 						if(mouse_x0 < 10)
 							camera.MOVE_LEFT = true;
-						if(mouse_x0 > 758)
+						if(mouse_x0 > screen_width-10)
 							camera.MOVE_RIGHT = true;
 						if(mouse_y0 < 10)
 							camera.MOVE_UP = true;
-						if(mouse_y0 > 502)
+						if(mouse_y0 > screen_height-10)
 							camera.MOVE_DOWN = true;
 						
 					}else{
 					
 						if(mouse_x0 < 40)
 							camera.MOVE_LEFT = true;
-						if(mouse_x0 > 728)
+						if(mouse_x0 > screen_width - 40)
 							camera.MOVE_RIGHT = true;
 						if(mouse_y0 < 40)
 							camera.MOVE_UP = true;
-						if(mouse_y0 > 472)
+						if(mouse_y0 > screen_height-40)
 							camera.MOVE_DOWN = true;
 					}
 					
@@ -219,22 +222,22 @@ public class inputHandler {
 						}
 						
 					
-						if(mouse_x0 < 250 && mouse_y0 > 362 && cameraMovementAngle > 105 && cameraMovementAngle < 165){
+						if(mouse_x0 < 250*screen_width/768 && mouse_y0 > 362*screen_height/512 && cameraMovementAngle > 105 && cameraMovementAngle < 165){
 							camera.MOVE_LEFT = true;
 							camera.MOVE_DOWN = true;
 						}
 						
-						if(mouse_x0 < 250 && mouse_y0 < 150 && cameraMovementAngle < 75){
+						if(mouse_x0 < 250*screen_width/768 && mouse_y0 < 150*screen_height/512 && cameraMovementAngle < 75){
 							camera.MOVE_LEFT = true;
 							camera.MOVE_UP = true;
 						}
 						
-						if(mouse_x0 > 518 && mouse_y0 < 150 && cameraMovementAngle > 285){
+						if(mouse_x0 > 518*screen_width/768 && mouse_y0 < 150*screen_height/512 && cameraMovementAngle > 285){
 							camera.MOVE_RIGHT = true;
 							camera.MOVE_UP = true;
 						}
 						
-						if(mouse_x0 > 518 && mouse_y0 > 362 && cameraMovementAngle < 255 && cameraMovementAngle > 195){
+						if(mouse_x0 > 518*screen_width/768 && mouse_y0 > 362*screen_height/512 && cameraMovementAngle < 255 && cameraMovementAngle > 195){
 							camera.MOVE_RIGHT = true;
 							camera.MOVE_DOWN = true;
 						}

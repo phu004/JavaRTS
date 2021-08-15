@@ -27,6 +27,9 @@ public class sideBarManager {
 	public int[] sideBarInfo;
 	public int[] sideBarInfo2;
 	
+	public static int screen_width = mainThread.screen_width;
+	public static int screen_height = mainThread.screen_height;
+	
 	 
 	public sideBarManager(playerCommander pc){
 		this.pc = pc;
@@ -55,10 +58,15 @@ public class sideBarManager {
 		int mouseY = inputHandler.mouse_y;
 	
 		
-		int x1 = 635; int y1 = 381; 
-		int x2 = 677; int y2 = 425;
-		int x3 = 722; int y3 = 468;
-		int x4 = 766; int y4 = 509;
+		//int x1 = 635; int y1 = 381; 
+		//int x2 = 677; int y2 = 425;
+		//int x3 = 722; int y3 = 468;
+		//int x4 = 766; int y4 = 509;
+		
+		int x1 = screen_width - 133; int y1 = screen_height - 131;
+		int x2 = screen_width - 91;  int y2 = screen_height - 87;
+		int x3 = screen_width - 46;  int y3 = screen_height - 44;
+		int x4 = screen_width - 2;   int y4 = screen_height - 3;
 		
 	
 		if(mouseX > x1 && mouseX < x2 && mouseY > y1 && mouseY < y2){

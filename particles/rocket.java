@@ -43,6 +43,9 @@ public class rocket {
 	
 	public static int[] tiles3x3 = new int[]{-129, -128, -127, -1, 0, 1, 127, 128, 129};
 	
+	public static int screen_width = mainThread.screen_width;
+	public static int screen_height = mainThread.screen_height;
+	
 	public rocket(){
 		centre = new vector(0,0,0);
 		iDirection = new vector(1,0,0);
@@ -216,7 +219,7 @@ public class rocket {
 		tempCentre.updateLocation();
 		
 		visible = true;
-		if(tempCentre.screenX <  -100 || tempCentre.screenX > 856 || tempCentre.screenY < -100 || tempCentre.screenY > 612){
+		if(tempCentre.screenX <  -100 || tempCentre.screenX > screen_width + 100 || tempCentre.screenY < -100 || tempCentre.screenY > screen_height + 100){
 			visible = false;
 		}
 		

@@ -12,9 +12,13 @@ public final class vector{
 
 	public static final int Z_length = 650;
 	
-	public static final int orthogonalScale = 220;
+	public static final int orthogonalScale = 330;
 
 	public static float old_X, old_Y, old_Z, zInverse, lengthInverse;
+	
+	public static int half_width = mainThread.screen_width/2;
+	public static int half_height = mainThread.screen_height/2;
+	public static int half_width_shadowmap = mainThread.shadowmap_width/2;
 	
 	//z component of the vector from light space
 	public float z_lightspace;
@@ -141,15 +145,15 @@ public final class vector{
 	public void updateLocation(){
 		//find the 2D screen location of this vector
 		zInverse = Z_length/z;
-		screenX = x*zInverse + 384; 
-		screenY = -y*zInverse + 256;
+		screenX = x*zInverse +  half_width; 
+		screenY = -y*zInverse + half_height;
 		
 	}
 	
 	public void updateLocationOrthognal(){
 		//find the 2D screen location of this vector in Orthographic projection 
-		screenX_lightspace = x*orthogonalScale + 512; 
-		screenY_lightspace = -y*orthogonalScale + 512;
+		screenX_lightspace = x*orthogonalScale + half_width_shadowmap; 
+		screenY_lightspace = -y*orthogonalScale + half_width_shadowmap;
 	}
 	
 	public vector myClone(){

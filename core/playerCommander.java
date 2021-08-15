@@ -56,7 +56,16 @@ public class playerCommander {
 	public boolean hasTroopsSelected;
 	public boolean hasTowerSelected;
 	
+	public int screen_width;
+	public int screen_height;
+	public int screen_size;
+	
 	public void init(){
+		
+		screen_width = mainThread.screen_width;
+		screen_height = mainThread.screen_height;
+		screen_size = mainThread.screen_size;
+		
 		selectedUnits = new solidObject[100];
 		groups = new solidObject[5][100];
 		area = new Rectangle();
@@ -238,7 +247,7 @@ public class playerCommander {
 				if(performAttack){
 					
 					if(cursorIsInMiniMap()){
-						clickPoint.set(0.25f*(inputHandler.mouse_x-3), 0, 0.25f*(127-(inputHandler.mouse_y-381)));
+						clickPoint.set(0.25f*(inputHandler.mouse_x-3), 0, 0.25f*(127-(inputHandler.mouse_y-(screen_height-131))));
 						attackMoveSelectUnit(clickPoint.x, clickPoint.z);
 						
 					}else if(cursorIsInSideBar()){
@@ -313,7 +322,7 @@ public class playerCommander {
 		
 		if(isMovingViewWindow){
 			camera.position.x = 0.25f*(inputHandler.mouse_x-3) - camera.view_Direction.x * 3;
-			camera.position.z = 0.25f*(127-(inputHandler.mouse_y-381)) - camera.view_Direction.z * 3;
+			camera.position.z = 0.25f*(127-(inputHandler.mouse_y-(screen_height-131))) - camera.view_Direction.z * 3;
 			
 			
 		}
@@ -324,18 +333,18 @@ public class playerCommander {
 
 			if(startX < 0)
 				startX = 0;
-			if(startX >767)
-				startX = 767;
+			if(startX > screen_width - 1)
+				startX = screen_width - 1;
 			if(startY < 0)
 				startY = 0;
-			if(startY > 511)
-				startY = 511;
-			if(endX > 767)
-				endX = 767;
+			if(startY > screen_height - 1)
+				startY = screen_height - 1;
+			if(endX > screen_width - 1)
+				endX = screen_width - 1;
 			if(endX < 0)
 				endX = 0;
-			if(endY > 511)
-				endY = 511;
+			if(endY > screen_height - 1)
+				endY = screen_height - 1;
 			if(endY < 0)
 				endY = 0;
 			
@@ -377,7 +386,7 @@ public class playerCommander {
 			attackKeyPressed = false;
 			
 			if(cursorIsInMiniMap()){
-				clickPoint.set(0.25f*(inputHandler.mouse_x-3), 0, 0.25f*(127-(inputHandler.mouse_y-381)));
+				clickPoint.set(0.25f*(inputHandler.mouse_x-3), 0, 0.25f*(127-(inputHandler.mouse_y-(screen_height-131))));
 			}else{
 				clickPoint.set(mainThread.my2Dto3DFactory.get3DLocation(theAssetManager.Terrain.ground[0], inputHandler.mouse_x, inputHandler.mouse_y)); 
 			}
@@ -554,11 +563,11 @@ public class playerCommander {
 	
 	
 	public boolean cursorIsInMiniMap(){
-		return inputHandler.mouse_x >=3 && inputHandler.mouse_x <=131 && inputHandler.mouse_y >= 381 && inputHandler.mouse_y <= 509;
+		return inputHandler.mouse_x >=3 && inputHandler.mouse_x <=131 && inputHandler.mouse_y >= (screen_height-131) && inputHandler.mouse_y <= (screen_height - 3);
 	}
 	
 	public boolean cursorIsInSideBar(){
-		return inputHandler.mouse_x >=637 && inputHandler.mouse_x <=765 && inputHandler.mouse_y >= 381 && inputHandler.mouse_y <= 509;
+		return inputHandler.mouse_x >=(screen_width - 131) && inputHandler.mouse_x <=(screen_width - 3) && inputHandler.mouse_y >= (screen_height-131) && inputHandler.mouse_y <= (screen_height - 3);
 	}
 	
 	

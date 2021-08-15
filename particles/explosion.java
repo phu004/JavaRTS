@@ -32,11 +32,12 @@ public class explosion {
 	
 	public int auraIndex;
 	
-	public static int zTop = 4490089;
-	public static int zBot = 7127877;
-	public static int zDelta = (zBot - zTop)/511;
+	public static int zTop, zBot, zDelta;
 	
 	public int xStart, yStart;
+	
+	public static int screen_width = mainThread.screen_width;
+	public static int screen_height = mainThread.screen_height;
 	
 	
 	public explosion(){
@@ -137,7 +138,7 @@ public class explosion {
 			int SpriteValue = 0;
 			
 			for(int i = yTop, y = yStart; i < yBot; i++, y++){
-				if(i < 0 || i >=512)
+				if(i < 0 || i >=screen_height)
 					continue;
 				
 				depth = zTop + i*zDelta;
@@ -146,9 +147,9 @@ public class explosion {
 				for(int j = xTop, x = xStart;  j < xBot; j++, x++){
 					
 					
-					if(j < 0 || j >= 768)
+					if(j < 0 || j >= screen_width)
 						continue;
-					screenIndex = j + i*768;
+					screenIndex = j + i*screen_width;
 					
 					
 					if(zbuffer[screenIndex] - depth > 30000)
@@ -223,13 +224,13 @@ public class explosion {
 			
 			
 			for(int i = yTop, y = 0; i < yBot; i++, y++){
-				if(i < 0 || i >=512)
+				if(i < 0 || i >=screen_height)
 					continue;
 				int ratioInverseY = (int)(ratioInverse*y);
 				for(int j = xTop, x = 0;  j < xBot; j++, x++){
-					if(j < 0 || j >= 768)
+					if(j < 0 || j >= screen_width)
 						continue;
-					screenIndex = j + i*768;
+					screenIndex = j + i*screen_width;
 					if(zbuffer[screenIndex] >= depth)
 						continue;
 					

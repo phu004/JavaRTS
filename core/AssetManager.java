@@ -71,8 +71,16 @@ public class AssetManager {
 	public int numberOfPlayerBuildings;
 	public int numberOfAIBuildings;
 	
+	public int screen_width;
+	public int screen_height;
+	public int screen_size;
+	
 	
 	public void init(){
+		
+		screen_width = mainThread.screen_width;
+		screen_height = mainThread.screen_height;
+		screen_size = mainThread.screen_size;
 		
 		//polygons which represent the area of sight for player 
 		double angle = Math.PI/24;
@@ -639,12 +647,12 @@ public class AssetManager {
 			numberOfPlayerBuildings = 0;
 			numberOfAIBuildings = 0;
 			
-			int start = 381 * 768 + 3;
-			int start2 = 381 * 768 + 635;
+			int start = (screen_height-131) * screen_width + 3;
+			int start2 = (screen_height-131) * screen_width + (screen_width-133);
 			for(int y = 0; y < 131; y++){
 				for(int x = 0; x < 128; x ++){
-					mainThread.zBuffer[start + x + y*768]	= Integer.MAX_VALUE;
-					mainThread.zBuffer[start2 + x + y*768]	= Integer.MAX_VALUE;
+					mainThread.zBuffer[start + x + y*screen_width]	= Integer.MAX_VALUE;
+					mainThread.zBuffer[start2 + x + y*screen_width]	= Integer.MAX_VALUE;
 				}
 			}
 		

@@ -28,6 +28,9 @@ public class smokeParticle {
 		public static int[] screen;
 		public static int[] zbuffer;
 		
+		public static int screen_width = mainThread.screen_width;
+		public static int screen_height = mainThread.screen_height;
+		
 		
 		public smokeParticle(){
 			centre = new vector(0,0,0);
@@ -97,7 +100,7 @@ public class smokeParticle {
 			int xPos = (int)tempCentre.screenX;
 			int yPos = (int)tempCentre.screenY;
 			
-			if(xPos  > 900 || xPos < -132 || yPos > 644 || yPos < -132){
+			if(xPos  > screen_width+132 || xPos < -132 || yPos > screen_height+132 || yPos < -132){
 				frameIndex+=animationSpeed;
 				lifeTime-=animationSpeed;
 				if(lifeTime <= 0)
@@ -142,7 +145,7 @@ public class smokeParticle {
 			//power plant smoke particle
 			if(size == 1.5){
 				for(int i = yTop, y = 0; i < yBot; i++, y++){
-					if(i < 0 || i >=512)
+					if(i < 0 || i >=screen_height)
 						continue;
 					int ratioInverseY = (int)(ratioInverse*y);
 					for(int j = xTop, x = 0;  j < xBot; j++, x++){
@@ -152,9 +155,9 @@ public class smokeParticle {
 						if(SpriteValue == 0)
 							continue;
 						
-						if(j < 0 || j >= 768)
+						if(j < 0 || j >= screen_width)
 							continue;
-						screenIndex = j + i*768;
+						screenIndex = j + i*screen_width;
 						if(zbuffer[screenIndex] >= depth)
 							continue;
 						screenValue = screen[screenIndex];
@@ -174,7 +177,7 @@ public class smokeParticle {
 			//fire smoke particle
 			if(size == 0.7f){
 				for(int i = yTop, y = 0; i < yBot; i++, y++){
-					if(i < 0 || i >=512)
+					if(i < 0 || i >=screen_height)
 						continue;
 					int ratioInverseY = (int)(ratioInverse*y);
 					for(int j = xTop, x = 0;  j < xBot; j++, x++){
@@ -184,9 +187,9 @@ public class smokeParticle {
 						if(SpriteValue == 0)
 							continue;
 						
-						if(j < 0 || j >= 768)
+						if(j < 0 || j >= screen_width)
 							continue;
-						screenIndex = j + i*768;
+						screenIndex = j + i*screen_width;
 						if(zbuffer[screenIndex] >= depth)
 							continue;
 						screenValue = screen[screenIndex];
@@ -205,14 +208,14 @@ public class smokeParticle {
 			
 			//rocket tail particle
 			if(size == 1f){
-				if(yTop >= 0 && yBot < 512 && xTop >=  0 && xBot < 768){
+				if(yTop >= 0 && yBot < screen_height && xTop >=  0 && xBot < screen_width){
 					for(int i = yTop, y = 0; i < yBot; i++, y++){
 						
 						
 						int ratioInverseY = (int)(ratioInverse*y) * originalWidth;
 						float ratioInverseX = 0;
 						
-						screenIndex = xTop + i*768;
+						screenIndex = xTop + i*screen_width;
 						
 						for(int j = xTop;  j < xBot; j++, screenIndex++, ratioInverseX+=ratioInverse){
 							
@@ -242,7 +245,7 @@ public class smokeParticle {
 			//refinery smoke particle	
 			if(size == 0.9f){
 				for(int i = yTop, y = 0; i < yBot; i++, y++){
-					if(i < 0 || i >=512)
+					if(i < 0 || i >=screen_height)
 						continue;
 					int ratioInverseY = (int)(ratioInverse*y);
 					for(int j = xTop, x = 0;  j < xBot; j++, x++){
@@ -252,9 +255,9 @@ public class smokeParticle {
 						if(SpriteValue == 0)
 							continue;
 						
-						if(j < 0 || j >= 768)
+						if(j < 0 || j >= screen_width)
 							continue;
-						screenIndex = j + i*768;
+						screenIndex = j + i*screen_width;
 						if(zbuffer[screenIndex] >= depth)
 							continue;
 						screenValue = screen[screenIndex];
@@ -273,7 +276,7 @@ public class smokeParticle {
 			
 			if(size == 0.8f){
 				for(int i = yTop, y = 0; i < yBot; i++, y++){
-					if(i < 0 || i >=512)
+					if(i < 0 || i >=screen_height)
 						continue;
 					int ratioInverseY = (int)(ratioInverse*y);
 					for(int j = xTop, x = 0;  j < xBot; j++, x++){
@@ -283,9 +286,9 @@ public class smokeParticle {
 						if(SpriteValue == 0)
 							continue;
 						
-						if(j < 0 || j >= 768)
+						if(j < 0 || j >= screen_width)
 							continue;
-						screenIndex = j + i*768;
+						screenIndex = j + i*screen_width;
 						if(zbuffer[screenIndex] >= depth)
 							continue;
 						screenValue = screen[screenIndex];

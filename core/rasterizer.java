@@ -1,5 +1,7 @@
 package core;
 
+import particles.explosion;
+
 //The rasterizer class will draw any polygon into the screen buffer.
 //The texture mapping methods will differ depends on the type of polygon,
 //The universal formula for texture mapping is:
@@ -18,23 +20,40 @@ package core;
 
 
 public class rasterizer {
+	
+	public static int screen_width = mainThread.screen_width;
+	public static int screen_height = mainThread.screen_height;
+	public static int shadowmap_width = mainThread.shadowmap_width;
+	public static int Z_length = vector.Z_length;
+	public static int w_ = screen_width-1;
+	public static int h_ = screen_height-1;
+	public static int shadowmap_w_ = shadowmap_width -1;
+	public static int shadowmap_size = shadowmap_width * shadowmap_width;
+	public static int shadowmap_size_ = shadowmap_size -1;
+	public static int half_width_ = screen_width/2 -1;
+	public static int half_height = screen_height/2;
+	public static int shadowmap_width_bit = mainThread.shadowmap_width_bit;
+	
+	//the z depth rage for terrain polygon, since the camera never rotate along x axis in his game, the max and min z depth values are fixed.
+	public static int zTop, zBot, zDelta;
+	
 	//2 arrays that define the scan lines of the polygon
-	public static int[] xLeft = new int[512], xRight = new int[512];
+	public static int[] xLeft = new int[screen_height], xRight = new int[screen_height];
 	
 	//2 arrays that define the z depth across the polygon
-	public static int[] zLeft = new int[512], zRight = new int[512];
+	public static int[] zLeft = new int[screen_height], zRight = new int[screen_height];
 	
 	//2 arrays that define the reflections across the polygon
-	public static vector[] RLeft = new vector[512], RRight = new vector[512];
+	public static vector[] RLeft = new vector[screen_height], RRight = new vector[screen_height];
 	
 	//2 arrays that define the intensity across the polygon
-	public static int[] iLeft = new int[512], iRight = new int[512];
+	public static int[] iLeft = new int[screen_height], iRight = new int[screen_height];
 	
 	//2 arrays that define the scan lines of the polygon in light space
-	public static int[] xLeft_lightspace = new int[1024], xRight_lightspace = new int[1024];
+	public static int[] xLeft_lightspace = new int[shadowmap_width], xRight_lightspace = new int[shadowmap_width];
 	
 	//2 arrays that define the z depth across the polygon in light space
-	public static int[] zLeft_lightspace = new int[1024], zRight_lightspace = new int[1024];
+	public static int[] zLeft_lightspace = new int[shadowmap_width], zRight_lightspace = new int[shadowmap_width];
 	
 	//a short array which represent zbuffer
 	public static int[] zBuffer;
@@ -93,7 +112,7 @@ public class rasterizer {
 
 	//initialize rasteriser 
 	public static void init(){
-		for(int i = 0; i < 512; i++ ){
+		for(int i = 0; i < screen_height; i++ ){
 			RLeft[i] = new vector(0,0,0);
 			RRight[i] = new vector(0,0,0);
 		}
@@ -106,6 +125,9 @@ public class rasterizer {
 		shadowBitmap = mainThread.shadowBitmap;
 		shadowBuffer = sunLight.shadowBuffer;
 		displacementBuffer = mainThread.displacementBuffer;
+		zTop = 0;
+		zBot = 0;
+		zDelta = 0;
 	}
 	
 	
@@ -211,7 +233,7 @@ public class rasterizer {
 		
 		C_unit.cross(U, V); 
 		
-		w = 0x1000000/(650*C_unit.dot(O));
+		w = 0x1000000/(Z_length*C_unit.dot(O));
 		
 		U.scale(poly.textureScaleX);
 		V.scale(poly.textureScaleY);
@@ -226,11 +248,11 @@ public class rasterizer {
 		
 	//convert a polygon to scan lines
 	public static void scanPolygon(){
-		start = 512;
+		start = screen_height;
 		end = -1; 
 		int startX, g, startY, endY, temp_x;
 		float gradient;
-	
+		
 		for(int i = 0; i < visibleCount; i++){
 			vector v1 = vertex2D[i];
 			vector v2;
@@ -260,7 +282,7 @@ public class rasterizer {
 			
 			
 			startY = Math.max((int)(v1.screenY) + 1, 0);
-			endY = Math.min((int)(v2.screenY), 511);
+			endY = Math.min((int)(v2.screenY), h_);
 			
 			
 			if(startY < start )
@@ -283,10 +305,10 @@ public class rasterizer {
 					else
 						xLeft[y] = 0;
 				}else{
-					if(temp_x <= 767)
+					if(temp_x <= w_)
 						xRight[y] = temp_x;
 					else
-						xRight[y] = 768;
+						xRight[y] = screen_width;
 				}
 				startX+=g;
 	
@@ -296,7 +318,7 @@ public class rasterizer {
 	
 	//convert a polygon to scan lines
 	public static void scanPolygon_Gouraud(){
-		start = 512;
+		start = screen_height;
 		end = -1; 
 		int startX, g, startY, endY, temp_x, startDiffuse, gDiffuse, temp_diffuse;
 		float gradient, diffuseGradient;
@@ -338,7 +360,7 @@ public class rasterizer {
 			
 			
 			startY = Math.max((int)(v1.screenY) + 1, 0);
-			endY = Math.min((int)(v2.screenY), 511);
+			endY = Math.min((int)(v2.screenY), h_);
 			
 			
 			if(startY < start )
@@ -369,10 +391,10 @@ public class rasterizer {
 					
 					iLeft[y] = temp_diffuse;
 				}else{
-					if(temp_x <= 767)
+					if(temp_x <= w_)
 						xRight[y] = temp_x;
 					else
-						xRight[y] = 768;
+						xRight[y] = screen_width;
 					iRight[y] = temp_diffuse;
 				}
 				startX+=g;
@@ -387,7 +409,7 @@ public class rasterizer {
 		vertex2D = poly.vertex2D;
 		visibleCount = poly.L;
 		
-		start = 1024;
+		start = shadowmap_width;
 		end = -1; 
 		
 		float gradient, dy;
@@ -421,7 +443,7 @@ public class rasterizer {
 			}
 			
 			startY = Math.max((int)(v1.screenY_lightspace) + 1, 0);
-			endY = Math.min((int)(v2.screenY_lightspace), 1023);
+			endY = Math.min((int)(v2.screenY_lightspace), shadowmap_w_);
 			
 			
 			if(startY < start )
@@ -459,7 +481,7 @@ public class rasterizer {
 			if(dx <= 0)
 				continue;
 
-			index = startX + (y<<10);
+			index = startX + y*shadowmap_width;
 			for(;startX < endX; startX++, index++){
 				shadowBuffer[index] = Integer.MAX_VALUE;  //set the distance of the pixel in light space to infinite away
 				
@@ -474,13 +496,13 @@ public class rasterizer {
 		vertex2D = poly.vertex2D;
 		visibleCount = poly.L;
 		
-		start = 1024;
+		start = shadowmap_width;
 		end = -1; 
 		
 	
 		float gradient, dy;
 		int startX, g, startY, endY, temp_x, startZ, dz, dx;
-		
+	
 		for(int i = 0; i < visibleCount; i++){
 			vector v1 = vertex2D[i];
 			vector v2;
@@ -509,9 +531,9 @@ public class rasterizer {
 			}
 			
 			startY = Math.max((int)(v1.screenY_lightspace) + 1, 0);
-			endY = Math.min((int)(v2.screenY_lightspace), 1023);
+			endY = Math.min((int)(v2.screenY_lightspace), shadowmap_w_);
 			
-			
+				
 			if(startY < start )
 				start = startY;
 
@@ -554,10 +576,10 @@ public class rasterizer {
 				continue;
 			startZ = zLeft_lightspace[y];
 			dz = (zRight_lightspace[y] - startZ)/dx;
-			index = startX + (y<<10);
+			index = startX + y*shadowmap_width;
 			for(;startX < endX; startX++, index++, startZ += dz){
-				if(startZ < shadowBuffer[index&1048575]){
-					shadowBuffer[index&1048575] = startZ;
+				if(startZ < shadowBuffer[index&shadowmap_size_]){
+					shadowBuffer[index&shadowmap_size_] = startZ;
 				}
 			}	
 		}
@@ -569,7 +591,7 @@ public class rasterizer {
 		vertex2D = poly.vertex2D;
 		visibleCount = poly.L;
 		
-		start = 1024;
+		start = shadowmap_width;
 		end = -1; 
 		
 	
@@ -604,7 +626,7 @@ public class rasterizer {
 			}
 			
 			startY = Math.max((int)(v1.screenY_lightspace) + 1, 0);
-			endY = Math.min((int)(v2.screenY_lightspace), 1023);
+			endY = Math.min((int)(v2.screenY_lightspace), shadowmap_w_);
 			
 			
 			if(startY < start )
@@ -650,12 +672,12 @@ public class rasterizer {
 				continue;
 			startZ = zLeft_lightspace[y];
 			dz = (zRight_lightspace[y] - startZ)/dx;
-			index = startX + (y<<10);
+			index = startX + y*shadowmap_width;
 			for(;startX < endX; startX++, index++, the_index++, startZ += dz){
 				
 				if(cloakTexture[the_index] >= cloakedShadowThreshold){
-					if(startZ < shadowBuffer[index&1048575]){
-						shadowBuffer[index&1048575] = startZ;
+					if(startZ < shadowBuffer[index&shadowmap_size_]){
+						shadowBuffer[index&shadowmap_size_] = startZ;
 					}
 				}
 			}	
@@ -667,7 +689,6 @@ public class rasterizer {
 		short[] texture = poly.myTexture.pixelData; 
 		diffuse_I = poly.diffuse_I&127;
 		int[]colorTable = gameData.colorTable[diffuse_I];
-		
 		int index;
 		
 	
@@ -684,7 +705,7 @@ public class rasterizer {
 			if(dx <= 0)
 				continue;
 			
-			W.set(x_left-383, -i + 256, 650);
+			W.set(x_left-half_width_, -i + half_height, Z_length);
 			aDotW = A.dot(W);
 			bDotW = B.dot(W);
 			cDotW = C.dot(W);
@@ -696,7 +717,7 @@ public class rasterizer {
 			X1 = X;
 			Y1 = Y;
 			
-			int temp = 768*i;
+			int temp = screen_width*i;
 		
 			
 			z_left = (int)(C_unit.dot(W)*w);
@@ -768,9 +789,9 @@ public class rasterizer {
 
 	//render polygon that below ground level
 	public static void renderUnderGroundPolygon(){
-		int zTop = 4490089;
-		int zBot = 7127877;
-		int zDelta = (zBot - zTop)/511;
+		if(zTop ==0)
+			calculateDepthRangeAtGround();
+		
 		int depth;
 		
 		short[] texture = poly.myTexture.pixelData; 
@@ -848,8 +869,6 @@ public class rasterizer {
 		dXY_ydirection_y = (int)((tempVector3.screenY_lightspace * 65536 - XY_origin_y)*poly.textureHeightInverse);
 		
 	
-		
-					
 		for(int i = start; i <= end; i++){
 			x_left=xLeft[i];
 			x_right=xRight[i];
@@ -859,7 +878,7 @@ public class rasterizer {
 			
 			depth = zTop + i*zDelta;
 			
-			W.set(x_left-383, -i + 256, 650);
+			W.set(x_left-half_width_, -i + half_height, Z_length);
 			aDotW = A.dot(W);
 			bDotW = B.dot(W);
 			cDotW = C.dot(W);
@@ -871,7 +890,7 @@ public class rasterizer {
 			X1 = X;
 			Y1 = Y;
 			
-			int temp = 768*i;
+			int temp = screen_width*i;
 		
 			
 			z_left = (int)(C_unit.dot(W)*w);
@@ -909,7 +928,7 @@ public class rasterizer {
 							
 						
 							
-							int size = (screenX_lightspace + (screenY_lightspace << 10)) & 1048575;
+							int size = (screenX_lightspace + (screenY_lightspace << shadowmap_width_bit)) & shadowmap_size_;
 							
 						
 							if(z_lightspace - shadowBuffer[size] < shadowBias){
@@ -950,7 +969,7 @@ public class rasterizer {
 						screenX_lightspace = (XY_origin_x + dXY_xdirection_x * xPos + dXY_ydirection_x* yPos) >> 16;
 						screenY_lightspace = (XY_origin_y + dXY_xdirection_y * xPos + dXY_ydirection_y * yPos) >> 16;
 						
-						int size = (screenX_lightspace + (screenY_lightspace << 10)) & 1048575;
+						int size = (screenX_lightspace + (screenY_lightspace << shadowmap_width_bit)) & shadowmap_size_;
 						
 						if(z_lightspace - shadowBuffer[size] < shadowBias){
 							shadowBitmap[index]  = 32;
@@ -1059,7 +1078,7 @@ public class rasterizer {
 			if(dx <= 0)
 				continue;
 			
-			W.set(x_left-383, -i + 256, 650);
+			W.set(x_left-half_width_, -i + half_height, Z_length);
 			aDotW = A.dot(W);
 			bDotW = B.dot(W);
 			cDotW = C.dot(W);
@@ -1071,7 +1090,7 @@ public class rasterizer {
 			X1 = X;
 			Y1 = Y;
 			
-			int temp = 768*i;
+			int temp = screen_width*i;
 		
 			
 			z_left = (int)(C_unit.dot(W)*w);
@@ -1107,7 +1126,7 @@ public class rasterizer {
 							screenY_lightspace = (XY_origin_y + dXY_xdirection_y * xPos + dXY_ydirection_y * yPos) >> 16;
 							
 						
-							int size = (screenX_lightspace + (screenY_lightspace << 10)) & 1048575;
+							int size = (screenX_lightspace + (screenY_lightspace << shadowmap_width_bit)) & shadowmap_size_;
 							
 						
 							if(z_lightspace - shadowBuffer[size] < shadowBias){
@@ -1148,7 +1167,7 @@ public class rasterizer {
 						screenX_lightspace = (XY_origin_x + dXY_xdirection_x * xPos + dXY_ydirection_x* yPos) >> 16;
 						screenY_lightspace = (XY_origin_y + dXY_xdirection_y * xPos + dXY_ydirection_y * yPos) >> 16;
 						
-						int size = (screenX_lightspace + (screenY_lightspace << 10)) & 1048575;
+						int size = (screenX_lightspace + (screenY_lightspace << shadowmap_width_bit) ) & shadowmap_size_;
 						
 						if(z_lightspace - shadowBuffer[size] < shadowBias){
 							shadowBitmap[index]  = 32;
@@ -1252,7 +1271,7 @@ public class rasterizer {
 			if(dx <= 0)
 				continue;
 			
-			W.set(x_left-383, -i + 256, 650);
+			W.set(x_left-half_width_, -i + half_height, Z_length);
 			aDotW = A.dot(W);
 			bDotW = B.dot(W);
 			cDotW = C.dot(W);
@@ -1264,7 +1283,7 @@ public class rasterizer {
 			X1 = X;
 			Y1 = Y;
 			
-			int temp = 768*i;
+			int temp = screen_width*i;
 		
 			
 			z_left = (int)(C_unit.dot(W)*w);
@@ -1308,7 +1327,7 @@ public class rasterizer {
 							screenY_lightspace = (XY_origin_y + dXY_xdirection_y * xPos + dXY_ydirection_y * yPos) >> 16;
 							
 						
-							int size = (screenX_lightspace + (screenY_lightspace << 10)) & 1048575;
+							int size = (screenX_lightspace + (screenY_lightspace << shadowmap_width_bit)) & shadowmap_size_;
 							
 						
 							if(z_lightspace - shadowBuffer[size] < shadowBias){
@@ -1350,7 +1369,7 @@ public class rasterizer {
 						screenX_lightspace = (XY_origin_x + dXY_xdirection_x * xPos + dXY_ydirection_x* yPos) >> 16;
 						screenY_lightspace = (XY_origin_y + dXY_xdirection_y * xPos + dXY_ydirection_y * yPos) >> 16;
 						
-						int size = (screenX_lightspace + (screenY_lightspace << 10)) & 1048575;
+						int size = (screenX_lightspace + (screenY_lightspace << shadowmap_width_bit)) & shadowmap_size_;
 						
 						if(z_lightspace - shadowBuffer[size] < shadowBias){
 							shadowBitmap[index]  = 32;
@@ -1459,7 +1478,7 @@ public class rasterizer {
 			if(dx <= 0)
 				continue;
 			
-			W.set(x_left-383, -i + 256, 650);
+			W.set(x_left-half_width_, -i + half_height, Z_length);
 			aDotW = A.dot(W);
 			bDotW = B.dot(W);
 			cDotW = C.dot(W);
@@ -1471,7 +1490,7 @@ public class rasterizer {
 			X1 = X;
 			Y1 = Y;
 			
-			int temp = 768*i;
+			int temp = screen_width*i;
 		
 			
 			z_left = (int)(C_unit.dot(W)*w);
@@ -1509,7 +1528,7 @@ public class rasterizer {
 							
 						
 							
-							int size = (screenX_lightspace + (screenY_lightspace << 10)) & 1048575;
+							int size = (screenX_lightspace + (screenY_lightspace << shadowmap_width_bit)) & shadowmap_size_;
 							
 						
 							if(z_lightspace - shadowBuffer[size] < shadowBias){
@@ -1554,7 +1573,7 @@ public class rasterizer {
 						screenX_lightspace = (XY_origin_x + dXY_xdirection_x * xPos + dXY_ydirection_x* yPos) >> 16;
 						screenY_lightspace = (XY_origin_y + dXY_xdirection_y * xPos + dXY_ydirection_y * yPos) >> 16;
 						
-						int size = (screenX_lightspace + (screenY_lightspace << 10)) & 1048575;
+						int size = (screenX_lightspace + (screenY_lightspace << shadowmap_width_bit)) & shadowmap_size_;
 						
 						if(z_lightspace - shadowBuffer[size] < shadowBias){
 							shadowBitmap[index]  = 32;
@@ -1577,13 +1596,11 @@ public class rasterizer {
 	}
 	
 	//redner terrain polygon which can be shadowed but can not cast shadow
-	public static void renderTerrainPolygon(){
-		int zTop = 4490089;
-		int zBot = 7127877;
-		int zDelta = (zBot - zTop)/511;
+	public static void renderTerrainPolygon(){	
+		if(zTop ==0) 
+			calculateDepthRangeAtGround();
+		
 		int depth;
-		
-		
 		short[] texture = poly.myTexture.pixelData; 
 		diffuse_I = poly.diffuse_I&127;
 		int[] colorTable = gameData.colorTable[diffuse_I];
@@ -1637,7 +1654,7 @@ public class rasterizer {
 			
 			depth = zTop + i*zDelta;
 			
-			W.set(x_left-383, -i + 256, 650);
+			W.set(x_left-half_width_, -i + half_height, Z_length);
 			aDotW = A.dot(W);
 			bDotW = B.dot(W);
 			cDotW = C.dot(W);
@@ -1648,7 +1665,7 @@ public class rasterizer {
 			Y = (int)(bDotW*cDotWInverse);
 			
 			
-			index = x_left + 768*i;
+			index = x_left + screen_width*i;
 			int offset = x_right - x_left;
 			Aoffset = A.x*offset;
 			Boffset = B.x*offset;
@@ -1675,7 +1692,8 @@ public class rasterizer {
 					screenX_lightspace = (XY_origin_x + dXY_xdirection_x * xPos + dXY_ydirection_x* yPos) >> 16;
 					screenY_lightspace = (XY_origin_y + dXY_xdirection_y * xPos + dXY_ydirection_y * yPos) >> 16;
 					
-					if(z_lightspace - shadowBuffer[screenX_lightspace + (screenY_lightspace << 10)] < 1){
+					
+					if(z_lightspace - shadowBuffer[screenX_lightspace + (screenY_lightspace << shadowmap_width_bit)] < 1){
 						shadowBitmap[index]  = 32;
 					}else{
 						shadowBitmap[index]  = 15;
@@ -1692,9 +1710,9 @@ public class rasterizer {
 	
 	//redner road pologons which is a special case for terrain polyongs
 	public static void renderRoadSidePolygon(){
-		int zTop = 4490089;
-		int zBot = 7127877;
-		int zDelta = (zBot - zTop)/511;
+		if(zTop ==0)
+			calculateDepthRangeAtGround();
+		
 		int depth;
 		int color;
 		
@@ -1751,7 +1769,7 @@ public class rasterizer {
 			
 			depth = zTop + i*zDelta;
 			
-			W.set(x_left-383, -i + 256, 650);
+			W.set(x_left-half_width_, -i + half_height, Z_length);
 			aDotW = A.dot(W);
 			bDotW = B.dot(W);
 			cDotW = C.dot(W);
@@ -1762,7 +1780,7 @@ public class rasterizer {
 			Y = (int)(bDotW*cDotWInverse);
 			
 			
-			index = x_left + 768*i;
+			index = x_left + screen_width*i;
 			int offset = x_right - x_left;
 			Aoffset = A.x*offset;
 			Boffset = B.x*offset;
@@ -1794,7 +1812,7 @@ public class rasterizer {
 						screenX_lightspace = (XY_origin_x + dXY_xdirection_x * xPos + dXY_ydirection_x* yPos) >> 16;
 						screenY_lightspace = (XY_origin_y + dXY_xdirection_y * xPos + dXY_ydirection_y * yPos) >> 16;
 						
-						int size = (screenX_lightspace + (screenY_lightspace << 10)) & 1048575;
+						int size = (screenX_lightspace + (screenY_lightspace << shadowmap_width_bit)) & shadowmap_size_;
 						
 						if(z_lightspace - shadowBuffer[size] < 1){
 							shadowBitmap[index]  = 32;
@@ -1806,8 +1824,6 @@ public class rasterizer {
 				}
 			
 			}
-			
-			
 		}
 	}
 	
@@ -1864,7 +1880,7 @@ public class rasterizer {
 			if(dx <= 0)
 				continue;
 			
-			W.set(x_left-383, -i + 256, 650);
+			W.set(x_left-half_width_, -i + half_height, Z_length);
 			aDotW = A.dot(W);
 			bDotW = B.dot(W);
 			cDotW = C.dot(W);
@@ -1875,7 +1891,7 @@ public class rasterizer {
 			Y = (int)(bDotW*cDotWInverse);
 		
 	
-			index = x_left + 768*i;
+			index = x_left + screen_width*i;
 			int offset = x_right - x_left;
 			Aoffset = A.x*offset;
 			Boffset = B.x*offset;
@@ -1902,7 +1918,7 @@ public class rasterizer {
 					screenX_lightspace = (XY_origin_x + dXY_xdirection_x * xPos + dXY_ydirection_x* yPos) >> 16;
 					screenY_lightspace = (XY_origin_y + dXY_xdirection_y * xPos + dXY_ydirection_y * yPos) >> 16;
 					
-					int size = (screenX_lightspace + (screenY_lightspace << 10)) & 1048575;
+					int size = (screenX_lightspace + (screenY_lightspace << shadowmap_width_bit)) & shadowmap_size_;
 					
 					if(z_lightspace - shadowBuffer[size] < 1){
 						shadowBitmap[index]  = 32;
@@ -1935,7 +1951,7 @@ public class rasterizer {
 			if(dx <= 0)
 				continue;
 			
-			W.set(x_left-383, -i + 256, 650);
+			W.set(x_left-half_width_, -i + half_height, Z_length);
 			aDotW = A.dot(W);
 			bDotW = B.dot(W);
 			cDotW = C.dot(W);
@@ -1948,7 +1964,7 @@ public class rasterizer {
 			z_left = (int)(C_unit.dot(W)*w);
 			dz = (int)(C_unit.x*w);
 		
-			index = x_left + 768*i;
+			index = x_left + screen_width*i;
 			int offset = x_right - x_left;
 			Aoffset = A.x*offset;
 			Boffset = B.x*offset;
@@ -1968,7 +1984,6 @@ public class rasterizer {
 					textureIndex = (((d_x>>8) + X)&widthMask) + ((((d_y>>8) + Y)&heightMask)<<widthBits);
 					displacementBuffer[index] = (short)((waterHeightMap[textureIndex] <<10) | displacementMap[textureIndex]);
 				}
-			
 			}
 		}
 	}
@@ -1985,7 +2000,7 @@ public class rasterizer {
 			x_right = xRight[i];
 			dx = x_right - x_left;
 			
-			W.set(x_left-383, -i + 256, 650);
+			W.set(x_left-half_width_, -i + half_height, Z_length);
 			
 			
 			
@@ -1998,7 +2013,7 @@ public class rasterizer {
 				continue;
 			
 		
-			int temp = i * 768;
+			int temp = i * screen_width;
 			x_left+=temp;
 			x_right+=temp;
 		
@@ -2033,7 +2048,7 @@ public class rasterizer {
 			if(dx == 0)
 				continue;
 			
-			int temp = i * 768;
+			int temp = i * screen_width;
 			x_left+=temp;
 			x_right+=temp;
 		
@@ -2053,7 +2068,7 @@ public class rasterizer {
 			x_right = xRight[i];
 			dx = x_right - x_left;
 
-			W.set(x_left-383, -i + 256, 650);
+			W.set(x_left-half_width_, -i + half_height, Z_length);
 			
 			z_left = (int)(C_unit.dot(W)*w);
 			dz = (int)(C_unit.x*w);
@@ -2061,7 +2076,7 @@ public class rasterizer {
 			if(dx == 0)
 				continue;
 			
-			int temp = i * 768;
+			int temp = i * screen_width;
 			x_left+=temp;
 			x_right+=temp;
 		
@@ -2164,7 +2179,7 @@ public class rasterizer {
 			if(dx <= 0)
 				continue;
 			
-			W.set(x_left-383, -i + 256, 650);
+			W.set(x_left-half_width_, -i + half_height, Z_length);
 			aDotW = A.dot(W);
 			bDotW = B.dot(W);
 			cDotW = C.dot(W);
@@ -2176,7 +2191,7 @@ public class rasterizer {
 			X1 = X;
 			Y1 = Y;
 			
-			int temp = 768*i;
+			int temp = screen_width*i;
 		
 			
 			z_left = (int)(C_unit.dot(W)*w);
@@ -2223,7 +2238,7 @@ public class rasterizer {
 							screenY_lightspace = (XY_origin_y + dXY_xdirection_y * xPos + dXY_ydirection_y * yPos) >> 16;
 							
 						
-							int size = (screenX_lightspace + (screenY_lightspace << 10)) & 1048575;
+							int size = (screenX_lightspace + (screenY_lightspace << shadowmap_width_bit)) & shadowmap_size_;
 							
 						
 							if(z_lightspace - shadowBuffer[size] < shadowBias){
@@ -2276,7 +2291,7 @@ public class rasterizer {
 						screenX_lightspace = (XY_origin_x + dXY_xdirection_x * xPos + dXY_ydirection_x* yPos) >> 16;
 						screenY_lightspace = (XY_origin_y + dXY_xdirection_y * xPos + dXY_ydirection_y * yPos) >> 16;
 						
-						int size = (screenX_lightspace + (screenY_lightspace << 10)) & 1048575;
+						int size = (screenX_lightspace + (screenY_lightspace << shadowmap_width_bit)) & shadowmap_size_;
 						
 						if(z_lightspace - shadowBuffer[size] < shadowBias){
 							shadowBitmap[index]  = 32;
@@ -2291,6 +2306,26 @@ public class rasterizer {
 				break;
 			}
 		}
+	}
+	
+	public static void calculateDepthRangeAtGround() {
+		vector v = mainThread.my2Dto3DFactory.get3DLocation(poly, screen_width/2, 0);
+		v.subtract(camera.position);
+		v.rotate_YZ(camera.YZ_angle);
+		zTop = (int)(0x1000000/v.z);
+		
+		
+		v = mainThread.my2Dto3DFactory.get3DLocation(poly, screen_width/2, screen_height-1);
+		v.subtract(camera.position);
+		v.rotate_YZ(camera.YZ_angle);
+		zBot = (int)(0x1000000/v.z);
+		
+		zDelta = (zBot - zTop)/screen_height;
+		
+		explosion.zTop = zTop;
+		explosion.zBot = zBot;
+		explosion.zDelta = zDelta;
+		
 	}
 
 }

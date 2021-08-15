@@ -31,18 +31,18 @@ public class constructionVehicle extends solidObject {
 
 	// a screen space boundary which is used to test if the harvester object is
 	// visible from camera point of view
-	public final static Rectangle visibleBoundary = new Rectangle(-70, -25,
-			908, 597);
+	public final static Rectangle visibleBoundary = new Rectangle(-70, -25,screen_width+140, screen_height+85);
 
 	// a screen space boundary which is used to test if the entire harvester
 	// object is within the screen
-	public final static Rectangle screenBoundary = new Rectangle(40, 40, 688,
-			432);
+	public final static Rectangle screenBoundary = new Rectangle(40, 40, screen_width-90,screen_height-80);
 
 	// a screen space boundary which is used to test if the vision polygon of
 	// the object is visible.
-	public final static Rectangle visionBoundary = new Rectangle(0, 0, 1400,
-			1300);
+	public final static Rectangle visionBoundary = new Rectangle(0, 0, 1400+(screen_width-768),1300+(screen_height-512));
+	
+	public final static int visionW = 500 + (screen_width-768);
+	public final static int visionH = 650 + (screen_height-512);
 
 	// a bitmap representation of the vision of the harvester for enemy
 	// commander
@@ -1158,8 +1158,8 @@ public class constructionVehicle extends solidObject {
 		tempCentre.rotate_YZ(camera.YZ_angle);
 		tempCentre.updateLocation();
 
-		visionBoundary.x = (int) (tempCentre.screenX - 500);
-		visionBoundary.y = (int) (tempCentre.screenY - 650);
+		visionBoundary.x = (int) (tempCentre.screenX - visionW);
+		visionBoundary.y = (int) (tempCentre.screenY - visionH);
 		visionInsideScreen = camera.screen.intersects(visionBoundary);
 
 		// create vision for enemy commander

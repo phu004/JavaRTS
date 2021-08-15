@@ -2,6 +2,7 @@ package particles;
 
 import core.camera;
 import core.gameData;
+import core.mainThread;
 import core.postProcessingThread;
 import core.vector;
 
@@ -25,6 +26,9 @@ public class helix {
 	public boolean isInAction;
 	
 	public int lifeSpan;
+	
+	public static int screen_width = mainThread.screen_width;
+	public static int screen_height = mainThread.screen_height;
 	
 	public helix(){
 		if(temp1 == null){
@@ -106,7 +110,7 @@ public class helix {
 		temp1.rotate_YZ(camera.YZ_angle);
 		temp1.updateLocation();
 		
-		boolean outsideScreen = temp1.screenX < -10 || temp1.screenX > 778 || temp1.screenY < -10 || temp1.screenY > 522;
+		boolean outsideScreen = temp1.screenX < -10 || temp1.screenX > screen_width + 10 || temp1.screenY < -10 || temp1.screenY > screen_height + 10;
 		
 		if(!outsideScreen){
 			
@@ -145,8 +149,8 @@ public class helix {
 				temp1.updateLocation();
 				
 				
-				if(temp1.screenX >= 2 && temp1.screenX < 766 && temp1.screenY >=2 && temp1.screenY < 510){
-					int centre = (int)temp1.screenX + ((int)temp1.screenY)*768;
+				if(temp1.screenX >= 2 && temp1.screenX < screen_width -2 && temp1.screenY >=2 && temp1.screenY < screen_height -2){
+					int centre = (int)temp1.screenX + ((int)temp1.screenY)*screen_width;
 					
 					alpha = 100;
 					alpha = alpha - alpha*lifeSpan/40+ 155;

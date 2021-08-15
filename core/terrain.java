@@ -72,6 +72,8 @@ public class terrain {
 	
 	public int curveAngle;
 
+	public static int screen_width = mainThread.screen_width;
+	public static int screen_height = mainThread.screen_height;
 	
 	public terrain(){
 		ground = new polygon3D[1];
@@ -718,7 +720,7 @@ public class terrain {
 		lakeCenterTemp1.rotate_YZ(camera.YZ_angle); 
 		lakeCenterTemp1.updateLocation();
 		
-		if(lakeCenterTemp1.screenX > 1118 || lakeCenterTemp1.screenX < - 350 || lakeCenterTemp1.screenY < - 140 || lakeCenterTemp1.screenY > 1062){
+		if(lakeCenterTemp1.screenX > screen_width+350 || lakeCenterTemp1.screenX < - 350 || lakeCenterTemp1.screenY < - 140 || lakeCenterTemp1.screenY > screen_height+550){
 			lake1Visible = false;
 		}
 			
@@ -749,7 +751,7 @@ public class terrain {
 		lakeCenterTemp2.rotate_YZ(camera.YZ_angle); 
 		lakeCenterTemp2.updateLocation();
 		
-		if(lakeCenterTemp2.screenX > 1118 || lakeCenterTemp2.screenX < - 350 || lakeCenterTemp2.screenY < - 160 || lakeCenterTemp2.screenY > 1062){
+		if(lakeCenterTemp2.screenX > screen_width + 350 || lakeCenterTemp2.screenX < - 350 || lakeCenterTemp2.screenY < - 160 || lakeCenterTemp2.screenY > screen_height+550){
 			lake2Visible = false;
 		}
 			
@@ -779,7 +781,7 @@ public class terrain {
 		lakeCenterTemp3.rotate_YZ(camera.YZ_angle); 
 		lakeCenterTemp3.updateLocation();
 		
-		if(lakeCenterTemp3.screenX > 1118 || lakeCenterTemp3.screenX < - 350 || lakeCenterTemp3.screenY < - 150 || lakeCenterTemp3.screenY > 962){
+		if(lakeCenterTemp3.screenX > screen_width + 350 || lakeCenterTemp3.screenX < - 350 || lakeCenterTemp3.screenY < - 150 || lakeCenterTemp3.screenY > screen_height + 450){
 			lake3Visible = false;
 		}
 			
@@ -808,7 +810,7 @@ public class terrain {
 		lakeCenterTemp4.rotate_YZ(camera.YZ_angle); 
 		lakeCenterTemp4.updateLocation();
 		
-		if(lakeCenterTemp4.screenX > 1418 || lakeCenterTemp4.screenX < - 400 || lakeCenterTemp4.screenY < - 150 || lakeCenterTemp4.screenY > 1102){
+		if(lakeCenterTemp4.screenX > screen_width+400 || lakeCenterTemp4.screenX < - 400 || lakeCenterTemp4.screenY < - 150 || lakeCenterTemp4.screenY > screen_height + 590){
 			lake4Visible = false;
 		}
 		

@@ -41,6 +41,8 @@ public class gameMenu {
 	public char[] name;
 	public String nameString;
 	public static boolean uploadingScore, scoreUploaded;
+	public static int screen_width = mainThread.screen_width;
+	public static int screen_height = mainThread.screen_height;
 	
 	
 	public void init() {
@@ -52,7 +54,7 @@ public class gameMenu {
 			heavyTankImage = new int[44*44];
 		}
 		if(screenBlurBuffer == null)
-			screenBlurBuffer = new int[512 * 768];
+			screenBlurBuffer = new int[screen_height * screen_width];
 	
 		theHighscoreManager = new highscoreManager();
 		Thread   t   =   new   Thread(theHighscoreManager);
@@ -71,7 +73,7 @@ public class gameMenu {
 		loadTexture(folder + "83.jpg", heavyTankImage, 44, 44);
 		
 		
-		newGame = new button("newGame", "New Game", 324, 110, 120, 28);
+		newGame = new button("newGame", "New Game", 324, 110, 120, 28);  
 		buttons.add(newGame);
 		
 		unpauseGame = new button("unpauseGame", "Resume Game",  324, 110, 120, 28);
@@ -222,7 +224,7 @@ public class gameMenu {
 		}
 		
 		if(gameSuspendCount == 1) {
-			for(int i = 0; i < 512*768; i++)
+			for(int i = 0; i < screen_height*screen_width; i++)
 				screenBlurBuffer[i] = screen[i];
 			
 		}
@@ -234,7 +236,7 @@ public class gameMenu {
 				buttons.get(i).actionCooldown--;
 		}
 		
-		
+
 		if(playerVictory || AIVictory) {
 			if(gameSuspendCount > 0) {
 				drawBluredBackground();
@@ -307,11 +309,21 @@ public class gameMenu {
 							break;
 						}
 					}
-					tRenderer.drawText_outline(282, 258, nameString, screen, 0xdddddd, 0);
+					
+					int centerX_old = 768/2-1;
+					int centery_old = 512/2-1;
+					int dx = 282 - centerX_old;
+					int dy = 258 - centery_old;
+					int centerX_new = screen_width/2-1;
+					int centerY_new = screen_height/2 -1;
+					
+					
+					
+					tRenderer.drawText_outline(centerX_new+dx, centerY_new+dy, nameString, screen, 0xdddddd, 0);
 					
 					//draw place marker
 					if(postProcessingThread.frameIndex%30 > 15 && !uploadingScore && !scoreUploaded)
-						tRenderer.drawText_outline(282+nameString.length()*7, 258, "_", screen, 0xdddddd, 0);
+						tRenderer.drawText_outline(centerX_new+dx+nameString.length()*7, centerY_new+dy, "_", screen, 0xdddddd, 0);
 					
 					if(uploadingScore || scoreUploaded) {
 						uploadScore.disabled = true;
@@ -523,22 +535,22 @@ public class gameMenu {
 		int startRow = 0;
 		//draw high scores
 		if(highscoreLevel == 1) {
-			tRenderer.drawText_outline(270,100,"Highscores For Normal Difficulty", screen, 0xffffff,0);	
+			tRenderer.drawScoreBoardText(270,100,"Highscores For Normal Difficulty", screen, 0xffffff,0);	
 			startRow = 10;
 			normalToHardButton.display = true;
 			normalToEasyButton.display = true;
 		}else if(highscoreLevel == 0) {
-			tRenderer.drawText_outline(270,100,"Highscores For Easy Difficulty", screen, 0xffffff,0);	
+			tRenderer.drawScoreBoardText(270,100,"Highscores For Easy Difficulty", screen, 0xffffff,0);	
 			startRow = 0;
 			easyToNormalButton.display = true;
 		}else if(highscoreLevel == 2) {
-			tRenderer.drawText_outline(270,100,"Highscores For Hard Difficulty", screen, 0xffffff,0);	
+			tRenderer.drawScoreBoardText(270,100,"Highscores For Hard Difficulty", screen, 0xffffff,0);	
 			startRow = 20;
 			hardToNormalButton.display = true;
 		}
 		
-		tRenderer.drawText_outline(220,130," Rank           Player Name            Time", screen, 0xf2989d,0);
-		tRenderer.drawText_outline(220,135,"_____________________________________________", screen, 0xaaaaaa,0);
+		tRenderer.drawScoreBoardText(220,130," Rank           Player Name            Time", screen, 0xf2989d,0);
+		tRenderer.drawScoreBoardText(220,135,"_____________________________________________", screen, 0xaaaaaa,0);
 		
 		for(int i = startRow; i < startRow + 10; i++) {
 			int color = 0xbbbbbb;
@@ -549,15 +561,15 @@ public class gameMenu {
 			if(i -startRow == 2)
 				color = 0xc99684;
 			if(i -startRow == 9)
-				tRenderer.drawText_outline(210,160 + (i -startRow)*25, "    " + (i -startRow + 1), screen, color,0);
+				tRenderer.drawScoreBoardText(210,160 + (i -startRow)*25, "    " + (i -startRow + 1), screen, color,0);
 			else
-				tRenderer.drawText_outline(213,160 + (i -startRow)*25, "    " + (i -startRow + 1), screen, color,0);
+				tRenderer.drawScoreBoardText(213,160 + (i -startRow)*25, "    " + (i -startRow + 1), screen, color,0);
 			
 			if(result[i][0] != null) {
 				int l = (30 - result[i][0].length())/2;
 				
-				tRenderer.drawText_outline(220,160 + (i -startRow)*25, "                                       " + result[i][1], screen, color,0);
-				tRenderer.drawText_outline(265 + l*7,160 + (i -startRow)*25, result[i][0], screen, color,0);
+				tRenderer.drawScoreBoardText(220,160 + (i -startRow)*25, "                                       " + result[i][1], screen, color,0);
+				tRenderer.drawScoreBoardText(265 + l*7,160 + (i -startRow)*25, result[i][0], screen, color,0);
 			}
 		}
 		
@@ -653,15 +665,15 @@ public class gameMenu {
 		if(gameSuspendCount < 5) {
 			
 			for(int k = 0; k < 3; k++)
-			for(int i = 1; i < 511; i++ ) {
-				for(int j = 1; j < 767; j++) {
-					int index = j + i*768;
+			for(int i = 1; i < screen_height-1; i++ ) {
+				for(int j = 1; j < screen_width-1; j++) {
+					int index = j + i*screen_width;
 					
 				
 					
-					int r = ((screenBlurBuffer[index]&0xff0000) >> 16) + ((screenBlurBuffer[index + 1]&0xff0000) >> 16) + ((screenBlurBuffer[index - 1]&0xff0000) >> 16) + ((screenBlurBuffer[index - 768]&0xff0000) >> 16) + ((screenBlurBuffer[index + 768]&0xff0000) >> 16);
-					int g = ((screenBlurBuffer[index]&0xff00) >> 8) + ((screenBlurBuffer[index + 1]&0xff00) >> 8) + ((screenBlurBuffer[index - 1]&0xff00) >> 8) + ((screenBlurBuffer[index - 768]&0xff00) >> 8) + ((screenBlurBuffer[index + 768]&0xff00) >> 8);
-					int b = (screenBlurBuffer[index]&0xff) + (screenBlurBuffer[index + 1]&0xff) + (screenBlurBuffer[index - 1]&0xff) + (screenBlurBuffer[index - 768]&0xff) + (screenBlurBuffer[index + 768]&0xff);
+					int r = ((screenBlurBuffer[index]&0xff0000) >> 16) + ((screenBlurBuffer[index + 1]&0xff0000) >> 16) + ((screenBlurBuffer[index - 1]&0xff0000) >> 16) + ((screenBlurBuffer[index - screen_width]&0xff0000) >> 16) + ((screenBlurBuffer[index + screen_width]&0xff0000) >> 16);
+					int g = ((screenBlurBuffer[index]&0xff00) >> 8) + ((screenBlurBuffer[index + 1]&0xff00) >> 8) + ((screenBlurBuffer[index - 1]&0xff00) >> 8) + ((screenBlurBuffer[index - screen_width]&0xff00) >> 8) + ((screenBlurBuffer[index + screen_width]&0xff00) >> 8);
+					int b = (screenBlurBuffer[index]&0xff) + (screenBlurBuffer[index + 1]&0xff) + (screenBlurBuffer[index - 1]&0xff) + (screenBlurBuffer[index - screen_width]&0xff) + (screenBlurBuffer[index + screen_width]&0xff);
 					
 				
 					
@@ -672,7 +684,7 @@ public class gameMenu {
 			
 		}
 		
-		for(int i = 0; i < 512*768; i++)
+		for(int i = 0; i < screen_height*screen_width; i++)
 			screen[i] = screenBlurBuffer[i];
 	}
 	
@@ -685,6 +697,8 @@ public class gameMenu {
 	}
 	
 	public void drawFrame(int width, int height, int topDistance) {
+		
+		topDistance = (screen_height - 512)/2 + topDistance;
 	
 		
 		int R = 4;
@@ -699,124 +713,124 @@ public class gameMenu {
 		int G2 = 70;
 		int B2 = 99;
 		
-		int pos = (768 - width)/2 + (90+topDistance) * 768;
+		int pos = (screen_width - width)/2 + (90+topDistance) * screen_width;
 		
 		
 		//background
 		for(int i = 0; i < height; i++) {
 			for(int j = 0; j < width; j++) {
-				int pixel = screen[pos + j + i* 768];
-				screen[pos + j + i* 768] = ((pixel&0xFEFEFE)>>1) +  ((R2/2) << 16 | (G2/2) << 8 | (B2/2));
+				int pixel = screen[pos + j + i* screen_width];
+				screen[pos + j + i* screen_width] = ((pixel&0xFEFEFE)>>1) +  ((R2/2) << 16 | (G2/2) << 8 | (B2/2));
 			}
 		}
 		float d = 20f;
 		for(int i = 0; i < 17; i++) {
 			int delta = (int)((d/17)*i);
 			for(int j = 20-delta-1; j < width; j++) {
-				int pixel = screen[pos - 17*768 + j + i* 768];
-				screen[pos - 17*768 + j + i* 768] = ((pixel&0xFEFEFE)>>1) +  ((R2/2) << 16 | (G2/2) << 8 | (B2/2));
+				int pixel = screen[pos - 17*screen_width + j + i* screen_width];
+				screen[pos - 17*screen_width + j + i* screen_width] = ((pixel&0xFEFEFE)>>1) +  ((R2/2) << 16 | (G2/2) << 8 | (B2/2));
 			}
 		}
 		
-		pos+=(height+17)*768;
+		pos+=(height+17)*screen_width;
 		for(int i = 0; i < 17; i++) {
 			int delta = (int)((d/17)*i);
 			for(int j =0; j < width - delta; j++) {
-				int pixel = screen[pos - 17*768 + j + i* 768];
-				screen[pos - 17*768 + j + i* 768] = ((pixel&0xFEFEFE)>>1) +  ((R2/2) << 16 | (G2/2) << 8 | (B2/2));
+				int pixel = screen[pos - 17*screen_width + j + i* screen_width];
+				screen[pos - 17*screen_width + j + i* screen_width] = ((pixel&0xFEFEFE)>>1) +  ((R2/2) << 16 | (G2/2) << 8 | (B2/2));
 			}
 		}
 		
 		//left 
-		pos = (768 - width)/2 + (90+topDistance) * 768;
+		pos = (screen_width - width)/2 + (90+topDistance) * screen_width;
 		for(int i = 0; i < height + 17; i++) {
-			int pixel = screen[pos + i*768];
-			screen[pos + i*768] = pixel +  ((R/2) << 16 | (G/2) << 8 | (B/2));
+			int pixel = screen[pos + i*screen_width];
+			screen[pos + i*screen_width] = pixel +  ((R/2) << 16 | (G/2) << 8 | (B/2));
 		}
 		
-		pos = (768 - width)/2 + (90+topDistance) * 768+1;
+		pos = (screen_width - width)/2 + (90+topDistance) * screen_width+1;
 		for(int i = 0; i < height + 16; i++) {
-			screen[pos + i*768] = ((R1) << 16 | (G1) << 8 | (B1));
+			screen[pos + i*screen_width] = ((R1) << 16 | (G1) << 8 | (B1));
 		}
 		
-		pos = (768 - width)/2 + (90+topDistance) * 768 + 2;
+		pos = (screen_width - width)/2 + (90+topDistance) * screen_width + 2;
 		for(int i = 0; i < height + 15; i++) {
-			int pixel = screen[pos + i*768];
-			screen[pos + i*768] = pixel +  ((R/3) << 16 | (G/3) << 8 | (B/3));
+			int pixel = screen[pos + i*screen_width];
+			screen[pos + i*screen_width] = pixel +  ((R/3) << 16 | (G/3) << 8 | (B/3));
 		}
 		
 		//bottom
-		pos = (768 - width)/2 + ((90+topDistance)+height+14) * 768;
+		pos = (screen_width - width)/2 + ((90+topDistance)+height+14) * screen_width;
 		for(int i = 3; i < width - 18; i++) {
 			int pixel = screen[pos + i];
 			screen[pos + i] = pixel +  ((R/3) << 16 | (G/3) << 8 | (B/3));
 		}
 		
-		pos = (768 - width)/2 + ((90+topDistance)+height+15) * 768;
+		pos = (screen_width - width)/2 + ((90+topDistance)+height+15) * screen_width;
 		for(int i = 2; i < width - 18; i++) {
 			screen[pos + i] = ((R1) << 16 | (G1) << 8 | (B1));
 		}
 		
-		pos = (768 - width)/2 + ((90+topDistance)+height+16) * 768;
+		pos = (screen_width - width)/2 + ((90+topDistance)+height+16) * screen_width;
 		for(int i = 1; i < width - 18; i++) {
 			int pixel = screen[pos + i];
 			screen[pos + i] = pixel +  ((R/2) << 16 | (G/2) << 8 | (B/2));
 		}
 		
 		//bottom right
-		pos = (768 - width)/2 + width - 18 + ((90+topDistance)+height+16) * 768;
+		pos = (screen_width - width)/2 + width - 18 + ((90+topDistance)+height+16) * screen_width;
 		for(int i = 2; i < 20; i++) {
 			int delta = (int)((17f/d)*i);
-			int pixel = screen[pos + i -2 + (-delta)*768];
-			screen[pos + i - 2 + (-delta)*768] = pixel +  ((R/2) << 16 | (G/2) << 8 | (B/2));
+			int pixel = screen[pos + i -2 + (-delta)*screen_width];
+			screen[pos + i - 2 + (-delta)*screen_width] = pixel +  ((R/2) << 16 | (G/2) << 8 | (B/2));
 		}
 		
 		for(int i = 2; i < 18; i++) {
 			int delta = (int)((17f/d)*i);
-			int pixel = screen[pos + i -2 + (-delta - 2)*768];
-			screen[pos + i - 2 + (-delta - 2)*768] = pixel +  ((R/3) << 16 | (G/3) << 8 | (B/3));
+			int pixel = screen[pos + i -2 + (-delta - 2)*screen_width];
+			screen[pos + i - 2 + (-delta - 2)*screen_width] = pixel +  ((R/3) << 16 | (G/3) << 8 | (B/3));
 		}
 		
 		for(int i = 2; i < 19; i++) {
 			int delta = (int)((17f/d)*i);
-			screen[pos + i - 2 + (-delta-1)*768] = ((R1) << 16 | (G1) << 8 | (B1));
+			screen[pos + i - 2 + (-delta-1)*screen_width] = ((R1) << 16 | (G1) << 8 | (B1));
 		}
-		screen[pos - 5*768 + 4] = ((R1) << 16 | (G1) << 8 | (B1));
-		screen[pos - 11*768 + 11] = ((R1) << 16 | (G1) << 8 | (B1));
+		screen[pos - 5*screen_width + 4] = ((R1) << 16 | (G1) << 8 | (B1));
+		screen[pos - 11*screen_width + 11] = ((R1) << 16 | (G1) << 8 | (B1));
 		
 		
 		
 		//right
-		pos = (768 - width)/2 + width -3 +  (75+topDistance) * 768;
+		pos = (screen_width - width)/2 + width -3 +  (75+topDistance) * screen_width;
 		for(int i = 0; i < height + 15; i++) {
-			int pixel = screen[pos + i*768];
-			screen[pos + i*768] = pixel +  ((R/2) << 16 | (G/2) << 8 | (B/2));
+			int pixel = screen[pos + i*screen_width];
+			screen[pos + i*screen_width] = pixel +  ((R/2) << 16 | (G/2) << 8 | (B/2));
 		}
 		
-		pos = (768 - width)/2 + width -2+ (74+topDistance) * 768;
+		pos = (screen_width - width)/2 + width -2+ (74+topDistance) * screen_width;
 		for(int i = 0; i < height + 16; i++) {
-			screen[pos + i*768] = ((R1) << 16 | (G1) << 8 | (B1));
+			screen[pos + i*screen_width] = ((R1) << 16 | (G1) << 8 | (B1));
 		}
 		
-		pos = (768 - width)/2 +  width - 1 + (73+topDistance) * 768;
+		pos = (screen_width - width)/2 +  width - 1 + (73+topDistance) * screen_width;
 		for(int i = 0; i < height + 17; i++) {
-			int pixel = screen[pos + i*768];
-			screen[pos + i*768] = pixel +  ((R/3) << 16 | (G/3) << 8 | (B/3));
+			int pixel = screen[pos + i*screen_width];
+			screen[pos + i*screen_width] = pixel +  ((R/3) << 16 | (G/3) << 8 | (B/3));
 		}
 		
 		//top
-		pos = (768 - width)/2 + ((90+topDistance)-17) * 768;
+		pos = (screen_width - width)/2 + ((90+topDistance)-17) * screen_width;
 		for(int i = 20; i < width -1; i++) {
 			int pixel = screen[pos + i];
 			screen[pos + i] = pixel +  ((R/2) << 16 | (G/2) << 8 | (B/2));
 		}
 		
-		pos = (768 - width)/2 + ((90+topDistance)-16) * 768;
+		pos = (screen_width - width)/2 + ((90+topDistance)-16) * screen_width;
 		for(int i = 20; i < width - 2; i++) {
 			screen[pos + i] = ((R1) << 16 | (G1) << 8 | (B1));
 		}
 		
-		pos = (768 - width)/2 + ((90+topDistance)-15) * 768;
+		pos = (screen_width - width)/2 + ((90+topDistance)-15) * screen_width;
 		for(int i = 20; i < width - 3; i++) {
 			int pixel = screen[pos + i];
 			screen[pos + i] = pixel +  ((R/3) << 16 | (G/3) << 8 | (B/3));
@@ -824,51 +838,54 @@ public class gameMenu {
 		
 		
 		//top left
-		pos = (768 - width)/2 + (90+topDistance) * 768;
+		pos = (screen_width - width)/2 + (90+topDistance) * screen_width;
 		for(int i = 0; i < 17; i++) {
 			int delta = (int)((d/17)*i);
 			for(int j = 20-delta-1; j < 20-delta; j++) {
-				int pixel = screen[pos - 17*768 + j + i* 768];
-				screen[pos - 17*768 + j + i* 768] = pixel + ((R/2) << 16 | (G/2) << 8 | (B/2));
+				int pixel = screen[pos - 17*screen_width + j + i* screen_width];
+				screen[pos - 17*screen_width + j + i* screen_width] = pixel + ((R/2) << 16 | (G/2) << 8 | (B/2));
 			}
 		}
 		
-		pos = (768 - width)/2 + 2 + (90+topDistance) * 768;
+		pos = (screen_width - width)/2 + 2 + (90+topDistance) * screen_width;
 		for(int i = 2; i < 17; i++) {
 			int delta = (int)((d/17)*i);
 			for(int j = 20-delta-1; j < 20-delta; j++) {
-				int pixel = screen[pos - 17*768 + j + i* 768];
-				screen[pos - 17*768 + j + i* 768] = pixel + ((R/3) << 16 | (G/3) << 8 | (B/3));
+				int pixel = screen[pos - 17*screen_width + j + i* screen_width];
+				screen[pos - 17*screen_width + j + i* screen_width] = pixel + ((R/3) << 16 | (G/3) << 8 | (B/3));
 			}
 		}
 		
-		pos = (768 - width)/2 + 1 + (90+topDistance) * 768;
+		pos = (screen_width - width)/2 + 1 + (90+topDistance) * screen_width;
 		for(int i = 0; i < 17; i++) {
 			int delta = (int)((d/17)*i);
 			for(int j = 20-delta-1; j < 20-delta; j++) {
-				screen[pos - 17*768 + j + i* 768] = ((R1) << 16 | (G1) << 8 | (B1));
+				screen[pos - 17*screen_width + j + i* screen_width] = ((R1) << 16 | (G1) << 8 | (B1));
 			}
 		}
 		
 	}
 	
 	public void drawTitle() {
-		int pos = 276 + 35*768;
+		int pos = screen_width/2 - (384-276) + (35 + (screen_height-512)/2)*screen_width;
 		
 		for(int i = 0; i < 35; i++) {
 			for(int j = 0; j < 216; j++) {
 				int c = titleImage[j + i*216];
 					if(!((c&0xff0000 >> 16) > 254 && (c&0x00ff00 >> 8) > 254  && ((c&0xff) > 254)))
-						screen[pos+ 768*i + j] = c;
+						screen[pos+ screen_width*i + j] = c;
 			}
 		}
 	}
 	
 	public void drawImage(int xPos, int yPos, int w, int h, int[] myImage) {
-		int pos = xPos + yPos*768;
+		
+		
+		int pos = screen_width/2 - (384-xPos) + (yPos + (screen_height-512)/2)*screen_width;
+		
 		for(int i = 0; i < h; i++) {
 			for(int j = 0; j < w; j++) {
-				screen[pos + j + i*768] = myImage[j+ i*h];
+				screen[pos + j + i*screen_width] = myImage[j+ i*h];
 			}
 		}
 	}
@@ -890,5 +907,5 @@ public class gameMenu {
 			
 		}
 	}
-
+	
 }

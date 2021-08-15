@@ -138,19 +138,6 @@ public class bullet {
 								o.currentCommand = solidObject.attackCautiously; 
 							}
 						}
-						
-						/*if(tile[j].teamNo == teamNo && tile[j].currentCommand == solidObject.StandBy && attacker.teamNo != teamNo && tile[j].isCloaked == false){
-							if(tile[j].type < 100){								
-								tile[j].attack(attacker);
-								tile[j].currentCommand = solidObject.attackInNumbers; 
-							}
-						}else if(tile[j].teamNo == teamNo && tile[j].secondaryCommand == solidObject.attackMove && attacker.teamNo != teamNo && tile[j].isCloaked == false){
-							if(tile[j].attackStatus != solidObject.isAttacking || (tile[j].attackStatus == solidObject.isAttacking && tile[j].targetObject != null && tile[j].targetObject.type < 199 && tile[j].targetObject.type > 7)){
-								tile[j].attack(attacker);
-								tile[j].currentCommand = solidObject.attackInNumbers; 
-							}
-						}*/
-						
 					}
 				}
 			}

@@ -62,6 +62,14 @@ public class mainThread extends JFrame implements KeyListener, ActionListener, M
 	public static final int optionMenu = 4;
 	public static final int highscoreMenu = 5;
 	
+	public static final int screen_width = 1024;
+	public static final int screen_height = 682;
+	public static final int screen_size= screen_width*screen_height;
+	
+	public static final int shadowmap_width = 2048;
+	public static final int shadowmap_width_bit = 11;
+	
+	
 	public static String timeString;
 	public static boolean fogOfWarDisabled;
 	public static Robot myRobot;
@@ -73,8 +81,8 @@ public class mainThread extends JFrame implements KeyListener, ActionListener, M
 	public mainThread(){
 		setTitle("Battle Tank 3");
 		panel= (JPanel) this.getContentPane();
-		panel.setPreferredSize(new Dimension(768, 512));
-		panel.setMinimumSize(new Dimension(768,512));
+		panel.setPreferredSize(new Dimension(screen_width, screen_height));
+		panel.setMinimumSize(new Dimension(screen_width,screen_height));
 		panel.setLayout(null);     
 		
 		setResizable(false); 
@@ -84,38 +92,38 @@ public class mainThread extends JFrame implements KeyListener, ActionListener, M
 		setLocation(dim.width/2-this.getSize().width/2, dim.height/2-this.getSize().height/2);
     	setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
     	
-    	mouseX = 384;
-    	mouseY = 256;
+    	mouseX = screen_width/2;
+    	mouseY = screen_height/2;
     
     	
 		//create screen buffer
-		doubleBuffer =  new BufferedImage(768, 512, BufferedImage.TYPE_INT_RGB);
+		doubleBuffer =  new BufferedImage(screen_width, screen_height, BufferedImage.TYPE_INT_RGB);
 		DataBuffer dest = doubleBuffer.getRaster().getDataBuffer();
 		screen = ((DataBufferInt)dest).getData();
 		bufferScreen = screen;
 		
-		doubleBuffer2 =  new BufferedImage(768, 512, BufferedImage.TYPE_INT_RGB);
+		doubleBuffer2 =  new BufferedImage(screen_width, screen_width, BufferedImage.TYPE_INT_RGB);
 		DataBuffer dest2 = doubleBuffer2.getRaster().getDataBuffer();
 		screen2 = ((DataBufferInt)dest2).getData();
 		buffer2Screen = screen2;
 		
 		//create depth buffer
-		zBuffer = new int[393216];
-		zBuffer2 = new int[393216];
+		zBuffer = new int[screen_size];
+		zBuffer2 = new int[screen_size];
 		
 		//create shadoow bitmap
-		shadowBitmap = new byte[393216];
-		shadowBitmap2 = new byte[393216];
+		shadowBitmap = new byte[screen_size];
+		shadowBitmap2 = new byte[screen_size];
 		
-		for(int i = 0; i < 393216; i++){
+		for(int i = 0; i < screen_size; i++){
 			shadowBitmap[i] = 127;
 			shadowBitmap2[i] = 127;
 		}
 		
 		//create displacement buffer
-		displacementBuffer = new short[393216];
-		displacementBuffer2 = new short[393216];
-		for(int i = 0; i < 393216; i++){
+		displacementBuffer = new short[screen_size];
+		displacementBuffer2 = new short[screen_size];
+		for(int i = 0; i < screen_size; i++){
 			displacementBuffer[i] = 12345;
 			
 		}
@@ -200,11 +208,11 @@ public class mainThread extends JFrame implements KeyListener, ActionListener, M
 			theGameCursor = new gameCursor();
 			theGameCursor.init();
 			
-			currentMouseX = getLocationOnScreen().x + 384;
-			currentMouseY = getLocationOnScreen().y + 256;
+			currentMouseX = getLocationOnScreen().x + screen_width/2;
+			currentMouseY = getLocationOnScreen().y + screen_height/2;
 			
-			centerScreenX = getLocationOnScreen().x + 384;
-			centerScreenY = getLocationOnScreen().y + 256;
+			centerScreenX = getLocationOnScreen().x + screen_width/2;
+			centerScreenY = getLocationOnScreen().y + screen_height/2;
 			
 			
 			if(capturedMouse)
@@ -229,8 +237,8 @@ public class mainThread extends JFrame implements KeyListener, ActionListener, M
 			currentMouseX = MouseInfo.getPointerInfo().getLocation().x;
 			currentMouseY = MouseInfo.getPointerInfo().getLocation().y;
 			
-			centerScreenX = getLocationOnScreen().x + 384;
-			centerScreenY = getLocationOnScreen().y + 256;
+			centerScreenX = getLocationOnScreen().x + screen_width/2;
+			centerScreenY = getLocationOnScreen().y + screen_height/2;
 			
 			int deltaX = currentMouseX - centerScreenX;
 			int deltaY = currentMouseY - centerScreenY;
@@ -242,12 +250,12 @@ public class mainThread extends JFrame implements KeyListener, ActionListener, M
 			
 			if(mouseX < 0)
 				mouseX = 0;
-			if(mouseX >= 768)
-				mouseX = 767;
+			if(mouseX >= screen_width)
+				mouseX = screen_width-1;
 			if(mouseY < 0)
 				mouseY = 0;
-			if(mouseY >= 512)
-				mouseY = 511;
+			if(mouseY >= screen_height)
+				mouseY = screen_height-1;
 			
 			inputHandler.mouse_x = mouseX;
 			inputHandler.mouse_y = mouseY;
@@ -329,6 +337,7 @@ public class mainThread extends JFrame implements KeyListener, ActionListener, M
 	
 	public void paintComponent(Graphics g){		
 		
+		
 		//copy the pixel information to the video memory
 		//Graphics2D g2 =(Graphics2D)bf.getGraphics(); //(Graphics2D)g;
 		
@@ -345,8 +354,8 @@ public class mainThread extends JFrame implements KeyListener, ActionListener, M
 	
 	public void clearDepthBuffer(){
 		zBuffer[0] = 0;
-		for(int i = 1; i < 393216; i+=i)
-			System.arraycopy(zBuffer, 0, zBuffer, i, 393216 - i >= i ? i : 393216 - i);
+		for(int i = 1; i < screen_size; i+=i)
+			System.arraycopy(zBuffer, 0, zBuffer, i, screen_size - i >= i ? i : screen_size - i);
 	}
 	
 	
@@ -617,12 +626,12 @@ public class mainThread extends JFrame implements KeyListener, ActionListener, M
 					
 					if(mouseX < 0)
 						mouseX = 0;
-					if(mouseX >= 768)
-						mouseX = 767;
+					if(mouseX >= screen_width)
+						mouseX = screen_width-1;
 					if(mouseY < 0)
 						mouseY = 0;
-					if(mouseY >= 512)
-						mouseY = 511;
+					if(mouseY >= screen_height)
+						mouseY = screen_height-1;
 					
 					inputHandler.mouse_x = mouseX;
 					inputHandler.mouse_y = mouseY;

@@ -13,10 +13,15 @@ public class sunLight {
 	
 	public static vector lightDirection;
 	
+	public static int screen_width = mainThread.screen_width;
+	public static int screen_height = mainThread.screen_height;
+	public static int shadowmap_width = mainThread.shadowmap_width;
+	public static int shadowmap_size = shadowmap_width * shadowmap_width;
+	
 	
 	public static void init(){
 		
-		shadowBuffer = new int[1024*1024];
+		shadowBuffer = new int[shadowmap_size];
 		
 		XZ_angle = 225;
 		YZ_angle = 316;
@@ -36,13 +41,13 @@ public class sunLight {
 	}
 	
 	public static void update(){
-		position.set(mainThread.my2Dto3DFactory.get3DLocation(mainThread.theAssetManager.Terrain.ground[0], 384, 208));
+		position.set(mainThread.my2Dto3DFactory.get3DLocation(mainThread.theAssetManager.Terrain.ground[0], screen_width/2, screen_height*13/32));
 		position.add(lightDirection, -5);
 		
 		//reset shadow buffer
 		shadowBuffer[0] = Integer.MAX_VALUE;
-		for(int i = 1; i < 1048576; i+=i){
-			System.arraycopy(shadowBuffer, 0, shadowBuffer, i, 1048576 - i >= i ? i : 1048576 - i);
+		for(int i = 1; i < shadowmap_size; i+=i){
+			System.arraycopy(shadowBuffer, 0, shadowBuffer, i, shadowmap_size - i >= i ? i : shadowmap_size - i);
 			
 		}
 		

@@ -18,13 +18,13 @@ public class drone extends solidObject{
 	
 	public int fan1Angle, fan2Angle;
 	
-	public final static Rectangle visibleBoundary = new Rectangle(-100,-150,1068, 812);
+	public final static Rectangle visibleBoundary = new Rectangle(-100,-150,screen_width + 300, screen_height + 300);
 	
 	//a screen space boundary which is used to test if the entire  object is within the screen
-	public final static Rectangle screenBoundary = new Rectangle(40,40,688, 432);
+	public final static Rectangle screenBoundary = new Rectangle(40,40,screen_width - 90, screen_height-80);
 	
 	//screen space boundary which is used to test if the shadow of the  object is within the screen
-	public final static Rectangle shadowBoundary1 = new Rectangle(0,0,768, 512);
+	public final static Rectangle shadowBoundary1 = new Rectangle(0,0,screen_width, screen_height);
 	
 	
 	public int bodyAngle, destinationAngle;

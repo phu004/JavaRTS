@@ -49,9 +49,15 @@ public class postProcessingThread implements Runnable{
 	public static short[] displacementBuffer;
 	public static int[] offScreen;
 	
+	
+	public static int screen_width;
+	public static int screen_height;
+	public static int screen_size;
+	
+	
 	//2 arrays that define the scan lines of the polygon
-	public static int[] xLeft = new int[512], xRight = new int[512];
-	public static int[] xMin = new int[512], xMax = new int[512];
+	public static int[] xLeft, xRight;
+	public static int[] xMin, xMax;
 	
 	public static vector cameraPosition = new vector(0,0,0);
 	public static float sinXZ,cosXZ,sinYZ,cosYZ ;
@@ -123,6 +129,15 @@ public class postProcessingThread implements Runnable{
 	
 	public static void init(){
 		
+		screen_width = mainThread.screen_width;
+		screen_height = mainThread.screen_height;
+		screen_size = mainThread.screen_size;
+		
+		xLeft = new int[screen_height];
+		xRight = new int[screen_height];
+		xMin = new int[screen_height];
+		xMax = new int[screen_height];
+		
 		//init game menu
 		theGameMenu = new gameMenu();
 		theGameMenu.init();
@@ -132,12 +147,12 @@ public class postProcessingThread implements Runnable{
 		theTextRenderer.init();
 		
 		
-		fogOfWarBuffer = new byte[512 * 768];
-		fogOfWarBuffer2 = new byte[512 * 768];
+		fogOfWarBuffer = new byte[screen_size];
+		fogOfWarBuffer2 = new byte[screen_size];
 		
-		smoothedShadowBitmap = new byte[512 * 768];
+		smoothedShadowBitmap = new byte[screen_size];
 		
-		offScreen = new int[512*768];
+		offScreen = new int[screen_size];
 		
 		//init minimap hud
 		theMiniMap = new MiniMap();
@@ -293,12 +308,12 @@ public class postProcessingThread implements Runnable{
 		int yMap;
 		int distortionIndex;
 		
-		for(int i = 0; i < 393216; i++){
+		for(int i = 0; i < screen_size; i++){
 			if(displacementBuffer[i] != 31){
 				xMap = ((displacementBuffer[i]&992) >> 5) - 16;
 				yMap = (displacementBuffer[i]&31) - 16;
-				distortionIndex = i + xMap + yMap*768;
-				if(distortionIndex > 0 && distortionIndex < 393216 ){
+				distortionIndex = i + xMap + yMap*screen_width;
+				if(distortionIndex > 0 && distortionIndex < screen_size ){
 					if(currentZbuffer[i] - currentZbuffer[distortionIndex] > -1000000)
 						offScreen[i] = currentScreen[distortionIndex];
 					else
@@ -327,25 +342,31 @@ public class postProcessingThread implements Runnable{
 		int MASK7Bit = 0xFEFEFF;
 		int overflow = 0;
 		int pixel = 0;
+		int w_ = screen_width - 1;
+		int h_ = screen_height - 1;
+		int w_half =screen_width/2;
+		int h_half =screen_height/2;
+		int z = vector.Z_length;
 		
-		for(int i = 768; i < 392448; i++){
+		
+		for(int i = screen_width; i < screen_size-screen_width; i++){
 			if(displacementBuffer[i] != 31){
 				
 				r1 = (offScreen[i + 1]&0xff0000) >> 16;
-				r2 = (offScreen[i - 767]&0xff0000) >> 16;
-				r3 = (offScreen[i - 768]&0xff0000) >> 16;
+				r2 = (offScreen[i - w_]&0xff0000) >> 16;
+				r3 = (offScreen[i - screen_width]&0xff0000) >> 16;
 				r4 = (offScreen[i - 1]&0xff0000) >> 16;
 			
 			
 				g1 = (offScreen[i + 1]&0xff00) >> 8;
-				g2 = (offScreen[i - 767]&0xff00) >> 8;
-				g3 = (offScreen[i - 768]&0xff00) >> 8;
+				g2 = (offScreen[i - w_]&0xff00) >> 8;
+				g3 = (offScreen[i - screen_width]&0xff00) >> 8;
 				g4 = (offScreen[i]&0xff00) >> 8;
 			
 			
 				b1 = (offScreen[i + 1]&0xff);
-				b2 = (offScreen[i - 767]&0xff);
-				b3 = (offScreen[i - 768]&0xff);
+				b2 = (offScreen[i - w_]&0xff);
+				b3 = (offScreen[i - screen_width]&0xff);
 				b4 = (offScreen[i]&0xff);
 				
 			
@@ -357,7 +378,7 @@ public class postProcessingThread implements Runnable{
 				
 				
 				if(yMap > 0){
-					eyeDirection.set(-i%768+384, -256 + i/768, -650);
+					eyeDirection.set(-i%screen_width+w_half, -h_half + i/screen_width, -z);
 					eyeDirection.unit();
 					float I = eyeDirection.dot(lightReflect);
 				
@@ -449,17 +470,17 @@ public class postProcessingThread implements Runnable{
 						remainingHealth = 2;
 					
 					if(ObjectType != 103){
-						if(yPos > 0 && yPos < 512){
+						if(yPos > 0 && yPos < screen_height){
 							
-							if(xPos >= 0 && xPos < 768)
-								currentScreen[xPos + yPos*768] = (currentScreen[xPos + yPos*768]&0xFEFEFE)>>1;
+							if(xPos >= 0 && xPos < screen_width)
+								currentScreen[xPos + yPos*screen_width] = (currentScreen[xPos + yPos*screen_width]&0xFEFEFE)>>1;
 							for(int j = xPos+1;  j < xPos + healthBarLength-1; j++){
-								if(j < 0 || j >= 768)
+								if(j < 0 || j >= screen_width)
 									continue;
-								currentScreen[j + yPos*768] = 0;
+								currentScreen[j + yPos*screen_width] = 0;
 							}
-							if(xPos + healthBarLength-1 >= 0 && xPos + healthBarLength-1 < 768)
-								currentScreen[xPos + healthBarLength-1 + yPos*768] = (currentScreen[xPos + healthBarLength-1 + yPos*768]&0xFEFEFE)>>1;	
+							if(xPos + healthBarLength-1 >= 0 && xPos + healthBarLength-1 < screen_width)
+								currentScreen[xPos + healthBarLength-1 + yPos*screen_width] = (currentScreen[xPos + healthBarLength-1 + yPos*screen_width]&0xFEFEFE)>>1;	
 						}
 						
 						if((float)remainingHealth / healthBarLength > 0.5)
@@ -473,34 +494,34 @@ public class postProcessingThread implements Runnable{
 						for(int k = 0; k < 2; k++){
 							yPos++;
 							
-							if(yPos > 0 && yPos < 512){
+							if(yPos > 0 && yPos < screen_height){
 								for(int j = xPos;  j < xPos + healthBarLength; j++){
-									if(j < 0 || j >= 768)
+									if(j < 0 || j >= screen_width)
 										continue;
 									if(j < xPos + remainingHealth)
-										currentScreen[j + yPos*768] = color;
+										currentScreen[j + yPos*screen_width] = color;
 									else
-										currentScreen[j + yPos*768] = (currentScreen[j + yPos*768]&0xFEFEFE)>>1;
+										currentScreen[j + yPos*screen_width] = (currentScreen[j + yPos*screen_width]&0xFEFEFE)>>1;
 								}
-								if(xPos > 0 && xPos < 768)
-									currentScreen[xPos + yPos*768] = 0;
-								if(xPos + healthBarLength -1 >0 && xPos + healthBarLength - 1 < 768)
-									currentScreen[xPos + healthBarLength -1 + yPos*768] = 0;
+								if(xPos > 0 && xPos < screen_width)
+									currentScreen[xPos + yPos*screen_width] = 0;
+								if(xPos + healthBarLength -1 >0 && xPos + healthBarLength - 1 < screen_width)
+									currentScreen[xPos + healthBarLength -1 + yPos*screen_width] = 0;
 								
 							}
 						}
 						
 						yPos++;
-						if(yPos > 0 && yPos < 512){
-							if(xPos >= 0 && xPos < 768)
-								currentScreen[xPos + yPos*768] = (currentScreen[xPos + yPos*768]&0xFEFEFE)>>1;
+						if(yPos > 0 && yPos < screen_height){
+							if(xPos >= 0 && xPos < screen_width)
+								currentScreen[xPos + yPos*screen_width] = (currentScreen[xPos + yPos*screen_width]&0xFEFEFE)>>1;
 							for(int j = xPos+1;  j < xPos + healthBarLength-1; j++){
-								if(j < 0 || j >= 768)
+								if(j < 0 || j >= screen_width)
 									continue;
-								currentScreen[j + yPos*768] = 0;
+								currentScreen[j + yPos*screen_width] = 0;
 							}
-							if(xPos + healthBarLength-1 >= 0 && xPos + healthBarLength-1 < 768)
-								currentScreen[xPos + healthBarLength-1 + yPos*768] = (currentScreen[xPos + healthBarLength-1 + yPos*768]&0xFEFEFE)>>1;
+							if(xPos + healthBarLength-1 >= 0 && xPos + healthBarLength-1 < screen_width)
+								currentScreen[xPos + healthBarLength-1 + yPos*screen_width] = (currentScreen[xPos + healthBarLength-1 + yPos*screen_width]&0xFEFEFE)>>1;
 						}
 					}
 					
@@ -508,16 +529,16 @@ public class postProcessingThread implements Runnable{
 					if(currentSelectedUnitsInfo[i][5] >=0){
 						int progress = healthBarLength * currentSelectedUnitsInfo[i][5] / 100;
 						
-						if(yPos > 0 && yPos < 512){
-							if(xPos >= 0 && xPos < 768)
-								currentScreen[xPos + yPos*768] = (currentScreen[xPos + yPos*768]&0xFEFEFE)>>1;
+						if(yPos > 0 && yPos < screen_height){
+							if(xPos >= 0 && xPos < screen_width)
+								currentScreen[xPos + yPos*screen_width] = (currentScreen[xPos + yPos*screen_width]&0xFEFEFE)>>1;
 							for(int j = xPos+1;  j < xPos + healthBarLength-1; j++){
-								if(j < 0 || j >= 768)
+								if(j < 0 || j >= screen_width)
 									continue;
-								currentScreen[j + yPos*768] = 0;
+								currentScreen[j + yPos*screen_width] = 0;
 							}
-							if(xPos + healthBarLength-1 >= 0 && xPos + healthBarLength-1 < 768)
-								currentScreen[xPos + healthBarLength-1 + yPos*768] = (currentScreen[xPos + healthBarLength-1 + yPos*768]&0xFEFEFE)>>1;	
+							if(xPos + healthBarLength-1 >= 0 && xPos + healthBarLength-1 < screen_width)
+								currentScreen[xPos + healthBarLength-1 + yPos*screen_width] = (currentScreen[xPos + healthBarLength-1 + yPos*screen_width]&0xFEFEFE)>>1;	
 						}
 						
 						
@@ -527,52 +548,54 @@ public class postProcessingThread implements Runnable{
 						for(int k = 0; k < 2; k++){
 							yPos++;
 							
-							if(yPos > 0 && yPos < 512){
+							if(yPos > 0 && yPos < screen_height){
 								for(int j = xPos;  j < xPos + healthBarLength; j++){
-									if(j < 0 || j >= 768)
+									if(j < 0 || j >= screen_width)
 										continue;
 									if(j < xPos + progress)
-										currentScreen[j + yPos*768] = color;
+										currentScreen[j + yPos*screen_width] = color;
 									else
-										currentScreen[j + yPos*768] = (currentScreen[j + yPos*768]&0xFEFEFE)>>1;
+										currentScreen[j + yPos*screen_width] = (currentScreen[j + yPos*screen_width]&0xFEFEFE)>>1;
 								}
-								if(xPos > 0 && xPos < 768)
-									currentScreen[xPos + yPos*768] = 0;
-								if(xPos + healthBarLength -1 >0 && xPos + healthBarLength - 1 < 768)
-									currentScreen[xPos + healthBarLength -1 + yPos*768] = 0;
+								if(xPos > 0 && xPos < screen_width)
+									currentScreen[xPos + yPos*screen_width] = 0;
+								if(xPos + healthBarLength -1 >0 && xPos + healthBarLength - 1 < screen_width)
+									currentScreen[xPos + healthBarLength -1 + yPos*screen_width] = 0;
 								
 							}
 						}
 						
 						yPos++;
-						if(yPos > 0 && yPos < 512){
-							if(xPos >= 0 && xPos < 768)
-								currentScreen[xPos + yPos*768] = (currentScreen[xPos + yPos*768]&0xFEFEFE)>>1;
+						if(yPos > 0 && yPos < screen_height){
+							if(xPos >= 0 && xPos < screen_width)
+								currentScreen[xPos + yPos*screen_width] = (currentScreen[xPos + yPos*screen_width]&0xFEFEFE)>>1;
 							for(int j = xPos+1;  j < xPos + healthBarLength-1; j++){
-								if(j < 0 || j >= 768)
+								if(j < 0 || j >= screen_width)
 									continue;
-								currentScreen[j + yPos*768] = 0;
+								currentScreen[j + yPos*screen_width] = 0;
 							}
-							if(xPos + healthBarLength-1 >= 0 && xPos + healthBarLength-1 < 768)
-								currentScreen[xPos + healthBarLength-1 + yPos*768] = (currentScreen[xPos + healthBarLength-1 + yPos*768]&0xFEFEFE)>>1;
+							if(xPos + healthBarLength-1 >= 0 && xPos + healthBarLength-1 < screen_width)
+								currentScreen[xPos + healthBarLength-1 + yPos*screen_width] = (currentScreen[xPos + healthBarLength-1 + yPos*screen_width]&0xFEFEFE)>>1;
 						}
 					}
 				}
 			}
 			
 			
+			int xMin_ = screen_width/2 - 6;
+			
 			
 			//reset fogOfWarBuffer
 			if(!afterMatch) {
 				fogOfWarBuffer[0] = 0;
-				for(int i = 1; i < 393216; i+=i){
-					System.arraycopy(fogOfWarBuffer, 0, fogOfWarBuffer, i, 393216 - i >= i ? i : 393216 - i);
+				for(int i = 1; i < screen_size; i+=i){
+					System.arraycopy(fogOfWarBuffer, 0, fogOfWarBuffer, i, screen_size - i >= i ? i : screen_size - i);
 					
 				}
 				
-				for(int i = 0; i < 512; i++){
-					xMin[i] = 378;
-					xMax[i] = 378;
+				for(int i = 0; i < screen_height; i++){
+					xMin[i] = xMin_;
+					xMax[i] = xMin_;
 					
 				}
 				
@@ -613,10 +636,10 @@ public class postProcessingThread implements Runnable{
 				int radiusBit = 5;
 				int destIndex = 0;
 				int index = 0;
-				for(int i = 0; i < 512; i++){
+				for(int i = 0; i < screen_height; i++){
 					//init the first element in the row
 					temp = 0;
-					destIndex = i + 512 * 767 ;
+					destIndex = i + screen_height * w_ ;
 					
 					for(int j = 0; j < radius -1; j++){
 						temp+=fogOfWarBuffer[index + j];
@@ -624,19 +647,19 @@ public class postProcessingThread implements Runnable{
 					temp+=43*radius;
 					fogOfWarBuffer2[destIndex] =  (byte)(temp >> radiusBit);
 					index++;
-					destIndex-=512;
+					destIndex-=screen_height;
 					
-					for(int j = 1; j < radius; j++, index++, destIndex -=512){
+					for(int j = 1; j < radius; j++, index++, destIndex -=screen_height){
 						temp = temp + fogOfWarBuffer[index + radius -2] - 43;
 						fogOfWarBuffer2[destIndex] =  (byte)(temp >> radiusBit);
 					}
 					
-					for(int j = radius; j < 768 - radius; j++, index++, destIndex -=512){
+					for(int j = radius; j < screen_width - radius; j++, index++, destIndex -=screen_height){
 						temp = temp + fogOfWarBuffer[index + radius -2] - fogOfWarBuffer[index - radius];
 						fogOfWarBuffer2[destIndex] =  (byte)(temp >> radiusBit);
 						
 					}
-					for(int j = 0; j < radius; j++, index++, destIndex -=512){
+					for(int j = 0; j < radius; j++, index++, destIndex -=screen_height){
 						temp = temp - fogOfWarBuffer[index - radius] + 43;
 						fogOfWarBuffer2[destIndex] =  (byte)(temp >> radiusBit);
 					}
@@ -644,10 +667,10 @@ public class postProcessingThread implements Runnable{
 				
 				destIndex = 0;
 				index = 0;
-				for(int i = 0; i < 768; i++){
+				for(int i = 0; i < screen_width; i++){
 					//init the first element in the row
 					temp = 0;
-					destIndex = 767 - i;
+					destIndex = w_ - i;
 					
 					for(int j = 0; j < radius -1 ; j++){
 						temp+=fogOfWarBuffer2[index + j];
@@ -655,18 +678,18 @@ public class postProcessingThread implements Runnable{
 					temp+=43*radius;
 					fogOfWarBuffer[destIndex] =  (byte)(temp >> radiusBit);
 					index++;
-					destIndex+=768;
+					destIndex+=screen_width;
 					
-					for(int j = 1; j < radius; j++, index++, destIndex +=768){
+					for(int j = 1; j < radius; j++, index++, destIndex +=screen_width){
 						temp = temp + fogOfWarBuffer2[index + radius -2] - 43;
 						fogOfWarBuffer[destIndex] =  (byte)(temp >> radiusBit);
 					}
 					
-					for(int j = radius; j < 512 - radius; j++, index++, destIndex +=768){
+					for(int j = radius; j < screen_height - radius; j++, index++, destIndex +=screen_width){
 						temp = temp + fogOfWarBuffer2[index + radius -2] - fogOfWarBuffer2[index - radius];
 						fogOfWarBuffer[destIndex] =  (byte)(temp >> radiusBit);
 					}
-					for(int j = 0; j < radius; j++, index++, destIndex +=768){
+					for(int j = 0; j < radius; j++, index++, destIndex +=screen_width){
 						temp  = temp - fogOfWarBuffer2[index - radius] + 43;
 						fogOfWarBuffer[destIndex] =  (byte)(temp >> radiusBit);
 					}
@@ -674,7 +697,7 @@ public class postProcessingThread implements Runnable{
 				
 				
 				//blend fog of war to the frame buffer
-				for(int i = 0; i < 512 * 768; i++){
+				for(int i = 0; i < screen_size; i++){
 					temp = fogOfWarBuffer[i];
 					if(temp < 112) {
 						r = (((currentScreen[i] & 0xff0000) >> 16) * (temp + 143)) >> 8;
@@ -694,29 +717,29 @@ public class postProcessingThread implements Runnable{
 				selectAreaHeight = mainThread.pc.area.height;
 				
 				try{
-					if(!(yPos == 511 || xPos == 767)){
+					if(!(yPos == h_ || xPos == w_)){
 						for(int i = xPos; i < xPos + selectAreaWidth; i++)
-							currentScreen[i + yPos*768] = 0xaa00;
+							currentScreen[i + yPos*screen_width] = 0xaa00;
 						for(int i = xPos; i < xPos + selectAreaWidth; i++)
-							currentScreen[i + (yPos + 1)*768] = 0xcc00;
+							currentScreen[i + (yPos + 1)*screen_width] = 0xcc00;
 						
 						for(int i = xPos; i < xPos + selectAreaWidth; i++)
-							currentScreen[i + (yPos+selectAreaHeight-1)*768] = 0xcc00;
+							currentScreen[i + (yPos+selectAreaHeight-1)*screen_width] = 0xcc00;
 						for(int i = xPos; i < xPos + selectAreaWidth; i++)
-							currentScreen[i + (yPos + selectAreaHeight)*768] = 0xaa00;
+							currentScreen[i + (yPos + selectAreaHeight)*screen_width] = 0xaa00;
 						
 						
 						for(int i = yPos; i < yPos + selectAreaHeight; i++)
-							currentScreen[xPos + i*768] = 0xaa00;
+							currentScreen[xPos + i*screen_width] = 0xaa00;
 						
 						for(int i = yPos+1; i < yPos + selectAreaHeight-1; i++)
-							currentScreen[xPos + 1 + i*768] = 0xcc00;
+							currentScreen[xPos + 1 + i*screen_width] = 0xcc00;
 						
 						for(int i = yPos; i < yPos + selectAreaHeight; i++)
-							currentScreen[xPos + selectAreaWidth + i*768] = 0xaa00;
+							currentScreen[xPos + selectAreaWidth + i*screen_width] = 0xaa00;
 						
 						for(int i = yPos + 1; i < yPos + selectAreaHeight - 1; i++)
-							currentScreen[xPos - 1 + selectAreaWidth + i*768] = 0xcc00;
+							currentScreen[xPos - 1 + selectAreaWidth + i*screen_width] = 0xcc00;
 					}
 				}catch(Exception e){}
 			}
@@ -753,8 +776,10 @@ public class postProcessingThread implements Runnable{
 	
 	//convert a polygon to scan lines
 	public static void scanPolygon(){
-		start = 512;
+		start = screen_height;
 		end = -1; 
+		int w_ = screen_width - 1;
+		int h_ = screen_height - 1;
 		int startX, g, startY, endY, temp_x;
 		float gradient;
 	
@@ -787,7 +812,7 @@ public class postProcessingThread implements Runnable{
 			
 			
 			startY = Math.max((int)(v1.screenY) + 1, 0);
-			endY = Math.min((int)(v2.screenY), 511);
+			endY = Math.min((int)(v2.screenY), h_);
 			
 			
 			if(startY < start )
@@ -810,10 +835,10 @@ public class postProcessingThread implements Runnable{
 					else
 						xLeft[y] = 0;
 				}else{
-					if(temp_x <= 767)
+					if(temp_x <= w_)
 						xRight[y] = temp_x;
 					else
-						xRight[y] = 768;
+						xRight[y] = screen_width;
 				}
 				startX+=g;
 	
@@ -834,7 +859,7 @@ public class postProcessingThread implements Runnable{
 				xMax[i] = Math.max(temp3, temp1);
 				xMin[i] = Math.min(temp2, temp);
 				for(int j = xMin[i]; j < xMax[i]; j++){
-					fogOfWarBuffer[j + i*768] = (byte)127;
+					fogOfWarBuffer[j + i*screen_width] = (byte)127;
 				
 				}
 				continue;
@@ -843,17 +868,19 @@ public class postProcessingThread implements Runnable{
 			xMax[i] = temp1; 
 			xMin[i] = temp;
 			for(int j = temp; j < temp1; j++){
-				fogOfWarBuffer[j + i*768] = (byte)127;	
+				fogOfWarBuffer[j + i*screen_width] = (byte)127;	
 			}
 		}
 	}
 	
 	public static void blurShadow(){
 		int index = 0;		
+		int w_ = screen_width - 1;
+		int h_ = screen_height - 1;
 		if(cameraXZAngle <= 45 || cameraXZAngle >315){
-			for(int i = 0; i < 511; i ++){
-				for(int j = 1; j < 768; j++){
-					index = j + i*768;
+			for(int i = 0; i < h_; i ++){
+				for(int j = 1; j < screen_width; j++){
+					index = j + i*screen_width;
 					if(shadowBitmap[index] < 0){
 						if(shadowBitmap[index] == -127)
 							smoothedShadowBitmap[index] = 32;
@@ -861,91 +888,91 @@ public class postProcessingThread implements Runnable{
 							smoothedShadowBitmap[index]= (byte)(shadowBitmap[index] + 127);
 						
 					}else{
-						smoothedShadowBitmap[index] = (byte)((shadowBitmap[index] + shadowBitmap[index - 1] + shadowBitmap[index + 768] + shadowBitmap[index + 767]) >> 2);
+						smoothedShadowBitmap[index] = (byte)((shadowBitmap[index] + shadowBitmap[index - 1] + shadowBitmap[index + screen_width] + shadowBitmap[index + w_]) >> 2);
 						//smoothedShadowBitmap[index] = (byte)((shadowBitmap[index+769] + shadowBitmap[index+767] + shadowBitmap[index-769] + shadowBitmap[index-767] + shadowBitmap[index-768] + shadowBitmap[index] + shadowBitmap[index - 1] + shadowBitmap[index + 768] + shadowBitmap[index + 1])>>3);
 
 						
 					}
 				}
 			}
-			for(int i = 0; i < 393216; i+= 768)
+			for(int i = 0; i < screen_size; i+= screen_width)
 				smoothedShadowBitmap[i] = shadowBitmap[i];
-			for(int i = 392448; i < 393216; i++)
+			for(int i = screen_size-screen_width; i < screen_size; i++)
 				smoothedShadowBitmap[i] = shadowBitmap[i];
 			
 		}
 		
 		if(cameraXZAngle <= 315 && cameraXZAngle > 225){
-			for(int i = 511; i > 0; i --){
-				for(int j = 1; j < 768; j++){
-					index = j + i*768;
+			for(int i = h_; i > 0; i --){
+				for(int j = 1; j < screen_width; j++){
+					index = j + i*screen_width;
 					if(shadowBitmap[index] < 0){
 						if(shadowBitmap[index] == -127)
 							smoothedShadowBitmap[index] = 32;
 						else
 							smoothedShadowBitmap[index]= (byte)(shadowBitmap[index] + 127);
 					}else{
-						smoothedShadowBitmap[index] = (byte)((shadowBitmap[index] + shadowBitmap[index - 1] + shadowBitmap[index - 768] + shadowBitmap[index - 769]) >> 2);
+						smoothedShadowBitmap[index] = (byte)((shadowBitmap[index] + shadowBitmap[index - 1] + shadowBitmap[index - screen_width] + shadowBitmap[index - screen_width - 1]) >> 2);
 					
 						
 					}
 				}
 			}
-			for(int i = 0; i < 393216; i+= 768)
+			for(int i = 0; i < screen_size; i+= screen_width)
 				smoothedShadowBitmap[i] = shadowBitmap[i];
-			for(int i = 0; i < 768; i++)
+			for(int i = 0; i < screen_width; i++)
 				smoothedShadowBitmap[i] = shadowBitmap[i];
 			
 			
 		}
 		
 		if(cameraXZAngle <= 225 && cameraXZAngle > 135){
-			for(int i = 511; i > 0; i --){
-				for(int j = 0; j < 767; j++){
-					index = j + i*768;
+			for(int i = h_; i > 0; i --){
+				for(int j = 0; j < w_; j++){
+					index = j + i*screen_width;
 					if(shadowBitmap[index] < 0){
 						if(shadowBitmap[index] == -127)
 							smoothedShadowBitmap[index] = 32;
 						else
 							smoothedShadowBitmap[index]= (byte)(shadowBitmap[index] + 127);
 					}else{
-						smoothedShadowBitmap[index] = (byte)((shadowBitmap[index] + shadowBitmap[index + 1] + shadowBitmap[index - 768] + shadowBitmap[index - 767]) >> 2);
+						smoothedShadowBitmap[index] = (byte)((shadowBitmap[index] + shadowBitmap[index + 1] + shadowBitmap[index - screen_width] + shadowBitmap[index - w_]) >> 2);
 					
 						
 					}
 				}
 			}
-			for(int i = 767; i < 393216; i+= 768)
+			for(int i = w_; i < screen_size; i+= screen_width)
 				smoothedShadowBitmap[i] = shadowBitmap[i];
-			for(int i = 0; i < 768; i++)
+			for(int i = 0; i < screen_width; i++)
 				smoothedShadowBitmap[i] = shadowBitmap[i];
 		}
 		
 		if(cameraXZAngle <= 135 && cameraXZAngle > 45){
-			for(int i = 0; i < 511; i ++){
-				for(int j = 0; j < 767; j++){
-					index = j + i*768;
+			for(int i = 0; i < h_; i ++){
+				for(int j = 0; j < w_; j++){
+					index = j + i*screen_width;
 					if(shadowBitmap[index] < 0){
 						if(shadowBitmap[index] == -127)
 							smoothedShadowBitmap[index] = 32;
 						else
 							smoothedShadowBitmap[index]= (byte)(shadowBitmap[index] + 127);
 					}else{
-						smoothedShadowBitmap[index] = (byte)((shadowBitmap[index] + shadowBitmap[index + 1] + shadowBitmap[index + 768] + shadowBitmap[index + 769]) >> 2);
+						smoothedShadowBitmap[index] = (byte)((shadowBitmap[index] + shadowBitmap[index + 1] + shadowBitmap[index + screen_width] + shadowBitmap[index + screen_width + 1]) >> 2);
 					
 					}
 				}
 			}
-			for(int i = 767; i < 393216; i+= 768)
+			for(int i = w_; i < screen_size; i+= screen_width)
 				smoothedShadowBitmap[i] = shadowBitmap[i];
-			for(int i = 392448; i < 393216; i++)
+			for(int i = screen_size - screen_width; i < screen_size; i++)
 				smoothedShadowBitmap[i] = shadowBitmap[i];
 		}
 	}
 	
 	public static void blendShadow(){
 		//blend shadow bitmap to the frame buffer
-		for(int i = 0; i < 512 * 768; i++){
+		for(int i = 0; i < screen_size; i++){
 			temp = smoothedShadowBitmap[i];
 			if(temp <= 0) {
 				temp = shadowBitmap[i];

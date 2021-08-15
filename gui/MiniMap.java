@@ -14,7 +14,8 @@ public class MiniMap {
 	public static boolean isDrawingWindow;
 	public int[][] warningSigns;
 	public int[] warningSignLife;
-	
+	public static int screen_width = mainThread.screen_width;
+	public static int screen_height = mainThread.screen_height;
 	
 	public void init(){
 		//load terrain image as background for minimap 
@@ -166,14 +167,14 @@ public class MiniMap {
 	public void findCorners(){
 		
 		corner1.set(postProcessingThread.my2Dto3DFactory.get3DLocation(mainThread.theAssetManager.Terrain.ground[0], -40, -40));
-		corner2.set(postProcessingThread.my2Dto3DFactory.get3DLocation(mainThread.theAssetManager.Terrain.ground[0], 807, -40));
-		corner3.set(postProcessingThread.my2Dto3DFactory.get3DLocation(mainThread.theAssetManager.Terrain.ground[0], 807, 551));
-		corner4.set(postProcessingThread.my2Dto3DFactory.get3DLocation(mainThread.theAssetManager.Terrain.ground[0], -40, 551));
+		corner2.set(postProcessingThread.my2Dto3DFactory.get3DLocation(mainThread.theAssetManager.Terrain.ground[0], screen_width+39, -40));
+		corner3.set(postProcessingThread.my2Dto3DFactory.get3DLocation(mainThread.theAssetManager.Terrain.ground[0], screen_width+39, screen_height+39));
+		corner4.set(postProcessingThread.my2Dto3DFactory.get3DLocation(mainThread.theAssetManager.Terrain.ground[0], -40, screen_height+39));
 		
 	}
 	
 	public void drawLine(int xPos1, int yPos1, int xPos2, int yPos2, int[] screen, int lineColor){
-		int start = 381 * 768 + 3;
+		int start = (screen_height-131) * screen_width + 3;
 		int  x, y;
 		int xDirection, yDirection;
 		
@@ -197,8 +198,8 @@ public class MiniMap {
 						
 				if(x < 0 || x > 127 || y < 0 || y > 127)
 					continue;
-				color = screen[start + x + y*768];
-				screen[start + x + y*768] = ((((color&0xFEFEFE)>>1)&0xFEFEFE)>>1) +  lineColor;
+				color = screen[start + x + y*screen_width];
+				screen[start + x + y*screen_width] = ((((color&0xFEFEFE)>>1)&0xFEFEFE)>>1) +  lineColor;
 			}
 			
 		}else{
@@ -209,8 +210,8 @@ public class MiniMap {
 				
 				if(x < 0 || x > 127 || y < 0 || y > 127)
 					continue;
-				color = screen[start + x + y*768];
-				screen[start + x + y*768] = ((((color&0xFEFEFE)>>1)&0xFEFEFE)>>1) +  lineColor;
+				color = screen[start + x + y*screen_width];
+				screen[start + x + y*screen_width] = ((((color&0xFEFEFE)>>1)&0xFEFEFE)>>1) +  lineColor;
 				
 			}
 		}
@@ -220,7 +221,7 @@ public class MiniMap {
 	public void drawUnit(int[] screen, boolean[] minimapBitmap, int[][] unitsForMiniMap,  int unitsForMiniMapCount){
 		int xPos = 0;
 		int yPos = 0;
-		int start = 381 * 768 + 3;
+		int start = (screen_height-131) * screen_width + 3;
 		int index = 0;
 		int friendlyUnitColor = 170 << 8;
 		int friendlyBuildingColor = 46 << 16 | 114 << 8 | 22; 
@@ -237,7 +238,7 @@ public class MiniMap {
 		for(int i = 0; i < unitsForMiniMapCount; i++){
 			xPos = unitsForMiniMap[i][1];
 			yPos = unitsForMiniMap[i][2];
-			index = start + xPos + yPos*768;
+			index = start + xPos + yPos*screen_width;
 			
 			type = unitsForMiniMap[i][0] >> 8;
 			
@@ -256,10 +257,10 @@ public class MiniMap {
 					screen[index] = color;
 				if((screen[index + 1]>>24) == 0)
 					screen[index+1] = color;
-				if((screen[index+768]>>24) == 0)
-					screen[index+768] = color;
-				if((screen[index+768 + 1]>>24) == 0)
-					screen[index+768 + 1] = color;
+				if((screen[index+screen_width]>>24) == 0)
+					screen[index+screen_width] = color;
+				if((screen[index+screen_width + 1]>>24) == 0)
+					screen[index+screen_width + 1] = color;
 				
 			}else{
 				int position = xPos + yPos*128;
@@ -277,8 +278,8 @@ public class MiniMap {
 							
 						screen[index] = color;
 						screen[index+1] = color;
-						screen[index+768] = color;
-						screen[index+768 + 1] = color;
+						screen[index+screen_width] = color;
+						screen[index+screen_width + 1] = color;
 					}
 				}
 			}
@@ -367,7 +368,7 @@ public class MiniMap {
 	
 	
 	public void drawBackground(int[] screen, boolean[] minimapBitmap){
-		int start = 381 * 768 + 3;
+		int start = (screen_height-131) * screen_width + 3;
 		int color = 0;
 		
 		
@@ -379,12 +380,12 @@ public class MiniMap {
 			for(int x = 0; x < 128; x ++){
 				color = background[x + y*128];
 				if(minimapBitmap[x + y*128]){
-					screen[start + x + y*768] = color;
+					screen[start + x + y*screen_width] = color;
 				}else{
 					if(((color & 0xf000000) >> 24) == 12)
-						screen[start + x + y*768] = goldMineColor;
+						screen[start + x + y*screen_width] = goldMineColor;
 					else
-						screen[start + x + y*768] = (color&0xFEFEFE)>>1;
+						screen[start + x + y*screen_width] = (color&0xFEFEFE)>>1;
 				}
 			}
 		}
@@ -396,60 +397,60 @@ public class MiniMap {
 		int color1 = 0xa0a0a0;
 		int color2 = 0xe0e0e0;
 		
-		int start = 378*768;
+		int start = (screen_height-134)*screen_width;
 		for(int x = 1; x < 133; x++){
 			screen[start + x] = color1;
 		}
-		start = 379*768;
+		start = (screen_height-133)*screen_width;
 		for(int x = 1; x < 133; x++){
 			screen[start + x] = color2;
 		}
-		start = 380*768;
+		start = (screen_height-132)*screen_width;
 		for(int x = 2; x < 132; x++){
 			screen[start + x] = color1;
 		}
 		
-		start = 509*768;
+		start = (screen_height-3)*screen_width;
 		for(int x = 2; x < 132; x++){
 			screen[start + x] = color1;
 		}
-		start = 510*768;
+		start = (screen_height-2)*screen_width;
 		for(int x = 1; x < 133; x++){
 			screen[start + x] = color2;
 		}
-		start = 511*768;
+		start = (screen_height-1)*screen_width;
 		for(int x = 0; x < 134; x++){
 			screen[start + x] = color1;
 		}
 		
-		start = 378*768 + 133;
+		start = (screen_height-134)*screen_width + 133;
 		for(int y = 1; y < 132; y++){
-			screen[start + y*768] = color1;
+			screen[start + y*screen_width] = color1;
 		}
 		
-		start = 379*768 + 132;
+		start = (screen_height-133)*screen_width + 132;
 		for(int y = 0; y < 132; y++){
-			screen[start + y*768] = color2;
+			screen[start + y*screen_width] = color2;
 		}
 		
-		start = 380*768 + 131;
+		start = (screen_height-132)*screen_width + 131;
 		for(int y = 0; y < 131; y++){
-			screen[start + y*768] = color1;
+			screen[start + y*screen_width] = color1;
 		}
 		
-		start = 378*768;
+		start = (screen_height-134)*screen_width;
 		for(int y = 1; y < 132; y++){
-			screen[start + y*768] = color1;
+			screen[start + y*screen_width] = color1;
 		}
 		
-		start = 379*768 + 1;
+		start = (screen_height-133)*screen_width + 1;
 		for(int y = 0; y < 132; y++){
-			screen[start + y*768] = color2;
+			screen[start + y*screen_width] = color2;
 		}
 		
-		start = 380*768 + 2;
+		start = (screen_height-132)*screen_width + 2;
 		for(int y = 0; y < 131; y++){
-			screen[start + y*768] = color1;
+			screen[start + y*screen_width] = color1;
 		}
 	}
 	

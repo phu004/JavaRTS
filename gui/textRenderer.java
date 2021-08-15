@@ -15,6 +15,8 @@ public class textRenderer {
 	public  int[] fontBuffer, menuFontBuffer, star, halfStar;
 	public  int[][] chars, menuChars;
 	public  int[] menuCharsWidth;
+	public static int screen_width = mainThread.screen_width;
+	public static int screen_height = mainThread.screen_height;
 	
 	public void init(){
 		fontBuffer = new int[665*16];
@@ -114,6 +116,17 @@ public class textRenderer {
 	}
 	
 	public void drawMenuText(int xPos, int yPos, char[] theText, int[] screen, int r, int g, int b, int filterBrightness) {
+		
+		int centerX_old = 768/2-1;
+		int centery_old = 512/2-1;
+		int dx = xPos - centerX_old;
+		int dy = yPos - centery_old;
+		int centerX_new = screen_width/2-1;
+		int centerY_new = screen_height/2 -1;
+		xPos = centerX_new + dx;
+		yPos = centerY_new + dy;
+		
+		
 		int pixel, SpriteValue, screenValue, overflow, screenIndex;
 		int MASK7Bit = 0xFEFEFF;
 		int xPos_initial = xPos;
@@ -127,10 +140,10 @@ public class textRenderer {
 			
 			int charIndex = theText[i] - 32;
 			int w = menuCharsWidth[charIndex];
-			int pos = 768*yPos + xPos;
+			int pos = screen_width*yPos + xPos;
 			for(int j = 0; j < 16; j++){
 				for(int k = 0; k < w; k++){
-					screenIndex = pos + k + j*768;
+					screenIndex = pos + k + j*screen_width;
 					screenValue = screen[screenIndex];
 					SpriteValue = menuChars[charIndex][k+ j*w]&255; 
 					
@@ -171,7 +184,7 @@ public class textRenderer {
 		for(int i = 0; i < theText.length; i++){
 			for(int j = 0; j < 16; j++){
 				for(int k = 0; k < 7; k++){
-					screenIndex = 768*yPos + xPos + i*7 + k + j*768;
+					screenIndex = screen_width*yPos + xPos + i*7 + k + j*screen_width;
 					
 					screenValue = screen[screenIndex];
 					SpriteValue = chars[theText[i] - 32][k+ j*7]&255; 
@@ -198,7 +211,7 @@ public class textRenderer {
 		for(int i = 0; i < theText.length; i++){
 			for(int j = 0; j < 16; j++){
 				for(int k = 0; k < 7; k++){
-					screenIndex = 768*yPos + xPos + i*7 + k + j*768;
+					screenIndex = screen_width*yPos + xPos + i*7 + k + j*screen_width;
 					
 					screenValue = screen[screenIndex];
 					SpriteValue = chars[theText[i] - 32][k+ j*7]&255; 
@@ -215,6 +228,7 @@ public class textRenderer {
 	}
 	
 	public void drawText_outline(int xPos, int yPos, String text, int[] screen, int insideColor, int outlineColor){
+		
 		int SpriteValue, screenIndex,  width, height;
 		
 		char[] theText = text.toCharArray();
@@ -223,24 +237,24 @@ public class textRenderer {
 		for(int i = 0; i < theText.length; i++){
 			for(int j = 0; j < 16; j++){
 				for(int k = 0; k < 7; k++){
-					screenIndex = 768*yPos + xPos + i*7 + k + j*768;	
+					screenIndex = screen_width*yPos + xPos + i*7 + k + j*screen_width;	
 					
 					width = xPos + i*7 + k;
 					height = yPos + j;
 					
-					if(width < 1 || width > 766 || height < 1 || height > 510)
+					if(width < 1 || width > screen_width-2 || height < 1 || height > screen_height-2)
 						continue;
 					
 					SpriteValue = chars[theText[i] - 32][k+ j*7]&255; 
 					if((SpriteValue & 0xff) > 100){
 						screen[screenIndex+1] =  outlineColor;
 						screen[screenIndex-1] =  outlineColor;
-						screen[screenIndex+768] =  outlineColor;
-						screen[screenIndex-768] =  outlineColor;
-						screen[screenIndex+769] =  outlineColor;
-						screen[screenIndex+767] =  outlineColor;
-						screen[screenIndex-769] =  outlineColor;
-						screen[screenIndex-767] =  outlineColor;
+						screen[screenIndex+screen_width] =  outlineColor;
+						screen[screenIndex-screen_width] =  outlineColor;
+						screen[screenIndex+screen_width+1] =  outlineColor;
+						screen[screenIndex+screen_width-1] =  outlineColor;
+						screen[screenIndex-(screen_width+1)] =  outlineColor;
+						screen[screenIndex-(screen_width-1)] =  outlineColor;
 						
 					}
 				}
@@ -251,12 +265,78 @@ public class textRenderer {
 		for(int i = 0; i < theText.length; i++){
 			for(int j = 0; j < 16; j++){
 				for(int k = 0; k < 7; k++){
-					screenIndex = 768*yPos + xPos + i*7 + k + j*768;
+					screenIndex = screen_width*yPos + xPos + i*7 + k + j*screen_width;
 					
 					width = xPos + i*7 + k;
 					height = yPos + j;
 					
-					if(width < 1 || width > 766 || height < 1 || height > 510)
+					if(width < 1 || width > screen_width-2 || height < 1 || height > screen_height-2)
+						continue;
+					
+					SpriteValue = chars[theText[i] - 32][k+ j*7]&255; 
+					if((SpriteValue & 0xff) > 100){
+						screen[screenIndex] =  insideColor;
+					}
+				}
+			}
+		}
+	}
+	
+	public void drawScoreBoardText(int xPos, int yPos, String text, int[] screen, int insideColor, int outlineColor){
+	
+		int centerX_old = 768/2-1;
+		int centery_old = 512/2-1;
+		int dx = xPos - centerX_old;
+		int dy = yPos - centery_old;
+		int centerX_new = screen_width/2-1;
+		int centerY_new = screen_height/2 -1;
+		
+		
+		xPos = centerX_new + dx;
+		yPos = centerY_new + dy;
+		
+		int SpriteValue, screenIndex,  width, height;
+		
+		char[] theText = text.toCharArray();
+		
+		//draw outline first
+		for(int i = 0; i < theText.length; i++){
+			for(int j = 0; j < 16; j++){
+				for(int k = 0; k < 7; k++){
+					screenIndex = screen_width*yPos + xPos + i*7 + k + j*screen_width;	
+					
+					width = xPos + i*7 + k;
+					height = yPos + j;
+					
+					if(width < 1 || width > screen_width-2 || height < 1 || height > screen_height-2)
+						continue;
+					
+					SpriteValue = chars[theText[i] - 32][k+ j*7]&255; 
+					if((SpriteValue & 0xff) > 100){
+						screen[screenIndex+1] =  outlineColor;
+						screen[screenIndex-1] =  outlineColor;
+						screen[screenIndex+screen_width] =  outlineColor;
+						screen[screenIndex-screen_width] =  outlineColor;
+						screen[screenIndex+screen_width+1] =  outlineColor;
+						screen[screenIndex+screen_width-1] =  outlineColor;
+						screen[screenIndex-(screen_width+1)] =  outlineColor;
+						screen[screenIndex-(screen_width-1)] =  outlineColor;
+						
+					}
+				}
+			}
+		}
+		
+		//draw inside
+		for(int i = 0; i < theText.length; i++){
+			for(int j = 0; j < 16; j++){
+				for(int k = 0; k < 7; k++){
+					screenIndex = screen_width*yPos + xPos + i*7 + k + j*screen_width;
+					
+					width = xPos + i*7 + k;
+					height = yPos + j;
+					
+					if(width < 1 || width > screen_width-2 || height < 1 || height > screen_height-2)
 						continue;
 					
 					SpriteValue = chars[theText[i] - 32][k+ j*7]&255; 
@@ -278,24 +358,24 @@ public class textRenderer {
 		int SpriteValue, screenIndex,  width, height;
 		for(int j = 0; j < 12; j++){
 			for(int k = 0; k < 12; k++){
-				screenIndex = 768*yPos + xPos + k + j*768;	
+				screenIndex = screen_width*yPos + xPos + k + j*screen_width;	
 				
 				width = xPos + k;
 				height = yPos + j;
 				
-				if(width < 1 || width > 766 || height < 1 || height > 510)
+				if(width < 1 || width > screen_width-2 || height < 1 || height > screen_height-2)
 					continue;
 				
 				SpriteValue = (starCharacter[k+ j*12]&0xff0000) >> 16; 
 				if((SpriteValue & 0xff) > 30){
 					screen[screenIndex+1] =  outlineColor;
 					screen[screenIndex-1] =  outlineColor;
-					screen[screenIndex+768] =  outlineColor;
-					screen[screenIndex-768] =  outlineColor;
-					screen[screenIndex+769] =  outlineColor;
-					screen[screenIndex+767] =  outlineColor;
-					screen[screenIndex-769] =  outlineColor;
-					screen[screenIndex-767] =  outlineColor;
+					screen[screenIndex+screen_width] =  outlineColor;
+					screen[screenIndex-screen_width] =  outlineColor;
+					screen[screenIndex+screen_width+1] =  outlineColor;
+					screen[screenIndex+screen_width-1] =  outlineColor;
+					screen[screenIndex-(screen_width+1)] =  outlineColor;
+					screen[screenIndex-(screen_width-1)] =  outlineColor;
 					
 				}
 			}
@@ -303,12 +383,12 @@ public class textRenderer {
 		
 		for(int j = 0; j < 12; j++){
 			for(int k = 0; k < 12; k++){
-				screenIndex = 768*yPos + xPos + k + j*768;
+				screenIndex = screen_width*yPos + xPos + k + j*screen_width;
 				
 				width = xPos+ k;
 				height = yPos + j;
 				
-				if(width < 1 || width > 766 || height < 1 || height > 510)
+				if(width < 1 || width > screen_width-2 || height < 1 || height > screen_height-2)
 					continue;
 				
 				SpriteValue = (starCharacter[k+ j*12]&0xff0000) >> 16; 

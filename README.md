@@ -25,5 +25,7 @@ Some screenshots:
 
 ![alt text](https://github.com/phu004/test/blob/master/test/rts_screenshot02.png)
 
-![alt text](https://github.com/phu004/test/blob/master/test/screen_shot2.png)
+![alt text](https://github.com/phu004/test/blob/master/test/rts_screenshot03.png)
+
+![alt text](https://github.com/phu004/test/blob/master/test/rts_screenshot04.png)
 

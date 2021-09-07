@@ -658,6 +658,7 @@ public class playerCommander {
 		}
 	}
 	
+	
 	public void attackMoveSelectUnit(float x, float y){
 		boolean mobileUnitSelected = false;
 		int numOfMobileUnitSelected = 0;

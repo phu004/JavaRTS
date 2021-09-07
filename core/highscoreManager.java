@@ -36,8 +36,6 @@ public class highscoreManager implements Runnable{
 				
 					status = idle;
 							
-					
-				
 			}
 			
 			if(status == idle) {

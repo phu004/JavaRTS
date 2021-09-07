@@ -656,7 +656,6 @@ public class playerCommander {
 			theAssetManager.confirmationIconInfo[2] = y;
 			theAssetManager.confirmationIconInfo[3] = 0xbb22;
 		}
-		  
 	}
 	
 	public void attackMoveSelectUnit(float x, float y){

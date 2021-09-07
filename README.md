@@ -21,7 +21,11 @@ https://www.youtube.com/watch?v=hE69S2aLrjk&t=201s
 
 Some screenshots:
 
-![alt text](https://github.com/phu004/test/blob/master/test/screen_shot0.png)
-![alt text](https://github.com/phu004/test/blob/master/test/screen_shot1.png)
-![alt text](https://github.com/phu004/test/blob/master/test/screen_shot2.png)
+![alt text](https://github.com/phu004/test/blob/master/test/rts_screenshot01.png)
+
+![alt text](https://github.com/phu004/test/blob/master/test/rts_screenshot02.png)
+
+![alt text](https://github.com/phu004/test/blob/master/test/rts_screenshot03.png)
+
+![alt text](https://github.com/phu004/test/blob/master/test/rts_screenshot04.png)
 

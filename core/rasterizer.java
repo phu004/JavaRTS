@@ -578,8 +578,8 @@ public class rasterizer {
 			dz = (zRight_lightspace[y] - startZ)/dx;
 			index = startX + y*shadowmap_width;
 			for(;startX < endX; startX++, index++, startZ += dz){
-				if(startZ < shadowBuffer[index&shadowmap_size_]){
-					shadowBuffer[index&shadowmap_size_] = startZ;
+				if(startZ < shadowBuffer[index]){
+					shadowBuffer[index] = startZ;
 				}
 			}	
 		}

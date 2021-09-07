@@ -195,6 +195,7 @@ public class playerCommander {
 						}
 				}
 				
+				
 				//center camera to the one of the selected units
 				if(doubleNumberPressed){
 					solidObject selectedUnit = null;
@@ -233,15 +234,10 @@ public class playerCommander {
 				//if the click lands on empty ground perform "attack move" for all selected unit
 				//if the click lands on an unit, then attack that unit regardless if it is friend or foe
 				
+				
 				boolean performAttack = false;
 				if(numberOfSelectedUnits > 1){
 					performAttack = true;
-				}
-				if(numberOfSelectedUnits ==1){
-					if(selectedUnits[0] != null)     //null pointer happened here once, not sure why
-						if(selectedUnits[0].teamNo == 0)
-							performAttack = true;
-					
 				}
 					
 				if(performAttack){
@@ -593,9 +589,15 @@ public class playerCommander {
 	}
 	
 	public void moveSelectedUnit(float x, float y){
+		
 		boolean moveableUnitSelected = false;
 		int numOfConYardSelected = 0;
 		int numOfMobileUnitSelected = 0;
+		
+		float groupCenterX = 0;
+		float groupCenterY = 0;
+		float directionX = 0;
+		float directionY = 0;
 		
 		for(int i = 0; i < selectedUnits.length; i++){
 			if(selectedUnits[i] != null){
@@ -610,12 +612,41 @@ public class playerCommander {
 					if(selectedUnits[i].type == 104)
 						numOfConYardSelected++;
 					
-					if(selectedUnits[i].type == 0 || selectedUnits[i].type == 1 || selectedUnits[i].type == 2 || selectedUnits[i].type == 3 || selectedUnits[i].type == 6 || selectedUnits[i].type == 7)
+					if(selectedUnits[i].type == 0 || selectedUnits[i].type == 1 || selectedUnits[i].type == 2 || selectedUnits[i].type == 3 || selectedUnits[i].type == 6 || selectedUnits[i].type == 7) {
 						numOfMobileUnitSelected++;
+						groupCenterX += selectedUnits[i].centre.x;
+						groupCenterY += selectedUnits[i].centre.z;
+					}
 				}
 			}
 		}
 		
+		groupCenterX/=numOfMobileUnitSelected;
+		groupCenterY/=numOfMobileUnitSelected;
+		
+		directionX = x - groupCenterX;
+		directionY = y - groupCenterY;
+		
+		float innerCircleRadius = (float)numOfMobileUnitSelected/8;
+				
+		if(directionX*directionX + directionY*directionY >  innerCircleRadius/2) {
+			for(int i = 0; i < selectedUnits.length; i++) {
+				if(selectedUnits[i] != null && selectedUnits[i].teamNo == 0){
+					int type = selectedUnits[i].type;
+					if(type == 0 || type == 1 || type == 2 || type == 3) {
+						float distance_x = selectedUnits[i].centre.x- groupCenterX;
+						float distance_y = selectedUnits[i].centre.z - groupCenterY;
+		
+						if(distance_x*distance_x + distance_y*distance_y < innerCircleRadius) {					
+							selectedUnits[i].moveTo(selectedUnits[i].centre.x + directionX, selectedUnits[i].centre.z + directionY); 
+							selectedUnits[i].currentCommand = solidObject.move;
+							selectedUnits[i].secondaryCommand = solidObject.StandBy;
+						}
+					}
+				}
+			}
+		
+		}
 		
 		
 		//draw move confirmation if a mobile unit is given move order
@@ -630,12 +661,51 @@ public class playerCommander {
 	
 	public void attackMoveSelectUnit(float x, float y){
 		boolean mobileUnitSelected = false;
+		int numOfMobileUnitSelected = 0;
+		float groupCenterX = 0;
+		float groupCenterY = 0;
+		float directionX = 0;
+		float directionY = 0;
+		
+		for(int i = 0; i < selectedUnits.length; i++){
+			if(selectedUnits[i] != null){
+				if(selectedUnits[i].teamNo == 0){					
+					if(selectedUnits[i].type == 0 || selectedUnits[i].type == 1 || selectedUnits[i].type == 2 || selectedUnits[i].type == 3 || selectedUnits[i].type == 6 || selectedUnits[i].type == 7) {
+						numOfMobileUnitSelected++;
+						groupCenterX += selectedUnits[i].centre.x;
+						groupCenterY += selectedUnits[i].centre.z;
+					}
+				}
+			}
+		}
+		
+		groupCenterX/=numOfMobileUnitSelected;
+		groupCenterY/=numOfMobileUnitSelected;
+		
+		directionX = x - groupCenterX;
+		directionY = y - groupCenterY;
+		
+		float innerCircleRadius = (float)numOfMobileUnitSelected/8;
+		boolean clickInsideGroup = directionX*directionX + directionY*directionY >  innerCircleRadius/2;
+		
+		
 		for(int i = 0; i < selectedUnits.length; i++){
 			if(selectedUnits[i] != null){
 				if(selectedUnits[i].teamNo == 0 && selectedUnits[i].type != 2 && selectedUnits[i].type != 3 && selectedUnits[i].type < 100){  //not harvesters or MCVs or any buildings
-					selectedUnits[i].attackMoveTo(x, y); 
+					
+					float distance_x = selectedUnits[i].centre.x- groupCenterX;
+					float distance_y = selectedUnits[i].centre.z - groupCenterY;
+					
+					if(distance_x*distance_x + distance_y*distance_y < innerCircleRadius && clickInsideGroup) {	
+						selectedUnits[i].attackMoveTo(selectedUnits[i].centre.x + directionX, selectedUnits[i].centre.z + directionY); 
+						
+					}else {
+						selectedUnits[i].attackMoveTo(x, y); 
+					}
+					
 					selectedUnits[i].currentCommand = solidObject.attackMove;
 					selectedUnits[i].secondaryCommand = solidObject.attackMove;
+					
 					mobileUnitSelected = true;
 				}
 			}

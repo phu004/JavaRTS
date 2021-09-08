@@ -633,7 +633,7 @@ public class playerCommander {
 			for(int i = 0; i < selectedUnits.length; i++) {
 				if(selectedUnits[i] != null && selectedUnits[i].teamNo == 0){
 					int type = selectedUnits[i].type;
-					if(type == 0 || type == 1 || type == 2 || type == 3) {
+					if(type == 0 || type == 1 || type == 6 || type == 7) {
 						float distance_x = selectedUnits[i].centre.x- groupCenterX;
 						float distance_y = selectedUnits[i].centre.z - groupCenterY;
 		
@@ -670,7 +670,7 @@ public class playerCommander {
 		for(int i = 0; i < selectedUnits.length; i++){
 			if(selectedUnits[i] != null){
 				if(selectedUnits[i].teamNo == 0){					
-					if(selectedUnits[i].type == 0 || selectedUnits[i].type == 1 || selectedUnits[i].type == 2 || selectedUnits[i].type == 3 || selectedUnits[i].type == 6 || selectedUnits[i].type == 7) {
+					if(selectedUnits[i].type == 0 || selectedUnits[i].type == 1  || selectedUnits[i].type == 6 || selectedUnits[i].type == 7) {
 						numOfMobileUnitSelected++;
 						groupCenterX += selectedUnits[i].centre.x;
 						groupCenterY += selectedUnits[i].centre.z;

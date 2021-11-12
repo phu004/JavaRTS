@@ -234,9 +234,8 @@ public class playerCommander {
 				//if the click lands on empty ground perform "attack move" for all selected unit
 				//if the click lands on an unit, then attack that unit regardless if it is friend or foe
 				
-				
 				boolean performAttack = false;
-				if(numberOfSelectedUnits > 1){
+				if(numberOfSelectedUnits > 0){
 					performAttack = true;
 				}
 					

@@ -260,13 +260,13 @@ public class AssetManager {
 				//harvester l = new harvester(new vector(i*0.25f+ 1.125f,-0.3f, 17.375f - 0.25f*j), 90, 0);
 				//addHarvester(l);
 				//l.hasMultiShotUpgrade = true;
-				lightTank l = new lightTank(new vector(i*0.25f + 27.125f,-0.3f, 0.5f + 26.625f + j*0.25f), 90, 0);
+				//lightTank l = new lightTank(new vector(i*0.25f + 27.125f,-0.3f, 0.5f + 26.625f + j*0.25f), 90, 0);
 				
 				//l.attackRange = 1.99f;
 		
 				//lightTank.tileCheckList_player = lightTank.generateTileCheckList(6);
 		
-				addLightTank(l);
+				//addLightTank(l);
 				//if(j == 0 && i == 0)
 				//addMissileTurret(new missileTurret(i*0.25f -0.125f + 1, -0.65f, 0.25f + 17.125f + j*0.25f, 0));
 			

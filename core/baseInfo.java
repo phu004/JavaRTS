@@ -73,22 +73,32 @@ public class baseInfo {
 		reCalculatePower();
 		
 		//calculate power level and power consumption
+		calculatePowerLevel();
+
+	}
+
+/**
+	This method is extracted from the update method.
+	update method above had complex method smell which is removed by this refactoring.
+	complex method smell arises when a method is too long and performs multiple operations.
+*/
+
+	private void calculatePowerLevel() {
 		if(currentPowerLevel == 0){
 			powerStatus = -1;
 		}else{
 			powerStatus = currentPowerConsumption * 100 / currentPowerLevel;
-		} 
+		}
 		if(powerStatus == -1 || powerStatus > 100)
 			lowPower = true;
 		else
 			lowPower = false;
-		
+
 		if(powerStatus != -1){
 			powerStatus = currentPowerConsumption << 16 | currentPowerLevel;
 		}
-
 	}
-	
+
 	public void reCalculatePower() {
 		currentPowerLevel = numberOfPowerPlant*500 + numberOfConstructionYard*100;
 		currentPowerConsumption = numberOfRefinery*150 + numberOfFactory*200 + numberOfCommunicationCenter*250 + numberOfGunTurret*100 + numberOfMissileTurret*200 + numberOfOverChargedMissileTurret*150 + numberOfTechCenter*400;

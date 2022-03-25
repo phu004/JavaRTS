@@ -140,7 +140,7 @@ public class rasterizer {
 		textureHeight = poly.textureHeight;
 		textureWidth = poly.textureWidth;
 		widthBits = poly.widthBits;
-		vertex2D = poly.vertex2D;
+		vertex2D = vector.vertex2D;
 		visibleCount = poly.visibleCount;
 		
 		
@@ -406,7 +406,7 @@ public class rasterizer {
 	//disable shadow casting for the region  within the silhouette of the polygon
 	public static void renderShadowRemover(polygon3D polygon){
 		poly = polygon;
-		vertex2D = poly.vertex2D;
+		vertex2D = vector.vertex2D;
 		visibleCount = poly.L;
 		
 		start = shadowmap_width;
@@ -493,7 +493,7 @@ public class rasterizer {
 	//draw the polygon on the shadow buffer from light point of view
 	public static void renderShadow(polygon3D polygon){
 		poly = polygon;
-		vertex2D = poly.vertex2D;
+		vertex2D = vector.vertex2D;
 		visibleCount = poly.L;
 		
 		start = shadowmap_width;
@@ -588,7 +588,7 @@ public class rasterizer {
 	//draw the polygon on the shadow buffer from light point of view
 	public static void renderCloakedShadow(polygon3D polygon){
 		poly = polygon;
-		vertex2D = poly.vertex2D;
+		vertex2D = vector.vertex2D;
 		visibleCount = poly.L;
 		
 		start = shadowmap_width;

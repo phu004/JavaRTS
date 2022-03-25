@@ -2,12 +2,14 @@ package core;
 
 import entity.solidObject;
 
+import java.util.Vector;
+
 public class polygon3D {
 	//The vertex of the polygon with the respect of the world/camera coordinate
 	public vector[] vertex3D, tempVertex;
 	
 	//The vertex of the polygon after clipping
-	public static vector[] vertex2D;
+	//public static vector[] vertex2D;
 		
 	//the normal of the polygon with the respect of the world/camera coordinate
 	public vector normal;
@@ -49,13 +51,13 @@ public class polygon3D {
 	public solidObject parentObject;
 	
 	//A pool of vectors which will be used for vector arithmetic
-	public static vector 
+/*	public static vector
 		tempVector1 = new vector(0,0,0),
 		tempVector2 = new vector(0,0,0),
 		tempVector3 = new vector(0,0,0),
 		tempVector4 = new vector(0,0,0),
 		tempVector5 = new vector(0,0,0),
-		tempVector6 = new vector(0,0,0);
+		tempVector6 = new vector(0,0,0);*/
 	
 	
 	//whether the polygon is visible
@@ -189,14 +191,14 @@ public class polygon3D {
 			textureScaledWidth = (int)(myTexture.width*scaleX);
 		
 			//find the size of one texel in the world coordinate
-			tempVector1.set(origin);
-			tempVector1.subtract(rightEnd);
-			float l = tempVector1.getLength();
+			vector.tempVector1.set(origin);
+			vector.tempVector1.subtract(rightEnd);
+			float l = vector.tempVector1.getLength();
 			textureScaleX = l/myTexture.width;
 
-			tempVector1.set(origin);
-			tempVector1.subtract(bottomEnd);
-			l = tempVector1.getLength();
+			vector.tempVector1.set(origin);
+			vector.tempVector1.subtract(bottomEnd);
+			l = vector.tempVector1.getLength();
 			textureScaleY = l/myTexture.height;
 			
 			textureScaleX = textureScaleX/scaleX;
@@ -208,9 +210,9 @@ public class polygon3D {
 		
 		//init vertex2D, notice that the size of vertex2D is bigger than vertex3D, because after clipping
 		//it is possilbe to generate one more vertex for the polygon.
-		vertex2D = new vector[L+1];
+		vector.vertex2D = new vector[L+1];
 		for(int i = 0; i < L+1; i++)
-			vertex2D[i] = new vector(0,0,0);
+			vector.vertex2D[i] = new vector(0,0,0);
 		
 		
 		//find the initial diffuse intensity of this polygon
@@ -221,9 +223,9 @@ public class polygon3D {
 	public void update(){		
 		
 		//back face culling
-		tempVector1.set(camera.position);
-		tempVector1.subtract(vertex3D[0]);
-		if(tempVector1.dot(normal) <= 0){
+		vector.tempVector1.set(camera.position);
+		vector.tempVector1.subtract(vertex3D[0]);
+		if(vector.tempVector1.dot(normal) <= 0){
 			visible = false;
 			
 			return;
@@ -243,23 +245,23 @@ public class polygon3D {
 		if(parentObject != null){
 			if(parentObject.withinViewScreen){
 				for(int i = 0; i < L; i++){
-					tempVector5 =  vertex3D[i];
-					tempVector6 = vertex2D[i];
+					vector.tempVector5 =  vertex3D[i];
+					vector.tempVector6 = vector.vertex2D[i];
 					
 					//shifting
-					x = tempVector5.x - camX;
-				 	y = tempVector5.y - camY;
-					z = tempVector5.z - camZ;
+					x = vector.tempVector5.x - camX;
+				 	y = vector.tempVector5.y - camY;
+					z = vector.tempVector5.z - camZ;
 					
 					//rotating
-					tempVector6.x = cosXZ*x - sinXZ*z;
-					tempVector6.z = sinXZ*x + cosXZ*z;
+					vector.tempVector6.x = cosXZ*x - sinXZ*z;
+					vector.tempVector6.z = sinXZ*x + cosXZ*z;
 					
-					z = tempVector6.z;
-					
-					tempVector6.y = cosYZ*y - sinYZ*z;
-					tempVector6.z = sinYZ*y + cosYZ*z;
-					tempVector6.updateLocation();
+					z = vector.tempVector6.z;
+
+					vector.tempVector6.y = cosYZ*y - sinYZ*z;
+					vector.tempVector6.z = sinYZ*y + cosYZ*z;
+					vector.tempVector6.updateLocation();
 				}
 				
 				withinViewScreen = true;
@@ -326,17 +328,17 @@ public class polygon3D {
 			z = vertex3D[i].z - camZ;
 			
 			//rotating
-			vertex2D[i].x = cosXZ*x - sinXZ*z;
-			vertex2D[i].z = sinXZ*x + cosXZ*z;
+			vector.vertex2D[i].x = cosXZ*x - sinXZ*z;
+			vector.vertex2D[i].z = sinXZ*x + cosXZ*z;
 			
-			z = vertex2D[i].z;
+			z = vector.vertex2D[i].z;
+
+			vector.vertex2D[i].y = cosYZ*y - sinYZ*z;
+			vector.vertex2D[i].z = sinYZ*y + cosYZ*z;
 			
-			vertex2D[i].y = cosYZ*y - sinYZ*z;
-			vertex2D[i].z = sinYZ*y + cosYZ*z;
-			
-			if(vertex2D[i].z < 0.01)
-				vertex2D[i].z = 0.01f;
-			vertex2D[i].updateLocation();
+			if(vector.vertex2D[i].z < 0.01)
+				vector.vertex2D[i].z = 0.01f;
+			vector.vertex2D[i].updateLocation();
 		}
 		
 	
@@ -370,28 +372,28 @@ public class polygon3D {
 		
 		
 		for(int i = 0; i < L; i++){
-			tempVector5 =  vertex3D[i];
-			tempVector6 = vertex2D[i];
+			vector.tempVector5 =  vertex3D[i];
+			vector.tempVector6 = vector.vertex2D[i];
 			
 			//shifting
-			x = tempVector5.x - sunX;
-		 	y = tempVector5.y - sunY;
-			z = tempVector5.z - sunZ;
+			x = vector.tempVector5.x - sunX;
+		 	y = vector.tempVector5.y - sunY;
+			z = vector.tempVector5.z - sunZ;
 			
 			//rotating
-			tempVector6.x = cosXZ*x - sinXZ*z;
-			tempVector6.z = sinXZ*x + cosXZ*z;
+			vector.tempVector6.x = cosXZ*x - sinXZ*z;
+			vector.tempVector6.z = sinXZ*x + cosXZ*z;
 			
-			z = tempVector6.z;
-			
-			tempVector6.y = cosYZ*y - sinYZ*z;
-			tempVector6.z = sinYZ*y + cosYZ*z;
-			tempVector6.updateLocationOrthognal();
-			tempVector6.z_lightspace = tempVector6.z;
-			
-			tempVector5.z_lightspace = tempVector6.z;
-			tempVector5.screenX_lightspace = tempVector6.screenX_lightspace;
-			tempVector5.screenY_lightspace = tempVector6.screenY_lightspace;
+			z = vector.tempVector6.z;
+
+			vector.tempVector6.y = cosYZ*y - sinYZ*z;
+			vector.tempVector6.z = sinYZ*y + cosYZ*z;
+			vector.tempVector6.updateLocationOrthognal();
+			vector.tempVector6.z_lightspace = vector.tempVector6.z;
+
+			vector.tempVector5.z_lightspace = vector.tempVector6.z;
+			vector.tempVector5.screenX_lightspace = vector.tempVector6.screenX_lightspace;
+			vector.tempVector5.screenY_lightspace = vector.tempVector6.screenY_lightspace;
 		}
 		
 		if(type == 1){
@@ -428,22 +430,22 @@ public class polygon3D {
 			z = vertex3D[i].z - sunZ;
 			
 			//rotating
-			vertex2D[i].x = cosXZ*x - sinXZ*z;
-			vertex2D[i].z = sinXZ*x + cosXZ*z;
+			vector.vertex2D[i].x = cosXZ*x - sinXZ*z;
+			vector.vertex2D[i].z = sinXZ*x + cosXZ*z;
 			
-			z = vertex2D[i].z;
+			z = vector.vertex2D[i].z;
+
+			vector.vertex2D[i].y = cosYZ*y - sinYZ*z;
+			vector.vertex2D[i].z = sinYZ*y + cosYZ*z;
+			vector.vertex2D[i].updateLocationOrthognal();
+			vector.vertex2D[i].z_lightspace = vector.vertex2D[i].z;
 			
-			vertex2D[i].y = cosYZ*y - sinYZ*z;
-			vertex2D[i].z = sinYZ*y + cosYZ*z;
-			vertex2D[i].updateLocationOrthognal();
-			vertex2D[i].z_lightspace = vertex2D[i].z;
-			
-			vertex3D[i].z_lightspace = vertex2D[i].z;
-			vertex3D[i].screenX_lightspace = vertex2D[i].screenX_lightspace;
-			vertex3D[i].screenY_lightspace = vertex2D[i].screenY_lightspace;
+			vertex3D[i].z_lightspace = vector.vertex2D[i].z;
+			vertex3D[i].screenX_lightspace = vector.vertex2D[i].screenX_lightspace;
+			vertex3D[i].screenY_lightspace =vector.vertex2D[i].screenY_lightspace;
 		}		
 	}
-	
+
 	
 	
 
@@ -457,8 +459,8 @@ public class polygon3D {
 		
 		for(int i = 0; i < L; i++){
 			if(tempVertex[i].z >= 0.1){
-				vertex2D[visibleCount].set(tempVertex[i]);
-				vertex2D[visibleCount].updateLocation();
+				vector.vertex2D[visibleCount].set(tempVertex[i]);
+				vector.vertex2D[visibleCount].updateLocation();
 				visibleCount++;
 			} else{
 				int index = (i+L - 1)%L;
@@ -479,8 +481,8 @@ public class polygon3D {
 	//find diffuse intensity of this polygon
 	public void findDiffuse(){		
 		//calculate the diffuse intensity from the light source	
-		tempVector1.set(-lightDirection.x, -lightDirection.y, -lightDirection.z);
-		double I = normal.dot(tempVector1);
+		vector.tempVector1.set(-lightDirection.x, -lightDirection.y, -lightDirection.z);
+		double I = normal.dot(vector.tempVector1);
 		
 		diffuse_I = Ambient_I + (int)(I*reflectance);
 		
@@ -493,21 +495,21 @@ public class polygon3D {
 	//cylindrical object.
 	public void createShadeSpan(vector theCenter, vector v0, vector v1){
 		smoothShading = true;
+
+		vector.tempVector1.set(v0);
+		vector.tempVector1.subtract(theCenter);
+		vector.tempVector1.unit();
+		vector.tempVector2.set(v1);
+		vector.tempVector2.subtract(theCenter);
+		vector.tempVector2.unit();
+
+		vector.tempVector3.set(-lightDirection.x, -lightDirection.y, -lightDirection.z);
 		
-		tempVector1.set(v0);
-		tempVector1.subtract(theCenter);
-		tempVector1.unit();
-		tempVector2.set(v1);
-		tempVector2.subtract(theCenter);
-		tempVector2.unit();
-		
-		tempVector3.set(-lightDirection.x, -lightDirection.y, -lightDirection.z);
-		
-		I_left = tempVector1.dot(tempVector3)*reflectance + Ambient_I;
+		I_left = vector.tempVector1.dot(vector.tempVector3)*reflectance + Ambient_I;
 		if(I_left < Ambient_I)
 			I_left = Ambient_I;
 		
-		I_right = tempVector2.dot(tempVector3)*reflectance + Ambient_I;
+		I_right = vector.tempVector2.dot(vector.tempVector3)*reflectance + Ambient_I;
 		if(I_right < Ambient_I)
 			I_right = Ambient_I;
 		
@@ -515,11 +517,11 @@ public class polygon3D {
 	}
 	
 	public void findNormal(){
-		tempVector1.set(vertex3D[1]);
-		tempVector1.subtract(vertex3D[0]);
-		tempVector2.set(vertex3D[2]);
-		tempVector2.subtract(vertex3D[1]);
-		normal.cross(tempVector1, tempVector2);
+		vector.tempVector1.set(vertex3D[1]);
+		vector.tempVector1.subtract(vertex3D[0]);
+		vector.tempVector2.set(vertex3D[2]);
+		vector.tempVector2.subtract(vertex3D[1]);
+		normal.cross(vector.tempVector1, vector.tempVector2);
 		normal.unit();
 
 	}

@@ -9,7 +9,7 @@ public final class vector{
 	
 	//2d position on screen (from light point of view)
 	public float screenX_lightspace, screenY_lightspace;
-	public vector
+	public static vector
 			tempVector1 = new vector(0,0,0),
 			tempVector2 = new vector(0,0,0),
 			tempVector3 = new vector(0,0,0),
@@ -181,10 +181,10 @@ public final class vector{
 
 	//find the approximate projection point on the clipping plane
 	public  void approximatePoint(int index, vector frontPoint, polygon3D polygon3D){
-		tempVector1.set(frontPoint.x - x, frontPoint.y - y, frontPoint.z - z);
-		tempVector1.scale((frontPoint.z- 0.1f)/ tempVector1.z);
-		vertex2D[index].set(frontPoint.x, frontPoint.y, frontPoint.z);
-		vertex2D[index].subtract(tempVector1);
-		vertex2D[index].updateLocation();
+		vector.tempVector1.set(frontPoint.x - x, frontPoint.y - y, frontPoint.z - z);
+		vector.tempVector1.scale((frontPoint.z- 0.1f)/ tempVector1.z);
+		vector.vertex2D[index].set(frontPoint.x, frontPoint.y, frontPoint.z);
+		vector.vertex2D[index].subtract(tempVector1);
+		vector.vertex2D[index].updateLocation();
 	}
 }

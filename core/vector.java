@@ -9,7 +9,14 @@ public final class vector{
 	
 	//2d position on screen (from light point of view)
 	public float screenX_lightspace, screenY_lightspace;
-
+	public vector
+			tempVector1 = new vector(0,0,0),
+			tempVector2 = new vector(0,0,0),
+			tempVector3 = new vector(0,0,0),
+			tempVector4 = new vector(0,0,0),
+			tempVector5 = new vector(0,0,0),
+			tempVector6 = new vector(0,0,0);
+	public static vector[] vertex2D;
 	public static final int Z_length = 650;
 	
 	public static final int orthogonalScale = 330;
@@ -163,6 +170,21 @@ public final class vector{
 	public String toString(){
 		return "(" + x + ", " + y + ", " + z + ")";
 	}
-	
 
+
+
+/**
+	This method is moved from polygon3D class to vector class
+	This method is more interested vector class than polygon3D class
+*/
+
+
+	//find the approximate projection point on the clipping plane
+	public  void approximatePoint(int index, vector frontPoint, polygon3D polygon3D){
+		tempVector1.set(frontPoint.x - x, frontPoint.y - y, frontPoint.z - z);
+		tempVector1.scale((frontPoint.z- 0.1f)/ tempVector1.z);
+		vertex2D[index].set(frontPoint.x, frontPoint.y, frontPoint.z);
+		vertex2D[index].subtract(tempVector1);
+		vertex2D[index].updateLocation();
+	}
 }

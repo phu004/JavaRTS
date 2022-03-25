@@ -7,7 +7,7 @@ public class polygon3D {
 	public vector[] vertex3D, tempVertex;
 	
 	//The vertex of the polygon after clipping
-	public vector[] vertex2D;
+	public static vector[] vertex2D;
 		
 	//the normal of the polygon with the respect of the world/camera coordinate
 	public vector normal;
@@ -463,28 +463,18 @@ public class polygon3D {
 			} else{
 				int index = (i+L - 1)%L;
 				if(tempVertex[index].z >= 0.1005){
-					approximatePoint(visibleCount, tempVertex[i], tempVertex[index]);
+					tempVertex[i].approximatePoint(visibleCount, tempVertex[index], this);
 					visibleCount++;
 				}
 				index = (i+1)%L;
 				if(tempVertex[index].z >= 0.1005){
-					approximatePoint(visibleCount, tempVertex[i], tempVertex[index]);
+					tempVertex[i].approximatePoint(visibleCount, tempVertex[index], this);
 					visibleCount++;
 				}
 			}
 		}
 	}
-	
-	//find the approximate projection point on the clipping plane
-	public  void approximatePoint(int index, vector behindPoint, vector frontPoint){
-		tempVector1.set(frontPoint.x - behindPoint.x, frontPoint.y - behindPoint.y, frontPoint.z - behindPoint.z);
-		tempVector1.scale((frontPoint.z- 0.1f)/tempVector1.z);
-		vertex2D[index].set(frontPoint.x, frontPoint.y, frontPoint.z);
-		vertex2D[index].subtract(tempVector1);
-		vertex2D[index].updateLocation();
-	}
-	
-	
+
 
 	//find diffuse intensity of this polygon
 	public void findDiffuse(){		

@@ -770,9 +770,9 @@ public class gunTurret extends solidObject{
 			firingPosition.add(centre.x, 0, centre.z);
 			theAssetManager.spawnBullet(attackAngle, theDamage, targetObject, firingPosition, this);
 			attackCoolDown = myAttackCooldown;
-			
-			//spawn a mini explosion  
-			float[] tempFloat = theAssetManager.explosionInfo[theAssetManager.explosionCount];	
+
+			//spawn a mini explosion
+			float[] tempFloat = theAssetManager.explosionInfo[theAssetManager.explosionCount];
 			tempFloat[0] = firingPosition.x;
 			tempFloat[1] = firingPosition.y;
 			tempFloat[2] = firingPosition.z;

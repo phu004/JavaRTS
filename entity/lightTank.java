@@ -948,18 +948,8 @@ public class lightTank extends Tank {
 			
 			theAssetManager.spawnBullet(attackAngle, theDamage, targetObject, firingPosition, this);
 			attackCoolDown = myAttackCooldown;
-			
-			//spawn a mini explosion  
-			float[] tempFloat = theAssetManager.explosionInfo[theAssetManager.explosionCount];	
-			tempFloat[0] = firingPosition.x;
-			tempFloat[1] = firingPosition.y;
-			tempFloat[2] = firingPosition.z;
-			tempFloat[3] = 0.4f;
-			tempFloat[4] = 3;
-			tempFloat[5] = 0;
-			tempFloat[6] = 6 + (gameData.getRandom()%4);
-			tempFloat[7] = centre.y;
-			theAssetManager.explosionCount++;
+
+			spawnMiniExplosion(firingPosition);
 		}
 	}
 	

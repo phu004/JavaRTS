@@ -8,6 +8,16 @@ import core.vector;
 import java.awt.*;
 
 public abstract class Tank extends solidObject {
+
+    /**
+     * Performed pull method and variable refactoring and pulled the duplicate code from sub-classes.
+     * The subclass heavyTank, and lightTank had duplicate variables which are pulled to an intermediate class Tank
+     * The above classes also had duplicate code in method fireBullet() thus perfromed extract method and pull method.
+     * Extracted method spawnExplosion and pulled it to intermediate parent class Tank
+     * The aforementioned classes are extended from Tank class
+     * Tank class extends from the super class solidObject.
+     * */
+
     public vector bodyCenter, turretCenter;
     public polygon3D[] body, turret;
     // a screen space boundary which is used to test if the harvester object is
@@ -40,6 +50,21 @@ public abstract class Tank extends solidObject {
 
     //the oreintation of the tank
     public int bodyAngle, turretAngle;
+
+    public void spawnMiniExplosion(vector firingPosition){
+        //spawn a mini explosion
+        float[] tempFloat = theAssetManager.explosionInfo[theAssetManager.explosionCount];
+        tempFloat[0] = firingPosition.x;
+        tempFloat[1] = firingPosition.y;
+        tempFloat[2] = firingPosition.z;
+        tempFloat[3] = 0.4f;
+        tempFloat[4] = 3;
+        tempFloat[5] = 0;
+        tempFloat[6] = 6 + (gameData.getRandom()%4);
+        tempFloat[7] = centre.y;
+        theAssetManager.explosionCount++;
+    }
+
 
 
 }

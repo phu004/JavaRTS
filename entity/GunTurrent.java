@@ -6,7 +6,7 @@ import core.*;
 import enemyAI.enemyCommander;
 
 //the power plant model
-public class gunTurret extends solidObject{
+public class gunTurret extends SolidObject {
 	
 	public static int maxHP = 250;
 	
@@ -619,7 +619,7 @@ public class gunTurret extends solidObject{
 				for(int i = 0; i < numberOfIterations; i++){
 					xStart+=dx;
 					yStart+=dy;
-					solidObject s = mainThread.gridMap.tiles[(int)(xStart*4) + (127 - (int)(yStart*4))*128][0];
+					SolidObject s = mainThread.gridMap.tiles[(int)(xStart*4) + (127 - (int)(yStart*4))*128][0];
 					if(s != null){
 						if(s.type > 100 && s .type < 200 && s != targetObject){
 							hasLineOfSightToTarget = false;
@@ -713,7 +713,7 @@ public class gunTurret extends solidObject{
 		}
 	}
 	
-	public void attack(solidObject o){
+	public void attack(SolidObject o){
 		if(targetObject != o){
 			
 			distanceToDesination = (float)Math.sqrt((o.centre.x - centre.x) * (o.centre.x - centre.x) + (o.centre.z - centre.z) * (o.centre.z - centre.z));
@@ -735,7 +735,7 @@ public class gunTurret extends solidObject{
 				for(int i = 0; i < numberOfIterations; i++){
 					xStart+=dx;
 					yStart+=dy;
-					solidObject s = mainThread.gridMap.tiles[(int)(xStart*4) + (127 - (int)(yStart*4))*128][0];
+					SolidObject s = mainThread.gridMap.tiles[(int)(xStart*4) + (127 - (int)(yStart*4))*128][0];
 					if(s != null){
 						if(s.type > 100 && s .type < 200 && s != o){
 							hasLineOfSightToTarget = false;
@@ -793,4 +793,36 @@ public class gunTurret extends solidObject{
 	public vector getMovement(){
 		return movenment;
 	}
+
+    //clone a group of polygons (doesn't work on smooth shaded polygons)
+    public polygon3D[] clonePolygons(polygon3D[] polys, boolean createNewOUV){
+        int l = polys.length;
+
+        polygon3D[] clone = new polygon3D[l];
+
+        for(int i = 0; i < l; i++){
+            if(polys[i] == null)
+                continue;
+            int length = polys[i].vertex3D.length;
+            v = new vector[length];
+            for(int j = 0; j < length; j++){
+                v[j] = polys[i].vertex3D[j].myClone();
+            }
+
+            int myType = polys[i].type;
+            float scaleX = polys[i].scaleX;
+            float scaleY = polys[i].scaleY;
+            texture myTexture = polys[i].myTexture;
+            if(createNewOUV)
+                clone[i] = new polygon3D(v, polys[i].origin.myClone(), polys[i].rightEnd.myClone(), polys[i].bottomEnd.myClone(), myTexture, scaleX, scaleY, myType);
+            else
+                clone[i] = new polygon3D(v, v[0], v[1], v[3], myTexture, scaleX, scaleY, myType);
+            clone[i].shadowBias = polys[i].shadowBias;
+            clone[i].diffuse_I = polys[i].diffuse_I;
+            clone[i].Ambient_I = polys[i].Ambient_I;
+        }
+
+
+        return clone;
+    }
 }

@@ -766,7 +766,7 @@ public class postProcessingThread implements Runnable{
 	//start rasterization
 	public static void rasterize(polygon3D polygon){
 		poly = polygon;
-		vertex2D = vector.vertex2D;
+		vertex2D = vertex2D;
 		visibleCount = poly.visibleCount;	
 		scanPolygon();
 	}

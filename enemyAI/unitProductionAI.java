@@ -340,7 +340,7 @@ public class unitProductionAI {
 		//check if other AI agent need stealth tank
 		
 		if(mainThread.ec.theScoutingManagerAI.needStealthTank()){
-			mainThread.ec.theScoutingManagerAI.addStealthTank(o);
+			mainThread.ec.theScoutingManagerAI.scout.addStealthTank(o, mainThread.ec.theScoutingManagerAI);
 			return;
 		}
 		

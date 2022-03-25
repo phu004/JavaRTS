@@ -349,16 +349,5 @@ public class scoutingManagerAI {
 	public void addLightTank(solidObject o){
 		scout = o;
 	}
-	
-	public void addStealthTank(solidObject o){
-		if(scout != null && scout.currentHP > 0 && scout.type == 0){
-			mainThread.ec.theUnitProductionAI.addLightTank((lightTank)scout);
-			scout.moveTo(mainThread.ec.theUnitProductionAI.rallyPoint.x, mainThread.ec.theUnitProductionAI.rallyPoint.z);
-			scout.currentCommand = solidObject.move;
-			scout.secondaryCommand = solidObject.StandBy;
-		}
-		destinationNode = 0;
-		scout = o;
-		movementOrderIssued = false;
-	}
+
 }

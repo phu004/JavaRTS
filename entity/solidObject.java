@@ -1,6 +1,7 @@
 package entity;
 
 import core.*;
+import enemyAI.scoutingManagerAI;
 
 //this is the class for storing geometry information of a 3D model
 public abstract class solidObject{
@@ -1651,4 +1652,22 @@ public abstract class solidObject{
 	public void hold(){currentCommand = StandBy;}
 	public int getMaxHp(){return 0;}
 
+
+	/**
+	 * This method is moved from scoutingMangerAI.java to solidObject
+	 * This method is causing feature envy smell as it was more interested in object of soliObject class than scoutingManagerAI
+	 * Feature envy smell is removed by move method refactoring.
+	 */
+
+	public void addStealthTank(solidObject o, scoutingManagerAI scoutingManagerAI){
+		if(this != null && currentHP > 0 && type == 0){
+			mainThread.ec.theUnitProductionAI.addLightTank((lightTank) this);
+			moveTo(mainThread.ec.theUnitProductionAI.rallyPoint.x, mainThread.ec.theUnitProductionAI.rallyPoint.z);
+			currentCommand = move;
+			secondaryCommand = StandBy;
+		}
+		scoutingManagerAI.destinationNode = 0;
+	//	this = o;
+		scoutingManagerAI.movementOrderIssued = false;
+	}
 }

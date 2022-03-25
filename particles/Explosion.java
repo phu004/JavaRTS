@@ -1,20 +1,20 @@
 package particles;
 
-import core.mainThread;
+import core.MainThread;
 import core.postProcessingThread;
 import core.vector;
 
-public class explosion {
-	//size of the explosion 
+public class Explosion {
+	//size of the Explosion
 	public float size;
 	
-	//which explosion sprite to use
+	//which Explosion sprite to use
 	public int spriteIndex;
 	
 	//current frame Index;
 	public int frameIndex;
 	
-	//type of explosion 
+	//type of Explosion
 	public int type;
 	
 	//life time
@@ -22,7 +22,7 @@ public class explosion {
 	public int animationSpeed;
 	
 	
-	//centre of explosion 
+	//centre of Explosion
 	public vector centre;
 	public vector tempCentre;
 	
@@ -36,11 +36,11 @@ public class explosion {
 	
 	public int xStart, yStart;
 	
-	public static int screen_width = mainThread.screen_width;
-	public static int screen_height = mainThread.screen_height;
+	public static int screen_width = MainThread.screen_width;
+	public static int screen_height = MainThread.screen_height;
 	
 	
-	public explosion(){
+	public Explosion(){
 		centre = new vector(0,0,0);
 		tempCentre = new vector(0,0,0);
 	}
@@ -73,7 +73,7 @@ public class explosion {
 		if(!isInAction || lifeTime > 16)
 			return;
 		
-		//update centre in camera coordinate 
+		//update centre in Camera coordinate
 		vector cameraPosition = postProcessingThread.cameraPosition;
 		float X = 0,Y = 0, Z = 0, 
 		camX = cameraPosition.x, camY = cameraPosition.y, camZ = cameraPosition.z,
@@ -85,7 +85,7 @@ public class explosion {
 		
 		
 		
-		//draw explosion aura sprite if the explosion is big enough
+		//draw Explosion aura sprite if the Explosion is big enough
 		if(size >= 1){
 			X = centre.x - camX;
 			Y = -0.5f - camY;
@@ -102,7 +102,7 @@ public class explosion {
 			tempCentre.updateLocation();
 			
 			
-			short[] sprite = mainThread.textures[1].explosionAura[frameIndex];
+			short[] sprite = MainThread.textures[1].explosionAura[frameIndex];
 			float ratioX = size*4f/tempCentre.z;
 			float ratioY = size*3.6f/tempCentre.z;
 			int xPos = (int)tempCentre.screenX;
@@ -189,7 +189,7 @@ public class explosion {
 		
 		
 		if(lifeTime <=16){
-			int[] sprite = mainThread.textures[spriteIndex].explosions[frameIndex];
+			int[] sprite = MainThread.textures[spriteIndex].explosions[frameIndex];
 			float ratio = size*2/tempCentre.z;
 			int xPos = (int)tempCentre.screenX;
 			int yPos = (int)tempCentre.screenY;

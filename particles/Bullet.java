@@ -1,13 +1,13 @@
 package particles;
 
 import core.*;
-import entity.solidObject;
+import entity.SolidObject;
 
-public class bullet {
+public class Bullet {
 
 	public vector centre;
 	
-	public solidObject target;
+	public SolidObject target;
 	
 	public int damage;
 	
@@ -27,11 +27,11 @@ public class bullet {
 	
 	public static vector[][] baseGeometry;
 	
-	public solidObject attacker;
+	public SolidObject attacker;
 	
 	public static int[] tiles3x3 = new int[]{-129, -128, -127, -1, 0, 1, 127, 128, 129};
 	
-	public bullet(){
+	public Bullet(){
 		centre = new vector(0,0,0);
 		iDirection = new vector(1,0,0);
 		jDirection = new vector(0,1,0);
@@ -41,7 +41,7 @@ public class bullet {
 		speed = 0.2f;
 	}
 	
-	public void  setActive(int angle, int damage, solidObject target, vector centre, solidObject attacker){
+	public void  setActive(int angle, int damage, SolidObject target, vector centre, SolidObject attacker){
 		isInAction = true;
 		this.angle = 360 - angle;
 		this.damage = damage; 
@@ -116,26 +116,26 @@ public class bullet {
 			int yPos = (int)(target.centre.z*64);
 			int start = xPos/16 + (127 - yPos/16)*128;
 			int targetTeamNo = target.teamNo;
-			solidObject[] tile;
-			solidObject o;
+			SolidObject[] tile;
+			SolidObject o;
 			
 			for(int i  = 0; i < 9; i++){
 				int index = start + tiles3x3[i];
 				if(index > 16383 || index < 0)
 					continue;
-				tile = mainThread.gridMap.tiles[index];
+				tile = MainThread.gridMap.tiles[index];
 				for(int j = 0; j < 4; j++){
 					o = tile[j];
 					if(o != null){
 						if(o.teamNo == targetTeamNo
 						   && o.teamNo!= attacker.teamNo  
-						   && (o.attackStatus != solidObject.isAttacking || (o.attackStatus == solidObject.isAttacking && o.secondaryCommand == solidObject.attackMove && (o.targetObject == null || o.targetObject.type > 100) ))  
-						   && o.currentCommand != solidObject.move && o.isCloaked == false
+						   && (o.attackStatus != SolidObject.isAttacking || (o.attackStatus == SolidObject.isAttacking && o.secondaryCommand == SolidObject.attackMove && (o.targetObject == null || o.targetObject.type > 100) ))
+						   && o.currentCommand != SolidObject.move && o.isCloaked == false
 						   && previousUnderAttackCountDown <=30 
-						   && (o.currentCommand == solidObject.StandBy || o.secondaryCommand == solidObject.attackMove)){
+						   && (o.currentCommand == SolidObject.StandBy || o.secondaryCommand == SolidObject.attackMove)){
 							if(o.type < 100){								
 								o.attack(attacker);
-								o.currentCommand = solidObject.attackCautiously; 
+								o.currentCommand = SolidObject.attackCautiously;
 							}
 						}
 					}
@@ -160,8 +160,8 @@ public class bullet {
 		}
 	
 		if(distanceToTarget < 0){
-			//spawn an explosion at the end of the bullet life
-			float[] tempFloat = mainThread.theAssetManager.explosionInfo[mainThread.theAssetManager.explosionCount];	
+			//spawn an Explosion at the end of the Bullet life
+			float[] tempFloat = MainThread.theAssetManager.explosionInfo[MainThread.theAssetManager.explosionCount];
 			tempFloat[0] = centre.x;
 			if(target.type > 100 && target.type < 200){
 				tempFloat[1] = centre.y + 0.2f;
@@ -173,9 +173,9 @@ public class bullet {
 			
 			tempFloat[4] = 1;
 			tempFloat[5] = 0;
-			tempFloat[6] = 6 + (gameData.getRandom()%4);
+			tempFloat[6] = 6 + (GameData.getRandom()%4);
 			tempFloat[7] = target.height;
-			mainThread.theAssetManager.explosionCount++; 
+			MainThread.theAssetManager.explosionCount++;
 		}
 		
 	}

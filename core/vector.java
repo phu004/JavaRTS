@@ -4,7 +4,7 @@ public final class vector{
 	//x, y, z component of the vector
 	public float x, y, z;
 
-	//2d position on screen (from camera point of view)
+	//2d position on screen (from Camera point of view)
 	public float screenX, screenY;
 
 	//2d position on screen (from light point of view)
@@ -16,9 +16,9 @@ public final class vector{
 
 	public static float old_X, old_Y, old_Z, zInverse, lengthInverse;
 
-	public static int half_width = mainThread.screen_width/2;
-	public static int half_height = mainThread.screen_height/2;
-	public static int half_width_shadowmap = mainThread.shadowmap_width/2;
+	public static int half_width = MainThread.screen_width/2;
+	public static int half_height = MainThread.screen_height/2;
+	public static int half_width_shadowmap = MainThread.shadowmap_width/2;
 
 	//z component of the vector from light space
 	public float z_lightspace;
@@ -93,8 +93,8 @@ public final class vector{
 
 	//rotate the vector along Y axis
 	public void  rotate_XZ(int angle){
-		float sin = gameData.sin[angle];
-		float cos = gameData.cos[angle];
+		float sin = GameData.sin[angle];
+		float cos = GameData.cos[angle];
 		old_X = x;
 		old_Z = z;
 		x = cos*old_X - sin*old_Z;
@@ -103,8 +103,8 @@ public final class vector{
 
 	//rotate the vector along X axis
 	public void rotate_YZ(int angle){
-		float sin = gameData.sin[angle];
-		float cos = gameData.cos[angle];
+		float sin = GameData.sin[angle];
+		float cos = GameData.cos[angle];
 		old_Y = y;
 		old_Z = z;
 		y = cos*old_Y - sin*old_Z;
@@ -113,8 +113,8 @@ public final class vector{
 
 	//rotate the vector along Z axis
 	public void rotate_XY(int angle){
-		float sin = gameData.sin[angle];
-		float cos = gameData.cos[angle];
+		float sin = GameData.sin[angle];
+		float cos = GameData.cos[angle];
 		old_X = x;
 		old_Y = y;
 		x = cos*old_X - sin*old_Y;

@@ -2,7 +2,7 @@ package core;
 
 import java.sql.*;
 
-public class highscoreManager implements Runnable{
+public class HighscoreManager implements Runnable{
 	public Connection connect;
 	public int counter;
 	
@@ -22,7 +22,7 @@ public class highscoreManager implements Runnable{
 	
 	public String[][] result;
 	
-	public highscoreManager(){
+	public HighscoreManager(){
 		status = processing;
 		playerName = "";
 	}
@@ -147,8 +147,8 @@ public class highscoreManager implements Runnable{
 						    preparedStmt = connect.prepareStatement(query);
 						    
 						    preparedStmt.setString (1, playerName);
-						    preparedStmt.setInt (2, (int)(mainThread.gameFrame*0.025));
-						    preparedStmt.setInt  (3, mainThread.ec.difficulty);
+						    preparedStmt.setInt (2, (int)(MainThread.gameFrame*0.025));
+						    preparedStmt.setInt  (3, MainThread.enemyCommander.difficulty);
 						    preparedStmt.execute();
 							
 							

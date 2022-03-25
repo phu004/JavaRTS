@@ -3,9 +3,9 @@ package entity;
 import java.awt.Rectangle;
 
 import core.*;
-import enemyAI.enemyCommander;
+import enemyAI.EnemyCommander;
 
-public class harvester extends solidObject{
+public class Harvester extends SolidInfrastructure {
 	 
 	public vector iDirectionBody, jDirectionBody, kDirectionBody;
 	
@@ -29,11 +29,11 @@ public class harvester extends solidObject{
 	
 	public static int maxHP = 260;
 	
-	// a screen space boundary which is used to test if the harvester object is
-	// visible from camera point of view
+	// a screen space boundary which is used to test if the Harvester object is
+	// visible from Camera point of view
 	public final static Rectangle visibleBoundary = new Rectangle(-70, -25,screen_width+140, screen_height+85);
 
-	// a screen space boundary which is used to test if the entire harvester
+	// a screen space boundary which is used to test if the entire Harvester
 	// object is within the screen
 	public final static Rectangle screenBoundary = new Rectangle(40, 40, screen_width-90,screen_height-80);
 
@@ -44,10 +44,10 @@ public class harvester extends solidObject{
 	public final static int visionW = 500 + (screen_width-768);
 	public final static int visionH = 650 + (screen_height-512);
 	
-	//a bitmap representation of the vision of the harvester for enemy commander
+	//a bitmap representation of the vision of the Harvester for enemy commander
 	public static boolean[] bitmapVisionForEnemy; 
 		
-	//the oreintation of the harvester
+	//the oreintation of the Harvester
 	public int bodyAngle;
 	
 	//destination angle
@@ -55,8 +55,8 @@ public class harvester extends solidObject{
 			
 	public static Rect border, destinationBlock, probeBlock, pointBlock;
 	
-	public goldMine myGoldMine;
-	public refinery myRefinery;
+	public GoldMine myGoldMine;
+	public Refinery myRefinery;
 	public int[] miningPositions;
 	public int cargoDeposite;
 	
@@ -93,7 +93,7 @@ public class harvester extends solidObject{
 	public boolean isEvadingFromAttack;
 				
 
-	public harvester(vector origin, int bodyAngle, int teamNo){
+	public Harvester(vector origin, int bodyAngle, int teamNo){
 		speed = 0.008f;
 		start = new vector(0,0,0);
 		centre = origin.myClone();
@@ -114,9 +114,9 @@ public class harvester extends solidObject{
 		
 		
 		ID = globalUniqID++;
-		randomNumber = gameData.getRandom();
+		randomNumber = GameData.getRandom();
 		height = centre.y + 0.5f;  //?
-		theAssetManager = mainThread.theAssetManager; 
+		theAssetManager = MainThread.theAssetManager;
 		boundary2D = new Rect((int)(origin.x*64) - 8, (int)(origin.z*64) + 8, 16, 16);
 		border = new Rect(0,0,16,16);
 		movement = new vector(0,0,0);
@@ -147,123 +147,123 @@ public class harvester extends solidObject{
 		if(body == null){
 				
 			body = new polygon3D[52];
-			v = new vector[]{put(-0.071, 0.025, 0.11), put(-0.071, 0.025, -0.15), put(-0.071, 0.005, -0.15), put(-0.071, -0.025, -0.08), put(-0.071, -0.025, 0.07), put(-0.071, 0.005, 0.11)};
-			body[0] = new polygon3D(v, put(-0.071, 0.027, 0.11), put(-0.071, 0.027, -0.15), put(-0.071, -0.025, 0.11), mainThread.textures[3], 1,1,1);
+			v = new vector[]{createArbitraryVertex(-0.071, 0.025, 0.11), createArbitraryVertex(-0.071, 0.025, -0.15), createArbitraryVertex(-0.071, 0.005, -0.15), createArbitraryVertex(-0.071, -0.025, -0.08), createArbitraryVertex(-0.071, -0.025, 0.07), createArbitraryVertex(-0.071, 0.005, 0.11)};
+			body[0] = new polygon3D(v, createArbitraryVertex(-0.071, 0.027, 0.11), createArbitraryVertex(-0.071, 0.027, -0.15), createArbitraryVertex(-0.071, -0.025, 0.11), MainThread.textures[3], 1,1,1);
 			
-			v = new vector[]{put(0.071, 0.005, 0.11), put(0.071, -0.025, 0.07), put(0.071, -0.025, -0.08), put(0.071, 0.005, -0.15), put(0.071, 0.025, -0.15), put(0.071, 0.025, 0.11)};
-			body[1] = new polygon3D(v, put(0.071, 0.027, -0.15),put(0.071, 0.027, 0.11), put(0.071, -0.025, -0.15), mainThread.textures[3], 1,1,1);
+			v = new vector[]{createArbitraryVertex(0.071, 0.005, 0.11), createArbitraryVertex(0.071, -0.025, 0.07), createArbitraryVertex(0.071, -0.025, -0.08), createArbitraryVertex(0.071, 0.005, -0.15), createArbitraryVertex(0.071, 0.025, -0.15), createArbitraryVertex(0.071, 0.025, 0.11)};
+			body[1] = new polygon3D(v, createArbitraryVertex(0.071, 0.027, -0.15), createArbitraryVertex(0.071, 0.027, 0.11), createArbitraryVertex(0.071, -0.025, -0.15), MainThread.textures[3], 1,1,1);
 		
-			v = new vector[]{put(-0.07, 0.04, -0.15), put(0.07, 0.04, -0.15), put(0.07, 0.015, -0.15), put(-0.07, 0.015, -0.15)};
-			body[2] = new polygon3D(v, v[0], v[1], v [3], mainThread.textures[skinTextureIndex], 1,0.3f,1);
+			v = new vector[]{createArbitraryVertex(-0.07, 0.04, -0.15), createArbitraryVertex(0.07, 0.04, -0.15), createArbitraryVertex(0.07, 0.015, -0.15), createArbitraryVertex(-0.07, 0.015, -0.15)};
+			body[2] = new polygon3D(v, v[0], v[1], v [3], MainThread.textures[skinTextureIndex], 1,0.3f,1);
 			
-			v = new vector[]{put(-0.07, 0.005, -0.15), put(-0.04, 0.005, -0.15), put(-0.04, -0.025, -0.08), put(-0.07, -0.025, -0.08)};
-			body[3] = new polygon3D(v, v[0], v[1], v [3], mainThread.textures[3], 1,1,1);
+			v = new vector[]{createArbitraryVertex(-0.07, 0.005, -0.15), createArbitraryVertex(-0.04, 0.005, -0.15), createArbitraryVertex(-0.04, -0.025, -0.08), createArbitraryVertex(-0.07, -0.025, -0.08)};
+			body[3] = new polygon3D(v, v[0], v[1], v [3], MainThread.textures[3], 1,1,1);
 			
-			v = new vector[]{put(-0.07, 0.015, -0.15), put(-0.04, 0.015, -0.15), put(-0.04, 0.005, -0.15), put(-0.07, 0.005, -0.15)};
-			body[4] = new polygon3D(v, v[0], v[1], v [3], mainThread.textures[3], 1,1,1);
+			v = new vector[]{createArbitraryVertex(-0.07, 0.015, -0.15), createArbitraryVertex(-0.04, 0.015, -0.15), createArbitraryVertex(-0.04, 0.005, -0.15), createArbitraryVertex(-0.07, 0.005, -0.15)};
+			body[4] = new polygon3D(v, v[0], v[1], v [3], MainThread.textures[3], 1,1,1);
 			
-			v = new vector[]{put(0.04, 0.015, -0.15), put(0.07, 0.015, -0.15), put(0.07, 0.005, -0.15), put(0.04, 0.005, -0.15)};
-			body[5] = new polygon3D(v, v[0], v[1], v [3], mainThread.textures[3], 1,1,1);
+			v = new vector[]{createArbitraryVertex(0.04, 0.015, -0.15), createArbitraryVertex(0.07, 0.015, -0.15), createArbitraryVertex(0.07, 0.005, -0.15), createArbitraryVertex(0.04, 0.005, -0.15)};
+			body[5] = new polygon3D(v, v[0], v[1], v [3], MainThread.textures[3], 1,1,1);
 			
-			v = new vector[]{put(0.04, 0.005, -0.15), put(0.07, 0.005, -0.15), put(0.07, -0.025, -0.08), put(0.04, -0.025, -0.08)};
-			body[6] = new polygon3D(v, v[0], v[1], v [3], mainThread.textures[3], 1,1,1);
+			v = new vector[]{createArbitraryVertex(0.04, 0.005, -0.15), createArbitraryVertex(0.07, 0.005, -0.15), createArbitraryVertex(0.07, -0.025, -0.08), createArbitraryVertex(0.04, -0.025, -0.08)};
+			body[6] = new polygon3D(v, v[0], v[1], v [3], MainThread.textures[3], 1,1,1);
 			
-			v = new vector[]{put(0.07, 0.04, -0.15),  put(0.07, 0.04, 0.11), put(0.07, 0.015, 0.11),put(0.07, 0.015, -0.15)};
-			body[7] = new polygon3D(v, put(0.07, 0.04, -0.15), put(0.07, 0.04, 0.11), put(0.07, 0.015, -0.15), mainThread.textures[skinTextureIndex], 1,0.3f,1);
+			v = new vector[]{createArbitraryVertex(0.07, 0.04, -0.15),  createArbitraryVertex(0.07, 0.04, 0.11), createArbitraryVertex(0.07, 0.015, 0.11), createArbitraryVertex(0.07, 0.015, -0.15)};
+			body[7] = new polygon3D(v, createArbitraryVertex(0.07, 0.04, -0.15), createArbitraryVertex(0.07, 0.04, 0.11), createArbitraryVertex(0.07, 0.015, -0.15), MainThread.textures[skinTextureIndex], 1,0.3f,1);
 			
-			v = new vector[]{put(-0.07, 0.04, 0.11), put(-0.07, 0.04, -0.15), put(-0.07, 0.015, -0.15), put(-0.07, 0.015, 0.11)};
-			body[8] = new polygon3D(v, put(-0.07, 0.04, 0.11), put(-0.07, 0.04, -0.15), put(-0.07, 0.015, 0.11), mainThread.textures[skinTextureIndex], 1,0.3f,1);
+			v = new vector[]{createArbitraryVertex(-0.07, 0.04, 0.11), createArbitraryVertex(-0.07, 0.04, -0.15), createArbitraryVertex(-0.07, 0.015, -0.15), createArbitraryVertex(-0.07, 0.015, 0.11)};
+			body[8] = new polygon3D(v, createArbitraryVertex(-0.07, 0.04, 0.11), createArbitraryVertex(-0.07, 0.04, -0.15), createArbitraryVertex(-0.07, 0.015, 0.11), MainThread.textures[skinTextureIndex], 1,0.3f,1);
 			
-			v = new vector[]{put(0.07, 0.04, 0.11), put(-0.07, 0.04, 0.11), put(-0.07, 0.01, 0.11), put(0.07, 0.01, 0.11)};
-			body[9] = new polygon3D(v, v[2], v[3], v [1], mainThread.textures[skinTextureIndex], 1,0.3f,1);
+			v = new vector[]{createArbitraryVertex(0.07, 0.04, 0.11), createArbitraryVertex(-0.07, 0.04, 0.11), createArbitraryVertex(-0.07, 0.01, 0.11), createArbitraryVertex(0.07, 0.01, 0.11)};
+			body[9] = new polygon3D(v, v[2], v[3], v [1], MainThread.textures[skinTextureIndex], 1,0.3f,1);
 			
-			v = new vector[]{put(0.07, 0.04, 0.11), put(-0.07, 0.04, 0.11), put(-0.07, 0.01, 0.11), put(0.07, 0.01, 0.11)};
-			body[10] = new polygon3D(v, v[2], v[3], v [1], mainThread.textures[skinTextureIndex], 1,0.3f,1);
+			v = new vector[]{createArbitraryVertex(0.07, 0.04, 0.11), createArbitraryVertex(-0.07, 0.04, 0.11), createArbitraryVertex(-0.07, 0.01, 0.11), createArbitraryVertex(0.07, 0.01, 0.11)};
+			body[10] = new polygon3D(v, v[2], v[3], v [1], MainThread.textures[skinTextureIndex], 1,0.3f,1);
 			
-			v = new vector[]{put(0.07, 0.04, 0.11), put(0.07, 0.04, -0.15), put(-0.07, 0.04, -0.15),put(-0.07, 0.04, 0.11)};
-			body[11] = new polygon3D(v, v[1], v[2], v[0], mainThread.textures[skinTextureIndex], 1,2f,1);
+			v = new vector[]{createArbitraryVertex(0.07, 0.04, 0.11), createArbitraryVertex(0.07, 0.04, -0.15), createArbitraryVertex(-0.07, 0.04, -0.15), createArbitraryVertex(-0.07, 0.04, 0.11)};
+			body[11] = new polygon3D(v, v[1], v[2], v[0], MainThread.textures[skinTextureIndex], 1,2f,1);
 			body[11].shadowBias = 1000;
 			
-			v = new vector[]{put(-0.07, 0.12, 0.07), put(-0.07, 0.12, 0.02), put(-0.07, 0.04, 0.02), put(-0.07, 0.04, 0.11), put(-0.07, 0.07, 0.11)};
-			body[12] = new polygon3D(v, put(-0.07, 0.12, 0.11), put(-0.07, 0.12, 0.02), put(-0.07, 0.04, 0.11), mainThread.textures[skinTextureIndex], 0.7f,0.7f,1);
+			v = new vector[]{createArbitraryVertex(-0.07, 0.12, 0.07), createArbitraryVertex(-0.07, 0.12, 0.02), createArbitraryVertex(-0.07, 0.04, 0.02), createArbitraryVertex(-0.07, 0.04, 0.11), createArbitraryVertex(-0.07, 0.07, 0.11)};
+			body[12] = new polygon3D(v, createArbitraryVertex(-0.07, 0.12, 0.11), createArbitraryVertex(-0.07, 0.12, 0.02), createArbitraryVertex(-0.07, 0.04, 0.11), MainThread.textures[skinTextureIndex], 0.7f,0.7f,1);
 			
-			v = new vector[]{put(0, 0.07, 0.11), put(0, 0.04, 0.11), put(0, 0.04, 0.02), put(0, 0.12, 0.02), put(0, 0.12, 0.07)};
-			body[13] = new polygon3D(v, put(0, 0.12, 0.02), put(0, 0.12, 0.11), put(0, 0.04, 0.02), mainThread.textures[skinTextureIndex], 0.7f,0.7f,1);
+			v = new vector[]{createArbitraryVertex(0, 0.07, 0.11), createArbitraryVertex(0, 0.04, 0.11), createArbitraryVertex(0, 0.04, 0.02), createArbitraryVertex(0, 0.12, 0.02), createArbitraryVertex(0, 0.12, 0.07)};
+			body[13] = new polygon3D(v, createArbitraryVertex(0, 0.12, 0.02), createArbitraryVertex(0, 0.12, 0.11), createArbitraryVertex(0, 0.04, 0.02), MainThread.textures[skinTextureIndex], 0.7f,0.7f,1);
 			
-			v = new vector[]{put(-0.07, 0.12, 0.02), put(0.07, 0.12, 0.02), put(0.07, 0.04, 0.02), put(-0.07, 0.04, 0.02)};
-			body[14] = new polygon3D(v, v[0], v[1], v[3], mainThread.textures[skinTextureIndex], 1,0.7f,1);
+			v = new vector[]{createArbitraryVertex(-0.07, 0.12, 0.02), createArbitraryVertex(0.07, 0.12, 0.02), createArbitraryVertex(0.07, 0.04, 0.02), createArbitraryVertex(-0.07, 0.04, 0.02)};
+			body[14] = new polygon3D(v, v[0], v[1], v[3], MainThread.textures[skinTextureIndex], 1,0.7f,1);
 			
-			v = new vector[]{put(0, 0.07, 0.11 ), put(-0.07, 0.07, 0.11 ), put(-0.07, 0.04, 0.11 ), put(0, 0.04, 0.11 )};
-			body[15] = new polygon3D(v, v[0], v[1], v[3], mainThread.textures[skinTextureIndex], 0.5f,0.5f,1);
+			v = new vector[]{createArbitraryVertex(0, 0.07, 0.11 ), createArbitraryVertex(-0.07, 0.07, 0.11 ), createArbitraryVertex(-0.07, 0.04, 0.11 ), createArbitraryVertex(0, 0.04, 0.11 )};
+			body[15] = new polygon3D(v, v[0], v[1], v[3], MainThread.textures[skinTextureIndex], 0.5f,0.5f,1);
 			
-			v = new vector[]{put(0, 0.12, 0.02), put(-0.07, 0.12, 0.02), put(-0.07, 0.12, 0.07), put(0, 0.12, 0.07)};
-			body[16] = new polygon3D(v, v[0], v[1], v[3], mainThread.textures[skinTextureIndex], 0.5f,0.5f,1);
+			v = new vector[]{createArbitraryVertex(0, 0.12, 0.02), createArbitraryVertex(-0.07, 0.12, 0.02), createArbitraryVertex(-0.07, 0.12, 0.07), createArbitraryVertex(0, 0.12, 0.07)};
+			body[16] = new polygon3D(v, v[0], v[1], v[3], MainThread.textures[skinTextureIndex], 0.5f,0.5f,1);
 			
-			v= new vector[]{put(0, 0.12, 0.07), put(-0.07, 0.12, 0.07), put(-0.07, 0.07, 0.11), put(0, 0.07, 0.11)};
-			body[17] = new polygon3D(v, v[0], v[1], v[3], mainThread.textures[24], 1f,1f,1);
+			v= new vector[]{createArbitraryVertex(0, 0.12, 0.07), createArbitraryVertex(-0.07, 0.12, 0.07), createArbitraryVertex(-0.07, 0.07, 0.11), createArbitraryVertex(0, 0.07, 0.11)};
+			body[17] = new polygon3D(v, v[0], v[1], v[3], MainThread.textures[24], 1f,1f,1);
 			body[17].shadowBias = 40000;
 			
-			v = new vector[]{put(-0.07, 0.04, 0.02), put(0.07, 0.04, 0.02), put(0.07, 0.12, 0.02), put(-0.07, 0.12, 0.02)};
-			body[18] = new polygon3D(v, v[0], v[1], v[3], mainThread.textures[skinTextureIndex], 1,0.7f,1);
+			v = new vector[]{createArbitraryVertex(-0.07, 0.04, 0.02), createArbitraryVertex(0.07, 0.04, 0.02), createArbitraryVertex(0.07, 0.12, 0.02), createArbitraryVertex(-0.07, 0.12, 0.02)};
+			body[18] = new polygon3D(v, v[0], v[1], v[3], MainThread.textures[skinTextureIndex], 1,0.7f,1);
 			
-			v = new vector[]{put(0.07, 0.12, 0.02),put(0.07, 0.15, 0.04), put(0.07, 0.16, 0.10), put(0.07, 0.15, 0.10), put(0.07, 0.12, 0.07)};
-			body[19] = new polygon3D(v, put(0.07, 0.12, 0.02), put(0.07, 0.12, 0.13), put(0.07, 0.02, 0.02), mainThread.textures[skinTextureIndex], 1, 1,1);
+			v = new vector[]{createArbitraryVertex(0.07, 0.12, 0.02), createArbitraryVertex(0.07, 0.15, 0.04), createArbitraryVertex(0.07, 0.16, 0.10), createArbitraryVertex(0.07, 0.15, 0.10), createArbitraryVertex(0.07, 0.12, 0.07)};
+			body[19] = new polygon3D(v, createArbitraryVertex(0.07, 0.12, 0.02), createArbitraryVertex(0.07, 0.12, 0.13), createArbitraryVertex(0.07, 0.02, 0.02), MainThread.textures[skinTextureIndex], 1, 1,1);
 			
-			v = new vector[]{put(0, 0.12, 0.07), put(0, 0.15, 0.10), put(0, 0.16, 0.10),put(0, 0.15, 0.04),put(0, 0.12, 0.02) };
-			body[20] = new polygon3D(v, put(0, 0.12, 0.13),put(0, 0.12, 0.02),  put(0, 0.02, 0.13), mainThread.textures[skinTextureIndex], 1, 1,1);
+			v = new vector[]{createArbitraryVertex(0, 0.12, 0.07), createArbitraryVertex(0, 0.15, 0.10), createArbitraryVertex(0, 0.16, 0.10), createArbitraryVertex(0, 0.15, 0.04), createArbitraryVertex(0, 0.12, 0.02) };
+			body[20] = new polygon3D(v, createArbitraryVertex(0, 0.12, 0.13), createArbitraryVertex(0, 0.12, 0.02),  createArbitraryVertex(0, 0.02, 0.13), MainThread.textures[skinTextureIndex], 1, 1,1);
 			
-			v = new vector[]{put(0, 0.15, 0.04), put(0.07, 0.15, 0.04), put(0.07, 0.12, 0.02), put(0, 0.12, 0.02)};
-			body[21] = new polygon3D(v, v[0], v[1], v[3], mainThread.textures[skinTextureIndex], 0.5f,0.25f,1);
+			v = new vector[]{createArbitraryVertex(0, 0.15, 0.04), createArbitraryVertex(0.07, 0.15, 0.04), createArbitraryVertex(0.07, 0.12, 0.02), createArbitraryVertex(0, 0.12, 0.02)};
+			body[21] = new polygon3D(v, v[0], v[1], v[3], MainThread.textures[skinTextureIndex], 0.5f,0.25f,1);
 			
-			v = new vector[]{put(0, 0.16, 0.10), put(0.07, 0.16, 0.10), put(0.07, 0.15, 0.04), put(0, 0.15, 0.04) };
-			body[22] = new polygon3D(v, v[0], v[1], v[3], mainThread.textures[skinTextureIndex], 0.5f,0.5f,1);
+			v = new vector[]{createArbitraryVertex(0, 0.16, 0.10), createArbitraryVertex(0.07, 0.16, 0.10), createArbitraryVertex(0.07, 0.15, 0.04), createArbitraryVertex(0, 0.15, 0.04) };
+			body[22] = new polygon3D(v, v[0], v[1], v[3], MainThread.textures[skinTextureIndex], 0.5f,0.5f,1);
 			
-			v = new vector[]{put(0, 0.12, 0.02),put(0, 0.15, 0.04), put(0, 0.16, 0.10), put(0, 0.15, 0.10), put(0, 0.12, 0.07)};
-			body[23] = new polygon3D(v, put(0, 0.12, 0.02), put(0, 0.12, 0.13), put(0, 0.02, 0.02), mainThread.textures[skinTextureIndex], 1, 1,1);
+			v = new vector[]{createArbitraryVertex(0, 0.12, 0.02), createArbitraryVertex(0, 0.15, 0.04), createArbitraryVertex(0, 0.16, 0.10), createArbitraryVertex(0, 0.15, 0.10), createArbitraryVertex(0, 0.12, 0.07)};
+			body[23] = new polygon3D(v, createArbitraryVertex(0, 0.12, 0.02), createArbitraryVertex(0, 0.12, 0.13), createArbitraryVertex(0, 0.02, 0.02), MainThread.textures[skinTextureIndex], 1, 1,1);
 			
-			v = new vector[]{put(0.07, 0.12, 0.07), put(0.07, 0.15, 0.10), put(0.07, 0.16, 0.10),put(0.07, 0.15, 0.04),put(0.07, 0.12, 0.02) };
-			body[24] = new polygon3D(v, put(0.07, 0.12, 0.13),put(0.07, 0.12, 0.02),  put(0.07, 0.02, 0.13), mainThread.textures[skinTextureIndex], 1, 1,1);
+			v = new vector[]{createArbitraryVertex(0.07, 0.12, 0.07), createArbitraryVertex(0.07, 0.15, 0.10), createArbitraryVertex(0.07, 0.16, 0.10), createArbitraryVertex(0.07, 0.15, 0.04), createArbitraryVertex(0.07, 0.12, 0.02) };
+			body[24] = new polygon3D(v, createArbitraryVertex(0.07, 0.12, 0.13), createArbitraryVertex(0.07, 0.12, 0.02),  createArbitraryVertex(0.07, 0.02, 0.13), MainThread.textures[skinTextureIndex], 1, 1,1);
 			
-			v = new vector[]{put(0.07, 0.16, 0.10), put(0, 0.16, 0.10), put(0, 0.15, 0.10), put(0.07, 0.15, 0.10)};
-			body[25] = new polygon3D(v, v[0], v[1], v[3], mainThread.textures[skinTextureIndex], 0.5f,0.1f,1);
+			v = new vector[]{createArbitraryVertex(0.07, 0.16, 0.10), createArbitraryVertex(0, 0.16, 0.10), createArbitraryVertex(0, 0.15, 0.10), createArbitraryVertex(0.07, 0.15, 0.10)};
+			body[25] = new polygon3D(v, v[0], v[1], v[3], MainThread.textures[skinTextureIndex], 0.5f,0.1f,1);
 			
-			v = new vector[]{put(0.07, 0.12, 0.02), put(0.07, 0.12, 0.07), put(0.07, 0.04, 0.07), put(0.07, 0.04, 0.02) };
-			body[26] = new polygon3D(v, put(0.07, 0.12, 0.02), put(0.07, 0.12, 0.13), put(0.07, 0.02, 0.02), mainThread.textures[skinTextureIndex], 1, 1,1);
+			v = new vector[]{createArbitraryVertex(0.07, 0.12, 0.02), createArbitraryVertex(0.07, 0.12, 0.07), createArbitraryVertex(0.07, 0.04, 0.07), createArbitraryVertex(0.07, 0.04, 0.02) };
+			body[26] = new polygon3D(v, createArbitraryVertex(0.07, 0.12, 0.02), createArbitraryVertex(0.07, 0.12, 0.13), createArbitraryVertex(0.07, 0.02, 0.02), MainThread.textures[skinTextureIndex], 1, 1,1);
 			
-			v = new vector[]{put(0.07, 0.04, 0.02), put(0.07, 0.04, 0.07), put(0.07, 0.12, 0.07) , put(0.07, 0.12, 0.02)};
-			body[27] = new polygon3D(v, v[0], v[1], v[3], mainThread.textures[skinTextureIndex], 0.5f,0.1f,1);
+			v = new vector[]{createArbitraryVertex(0.07, 0.04, 0.02), createArbitraryVertex(0.07, 0.04, 0.07), createArbitraryVertex(0.07, 0.12, 0.07) , createArbitraryVertex(0.07, 0.12, 0.02)};
+			body[27] = new polygon3D(v, v[0], v[1], v[3], MainThread.textures[skinTextureIndex], 0.5f,0.1f,1);
 			
-			v = new vector[]{put(0.07, 0.12, 0.07), put(0.06, 0.12, 0.07), put(0.06, 0.04, 0.07), put(0.07, 0.04, 0.07)};
-			body[28] = new polygon3D(v, v[0], v[1], v[3], mainThread.textures[skinTextureIndex], 0.1f,0.5f,1);
+			v = new vector[]{createArbitraryVertex(0.07, 0.12, 0.07), createArbitraryVertex(0.06, 0.12, 0.07), createArbitraryVertex(0.06, 0.04, 0.07), createArbitraryVertex(0.07, 0.04, 0.07)};
+			body[28] = new polygon3D(v, v[0], v[1], v[3], MainThread.textures[skinTextureIndex], 0.1f,0.5f,1);
 			
-			v = new vector[]{put(0.01, 0.12, 0.07), put(0, 0.12, 0.07), put(0, 0.04, 0.07), put(0.01, 0.04, 0.07)};
-			body[29] = new polygon3D(v, v[0], v[1], v[3], mainThread.textures[skinTextureIndex], 0.1f,0.5f,1);
+			v = new vector[]{createArbitraryVertex(0.01, 0.12, 0.07), createArbitraryVertex(0, 0.12, 0.07), createArbitraryVertex(0, 0.04, 0.07), createArbitraryVertex(0.01, 0.04, 0.07)};
+			body[29] = new polygon3D(v, v[0], v[1], v[3], MainThread.textures[skinTextureIndex], 0.1f,0.5f,1);
 			
-			v = new vector[]{put(0.07, 0.08, 0.07), put(0, 0.08, 0.07), put(0, 0.04, 0.11), put(0.07, 0.04, 0.11)};
-			body[30] = new polygon3D(v, v[0], v[1], v[3], mainThread.textures[skinTextureIndex], 0.5f,0.5f,1);
+			v = new vector[]{createArbitraryVertex(0.07, 0.08, 0.07), createArbitraryVertex(0, 0.08, 0.07), createArbitraryVertex(0, 0.04, 0.11), createArbitraryVertex(0.07, 0.04, 0.11)};
+			body[30] = new polygon3D(v, v[0], v[1], v[3], MainThread.textures[skinTextureIndex], 0.5f,0.5f,1);
 			
-			v = new vector[]{put(0.07, 0.08, 0.07), put(0.07, 0.04, 0.11), put(0.07, 0.04, 0.07)};
-			body[31] = new polygon3D(v, put(0.07, 0.12, 0.02), put(0.07, 0.12, 0.13), put(0.07, 0.02, 0.02), mainThread.textures[skinTextureIndex], 1, 1,1);
+			v = new vector[]{createArbitraryVertex(0.07, 0.08, 0.07), createArbitraryVertex(0.07, 0.04, 0.11), createArbitraryVertex(0.07, 0.04, 0.07)};
+			body[31] = new polygon3D(v, createArbitraryVertex(0.07, 0.12, 0.02), createArbitraryVertex(0.07, 0.12, 0.13), createArbitraryVertex(0.07, 0.02, 0.02), MainThread.textures[skinTextureIndex], 1, 1,1);
 			
 			
-			v = new vector[]{put(0.055, 0.21, 0), put(0.055, 0.21, 0.06), put(0.055, 0.18, 0.06),put(0.055, 0.18, 0)};
-			body[32] = new polygon3D(v, v[0].myClone(), v[1].myClone(), v[3].myClone(), mainThread.textures[25], 4f,4f,1);
+			v = new vector[]{createArbitraryVertex(0.055, 0.21, 0), createArbitraryVertex(0.055, 0.21, 0.06), createArbitraryVertex(0.055, 0.18, 0.06), createArbitraryVertex(0.055, 0.18, 0)};
+			body[32] = new polygon3D(v, v[0].myClone(), v[1].myClone(), v[3].myClone(), MainThread.textures[25], 4f,4f,1);
 			
-			v = new vector[]{put(0.015, 0.18, 0), put(0.015, 0.18, 0.06), put(0.015, 0.21, 0.06),put(0.015, 0.21, 0)};
-			body[33] = new polygon3D(v, v[2].myClone(), v[3].myClone(), v[1].myClone(), mainThread.textures[25], 4f,4f,1);
+			v = new vector[]{createArbitraryVertex(0.015, 0.18, 0), createArbitraryVertex(0.015, 0.18, 0.06), createArbitraryVertex(0.015, 0.21, 0.06), createArbitraryVertex(0.015, 0.21, 0)};
+			body[33] = new polygon3D(v, v[2].myClone(), v[3].myClone(), v[1].myClone(), MainThread.textures[25], 4f,4f,1);
 			
-			v = new vector[]{put(0.055, 0.21, 0), put(0.015, 0.21, 0), put(0.015, 0.21, 0.06), put(0.055, 0.21, 0.06)};
-			body[34] = new polygon3D(v, v[0].myClone(), v[1].myClone(), v[3].myClone(), mainThread.textures[25], 4f,4f,1);
+			v = new vector[]{createArbitraryVertex(0.055, 0.21, 0), createArbitraryVertex(0.015, 0.21, 0), createArbitraryVertex(0.015, 0.21, 0.06), createArbitraryVertex(0.055, 0.21, 0.06)};
+			body[34] = new polygon3D(v, v[0].myClone(), v[1].myClone(), v[3].myClone(), MainThread.textures[25], 4f,4f,1);
 			body[34].shadowBias = 30000;
 			
-			v = new vector[]{put(0.055, 0.21, 0.06), put(0.055, 0.21, 0.12), put(0.055, 0.18, 0.12),put(0.055, 0.18, 0)};
-			body[35] = new polygon3D(v, v[0].myClone(), v[1].myClone(), v[3].myClone(), mainThread.textures[25], 4f,4f,1);
+			v = new vector[]{createArbitraryVertex(0.055, 0.21, 0.06), createArbitraryVertex(0.055, 0.21, 0.12), createArbitraryVertex(0.055, 0.18, 0.12), createArbitraryVertex(0.055, 0.18, 0)};
+			body[35] = new polygon3D(v, v[0].myClone(), v[1].myClone(), v[3].myClone(), MainThread.textures[25], 4f,4f,1);
 			
-			v = new vector[]{put(0.015, 0.18, 0.06), put(0.015, 0.18, 0.12), put(0.015, 0.21, 0.12),put(0.015, 0.21, 0)};
-			body[36] = new polygon3D(v, v[2].myClone(), v[3].myClone(), v[1].myClone(), mainThread.textures[25], 4f,4f,1);
+			v = new vector[]{createArbitraryVertex(0.015, 0.18, 0.06), createArbitraryVertex(0.015, 0.18, 0.12), createArbitraryVertex(0.015, 0.21, 0.12), createArbitraryVertex(0.015, 0.21, 0)};
+			body[36] = new polygon3D(v, v[2].myClone(), v[3].myClone(), v[1].myClone(), MainThread.textures[25], 4f,4f,1);
 			
-			v = new vector[]{put(0.055, 0.21, 0.06), put(0.015, 0.21, 0.06), put(0.015, 0.21, 0.12), put(0.055, 0.21, 0.12)};
-			body[37] = new polygon3D(v, v[0].myClone(), v[1].myClone(), v[3].myClone(), mainThread.textures[25], 4f,4f,1);
+			v = new vector[]{createArbitraryVertex(0.055, 0.21, 0.06), createArbitraryVertex(0.015, 0.21, 0.06), createArbitraryVertex(0.015, 0.21, 0.12), createArbitraryVertex(0.055, 0.21, 0.12)};
+			body[37] = new polygon3D(v, v[0].myClone(), v[1].myClone(), v[3].myClone(), MainThread.textures[25], 4f,4f,1);
 			body[37].shadowBias = 50000;
 			
 			
@@ -272,29 +272,29 @@ public class harvester extends solidObject{
 			
 			start.add(0,(float)(0.18 + r),0.12f);
 			for(int i = 0; i < 12; i++){
-				v = new vector[]{put(0.055, r*Math.cos((i+1)*theta), r*Math.sin((i+1)*theta)),
-								 put(0.055, r*Math.cos(i*theta), r*Math.sin(i*theta)),
-								 put(0.015, r*Math.cos(i*theta), r*Math.sin(i*theta)),
-								 put(0.015, r*Math.cos((i+1)*theta),  r*Math.sin((i+1)*theta))
+				v = new vector[]{createArbitraryVertex(0.055, r*Math.cos((i+1)*theta), r*Math.sin((i+1)*theta)),
+								 createArbitraryVertex(0.055, r*Math.cos(i*theta), r*Math.sin(i*theta)),
+								 createArbitraryVertex(0.015, r*Math.cos(i*theta), r*Math.sin(i*theta)),
+								 createArbitraryVertex(0.015, r*Math.cos((i+1)*theta),  r*Math.sin((i+1)*theta))
 								
 								};
-				body[38 + i] = new polygon3D(v, v[0].myClone(), v[1].myClone(), v[3].myClone(), mainThread.textures[25], 4f,4f,1);
+				body[38 + i] = new polygon3D(v, v[0].myClone(), v[1].myClone(), v[3].myClone(), MainThread.textures[25], 4f,4f,1);
 				
 			}
 			
 			
 			v = new vector[13];
 			for(int i = 0; i < 13; i ++){
-				v[i] = put(0.055, r*Math.cos(i*theta), r*Math.sin(i*theta));
+				v[i] = createArbitraryVertex(0.055, r*Math.cos(i*theta), r*Math.sin(i*theta));
 			}
-			body[50] = new polygon3D(v, put(0.055, 0.21, 0.06), put(0.055, 0.21, 0.12), put(0.055, 0.18, 0), mainThread.textures[25], 4f,4f,1);
+			body[50] = new polygon3D(v, createArbitraryVertex(0.055, 0.21, 0.06), createArbitraryVertex(0.055, 0.21, 0.12), createArbitraryVertex(0.055, 0.18, 0), MainThread.textures[25], 4f,4f,1);
 			
 			vector[] v2 = new vector[13];
 			for(int i = 0; i < 13; i ++){
 				v2[i] = v[12 -i].myClone();
 				v2[i].x = 0.015f;
 			}
-			body[51] = new polygon3D(v2, put(0.015, 0.21, 0.12), put(0.015, 0.21, 0), put(0.015, 0.18, 0.12), mainThread.textures[25], 4f,4f,1);
+			body[51] = new polygon3D(v2, createArbitraryVertex(0.015, 0.21, 0.12), createArbitraryVertex(0.015, 0.21, 0), createArbitraryVertex(0.015, 0.18, 0.12), MainThread.textures[25], 4f,4f,1);
 			
 			start.add(0,(float)(-0.18 - r),-0.12f);
 			
@@ -428,100 +428,100 @@ public class harvester extends solidObject{
 			}
 			
 			start.set(0,0,0);
-			cargoCenter = put(0, 0.04, -0.15);
+			cargoCenter = createArbitraryVertex(0, 0.04, -0.15);
 			cargo = new polygon3D[11];
-			v =  new vector[]{put(-0.06, 0, -0.02), put(0.06, 0, -0.02), put(0.06, 0, 0.16), put(-0.06, 0, 0.16)};
-			cargo[0] = new polygon3D(v, v[0], v[1], v[3], mainThread.textures[skinTextureIndex], 1f,1.5f,1);
+			v =  new vector[]{createArbitraryVertex(-0.06, 0, -0.02), createArbitraryVertex(0.06, 0, -0.02), createArbitraryVertex(0.06, 0, 0.16), createArbitraryVertex(-0.06, 0, 0.16)};
+			cargo[0] = new polygon3D(v, v[0], v[1], v[3], MainThread.textures[skinTextureIndex], 1f,1.5f,1);
 			
-			v = new vector[]{put(0.07, 0.01, -0.02), put(0.07, 0.01, 0.16), put(0.06, 0, 0.16), put(0.06, 0, -0.02)};
-			cargo[1] = new polygon3D(v, v[0], v[1], v[3], mainThread.textures[skinTextureIndex], 1.5f,0.1f,1);
+			v = new vector[]{createArbitraryVertex(0.07, 0.01, -0.02), createArbitraryVertex(0.07, 0.01, 0.16), createArbitraryVertex(0.06, 0, 0.16), createArbitraryVertex(0.06, 0, -0.02)};
+			cargo[1] = new polygon3D(v, v[0], v[1], v[3], MainThread.textures[skinTextureIndex], 1.5f,0.1f,1);
 			
-			v = new vector[]{put(-0.06, 0, -0.02), put(-0.06, 0, 0.16), put(-0.07, 0.01, 0.16), put(-0.07, 0.01, -0.02)};
-			cargo[2] = new polygon3D(v, v[0], v[1], v[3], mainThread.textures[skinTextureIndex], 1.5f,0.1f,1);
+			v = new vector[]{createArbitraryVertex(-0.06, 0, -0.02), createArbitraryVertex(-0.06, 0, 0.16), createArbitraryVertex(-0.07, 0.01, 0.16), createArbitraryVertex(-0.07, 0.01, -0.02)};
+			cargo[2] = new polygon3D(v, v[0], v[1], v[3], MainThread.textures[skinTextureIndex], 1.5f,0.1f,1);
 			
-			v = new vector[]{put(0.07, 0.06, -0.02),put(0.07, 0.06, 0.16), put(0.07, 0.01, 0.16), put(0.07, 0.01, -0.02)};
-			cargo[3] = new polygon3D(v, v[0], v[1], v[3], mainThread.textures[skinTextureIndex], 1.5f,0.5f,1);
+			v = new vector[]{createArbitraryVertex(0.07, 0.06, -0.02), createArbitraryVertex(0.07, 0.06, 0.16), createArbitraryVertex(0.07, 0.01, 0.16), createArbitraryVertex(0.07, 0.01, -0.02)};
+			cargo[3] = new polygon3D(v, v[0], v[1], v[3], MainThread.textures[skinTextureIndex], 1.5f,0.5f,1);
 			
-			v = new vector[]{put(-0.07, 0.01, -0.02), put(-0.07, 0.01, 0.16),put(-0.07, 0.06, 0.16), put(-0.07, 0.06, -0.02)};
-			cargo[4] = new polygon3D(v, v[0], v[1], v[3], mainThread.textures[skinTextureIndex], 1.5f,0.5f,1);
+			v = new vector[]{createArbitraryVertex(-0.07, 0.01, -0.02), createArbitraryVertex(-0.07, 0.01, 0.16), createArbitraryVertex(-0.07, 0.06, 0.16), createArbitraryVertex(-0.07, 0.06, -0.02)};
+			cargo[4] = new polygon3D(v, v[0], v[1], v[3], MainThread.textures[skinTextureIndex], 1.5f,0.5f,1);
 			
-			v = new vector[]{put(-0.07, 0.06, -0.02), put(-0.06, 0.07, -0.02), put(0.06, 0.07, -0.02), put(0.07, 0.06, -0.02), put(0.07, 0.01, -0.02), put(0.06, 0, -0.02), put(-0.06, 0, -0.02), put(-0.07, 0.01, -0.02)};
-			cargo[5] = new polygon3D(v, put(-0.07, 0.07, -0.02), put(0.07, 0.07, -0.02),put(-0.07, 0.01, -0.02), mainThread.textures[skinTextureIndex], 1f,0.5f,1);
+			v = new vector[]{createArbitraryVertex(-0.07, 0.06, -0.02), createArbitraryVertex(-0.06, 0.07, -0.02), createArbitraryVertex(0.06, 0.07, -0.02), createArbitraryVertex(0.07, 0.06, -0.02), createArbitraryVertex(0.07, 0.01, -0.02), createArbitraryVertex(0.06, 0, -0.02), createArbitraryVertex(-0.06, 0, -0.02), createArbitraryVertex(-0.07, 0.01, -0.02)};
+			cargo[5] = new polygon3D(v, createArbitraryVertex(-0.07, 0.07, -0.02), createArbitraryVertex(0.07, 0.07, -0.02), createArbitraryVertex(-0.07, 0.01, -0.02), MainThread.textures[skinTextureIndex], 1f,0.5f,1);
 			
-			v = new vector[]{put(-0.07, 0.01, 0.16), put(-0.06, 0, 0.16), put(0.06, 0, 0.16), put(0.07, 0.01, 0.16), put(0.07, 0.06, 0.16), put(0.06, 0.07, 0.16),  put(-0.06, 0.07, 0.16), put(-0.07, 0.06, 0.16)};
-			cargo[6] = new polygon3D(v, put(0.07, 0.07, 0.16), put(-0.07, 0.07, 0.16), put(0.07, 0.01, 0.16), mainThread.textures[skinTextureIndex], 1f,0.5f,1);
+			v = new vector[]{createArbitraryVertex(-0.07, 0.01, 0.16), createArbitraryVertex(-0.06, 0, 0.16), createArbitraryVertex(0.06, 0, 0.16), createArbitraryVertex(0.07, 0.01, 0.16), createArbitraryVertex(0.07, 0.06, 0.16), createArbitraryVertex(0.06, 0.07, 0.16),  createArbitraryVertex(-0.06, 0.07, 0.16), createArbitraryVertex(-0.07, 0.06, 0.16)};
+			cargo[6] = new polygon3D(v, createArbitraryVertex(0.07, 0.07, 0.16), createArbitraryVertex(-0.07, 0.07, 0.16), createArbitraryVertex(0.07, 0.01, 0.16), MainThread.textures[skinTextureIndex], 1f,0.5f,1);
 			
-			v = new vector[]{put(-0.06, 0.07, 0.16), put(0.06, 0.07, 0.16), put(0.06, 0.07, -0.02), put(-0.06, 0.07, -0.02)};
-			cargo[7] = new polygon3D(v, v[0], v[1], v[3], mainThread.textures[skinTextureIndex], 0.8f,1.3f,1);
+			v = new vector[]{createArbitraryVertex(-0.06, 0.07, 0.16), createArbitraryVertex(0.06, 0.07, 0.16), createArbitraryVertex(0.06, 0.07, -0.02), createArbitraryVertex(-0.06, 0.07, -0.02)};
+			cargo[7] = new polygon3D(v, v[0], v[1], v[3], MainThread.textures[skinTextureIndex], 0.8f,1.3f,1);
 			
-			v = new vector[]{put(0.065, 0.06, 0.161), put(0.005, 0.06, 0.161), put(0.005, 0.02, 0.161), put(0.065, 0.02, 0.161)};
-			cargo[8] = new polygon3D(v, v[0], v[1], v[3], mainThread.textures[27], 1f,1f,1);
+			v = new vector[]{createArbitraryVertex(0.065, 0.06, 0.161), createArbitraryVertex(0.005, 0.06, 0.161), createArbitraryVertex(0.005, 0.02, 0.161), createArbitraryVertex(0.065, 0.02, 0.161)};
+			cargo[8] = new polygon3D(v, v[0], v[1], v[3], MainThread.textures[27], 1f,1f,1);
 			
-			v = new vector[]{put(0.06, 0.07, -0.02), put(0.06, 0.07, 0.16), put(0.07, 0.06, 0.16),  put(0.07, 0.06, -0.02)};
-			cargo[9] = new polygon3D(v, v[0], v[1], v[3], mainThread.textures[skinTextureIndex], 1.5f,0.1f,1);
+			v = new vector[]{createArbitraryVertex(0.06, 0.07, -0.02), createArbitraryVertex(0.06, 0.07, 0.16), createArbitraryVertex(0.07, 0.06, 0.16),  createArbitraryVertex(0.07, 0.06, -0.02)};
+			cargo[9] = new polygon3D(v, v[0], v[1], v[3], MainThread.textures[skinTextureIndex], 1.5f,0.1f,1);
 			
-			v = new vector[]{put(-0.07, 0.06, -0.02), put(-0.07, 0.06, 0.16), put(-0.06, 0.07, 0.16),  put(-0.06, 0.07, -0.02)};
-			cargo[10] = new polygon3D(v, v[0], v[1], v[3], mainThread.textures[skinTextureIndex], 1.5f,0.1f,1);
+			v = new vector[]{createArbitraryVertex(-0.07, 0.06, -0.02), createArbitraryVertex(-0.07, 0.06, 0.16), createArbitraryVertex(-0.06, 0.07, 0.16),  createArbitraryVertex(-0.06, 0.07, -0.02)};
+			cargo[10] = new polygon3D(v, v[0], v[1], v[3], MainThread.textures[skinTextureIndex], 1.5f,0.1f,1);
 			
 			
 			start.set(0,0,0);
-			pillarCenter = put(0, 0.035,0);
+			pillarCenter = createArbitraryVertex(0, 0.035,0);
 			pillars = new polygon3D[98];
 			
 			theta = Math.PI/12;
 			r = 0.008;
 			
 			for(int i = 0; i < 24; i++){
-				v = new vector[]{put(r*Math.cos((i+1)*theta) - 0.03,  r*Math.sin((i+1)*theta), 0),
-								put(r*Math.cos(i*theta) - 0.03, r*Math.sin(i*theta), 0),
-								put(r*Math.cos(i*theta) - 0.03, r*Math.sin(i*theta), -0.07 ),
-						 		put(r*Math.cos((i+1)*theta) - 0.03, r*Math.sin((i+1)*theta), -0.07),
+				v = new vector[]{createArbitraryVertex(r*Math.cos((i+1)*theta) - 0.03,  r*Math.sin((i+1)*theta), 0),
+								createArbitraryVertex(r*Math.cos(i*theta) - 0.03, r*Math.sin(i*theta), 0),
+								createArbitraryVertex(r*Math.cos(i*theta) - 0.03, r*Math.sin(i*theta), -0.07 ),
+						 		createArbitraryVertex(r*Math.cos((i+1)*theta) - 0.03, r*Math.sin((i+1)*theta), -0.07),
 								
 								};
-				pillars[i] = new polygon3D(v, v[0].myClone(), v[1].myClone(), v[3].myClone(), mainThread.textures[28], 4f,4f,1);
+				pillars[i] = new polygon3D(v, v[0].myClone(), v[1].myClone(), v[3].myClone(), MainThread.textures[28], 4f,4f,1);
 			}
 			
 			v = new vector[24];
 			for(int i = 0; i < 24; i ++){
-				v[23 -i] = put(r*Math.cos(i*theta) - 0.03, r*Math.sin(i*theta), -0.07);
+				v[23 -i] = createArbitraryVertex(r*Math.cos(i*theta) - 0.03, r*Math.sin(i*theta), -0.07);
 			}
-			pillars[24] = new polygon3D(v, put(0.21 - 0.03, 0.06, -0.07), put(0.21 - 0.03, 0.12, -0.07), put(0.18 - 0.03, 0, -0.07), mainThread.textures[28], 4f,4f,1);
+			pillars[24] = new polygon3D(v, createArbitraryVertex(0.21 - 0.03, 0.06, -0.07), createArbitraryVertex(0.21 - 0.03, 0.12, -0.07), createArbitraryVertex(0.18 - 0.03, 0, -0.07), MainThread.textures[28], 4f,4f,1);
 			
 			for(int i = 0; i < 24; i++){
-				v = new vector[]{put(r*Math.cos((i+1)*theta) + 0.03,  r*Math.sin((i+1)*theta), 0),
-								put(r*Math.cos(i*theta) + 0.03, r*Math.sin(i*theta), 0),
-								put(r*Math.cos(i*theta) + 0.03, r*Math.sin(i*theta), -0.07 ),
-						 		put(r*Math.cos((i+1)*theta) + 0.03, r*Math.sin((i+1)*theta), -0.07),
+				v = new vector[]{createArbitraryVertex(r*Math.cos((i+1)*theta) + 0.03,  r*Math.sin((i+1)*theta), 0),
+								createArbitraryVertex(r*Math.cos(i*theta) + 0.03, r*Math.sin(i*theta), 0),
+								createArbitraryVertex(r*Math.cos(i*theta) + 0.03, r*Math.sin(i*theta), -0.07 ),
+						 		createArbitraryVertex(r*Math.cos((i+1)*theta) + 0.03, r*Math.sin((i+1)*theta), -0.07),
 								
 								};
-				pillars[25 + i] = new polygon3D(v, v[0].myClone(), v[1].myClone(), v[3].myClone(), mainThread.textures[28], 4f,4f,1);
+				pillars[25 + i] = new polygon3D(v, v[0].myClone(), v[1].myClone(), v[3].myClone(), MainThread.textures[28], 4f,4f,1);
 			}
 			
 			v = new vector[24];
 			for(int i = 0; i < 24; i ++){
-				v[23 -i] = put(r*Math.cos(i*theta) + 0.03, r*Math.sin(i*theta), -0.07);
+				v[23 -i] = createArbitraryVertex(r*Math.cos(i*theta) + 0.03, r*Math.sin(i*theta), -0.07);
 			}
-			pillars[49] = new polygon3D(v, put(0.21 + 0.03, 0.06, -0.07), put(0.21 + 0.03, 0.12, -0.07), put(0.18 + 0.03, 0, -0.07), mainThread.textures[28], 4f,4f,1);
+			pillars[49] = new polygon3D(v, createArbitraryVertex(0.21 + 0.03, 0.06, -0.07), createArbitraryVertex(0.21 + 0.03, 0.12, -0.07), createArbitraryVertex(0.18 + 0.03, 0, -0.07), MainThread.textures[28], 4f,4f,1);
 			
 			r = 0.004;
 			for(int i = 0; i < 24; i++){
-				v = new vector[]{put(r*Math.cos((i+1)*theta) - 0.03,  r*Math.sin((i+1)*theta), -0.07),
-								put(r*Math.cos(i*theta) - 0.03, r*Math.sin(i*theta), -0.07),
-								put(r*Math.cos(i*theta) - 0.03, r*Math.sin(i*theta), -0.15 ),
-						 		put(r*Math.cos((i+1)*theta) - 0.03, r*Math.sin((i+1)*theta), -0.15),
+				v = new vector[]{createArbitraryVertex(r*Math.cos((i+1)*theta) - 0.03,  r*Math.sin((i+1)*theta), -0.07),
+								createArbitraryVertex(r*Math.cos(i*theta) - 0.03, r*Math.sin(i*theta), -0.07),
+								createArbitraryVertex(r*Math.cos(i*theta) - 0.03, r*Math.sin(i*theta), -0.15 ),
+						 		createArbitraryVertex(r*Math.cos((i+1)*theta) - 0.03, r*Math.sin((i+1)*theta), -0.15),
 								
 								};
-				pillars[50 + i ] = new polygon3D(v, v[0].myClone(), v[1].myClone(), v[3].myClone(), mainThread.textures[29], 4f,4f,1);
+				pillars[50 + i ] = new polygon3D(v, v[0].myClone(), v[1].myClone(), v[3].myClone(), MainThread.textures[29], 4f,4f,1);
 			}
 			
 			for(int i = 0; i < 24; i++){
-				v = new vector[]{put(r*Math.cos((i+1)*theta) + 0.03,  r*Math.sin((i+1)*theta), -0.07),
-								put(r*Math.cos(i*theta) + 0.03, r*Math.sin(i*theta), -0.07),
-								put(r*Math.cos(i*theta) + 0.03, r*Math.sin(i*theta), -0.15 ),
-						 		put(r*Math.cos((i+1)*theta) + 0.03, r*Math.sin((i+1)*theta), -0.15),
+				v = new vector[]{createArbitraryVertex(r*Math.cos((i+1)*theta) + 0.03,  r*Math.sin((i+1)*theta), -0.07),
+								createArbitraryVertex(r*Math.cos(i*theta) + 0.03, r*Math.sin(i*theta), -0.07),
+								createArbitraryVertex(r*Math.cos(i*theta) + 0.03, r*Math.sin(i*theta), -0.15 ),
+						 		createArbitraryVertex(r*Math.cos((i+1)*theta) + 0.03, r*Math.sin((i+1)*theta), -0.15),
 								
 								};
-				pillars[74 + i ] = new polygon3D(v, v[0].myClone(), v[1].myClone(), v[3].myClone(), mainThread.textures[29], 4f,4f,1);
+				pillars[74 + i ] = new polygon3D(v, v[0].myClone(), v[1].myClone(), v[3].myClone(), MainThread.textures[29], 4f,4f,1);
 			}
 			
 		}
@@ -538,12 +538,12 @@ public class harvester extends solidObject{
 		if(teamNo != 0){
 			for(int i = 0; i < body.length; i++){
 				if(body[i].myTexture.ID == 23)
-					bodyClone[i].myTexture = mainThread.textures[10];
+					bodyClone[i].myTexture = MainThread.textures[10];
 			}
 			
 			for(int i = 0; i < cargo.length; i++){
 				if(cargo[i].myTexture.ID == 23)
-					cargoClone[i].myTexture = mainThread.textures[10];
+					cargoClone[i].myTexture = MainThread.textures[10];
 			}
 		}
 	}
@@ -556,17 +556,17 @@ public class harvester extends solidObject{
 		jDirection.rotate_YZ(angle);
 		kDirection.rotate_YZ(angle);
 		
-		v = new vector[]{put(0.02, 0.225, 0), put(0.05, 0.225, 0), put(0.05, 0.21, 0), put(0.02, 0.21, 0)};
-		triangles[startIndex] = new polygon3D(v, v[0].myClone(), v[1].myClone(), v[3].myClone(), mainThread.textures[26], 4f,4f,1);
+		v = new vector[]{createArbitraryVertex(0.02, 0.225, 0), createArbitraryVertex(0.05, 0.225, 0), createArbitraryVertex(0.05, 0.21, 0), createArbitraryVertex(0.02, 0.21, 0)};
+		triangles[startIndex] = new polygon3D(v, v[0].myClone(), v[1].myClone(), v[3].myClone(), MainThread.textures[26], 4f,4f,1);
 		
-		v = new vector[]{put(0.05, 0.225, 0), put(0.02, 0.225, 0), put(0.02, 0.21, 0.01f), put(0.05, 0.21, 0.01f)};
-		triangles[startIndex + 1] = new polygon3D(v, v[0].myClone(), v[1].myClone(), v[3].myClone(), mainThread.textures[26], 4f,4f,1);
+		v = new vector[]{createArbitraryVertex(0.05, 0.225, 0), createArbitraryVertex(0.02, 0.225, 0), createArbitraryVertex(0.02, 0.21, 0.01f), createArbitraryVertex(0.05, 0.21, 0.01f)};
+		triangles[startIndex + 1] = new polygon3D(v, v[0].myClone(), v[1].myClone(), v[3].myClone(), MainThread.textures[26], 4f,4f,1);
 		
-		v = new vector[]{put(0.05, 0.225, 0),  put(0.05, 0.21, 0.01f), put(0.05, 0.21, 0)};
-		triangles[startIndex + 2] = new polygon3D(v, v[0].myClone(), put(0.05, 0.225, 0.01), v[2].myClone(), mainThread.textures[26], 4f,4f,1);
+		v = new vector[]{createArbitraryVertex(0.05, 0.225, 0),  createArbitraryVertex(0.05, 0.21, 0.01f), createArbitraryVertex(0.05, 0.21, 0)};
+		triangles[startIndex + 2] = new polygon3D(v, v[0].myClone(), createArbitraryVertex(0.05, 0.225, 0.01), v[2].myClone(), MainThread.textures[26], 4f,4f,1);
 		
-		v = new vector[]{put(0.02, 0.21, 0),  put(0.02, 0.21, 0.01f), put(0.02, 0.225, 0)};
-		triangles[startIndex + 3] = new polygon3D(v, put(0.02, 0.21, 0f), put(0.02, 0.21, 0.01), put(0.02, 0.225, 0f), mainThread.textures[26], 4f,4f,1);
+		v = new vector[]{createArbitraryVertex(0.02, 0.21, 0),  createArbitraryVertex(0.02, 0.21, 0.01f), createArbitraryVertex(0.02, 0.225, 0)};
+		triangles[startIndex + 3] = new polygon3D(v, createArbitraryVertex(0.02, 0.21, 0f), createArbitraryVertex(0.02, 0.21, 0.01), createArbitraryVertex(0.02, 0.225, 0f), MainThread.textures[26], 4f,4f,1);
 		
 		
 		start.set(x_old, y_old, z_old);
@@ -607,9 +607,9 @@ public class harvester extends solidObject{
 			underAttackCountDown--;
 		
 		
-		//check if harvester has been destroyed
+		//check if Harvester has been destroyed
 		if(currentHP <= 0){
-			//spawn an explosion when the tank is destroyed
+			//spawn an Explosion when the tank is destroyed
 			float[] tempFloat = theAssetManager.explosionInfo[theAssetManager.explosionCount];	
 			tempFloat[0] = centre.x;
 			tempFloat[1] = centre.y - 0.05f;
@@ -654,17 +654,17 @@ public class harvester extends solidObject{
 		}
 		
 		
-		//update center in camera coordinate
+		//update center in Camera coordinate
 		tempCentre.set(centre);
 		tempCentre.y -= 0.2f;
-		tempCentre.subtract(camera.position);
-		tempCentre.rotate_XZ(camera.XZ_angle);
-		tempCentre.rotate_YZ(camera.YZ_angle); 
+		tempCentre.subtract(Camera.position);
+		tempCentre.rotate_XZ(Camera.XZ_angle);
+		tempCentre.rotate_YZ(Camera.YZ_angle);
 		tempCentre.updateLocation();
 		
 		visionBoundary.x = (int) (tempCentre.screenX - visionW);
 		visionBoundary.y = (int) (tempCentre.screenY - visionH);
-		visionInsideScreen = camera.screen.intersects(visionBoundary);
+		visionInsideScreen = Camera.screen.intersects(visionBoundary);
 		
 		
 		//create vision for enemy commander
@@ -675,7 +675,7 @@ public class harvester extends solidObject{
 			for(int y = 0; y < 13; y++){
 				for(int x = 0; x < 13; x++){
 					if(bitmapVisionForEnemy[x+ y*13])
-						enemyCommander.tempBitmap[xPos + x + (yPos+y)*148] =true;
+						EnemyCommander.tempBitmap[xPos + x + (yPos+y)*148] =true;
 				}
 			}
 		}
@@ -709,9 +709,9 @@ public class harvester extends solidObject{
 		
 		
 		
-		//test if the tank object is visible in camera point of view
+		//test if the tank object is visible in Camera point of view
 		if(visible_minimap){
-			if(currentHP <= 130 && (mainThread.gameFrame + ID) % 3 ==0){
+			if(currentHP <= 130 && (MainThread.gameFrame + ID) % 3 ==0){
 				//spawn smoke particle if the tank is badly damaged
 				float[] tempFloat = theAssetManager.smokeEmmiterList[theAssetManager.smokeEmmiterCount];
 				tempFloat[0] = centre.x + (float)(Math.random()/20) - 0.025f;
@@ -738,7 +738,7 @@ public class harvester extends solidObject{
 				
 			}
 		}else{
-			mainThread.pc.deSelect(this);
+			MainThread.playerCommander.deSelect(this);
 			visible = false;
 		}
 		
@@ -801,14 +801,14 @@ public class harvester extends solidObject{
 				if(d < 1.5f){
 					if(jobStatus == headingToMine){
 						//check if the mining spot is already occupied
-						tile = mainThread.gridMap.tiles[myMiningPosition];
+						tile = MainThread.gridMap.tiles[myMiningPosition];
 						for(int i = 0; i < 5; i++){
 							if(tile[i] != null && tile[i] != this){
 								if(tile[i].getMovement().x ==0 && tile[i].getMovement().z == 0){
 									boolean foundFreeSpot = false;
 									for(int j = 0; j < 7; j++){
 										int p = miningPositions[(myMiningPosition + j)%8];
-										tile = mainThread.gridMap.tiles[p];
+										tile = MainThread.gridMap.tiles[p];
 										boolean freespot = true;
 										
 										for(int k = 0; k < 5; k++){
@@ -870,7 +870,7 @@ public class harvester extends solidObject{
 						
 						boolean canMove = true;
 						for(int i = 0; i < 4; i++){
-							solidObject o = mainThread.gridMap.tiles[myRefinery.tileIndex[5]+128][i];
+							SolidObject o = MainThread.gridMap.tiles[myRefinery.tileIndex[5]+128][i];
 							if(o != null && o != this){
 								if(o.boundary2D.intersect(boundary2D)){
 									canMove = false;
@@ -898,7 +898,7 @@ public class harvester extends solidObject{
 						harvest(myGoldMine);
 				}else if(jobStatus == facingDownward){
 					if(bodyAngle != 180){
-						int bodyAngleDelta = 360 - (geometry.findAngleDelta(bodyAngle, 180, bodyTurnRate) + 360)%360;
+						int bodyAngleDelta = 360 - (Geometry.findAngleDelta(bodyAngle, 180, bodyTurnRate) + 360)%360;
 						bodyAngle= (bodyAngle - bodyAngleDelta + 360)%360;
 					}else{
 						if(myRefinery.hasExit()) 
@@ -914,9 +914,9 @@ public class harvester extends solidObject{
 						unloadingCount = 100;
 					if(unloadingCount == 50){
 						if(teamNo == 0)
-							mainThread.pc.theBaseInfo.currentCredit +=cargoDeposite;
+							MainThread.playerCommander.theBaseInfo.currentCredit +=cargoDeposite;
 						else
-							mainThread.ec.theBaseInfo.currentCredit +=cargoDeposite;
+							MainThread.enemyCommander.theBaseInfo.currentCredit +=cargoDeposite;
 						cargoDeposite = 0;
 						progressStatus = 100*cargoDeposite/700;
 					}
@@ -928,7 +928,7 @@ public class harvester extends solidObject{
 						returnToRefinery(null);
 				}else if(jobStatus == facingRight){
 					if(bodyAngle != 90){
-						int bodyAngleDelta = 360 - (geometry.findAngleDelta(bodyAngle, 90, bodyTurnRate) + 360)%360;
+						int bodyAngleDelta = 360 - (Geometry.findAngleDelta(bodyAngle, 90, bodyTurnRate) + 360)%360;
 						bodyAngle= (bodyAngle - bodyAngleDelta + 360)%360;
 					}else{
 					
@@ -951,10 +951,10 @@ public class harvester extends solidObject{
 					if(myRefinery.currentHP <= 0)
 						returnToRefinery(null);
 				}else if(jobStatus == facingGoldMine){
-					destinationAngle = geometry.findAngle(centre.x, centre.z, myGoldMine.centre.x, myGoldMine.centre.z);
+					destinationAngle = Geometry.findAngle(centre.x, centre.z, myGoldMine.centre.x, myGoldMine.centre.z);
 					immediateDestinationAngle = destinationAngle;	
 					if(bodyAngle != immediateDestinationAngle){
-						int bodyAngleDelta = 360 - (geometry.findAngleDelta(bodyAngle, immediateDestinationAngle, bodyTurnRate) + 360)%360;
+						int bodyAngleDelta = 360 - (Geometry.findAngleDelta(bodyAngle, immediateDestinationAngle, bodyTurnRate) + 360)%360;
 						bodyAngle= (bodyAngle - bodyAngleDelta + 360)%360;
 					}else{
 						jobStatus = isDrilling;
@@ -964,7 +964,7 @@ public class harvester extends solidObject{
 				}else if(jobStatus == facingRefinery){
 					
 					if((bodyAngle%360) != 0){
-						int bodyAngleDelta = 360 - (geometry.findAngleDelta(bodyAngle, 0, bodyTurnRate) + 360)%360;
+						int bodyAngleDelta = 360 - (Geometry.findAngleDelta(bodyAngle, 0, bodyTurnRate) + 360)%360;
 						bodyAngle= (bodyAngle - bodyAngleDelta + 360)%360;
 					}else{
 						jobStatus = enteringRefinery;
@@ -1080,9 +1080,9 @@ public class harvester extends solidObject{
 			
 			movement.reset();
 		
-			//check if the harvester has reached next node in the path
+			//check if the Harvester has reached next node in the path
 			if(centre.x == nextNodeX && centre.z == nextNodeY){
-				//check if the harvester has reached the destination
+				//check if the Harvester has reached the destination
 				int destX  = (int)(destinationX * 64)/16;
 				int destY =  127 - (int)(destinationY * 64)/16;
 				int nodeX = (int)(centre.x * 64)/16;
@@ -1126,18 +1126,18 @@ public class harvester extends solidObject{
 			
 			float distanceToNextNode = (float)Math.sqrt((nextNodeX - centre.x) * (nextNodeX - centre.x) + (nextNodeY - centre.z) * (nextNodeY - centre.z));
 			calculateMovement();
-			destinationAngle = geometry.findAngle(centre.x, centre.z, nextNodeX, nextNodeY);
+			destinationAngle = Geometry.findAngle(centre.x, centre.z, nextNodeX, nextNodeY);
 			immediateDestinationAngle = destinationAngle;	
 			
 			if(Math.abs(bodyAngle - immediateDestinationAngle) > 45 && Math.abs(bodyAngle - immediateDestinationAngle) < 315){
 				
-				int bodyAngleDelta = 360 - (geometry.findAngleDelta(bodyAngle, immediateDestinationAngle, bodyTurnRate) + 360)%360;
+				int bodyAngleDelta = 360 - (Geometry.findAngleDelta(bodyAngle, immediateDestinationAngle, bodyTurnRate) + 360)%360;
 				bodyAngle= (bodyAngle - bodyAngleDelta + 360)%360;
 				movement.reset();
 				
 			}else{
 				if(bodyAngle != immediateDestinationAngle){
-					int bodyAngleDelta = 360 - (geometry.findAngleDelta(bodyAngle, immediateDestinationAngle, bodyTurnRate) + 360)%360;
+					int bodyAngleDelta = 360 - (Geometry.findAngleDelta(bodyAngle, immediateDestinationAngle, bodyTurnRate) + 360)%360;
 					bodyAngle= (bodyAngle - bodyAngleDelta + 360)%360;
 				}
 				
@@ -1173,7 +1173,7 @@ public class harvester extends solidObject{
 			
 		
 		if(!pathIsFound){
-			if((movement.x == 0 && movement.z == 0) || mainThread.gridMap.tiles[occupiedTile0][4] != null){
+			if((movement.x == 0 && movement.z == 0) || MainThread.gridMap.tiles[occupiedTile0][4] != null){
 				if((Math.abs(destinationX - centre.x) + Math.abs(destinationY - centre.z) > 0.5) ||(jobStatus == idle)){
 					heuristicRecalculationCountDown = 64;
 				}
@@ -1181,7 +1181,7 @@ public class harvester extends solidObject{
 			performMovementLogic();
 			avoidGettingStucked();
 			
-			//harvester is always on the move
+			//Harvester is always on the move
 			if(jobStatus != idle){
 				currentCommand = move;
 			}
@@ -1193,7 +1193,7 @@ public class harvester extends solidObject{
 		int smallestHeurstic = 127;
 		int nextTile = currentTile;
 		
-		boolean[] obstacleMap = mainThread.gridMap.previousObstacleMap;
+		boolean[] obstacleMap = MainThread.gridMap.previousObstacleMap;
 		
 		//check north west tile
 		int northWestTile = currentTile - 128 - 1;
@@ -1287,19 +1287,19 @@ public class harvester extends solidObject{
 			
 			distanceToDesination = (float)Math.sqrt((destinationX - centre.x) * (destinationX - centre.x) + (destinationY - centre.z) * (destinationY - centre.z));
 			calculateMovement();
-			destinationAngle = geometry.findAngle(centre.x, centre.z, destinationX, destinationY);
+			destinationAngle = Geometry.findAngle(centre.x, centre.z, destinationX, destinationY);
 			immediateDestinationAngle = destinationAngle;	
 		}
 		
 		if(Math.abs(bodyAngle - immediateDestinationAngle) > 45 && Math.abs(bodyAngle - immediateDestinationAngle) < 315){
 			
-			int bodyAngleDelta = 360 - (geometry.findAngleDelta(bodyAngle, immediateDestinationAngle, bodyTurnRate) + 360)%360;
+			int bodyAngleDelta = 360 - (Geometry.findAngleDelta(bodyAngle, immediateDestinationAngle, bodyTurnRate) + 360)%360;
 			bodyAngle= (bodyAngle - bodyAngleDelta + 360)%360;
 			movement.reset();
 			
 		}else{
 			if(bodyAngle != immediateDestinationAngle){
-				int bodyAngleDelta = 360 - (geometry.findAngleDelta(bodyAngle, immediateDestinationAngle, bodyTurnRate) + 360)%360;
+				int bodyAngleDelta = 360 - (Geometry.findAngleDelta(bodyAngle, immediateDestinationAngle, bodyTurnRate) + 360)%360;
 				bodyAngle= (bodyAngle - bodyAngleDelta + 360)%360;
 			}
 			
@@ -1358,13 +1358,13 @@ public class harvester extends solidObject{
 		
 
 		if(obstacle != null){
-			if((unStableObstacle != null ||  !isStable(obstacle.owner)) && (ID + randomNumber + mainThread.gameFrame)%128 ==0){
+			if((unStableObstacle != null ||  !isStable(obstacle.owner)) && (ID + randomNumber + MainThread.gameFrame)%128 ==0){
 				
 				newDestinationisGiven = true;
 				currentMovementStatus = freeToMove;
 				hugWallCoolDown = 0;
 				stuckCount = 0;
-				randomNumber = gameData.getRandom();
+				randomNumber = GameData.getRandom();
 			}
 		}
 		
@@ -1633,7 +1633,7 @@ public class harvester extends solidObject{
 	}
 	
 	
-	public void harvest(solidObject o){      
+	public void harvest(SolidObject o){
 		
 	
 		if(drillingCount > 0 && o == myGoldMine)
@@ -1647,7 +1647,7 @@ public class harvester extends solidObject{
 			return;
 		}
 			
-		myGoldMine = (goldMine)o;
+		myGoldMine = (GoldMine)o;
 		
 		if(myGoldMine.goldDeposite == 0){
 			myGoldMine = null;
@@ -1681,7 +1681,7 @@ public class harvester extends solidObject{
 	}
 	
 	
-	public void returnToRefinery(solidObject o){
+	public void returnToRefinery(SolidObject o){
 		if(jobStatus == enteringRefinery || jobStatus == leavingRefinery || jobStatus == unloadingCargo || jobStatus == facingRight || jobStatus == facingDownward)
 			return;
 		
@@ -1697,7 +1697,7 @@ public class harvester extends solidObject{
 			myRefinery = findNearestRefinery();
 			
 		}else{
-			myRefinery = (refinery)o;
+			myRefinery = (Refinery)o;
 			if(myRefinery.currentHP <=0){
 				//find a nearest refinary
 				myRefinery = findNearestRefinery();
@@ -1730,20 +1730,20 @@ public class harvester extends solidObject{
 		}
 	}
 	
-	public refinery findNearestRefinery(){
-		refinery[] refineries = (refinery[])mainThread.theAssetManager.refineries;
+	public Refinery findNearestRefinery(){
+		Refinery[] refineries = (Refinery[]) MainThread.theAssetManager.refineries;
 		
 		for(int i = 1; i < refineries.length; i++){
 			for(int j = 0; j <refineries.length - i; j++){
 				if(refineries[j] == null){
-					refinery temp = refineries[j+1];
+					Refinery temp = refineries[j+1];
 					refineries[j+1] = refineries[j];
 					refineries[j] = temp;
 				}else if(refineries[j +1] != null){
 					float d1 = Math.abs(refineries[j].centre.x - centre.x) + Math.abs(refineries[j].centre.z - centre.z);
 					float d2 = Math.abs(refineries[j + 1].centre.x - centre.x) + Math.abs(refineries[j+1].centre.z - centre.z);
 					if(d1 > d2){
-						refinery temp = refineries[j+1];
+						Refinery temp = refineries[j+1];
 						refineries[j+1] = refineries[j];
 						refineries[j] = temp;
 					}
@@ -1751,7 +1751,7 @@ public class harvester extends solidObject{
 			}
 		}
 		
-		refinery nearestBusyRefinery = null;
+		Refinery nearestBusyRefinery = null;
 		for(int i = 0; i < refineries.length; i++){
 			if(refineries[i] != null){
 				if(!refineries[i].isBusy && !refineries[i].droppingAreaIsFull(this) && refineries[i].currentHP >0 && (refineries[i].teamNo == teamNo)){	
@@ -1780,25 +1780,25 @@ public class harvester extends solidObject{
 	public void goToTheNearestGoldMine(){
 		int goldMineIndex = -1;
 		double distance = 10;
-		for(int i = 0; i < mainThread.theAssetManager.goldMines.length; i++){
-			if(mainThread.theAssetManager.goldMines[i] == null)
+		for(int i = 0; i < MainThread.theAssetManager.goldMines.length; i++){
+			if(MainThread.theAssetManager.goldMines[i] == null)
 				continue;
 			
-			double newDistance = getDistance(mainThread.theAssetManager.goldMines[i]);
-			if(newDistance < distance  && mainThread.theAssetManager.goldMines[i].goldDeposite > 1){
+			double newDistance = getDistance(MainThread.theAssetManager.goldMines[i]);
+			if(newDistance < distance  && MainThread.theAssetManager.goldMines[i].goldDeposite > 1){
 				distance = newDistance;
 				goldMineIndex = i;
 			}
 		}
 		
 		if(goldMineIndex != -1){
-			myGoldMine = mainThread.theAssetManager.goldMines[goldMineIndex];
+			myGoldMine = MainThread.theAssetManager.goldMines[goldMineIndex];
 			//waitingCount = 15;
 			returnToRefinery(null);
 		}
 	}
 	
-	public float checkDistance(solidObject o){
+	public float checkDistance(SolidObject o){
 		return Math.abs(o.centre.x - centre.x) + Math.abs(o.centre.z - centre.z);
 	}
 	

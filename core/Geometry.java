@@ -1,7 +1,7 @@
 package core;
 
 //determine the drawing orders for polygons and models
-public class geometry {
+public class Geometry {
 	
 	public static vector temp = new vector(0,0,0);
 	public static vector temp1 = new vector(0,0,0);
@@ -82,24 +82,24 @@ public class geometry {
 	//draw dot line
 	public static void drawLine(vector startPoint, vector endPoint, int color, byte shadowBit){
 		
-		int w = mainThread.screen_width;
-		int h = mainThread.screen_height;
-		int size = mainThread.screen_size;
+		int w = MainThread.screen_width;
+		int h = MainThread.screen_height;
+		int size = MainThread.screen_size;
 		
-		int[] screen = mainThread.screen;
+		int[] screen = MainThread.screen;
 		
 		temp1.set(startPoint);
 		temp1.y = -0.5f;
 		temp1.x -= 0.07f;
-		temp1.subtract(camera.position);
-		temp1.rotate_XZ(camera.XZ_angle);
-		temp1.rotate_YZ(camera.YZ_angle); 
+		temp1.subtract(Camera.position);
+		temp1.rotate_XZ(Camera.XZ_angle);
+		temp1.rotate_YZ(Camera.YZ_angle);
 	
 		temp2.set(endPoint);
 		temp2.y = -0.5f;
-		temp2.subtract(camera.position);
-		temp2.rotate_XZ(camera.XZ_angle);
-		temp2.rotate_YZ(camera.YZ_angle); 
+		temp2.subtract(Camera.position);
+		temp2.rotate_XZ(Camera.XZ_angle);
+		temp2.rotate_YZ(Camera.YZ_angle);
 		
 		if(temp1.z < 1f && temp2.z < 1f)
 			return;
@@ -160,7 +160,7 @@ public class geometry {
 				
 				
 				screen[start + x + y*w] = color;
-				mainThread.shadowBitmap[start + x + y*w] = shadowBit;
+				MainThread.shadowBitmap[start + x + y*w] = shadowBit;
 			}
 			
 		}else{
@@ -173,7 +173,7 @@ public class geometry {
 					continue;
 				
 				screen[start + x + y*w] = color;
-				mainThread.shadowBitmap[start + x + y*w] = shadowBit;
+				MainThread.shadowBitmap[start + x + y*w] = shadowBit;
 				
 				
 			}
@@ -194,7 +194,7 @@ public class geometry {
 				
 				if(index >= 0 && index < size){
 					screen[index] = color;
-					mainThread.shadowBitmap[index] = shadowBit;
+					MainThread.shadowBitmap[index] = shadowBit;
 				}
 				
 			}

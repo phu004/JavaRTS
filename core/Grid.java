@@ -2,15 +2,15 @@ package core;
 
 import entity.*;
 
-public class grid {
+public class Grid {
 	
 	public int size;
-	public solidObject[][] tiles; //a list of colliable objects, used by  local path finding 
+	public SolidObject[][] tiles; //a list of colliable objects, used by  local path finding
 	public boolean[] previousObstacleMap, currentObstacleMap;  //a boolean  representation of the collideble objects, used by A star
 	
-	public grid(int size){
+	public Grid(int size){
 		this.size = size;
-		tiles = new solidObject[size * size][5];
+		tiles = new SolidObject[size * size][5];
 		
 		previousObstacleMap = new boolean[size * size];
 		currentObstacleMap = new boolean[size * size];
@@ -54,10 +54,10 @@ public class grid {
 	
 	
 	public void draw(){
-		int w = mainThread.screen_width;
+		int w = MainThread.screen_width;
 		int pos = 2 + 20 * w;
 		boolean tile;
-		int[] screen = mainThread.screen2;
+		int[] screen = MainThread.screen2;
 		for(int i = 0; i < 128; i++){
 			for(int j = 0; j < 128; j++){
 				tile = previousObstacleMap[j + i*128];

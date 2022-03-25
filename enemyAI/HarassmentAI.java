@@ -4,37 +4,37 @@
 
 package enemyAI;
 
-import core.baseInfo;
-import core.gameData;
-import core.mainThread;
+import core.BaseInfo;
+import core.GameData;
+import core.MainThread;
 import core.vector;
-import entity.rocketTank;
-import entity.solidObject;
-import entity.stealthTank;
+import entity.RocketTank;
+import entity.SolidObject;
+import entity.StealthTank;
 
-public class harassmentAI {
+public class HarassmentAI {
 	
-	public baseInfo theBaseInfo;
+	public BaseInfo theBaseInfo;
 	
 	
 	public int frameAI;
 	public int miniFrameAI;
-	public stealthTank scout;
-	public rocketTank[] squad;
+	public StealthTank scout;
+	public RocketTank[] squad;
 	public int status;
 	public final int gathering = 0;
 	public final int positioning = 1;
 	public final int harasing = 2;
 	public final int retreating = 3;
-	public stealthTank[] stealthTanksControlledByCombatAI;
-	public rocketTank[] rocketTanksControlledByCombatAI;
+	public StealthTank[] stealthTanksControlledByCombatAI;
+	public RocketTank[] rocketTanksControlledByCombatAI;
 	public vector targetLocation, gatherLocation, squadCenter, harassDirection;
 	public int harassTimer;
 
 	
-	public harassmentAI(){
-		this.theBaseInfo = mainThread.ec.theBaseInfo;
-		squad = new rocketTank[3];
+	public HarassmentAI(){
+		this.theBaseInfo = MainThread.enemyCommander.theBaseInfo;
+		squad = new RocketTank[3];
 		status = gathering;
 		targetLocation = new vector(0,0,0);
 		gatherLocation = new vector(0,0,0);
@@ -44,14 +44,14 @@ public class harassmentAI {
 	
 	public void processAI(){
 		miniFrameAI++;
-		frameAI = mainThread.ec.frameAI;
+		frameAI = MainThread.enemyCommander.frameAI;
 			
 		//only activate this AI after 660 game seconds (about 9 minutes in real time)
 		if(frameAI < 660)
 			return;
 		
-		stealthTanksControlledByCombatAI = mainThread.ec.theUnitProductionAI.stealthTanksControlledByCombatAI;
-		rocketTanksControlledByCombatAI = mainThread.ec.theUnitProductionAI.rocketTanksControlledByCombatAI;
+		stealthTanksControlledByCombatAI = MainThread.enemyCommander.theUnitProductionAI.stealthTanksControlledByCombatAI;
+		rocketTanksControlledByCombatAI = MainThread.enemyCommander.theUnitProductionAI.rocketTanksControlledByCombatAI;
 		
 		
 		
@@ -60,7 +60,7 @@ public class harassmentAI {
 		
 			if(scout == null || scout.currentHP <=0) {
 				for(int i = 0; i < stealthTanksControlledByCombatAI.length; i++) {
-					if(stealthTanksControlledByCombatAI[i] != null && stealthTanksControlledByCombatAI[i].currentHP == stealthTank.maxHP && stealthTanksControlledByCombatAI[i].attackStatus != solidObject.isAttacking) {
+					if(stealthTanksControlledByCombatAI[i] != null && stealthTanksControlledByCombatAI[i].currentHP == StealthTank.maxHP && stealthTanksControlledByCombatAI[i].attackStatus != SolidObject.isAttacking) {
 						if(hasRoomToMove(stealthTanksControlledByCombatAI[i])) {
 							scout = stealthTanksControlledByCombatAI[i];
 							stealthTanksControlledByCombatAI[i] = null;
@@ -71,15 +71,15 @@ public class harassmentAI {
 			}
 			
 			if(scout != null) {
-				scout.moveTo(mainThread.ec.theUnitProductionAI.rallyPoint.x - 1,mainThread.ec.theUnitProductionAI.rallyPoint.z);
-				scout.currentCommand = solidObject.move;
-				scout.secondaryCommand = solidObject.StandBy;
+				scout.moveTo(MainThread.enemyCommander.theUnitProductionAI.rallyPoint.x - 1, MainThread.enemyCommander.theUnitProductionAI.rallyPoint.z);
+				scout.currentCommand = SolidObject.move;
+				scout.secondaryCommand = SolidObject.StandBy;
 			}
 			
 			for(int i = 0; i < squad.length; i++) {
 				if(squad[i] == null || squad[i].currentHP <=0) {
 					for(int j = 0; j < rocketTanksControlledByCombatAI.length; j++) {
-						if(rocketTanksControlledByCombatAI[j] != null && rocketTanksControlledByCombatAI[j].currentHP == rocketTank.maxHP && rocketTanksControlledByCombatAI[j].attackStatus != solidObject.isAttacking) {
+						if(rocketTanksControlledByCombatAI[j] != null && rocketTanksControlledByCombatAI[j].currentHP == RocketTank.maxHP && rocketTanksControlledByCombatAI[j].attackStatus != SolidObject.isAttacking) {
 							if(hasRoomToMove(rocketTanksControlledByCombatAI[j])) {
 								squad[i] = rocketTanksControlledByCombatAI[j];
 								rocketTanksControlledByCombatAI[j] = null;
@@ -92,9 +92,9 @@ public class harassmentAI {
 			int numberOfSquad = 0;
 			for(int i = 0; i < squad.length; i++) {
 				if(squad[i] != null && squad[i].currentHP > 0) {
-					squad[i].attackMoveTo(mainThread.ec.theUnitProductionAI.rallyPoint.x - 1,mainThread.ec.theUnitProductionAI.rallyPoint.z);
-					squad[i].currentCommand = solidObject.attackMove;
-					squad[i].secondaryCommand = solidObject.attackMove;
+					squad[i].attackMoveTo(MainThread.enemyCommander.theUnitProductionAI.rallyPoint.x - 1, MainThread.enemyCommander.theUnitProductionAI.rallyPoint.z);
+					squad[i].currentCommand = SolidObject.attackMove;
+					squad[i].secondaryCommand = SolidObject.attackMove;
 					numberOfSquad++;
 				}
 			}
@@ -105,27 +105,27 @@ public class harassmentAI {
 				
 				//find the location of the target location and gather location
 				
-				if(gameData.getRandom() >= 512) {
-					if(playerBaseIsAround(mainThread.theAssetManager.goldMines[2].centre)) {
-						targetLocation = mainThread.theAssetManager.goldMines[2].centre;
+				if(GameData.getRandom() >= 512) {
+					if(playerBaseIsAround(MainThread.theAssetManager.goldMines[2].centre)) {
+						targetLocation = MainThread.theAssetManager.goldMines[2].centre;
 						gatherLocation.set(15, 0, 28);
-					}else if(playerBaseIsAround(mainThread.theAssetManager.goldMines[3].centre)) {
-						targetLocation = mainThread.theAssetManager.goldMines[3].centre;
+					}else if(playerBaseIsAround(MainThread.theAssetManager.goldMines[3].centre)) {
+						targetLocation = MainThread.theAssetManager.goldMines[3].centre;
 						gatherLocation.set(28.5f, 0, 15);
 					}
 				}else {
-					if(playerBaseIsAround(mainThread.theAssetManager.goldMines[3].centre)) {
-						targetLocation = mainThread.theAssetManager.goldMines[3].centre;
+					if(playerBaseIsAround(MainThread.theAssetManager.goldMines[3].centre)) {
+						targetLocation = MainThread.theAssetManager.goldMines[3].centre;
 						gatherLocation.set(28.5f, 0, 15);
-					}else if(playerBaseIsAround(mainThread.theAssetManager.goldMines[2].centre)) {
-						targetLocation = mainThread.theAssetManager.goldMines[2].centre;
+					}else if(playerBaseIsAround(MainThread.theAssetManager.goldMines[2].centre)) {
+						targetLocation = MainThread.theAssetManager.goldMines[2].centre;
 						gatherLocation.set(15, 0, 28);
 					}
 				}
 				
 				if(targetLocation.x == 0 && targetLocation.z == 0) {
 					targetLocation.set(1.5f, 0, 1.5f);
-					if(gameData.getRandom() >= 512) {
+					if(GameData.getRandom() >= 512) {
 						gatherLocation.set(1.5f, 0, 15);
 					}else {
 						gatherLocation.set(15, 0, 1.5f);
@@ -141,8 +141,8 @@ public class harassmentAI {
 					numberOfSquad++;
 					if(squad[i].secondaryDestinationX != gatherLocation.x || squad[i].secondaryDestinationY != gatherLocation.z){
 						squad[i].attackMoveTo(gatherLocation.x,gatherLocation.z);
-						squad[i].currentCommand = solidObject.attackMove;
-						squad[i].secondaryCommand = solidObject.attackMove;
+						squad[i].currentCommand = SolidObject.attackMove;
+						squad[i].secondaryCommand = SolidObject.attackMove;
 					}
 				}
 			}
@@ -150,8 +150,8 @@ public class harassmentAI {
 			
 			if(scout != null) {
 				scout.moveTo(gatherLocation.x,gatherLocation.z);
-				scout.currentCommand = solidObject.move;
-				scout.secondaryCommand = solidObject.StandBy;
+				scout.currentCommand = SolidObject.move;
+				scout.secondaryCommand = SolidObject.StandBy;
 			}
 			
 			boolean scoutInPosition = true;
@@ -195,8 +195,8 @@ public class harassmentAI {
 					if(squad[i].secondaryDestinationX != targetLocation.x || squad[i].secondaryDestinationY != targetLocation.z) {
 						if(harassTimer > 200) {  //delay the squad moment a little bit, make sure scout stays ahead
 							squad[i].attackMoveTo(targetLocation.x,targetLocation.z);
-							squad[i].currentCommand = solidObject.attackMove;
-							squad[i].secondaryCommand = solidObject.attackMove;
+							squad[i].currentCommand = SolidObject.attackMove;
+							squad[i].secondaryCommand = SolidObject.attackMove;
 						}
 					}
 					
@@ -226,18 +226,18 @@ public class harassmentAI {
 				
 					if(!squadIsUnderAttack) {
 						scout.moveTo(squadCenter.x + harassDirection.x*1.5f, squadCenter.z + harassDirection.z*1.5f);
-						scout.currentCommand = solidObject.move;
-						scout.secondaryCommand = solidObject.StandBy;
+						scout.currentCommand = SolidObject.move;
+						scout.secondaryCommand = SolidObject.StandBy;
 					}else if(miniFrameAI%30 == 29){
 						scout.attackMoveTo(squadCenter.x, squadCenter.z);
-						scout.currentCommand = solidObject.attackMove;
-						scout.secondaryCommand = solidObject.attackMove;
+						scout.currentCommand = SolidObject.attackMove;
+						scout.secondaryCommand = SolidObject.attackMove;
 					}
 				}
 			}
 			
 			//attack the first building within range.
-			solidObject[] playerStructures = mainThread.ec.theMapAwarenessAI.playerStructures;
+			SolidObject[] playerStructures = MainThread.enemyCommander.theMapAwarenessAI.playerStructures;
 			for(int i = 0; i < playerStructures.length; i++) {
 				if(playerStructures[i] != null && playerStructures[i].currentHP >0) {
 					float x = playerStructures[i].centre.x;
@@ -249,7 +249,7 @@ public class harassmentAI {
 								double d1 = Math.sqrt((squad[j].centre.x-x)*(squad[j].centre.x-x) + (squad[j].centre.z-z)*(squad[j].centre.z-z));
 								if(d1 < 2.86) {
 									squad[j].attack(playerStructures[i]);
-									squad[j].currentCommand = solidObject.attackCautiously;
+									squad[j].currentCommand = SolidObject.attackCautiously;
 								}
 							}
 						}
@@ -278,7 +278,7 @@ public class harassmentAI {
 	}
 	
 	public boolean playerBaseIsAround(vector v) {
-		solidObject[] playerStructures = mainThread.ec.theMapAwarenessAI.playerStructures;
+		SolidObject[] playerStructures = MainThread.enemyCommander.theMapAwarenessAI.playerStructures;
 		for(int i = 0; i < playerStructures.length; i++) {
 			if(playerStructures[i] != null && playerStructures[i].currentHP >0) {
 				float x = playerStructures[i].centre.x;
@@ -293,11 +293,11 @@ public class harassmentAI {
 		return false;
 	}
 	
-	public boolean hasRoomToMove(solidObject o) {
+	public boolean hasRoomToMove(SolidObject o) {
 		float x = o.centre.x;
 		float z = o.centre.x;
 			
-		solidObject[] s1 = mainThread.gridMap.tiles[(int)((x+0.25)*4) + (127 - (int)(z*4))*128];
+		SolidObject[] s1 = MainThread.gridMap.tiles[(int)((x+0.25)*4) + (127 - (int)(z*4))*128];
 		boolean hasRoomToMove = true;
 		for(int i = 0; i < s1.length; i++) {
 			if(s1[i] != null && s1[i] != o) {
@@ -309,7 +309,7 @@ public class harassmentAI {
 		if(hasRoomToMove)
 			return true;
 		
-		solidObject[] s2 = mainThread.gridMap.tiles[(int)((x-0.25)*4) + (127 - (int)(z*4))*128];
+		SolidObject[] s2 = MainThread.gridMap.tiles[(int)((x-0.25)*4) + (127 - (int)(z*4))*128];
 		hasRoomToMove = true;
 		for(int i = 0; i < s2.length; i++) {
 			if(s2[i] != null && s2[i] != o) {
@@ -321,7 +321,7 @@ public class harassmentAI {
 		if(hasRoomToMove)
 			return true;
 		
-		solidObject[] s3 = mainThread.gridMap.tiles[(int)(x*4) + (127 - (int)((z + 0.25)*4))*128];
+		SolidObject[] s3 = MainThread.gridMap.tiles[(int)(x*4) + (127 - (int)((z + 0.25)*4))*128];
 		hasRoomToMove = true;
 		for(int i = 0; i < s3.length; i++) {
 			if(s3[i] != null && s3[i] != o) {
@@ -333,7 +333,7 @@ public class harassmentAI {
 		if(hasRoomToMove)
 			return true;
 		
-		solidObject[] s4 = mainThread.gridMap.tiles[(int)(x*4) + (127 - (int)((z - 0.25)*4))*128];
+		SolidObject[] s4 = MainThread.gridMap.tiles[(int)(x*4) + (127 - (int)((z - 0.25)*4))*128];
 		hasRoomToMove = true;
 		for(int i = 0; i < s4.length; i++) {
 			if(s4[i] != null && s4[i] != o) {

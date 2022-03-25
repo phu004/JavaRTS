@@ -1,7 +1,7 @@
 package gui;
 
-import core.gameData;
-import core.mainThread;
+import core.GameData;
+import core.MainThread;
 import core.postProcessingThread;
 import core.vector;
 
@@ -14,8 +14,8 @@ public class MiniMap {
 	public static boolean isDrawingWindow;
 	public int[][] warningSigns;
 	public int[] warningSignLife;
-	public static int screen_width = mainThread.screen_width;
-	public static int screen_height = mainThread.screen_height;
+	public static int screen_width = MainThread.screen_width;
+	public static int screen_height = MainThread.screen_height;
 	
 	public void init(){
 		//load terrain image as background for minimap 
@@ -95,20 +95,20 @@ public class MiniMap {
 				int centerX = warningSigns[i][0];
 				int centerY = warningSigns[i][1];
 				
-				int xPos1 = centerX + (int)(r*gameData.cos[angle]);
-				int yPos1 = centerY + (int)(r*gameData.sin[angle]);
+				int xPos1 = centerX + (int)(r* GameData.cos[angle]);
+				int yPos1 = centerY + (int)(r* GameData.sin[angle]);
 				
 				angle = (angle + 120)%360;
 				
-				int xPos2 = centerX + (int)(r*gameData.cos[angle]);
-				int yPos2 = centerY + (int)(r*gameData.sin[angle]);
+				int xPos2 = centerX + (int)(r* GameData.cos[angle]);
+				int yPos2 = centerY + (int)(r* GameData.sin[angle]);
 				
 				drawLine(xPos1, yPos1, xPos2,yPos2, screen, 0x660000);
 				
 				angle = (angle + 120)%360;
 				
-				int xPos3 = centerX + (int)(r*gameData.cos[angle]);
-				int yPos3 = centerY + (int)(r*gameData.sin[angle]);
+				int xPos3 = centerX + (int)(r* GameData.cos[angle]);
+				int yPos3 = centerY + (int)(r* GameData.sin[angle]);
 				
 				drawLine(xPos3, yPos3, xPos2,yPos2, screen, 0x660000);
 				
@@ -166,10 +166,10 @@ public class MiniMap {
 	
 	public void findCorners(){
 		
-		corner1.set(postProcessingThread.my2Dto3DFactory.get3DLocation(mainThread.theAssetManager.Terrain.ground[0], -40, -40));
-		corner2.set(postProcessingThread.my2Dto3DFactory.get3DLocation(mainThread.theAssetManager.Terrain.ground[0], screen_width+39, -40));
-		corner3.set(postProcessingThread.my2Dto3DFactory.get3DLocation(mainThread.theAssetManager.Terrain.ground[0], screen_width+39, screen_height+39));
-		corner4.set(postProcessingThread.my2Dto3DFactory.get3DLocation(mainThread.theAssetManager.Terrain.ground[0], -40, screen_height+39));
+		corner1.set(postProcessingThread.my2Dto3DFactory.get3DLocation(MainThread.theAssetManager.Terrain.ground[0], -40, -40));
+		corner2.set(postProcessingThread.my2Dto3DFactory.get3DLocation(MainThread.theAssetManager.Terrain.ground[0], screen_width+39, -40));
+		corner3.set(postProcessingThread.my2Dto3DFactory.get3DLocation(MainThread.theAssetManager.Terrain.ground[0], screen_width+39, screen_height+39));
+		corner4.set(postProcessingThread.my2Dto3DFactory.get3DLocation(MainThread.theAssetManager.Terrain.ground[0], -40, screen_height+39));
 		
 	}
 	

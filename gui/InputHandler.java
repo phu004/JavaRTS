@@ -4,11 +4,11 @@ package gui;
 
 import java.awt.*;
 
-import core.camera;
-import core.geometry;
-import core.mainThread;
+import core.Camera;
+import core.Geometry;
+import core.MainThread;
 
-public class inputHandler {
+public class InputHandler {
 
 	public static int mouse_x, mouse_y,mouse_x0, mouse_x1, mouse_y0, mouse_y1, cameraMovementAngle;
 	
@@ -40,27 +40,27 @@ public class inputHandler {
 	
 	public static int escapePressedCooldown;
 	
-	public static int screen_width = mainThread.screen_width;
-	public static int screen_height = mainThread.screen_height;
+	public static int screen_width = MainThread.screen_width;
+	public static int screen_height = MainThread.screen_height;
 	
 	public static void processInput(){
 		
 		if(escapePressedCooldown > 0)
 			escapePressedCooldown --;
 		
-		if(mainThread.capturedMouse)
+		if(MainThread.capturedMouse)
 			mouseIsInsideScreen = true;
 		
 		//read input char
 		int theCounter = inputCounter;  
 		
-		mainThread.currentInputChar = 255;
+		MainThread.currentInputChar = 255;
 		
 		//handle over flow
 		if(inputBufferIndex > theCounter){
 			while(inputBufferIndex < 1024){
 				char c = inputBuffer[inputBufferIndex];
-				mainThread.currentInputChar = c;
+				MainThread.currentInputChar = c;
 				
 				
 				if(c == 's' || c == 'S'){
@@ -96,7 +96,7 @@ public class inputHandler {
 		
 		while(inputBufferIndex < theCounter){
 			char c = inputBuffer[inputBufferIndex];
-			mainThread.currentInputChar = c;
+			MainThread.currentInputChar = c;
 			
 			if(c == 's' || c == 'S'){
 				S_pressed = true;
@@ -179,67 +179,67 @@ public class inputHandler {
 		
 		
 		//handle input when game is running
-		if(!mainThread.gamePaused && mainThread.gameStarted){
-			camera.MOVE_LEFT = false;
-			camera.MOVE_RIGHT = false;
-			camera.MOVE_UP = false;
-			camera.MOVE_DOWN = false;
-			camera.TURN_LEFT = false;
-			camera.TURN_RIGHT = false;
+		if(!MainThread.gamePaused && MainThread.gameStarted){
+			Camera.MOVE_LEFT = false;
+			Camera.MOVE_RIGHT = false;
+			Camera.MOVE_UP = false;
+			Camera.MOVE_DOWN = false;
+			Camera.TURN_LEFT = false;
+			Camera.TURN_RIGHT = false;
 			
-			if(!mainThread.pc.isSelectingUnit){
+			if(!MainThread.playerCommander.isSelectingUnit){
 				mouse_x0 = mouse_x;
 				mouse_y0 = mouse_y;
 				if(!mouseIsInsideScreen || !mouseMovementArea.contains(mouse_x0, mouse_y0)){
 					
-					if(mainThread.pc.cursorIsInMiniMap() || mainThread.pc.cursorIsInSideBar() || mainThread.capturedMouse){
+					if(MainThread.playerCommander.cursorIsInMiniMap() || MainThread.playerCommander.cursorIsInSideBar() || MainThread.capturedMouse){
 						if(mouse_x0 < 10)
-							camera.MOVE_LEFT = true;
+							Camera.MOVE_LEFT = true;
 						if(mouse_x0 > screen_width-10)
-							camera.MOVE_RIGHT = true;
+							Camera.MOVE_RIGHT = true;
 						if(mouse_y0 < 10)
-							camera.MOVE_UP = true;
+							Camera.MOVE_UP = true;
 						if(mouse_y0 > screen_height-10)
-							camera.MOVE_DOWN = true;
+							Camera.MOVE_DOWN = true;
 						
 					}else{
 					
 						if(mouse_x0 < 40)
-							camera.MOVE_LEFT = true;
+							Camera.MOVE_LEFT = true;
 						if(mouse_x0 > screen_width - 40)
-							camera.MOVE_RIGHT = true;
+							Camera.MOVE_RIGHT = true;
 						if(mouse_y0 < 40)
-							camera.MOVE_UP = true;
+							Camera.MOVE_UP = true;
 						if(mouse_y0 > screen_height-40)
-							camera.MOVE_DOWN = true;
+							Camera.MOVE_DOWN = true;
 					}
 					
 					
-					if(camera.MOVE_LEFT || camera.MOVE_RIGHT || camera.MOVE_UP || camera.MOVE_DOWN){
-						int angle = geometry.findAngle(mouse_x0, mouse_y0, mouse_x1, mouse_y1);
+					if(Camera.MOVE_LEFT || Camera.MOVE_RIGHT || Camera.MOVE_UP || Camera.MOVE_DOWN){
+						int angle = Geometry.findAngle(mouse_x0, mouse_y0, mouse_x1, mouse_y1);
 						if(angle != 0){
 							cameraMovementAngle = angle;
 						}
 						
 					
 						if(mouse_x0 < 250*screen_width/768 && mouse_y0 > 362*screen_height/512 && cameraMovementAngle > 105 && cameraMovementAngle < 165){
-							camera.MOVE_LEFT = true;
-							camera.MOVE_DOWN = true;
+							Camera.MOVE_LEFT = true;
+							Camera.MOVE_DOWN = true;
 						}
 						
 						if(mouse_x0 < 250*screen_width/768 && mouse_y0 < 150*screen_height/512 && cameraMovementAngle < 75){
-							camera.MOVE_LEFT = true;
-							camera.MOVE_UP = true;
+							Camera.MOVE_LEFT = true;
+							Camera.MOVE_UP = true;
 						}
 						
 						if(mouse_x0 > 518*screen_width/768 && mouse_y0 < 150*screen_height/512 && cameraMovementAngle > 285){
-							camera.MOVE_RIGHT = true;
-							camera.MOVE_UP = true;
+							Camera.MOVE_RIGHT = true;
+							Camera.MOVE_UP = true;
 						}
 						
 						if(mouse_x0 > 518*screen_width/768 && mouse_y0 > 362*screen_height/512 && cameraMovementAngle < 255 && cameraMovementAngle > 195){
-							camera.MOVE_RIGHT = true;
-							camera.MOVE_DOWN = true;
+							Camera.MOVE_RIGHT = true;
+							Camera.MOVE_DOWN = true;
 						}
 						
 					}
@@ -247,11 +247,11 @@ public class inputHandler {
 				
 				
 				if(leftKeyPressed){
-					camera.TURN_LEFT = true;
+					Camera.TURN_LEFT = true;
 				}
 				
 				if(rightKeyPressed){
-					camera.TURN_RIGHT = true;
+					Camera.TURN_RIGHT = true;
 				}
 				
 				mouse_x1 = mouse_x0;
@@ -260,147 +260,147 @@ public class inputHandler {
 		
 			
 			if(controlKeyPressed){
-				mainThread.pc.controlKeyPressed = true; 
+				MainThread.playerCommander.controlKeyPressed = true;
 			}
 			
 			if(numberTyped != 0){
-				mainThread.pc.numberTyped = numberTyped;
+				MainThread.playerCommander.numberTyped = numberTyped;
 				
 			}
 			
 			//handles left click
 			if(leftMouseButtonPressed){
-				mainThread.pc.leftMouseButtonPressed = true;
+				MainThread.playerCommander.leftMouseButtonPressed = true;
 				
 			}
 			
 			if(leftMouseButtonReleased){
-				mainThread.pc.leftMouseButtonReleased = true;
+				MainThread.playerCommander.leftMouseButtonReleased = true;
 			}
 			
 			//handles right click
 			if(rightMouseButtonPressed){
-				mainThread.pc.rightMouseButtonPressed = true;
+				MainThread.playerCommander.rightMouseButtonPressed = true;
 			}
 			
 			if(rightMouseButtonReleased){
-				mainThread.pc.rightMouseButtonReleased = true;
+				MainThread.playerCommander.rightMouseButtonReleased = true;
 			}
 			
 			//handle hotheys
 			if(S_pressed){
 				
-				mainThread.pc.holdKeyPressed = true;
+				MainThread.playerCommander.holdKeyPressed = true;
 			}
 			
 			
 			//handle hotheys
 			if(A_pressed){
 				if(!userIsHoldingA){
-					mainThread.pc.attackKeyPressed = true;
+					MainThread.playerCommander.attackKeyPressed = true;
 					userIsHoldingA = true;
 				}
 				
 			}
 			if(C_pressed) {
 				if(!userIsHoldingC) {
-					mainThread.pc.toggleConyard = true;
+					MainThread.playerCommander.toggleConyard = true;
 					userIsHoldingC = true;
 				}
 			}
 			if(F_pressed) {
 				if(!userIsHoldingF) {
-					mainThread.pc.toggleFactory = true;
+					MainThread.playerCommander.toggleFactory = true;
 					userIsHoldingF = true;
 				}
 			}
 			
 			
 			//handle escape key
-			if(escapeKeyPressed && escapePressedCooldown == 0 && mainThread.menuStatus != mainThread.helpMenu) {
-				mainThread.gamePaused = true;  //if game is running, pause the game when esc key is hit
+			if(escapeKeyPressed && escapePressedCooldown == 0 && MainThread.menuStatus != MainThread.helpMenu) {
+				MainThread.gamePaused = true;  //if game is running, pause the game when esc key is hit
 				escapePressedCooldown = 5;
 				
 			}
 			
 		}else {
 			//handle event when game is paused
-			if(((escapeKeyPressed && escapePressedCooldown == 0)|| mainThread.buttonAction == "unpauseGame")   
-					&& mainThread.gamePaused && mainThread.gameStarted 
-					&& mainThread.menuStatus != mainThread.helpMenu
-					&& mainThread.menuStatus != mainThread.optionMenu
-					&& mainThread.menuStatus != mainThread.highscoreMenu) {
+			if(((escapeKeyPressed && escapePressedCooldown == 0)|| MainThread.buttonAction == "unpauseGame")
+					&& MainThread.gamePaused && MainThread.gameStarted
+					&& MainThread.menuStatus != MainThread.helpMenu
+					&& MainThread.menuStatus != MainThread.optionMenu
+					&& MainThread.menuStatus != MainThread.highscoreMenu) {
 				
-				if(!mainThread.AIVictory && ! mainThread.playerVictory) {
-					mainThread.gamePaused = false; //if game is paused, unpause the game when esc key is hit
+				if(!MainThread.AIVictory && ! MainThread.playerVictory) {
+					MainThread.gamePaused = false; //if game is paused, unpause the game when esc key is hit
 					escapePressedCooldown = 5;
 				}
 				
 			}
 			
-			//quit the game when the quit button is pressed
-			if(!mainThread.gameStarted) {
-				if(mainThread.buttonAction == "quitGame")
+			//quit the game when the quit Button is pressed
+			if(!MainThread.gameStarted) {
+				if(MainThread.buttonAction == "quitGame")
 					System.exit(0);
 				
-				if(mainThread.buttonAction == "easyGame") {
-					mainThread.gameStarted = true;
-					mainThread.gameFrame = 0;
-					mainThread.ec.difficulty = 0;
-				}else if(mainThread.buttonAction == "normalGame") {
-					mainThread.gameStarted = true;
-					mainThread.gameFrame = 0;
-					mainThread.ec.difficulty = 1;
-				}else if(mainThread.buttonAction == "hardGame") {
-					mainThread.gameStarted = true;
-					mainThread.gameFrame = 0;
-					mainThread.ec.difficulty = 2;
+				if(MainThread.buttonAction == "easyGame") {
+					MainThread.gameStarted = true;
+					MainThread.gameFrame = 0;
+					MainThread.enemyCommander.difficulty = 0;
+				}else if(MainThread.buttonAction == "normalGame") {
+					MainThread.gameStarted = true;
+					MainThread.gameFrame = 0;
+					MainThread.enemyCommander.difficulty = 1;
+				}else if(MainThread.buttonAction == "hardGame") {
+					MainThread.gameStarted = true;
+					MainThread.gameFrame = 0;
+					MainThread.enemyCommander.difficulty = 2;
 				}
 				
 				
 				
 				
 				
-				if(mainThread.buttonAction == "enableFogOfWar") {
-					mainThread.fogOfWarDisabled = false;
+				if(MainThread.buttonAction == "enableFogOfWar") {
+					MainThread.fogOfWarDisabled = false;
 					
-				}else if(mainThread.buttonAction == "disableFogOfWar") {
-					mainThread.fogOfWarDisabled = true;
+				}else if(MainThread.buttonAction == "disableFogOfWar") {
+					MainThread.fogOfWarDisabled = true;
 					
 				}
 			}
 			
-			//abort current game when the abort button is pressed
-			if(mainThread.gameStarted && mainThread.buttonAction == "abortGame") {
-				mainThread.gameStarted = false;
-				mainThread.gameFrame = 0;
-				mainThread.gamePaused = false;
-				mainThread.AIVictory = false;
-				mainThread.playerVictory = false;
-				mainThread.afterMatch = false;
-				mainThread.theAssetManager.destoryAsset();
+			//abort current game when the abort Button is pressed
+			if(MainThread.gameStarted && MainThread.buttonAction == "abortGame") {
+				MainThread.gameStarted = false;
+				MainThread.gameFrame = 0;
+				MainThread.gamePaused = false;
+				MainThread.AIVictory = false;
+				MainThread.playerVictory = false;
+				MainThread.afterMatch = false;
+				MainThread.theAssetManager.destoryAsset();
 				
-				camera.MOVE_LEFT = false;
-				camera.MOVE_RIGHT = false;
-				camera.MOVE_UP = false;
-				camera.MOVE_DOWN = false;
-				camera.TURN_LEFT = false;
-				camera.TURN_RIGHT = false;
+				Camera.MOVE_LEFT = false;
+				Camera.MOVE_RIGHT = false;
+				Camera.MOVE_UP = false;
+				Camera.MOVE_DOWN = false;
+				Camera.TURN_LEFT = false;
+				Camera.TURN_RIGHT = false;
 			}
 			
-			if(mainThread.gameStarted && mainThread.buttonAction == "backToMap") {
-				mainThread.AIVictory = false;
-				mainThread.playerVictory = false;
-				mainThread.afterMatch = true;
-				mainThread.gamePaused = false;
+			if(MainThread.gameStarted && MainThread.buttonAction == "backToMap") {
+				MainThread.AIVictory = false;
+				MainThread.playerVictory = false;
+				MainThread.afterMatch = true;
+				MainThread.gamePaused = false;
 				
 			}
 			
 			//toggle mouse capture mode
-			if(mainThread.buttonAction == "enableMouseCapture") {
-				mainThread.capturedMouse = true;
-			}else if(mainThread.buttonAction == "disableMouseCapture") {
-				mainThread.capturedMouse = false;
+			if(MainThread.buttonAction == "enableMouseCapture") {
+				MainThread.capturedMouse = true;
+			}else if(MainThread.buttonAction == "disableMouseCapture") {
+				MainThread.capturedMouse = false;
 			}
 			
 
@@ -408,10 +408,10 @@ public class inputHandler {
 		
 
 		if(leftMouseButtonReleased)
-			mainThread.leftMouseButtonReleased = true;
+			MainThread.leftMouseButtonReleased = true;
 		
 		if(escapeKeyPressed)
-			mainThread.escapeKeyPressed = true;
+			MainThread.escapeKeyPressed = true;
 		
 		mouseIsInsideScreen = false;
 		leftMouseButtonPressed = false;

@@ -1,13 +1,10 @@
 package particles;
 
-import core.camera;
-import core.gameData;
-import core.mainThread;
-import core.postProcessingThread;
-import core.vector;
+import core.*;
+import core.Camera;
 
 //a partical system that resemble a section  a railgun trail
-public class helix {
+public class Helix {
 	//particles
 	public vector[] particles;
 	
@@ -27,10 +24,10 @@ public class helix {
 	
 	public int lifeSpan;
 	
-	public static int screen_width = mainThread.screen_width;
-	public static int screen_height = mainThread.screen_height;
+	public static int screen_width = MainThread.screen_width;
+	public static int screen_height = MainThread.screen_height;
 	
-	public helix(){
+	public Helix(){
 		if(temp1 == null){
 			temp1 = new vector(0,0,0);
 			temp2 = new vector(0,0,0);
@@ -80,7 +77,7 @@ public class helix {
 			particles[i].set(temp1);
 			particles[i].add(directions[i]);
 			directions[i].scale(0.06f);
-			colors[i] = ((int)(58 - 20*gameData.sin[zAxisRotation]*0.9) << 16)| ((int)(130 - 40*gameData.sin[zAxisRotation]*0.9) << 8)| (int)(185 - 40*gameData.sin[zAxisRotation]*0.9); 
+			colors[i] = ((int)(58 - 20* GameData.sin[zAxisRotation]*0.9) << 16)| ((int)(130 - 40* GameData.sin[zAxisRotation]*0.9) << 8)| (int)(185 - 40* GameData.sin[zAxisRotation]*0.9);
 		
 			zAxisRotation+=18;
 			temp1.add(temp2);
@@ -103,11 +100,11 @@ public class helix {
 			particles[i].add(directions[i]);
 				
 	
-		//find centre in camera coordinate
+		//find centre in Camera coordinate
 		temp1.set(centre);
-		temp1.subtract(camera.position);
-		temp1.rotate_XZ(camera.XZ_angle);
-		temp1.rotate_YZ(camera.YZ_angle);
+		temp1.subtract(Camera.position);
+		temp1.rotate_XZ(Camera.XZ_angle);
+		temp1.rotate_YZ(Camera.YZ_angle);
 		temp1.updateLocation();
 		
 		boolean outsideScreen = temp1.screenX < -10 || temp1.screenX > screen_width + 10 || temp1.screenY < -10 || temp1.screenY > screen_height + 10;
@@ -143,9 +140,9 @@ public class helix {
 			
 			for(int i = 19; i >=0; i--){
 				temp1.set(particles[i]);
-				temp1.subtract(camera.position);
-				temp1.rotate_XZ(camera.XZ_angle);
-				temp1.rotate_YZ(camera.YZ_angle);
+				temp1.subtract(Camera.position);
+				temp1.rotate_XZ(Camera.XZ_angle);
+				temp1.rotate_YZ(Camera.YZ_angle);
 				temp1.updateLocation();
 				
 				
@@ -155,8 +152,8 @@ public class helix {
 					alpha = 100;
 					alpha = alpha - alpha*lifeSpan/40+ 155;
 				
-					for(int j = 0; j < gameData.size[spriteIndex].length; j++){
-						position = centre + gameData.size[spriteIndex][j];
+					for(int j = 0; j < GameData.size[spriteIndex].length; j++){
+						position = centre + GameData.size[spriteIndex][j];
 					
 							int bkgrd =screen[position];
 							

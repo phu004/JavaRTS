@@ -1,13 +1,13 @@
 package core;
 
-import entity.solidObject;
+import entity.SolidObject;
 
 //this clase define a rectangle in Cartesian coordinate
 public class Rect {
 	
 	public int x1,x2,y1,y2,width,height;
 	
-	public solidObject owner;
+	public SolidObject owner;
 	
 	public Rect(int x1, int y1, int width, int height){
 		this.x1 = x1;

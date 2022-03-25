@@ -3,7 +3,7 @@ package core;
 
 import java.awt.*;
 
-public class camera{
+public class Camera {
 	public static vector position;
 
 	public static vector view_Direction;
@@ -26,9 +26,9 @@ public class camera{
 	public static int frameIndex;
 	
 	
-	public camera(vector p, int XZ, int YZ){
+	public Camera(vector p, int XZ, int YZ){
 		
-		screen = new Rectangle(0,0,mainThread.screen_width, mainThread.screen_height);
+		screen = new Rectangle(0,0, MainThread.screen_width, MainThread.screen_height);
 		
 		view_Direction = new vector(0, 0, 1);
 		position = p;
@@ -44,7 +44,7 @@ public class camera{
 	public void update(){
 		frameIndex++;
 		
-		if(!mainThread.gameStarted) {
+		if(!MainThread.gameStarted) {
 			
 			//when game has not started, use a "fly through" as the background for the menu
 			if(frameIndex == 1) {
@@ -103,7 +103,7 @@ public class camera{
 			position.add(down, -0.1f);
 		}
 		
-		//make sure the camera never leaves the map
+		//make sure the Camera never leaves the map
 		if(position.x < 0.5){
 			position.x = 0.5f;
 			
@@ -127,10 +127,10 @@ public class camera{
 		
 		XZ_angle = (XZ_angle + 360) % 360;
 		YZ_angle = (YZ_angle + 360) % 360;
-		sinXZ_angle = gameData.sin[XZ_angle];
-		cosXZ_angle = gameData.cos[XZ_angle];
-		sinYZ_angle = gameData.sin[YZ_angle];
-		cosYZ_angle = gameData.cos[YZ_angle];
+		sinXZ_angle = GameData.sin[XZ_angle];
+		cosXZ_angle = GameData.cos[XZ_angle];
+		sinYZ_angle = GameData.sin[YZ_angle];
+		cosYZ_angle = GameData.cos[YZ_angle];
 		
 		
 		

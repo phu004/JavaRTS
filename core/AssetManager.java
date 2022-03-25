@@ -2,7 +2,6 @@ package core;
 
 import enemyAI.*;
 import entity.*;
-import gui.*;
 import particles.*;
 
 //This class stores and maintains all the entities created in the game 
@@ -11,7 +10,7 @@ public class AssetManager {
 	public int polygonCount;
 	
 	public int visibleUnitCount;
-	public solidObject[] visibleUnit;
+	public SolidObject[] visibleUnit;
 
 	public int[][] selectedUnitsInfo;
 	public int[][] selectedUnitsInfo2;
@@ -43,29 +42,29 @@ public class AssetManager {
 	public double[] confirmationIconInfo2;
 	
 	
-	public lightTank[] lightTanks;
-	public heavyTank[] heavyTanks;
-	public palmTree[] trees;
+	public LightTank[] LightTanks;
+	public HeavyTank[] HeavyTanks;
+	public PalmTree[] trees;
 	public int plamTreeCount;
-	public powerPlant[] powerPlants;
-	public refinery[] refineries;
-	public rocketTank[] rocketTanks;
-	public harvester[] harvesters;
-	public goldMine[] goldMines;
-	public constructionVehicle[] constructionVehicles;
-	public constructionYard[] constructionYards;
-	public factory[] factories;
-	public drone[] drones;
-	public communicationCenter[] communicationCenters;
-	public techCenter[] techCenters;
-	public stealthTank[] stealthTanks;
-	public gunTurret[] gunTurrets;
-	public missileTurret[] missileTurrets;
+	public PowerPlant[] PowerPlants;
+	public Refinery[] refineries;
+	public RocketTank[] RocketTanks;
+	public Harvester[] Harvesters;
+	public GoldMine[] goldMines;
+	public ConstructionVehicle[] constructionVehicles;
+	public ConstructionYard[] constructionYards;
+	public Factory[] factories;
+	public Drone[] drones;
+	public CommunicationCenter[] communicationCenters;
+	public TechCenter[] TechCenters;
+	public StealthTank[] stealthTanks;
+	public GunTurrent[] GunTurrents;
+	public MissileTurret[] MissileTurrets;
 	
 	public terrain Terrain;
 	
-	public bullet[] bullets;
-	public rocket[] rockets;
+	public Bullet[] Bullets;
+	public Rocket[] Rockets;
 	public  polygon3D[] visionPolygon;
 	
 	public int numberOfPlayerBuildings;
@@ -78,9 +77,9 @@ public class AssetManager {
 	
 	public void init(){
 		
-		screen_width = mainThread.screen_width;
-		screen_height = mainThread.screen_height;
-		screen_size = mainThread.screen_size;
+		screen_width = MainThread.screen_width;
+		screen_height = MainThread.screen_height;
+		screen_size = MainThread.screen_size;
 		
 		//polygons which represent the area of sight for player 
 		double angle = Math.PI/24;
@@ -114,44 +113,44 @@ public class AssetManager {
 		
 		Terrain = new terrain(); 
 		
-		goldMines = new goldMine[16];
-		goldMines[0] = new goldMine(2f,-0.515f, 1.25f, 45000);
-		goldMines[1] = new goldMine(9.5f,-0.515f, 5.5f, 45000);
-		goldMines[2] = new goldMine(2f,-0.515f, 28.25f, 60000);
-		goldMines[3] = new goldMine(26f,-0.515f, 3.5f, 60000);
-		goldMines[4] = new goldMine(29.75f,-0.515f, 30f, 45000);
-		goldMines[5] = new goldMine(22.5f,-0.515f, 25.5f, 45000);
-		goldMines[6] = new goldMine(15.75f,-0.515f, 18f, 60000);
-		goldMines[7] = new goldMine(16.25f,-0.515f, 12.25f, 60000);
+		goldMines = new GoldMine[16];
+		goldMines[0] = new GoldMine(2f,-0.515f, 1.25f, 45000);
+		goldMines[1] = new GoldMine(9.5f,-0.515f, 5.5f, 45000);
+		goldMines[2] = new GoldMine(2f,-0.515f, 28.25f, 60000);
+		goldMines[3] = new GoldMine(26f,-0.515f, 3.5f, 60000);
+		goldMines[4] = new GoldMine(29.75f,-0.515f, 30f, 45000);
+		goldMines[5] = new GoldMine(22.5f,-0.515f, 25.5f, 45000);
+		goldMines[6] = new GoldMine(15.75f,-0.515f, 18f, 60000);
+		goldMines[7] = new GoldMine(16.25f,-0.515f, 12.25f, 60000);
 		
 		
 		//create trees from bitmap
-		trees = new palmTree[2048];
-		short[] treeBitmap = mainThread.textures[56].pixelData;
+		trees = new PalmTree[2048];
+		short[] treeBitmap = MainThread.textures[56].pixelData;
 		for(int i = 0; i < 114; i++){
 			for(int j = 0; j < 114; j++){
 				if((treeBitmap[j + i * 128]<<10) <128 && plamTreeCount < trees.length){
-					trees[plamTreeCount] = new palmTree(j*0.28f, -0.3f, (113 -i)*0.28f);
+					trees[plamTreeCount] = new PalmTree(j*0.28f, -0.3f, (113 -i)*0.28f);
 					plamTreeCount++;
 				}
 				
 			}
 		}	
 		
-		visibleUnit = new solidObject[400];
+		visibleUnit = new SolidObject[400];
 		
-		mainThread.pc = new playerCommander();
-		mainThread.ec = new enemyCommander();
+		MainThread.playerCommander = new PlayerCommander();
+		MainThread.enemyCommander = new EnemyCommander();
 		
 	}
 	
 	
 	public void prepareAssetForNewGame(){
 
-		camera.position.x = 3;
-		camera.position.z = -1.25f;
-		camera.view_Direction.set(0, 0, 1);
-		camera.XZ_angle = 0;
+		Camera.position.x = 3;
+		Camera.position.z = -1.25f;
+		Camera.view_Direction.set(0, 0, 1);
+		Camera.XZ_angle = 0;
 		
 		
 		selectedUnitsInfo = new int[100][6];
@@ -180,21 +179,21 @@ public class AssetManager {
 		confirmationIconInfo = new double[5];
 		confirmationIconInfo2 = new double[5];
 		
-		lightTanks = new lightTank[768];
-		heavyTanks = new heavyTank[256];
-		powerPlants = new powerPlant[256];
-		refineries = new refinery[128];
-		rocketTanks = new rocketTank[512];
-		harvesters = new harvester[128];
-		constructionVehicles = new constructionVehicle[64];
-		constructionYards = new constructionYard[64];
-		factories = new factory[128];
-		drones = new drone[384];
-		communicationCenters = new communicationCenter[128];
-		techCenters = new techCenter[64];
-		stealthTanks = new stealthTank[384];
-		gunTurrets = new gunTurret[512];
-		missileTurrets = new missileTurret[256];
+		LightTanks = new LightTank[768];
+		HeavyTanks = new HeavyTank[256];
+		PowerPlants = new PowerPlant[256];
+		refineries = new Refinery[128];
+		RocketTanks = new RocketTank[512];
+		Harvesters = new Harvester[128];
+		constructionVehicles = new ConstructionVehicle[64];
+		constructionYards = new ConstructionYard[64];
+		factories = new Factory[128];
+		drones = new Drone[384];
+		communicationCenters = new CommunicationCenter[128];
+		TechCenters = new TechCenter[64];
+		stealthTanks = new StealthTank[384];
+		GunTurrents = new GunTurrent[512];
+		MissileTurrets = new MissileTurret[256];
 		
 		goldMines[0].goldDeposite = goldMines[0].maxDeposite;
 		goldMines[1].goldDeposite = goldMines[1].maxDeposite;
@@ -205,29 +204,29 @@ public class AssetManager {
 		goldMines[6].goldDeposite = goldMines[6].maxDeposite;
 		goldMines[7].goldDeposite = goldMines[7].maxDeposite;
 		
-		bullets = new bullet[200];
+		Bullets = new Bullet[200];
 		for(int i = 0; i < 200; i ++){
-			bullets[i] = new bullet();
+			Bullets[i] = new Bullet();
 			
 		}
 		
-		rockets = new rocket[200];
+		Rockets = new Rocket[200];
 		for(int i = 0; i < 200; i ++){
-			rockets[i] = new rocket();
+			Rockets[i] = new Rocket();
 			
 		}
 
-		mainThread.pc.init();
-		mainThread.ec.init();
+		MainThread.playerCommander.init();
+		MainThread.enemyCommander.init();
 		
-		lightTank.tileCheckList_player = solidObject.generateTileCheckList(5f);
-		lightTank.tileCheckList_enemy = solidObject.generateTileCheckList(5f);
-		techCenter.resetResarchStatus();
-		communicationCenter.resetResearchStatus();
+		LightTank.tileCheckList_player = SolidObject.generateTileCheckList(5f);
+		LightTank.tileCheckList_enemy = SolidObject.generateTileCheckList(5f);
+		TechCenter.resetResarchStatus();
+		CommunicationCenter.resetResearchStatus();
 		
 		
-		addConstructionVehicle(new constructionVehicle(new vector(3.125f,-0.3f, 2.125f), 90, 0));	
-		addConstructionVehicle(new constructionVehicle(new vector(29.625f,-0.3f, 28.875f), 90, 1));	
+		addConstructionVehicle(new ConstructionVehicle(new vector(3.125f,-0.3f, 2.125f), 90, 0));
+		addConstructionVehicle(new ConstructionVehicle(new vector(29.625f,-0.3f, 28.875f), 90, 1));
 		constructionVehicles[1].expand();
 		
 		numberOfPlayerBuildings = 1;
@@ -239,13 +238,13 @@ public class AssetManager {
 			for(int j = 0; j < 10; j++){
 				
 				//if(i == 0) {
-					//rocketTank l = new rocketTank(new vector(j*0.25f+ 1.125f,-0.3f, 22.125f - i*0.25f), 90, 1);
+					//RocketTank l = new RocketTank(new vector(j*0.25f+ 1.125f,-0.3f, 22.125f - i*0.25f), 90, 1);
 					//l.damageMultiplier =2;
 					//addRocketTank(l);
 				//techCenter.rocketTankResearched_enemy = true;
 				
 				//}else {
-					//heavyTank l = new heavyTank(new vector(j*0.25f+ 1.125f,-0.3f, 22.125f - i*0.25f), 90, 1);
+					//HeavyTank l = new HeavyTank(new vector(j*0.25f+ 1.125f,-0.3f, 22.125f - i*0.25f), 90, 1);
 					
 					//addHeavyTank(l);
 				//}
@@ -257,27 +256,27 @@ public class AssetManager {
 		for(int i = 0; i < 10; i ++){
 			
 			for(int j = 0; j < 6; j++){ 
-				//harvester l = new harvester(new vector(i*0.25f+ 1.125f,-0.3f, 17.375f - 0.25f*j), 90, 0);
+				//Harvester l = new Harvester(new vector(i*0.25f+ 1.125f,-0.3f, 17.375f - 0.25f*j), 90, 0);
 				//addHarvester(l);
 				//l.hasMultiShotUpgrade = true;
-				//lightTank l = new lightTank(new vector(i*0.25f + 27.125f,-0.3f, 0.5f + 26.625f + j*0.25f), 90, 0);
+				//LightTank l = new LightTank(new vector(i*0.25f + 27.125f,-0.3f, 0.5f + 26.625f + j*0.25f), 90, 0);
 				
 				//l.attackRange = 1.99f;
 		
-				//lightTank.tileCheckList_player = lightTank.generateTileCheckList(6);
+				//LightTank.tileCheckList_player = LightTank.generateTileCheckList(6);
 		
 				//addLightTank(l);
 				//if(j == 0 && i == 0)
-				//addMissileTurret(new missileTurret(i*0.25f -0.125f + 1, -0.65f, 0.25f + 17.125f + j*0.25f, 0));
+				//addMissileTurret(new MissileTurret(i*0.25f -0.125f + 1, -0.65f, 0.25f + 17.125f + j*0.25f, 0));
 			
 			}
 		}
 	}
 	
 	public void destoryAsset() {
-		camera.view_Direction.set(0, 0, 1);
-		camera.frameIndex = 0;
-		camera.XZ_angle = 0;
+		Camera.view_Direction.set(0, 0, 1);
+		Camera.frameIndex = 0;
+		Camera.XZ_angle = 0;
 		
 		selectedUnitsInfo = null;
 		selectedUnitsInfo2 = null;
@@ -304,21 +303,21 @@ public class AssetManager {
 		confirmationIconInfo = null;
 		confirmationIconInfo2 = null;
 		
-		lightTanks = null;
-		heavyTanks = null;
-		powerPlants = null;
+		LightTanks = null;
+		HeavyTanks = null;
+		PowerPlants = null;
 		refineries = null;
-		rocketTanks = null;
-		harvesters = null;
+		RocketTanks = null;
+		Harvesters = null;
 		constructionVehicles = null;
 		constructionYards = null;
 		factories = null;
 		drones = null;
 		communicationCenters = null;
-		techCenters = null;
+		TechCenters = null;
 		stealthTanks = null;
-		gunTurrets = null;
-		missileTurrets = null;
+		GunTurrents = null;
+		MissileTurrets = null;
 		
 		goldMines[0].goldDeposite = goldMines[0].maxDeposite;
 		goldMines[1].goldDeposite = goldMines[1].maxDeposite;
@@ -329,11 +328,11 @@ public class AssetManager {
 		goldMines[6].goldDeposite = goldMines[6].maxDeposite;
 		goldMines[7].goldDeposite = goldMines[7].maxDeposite;
 		
-		bullets = null;		
-		rockets = null;
+		Bullets = null;
+		Rockets = null;
 		
-		mainThread.gridMap.reset();
-		solidObject.globalUniqID = 0;
+		MainThread.gridMap.reset();
+		SolidObject.globalUniqID = 0;
 		
 		postProcessingThread.reset();
 		
@@ -341,7 +340,7 @@ public class AssetManager {
 	}
 	
 	
-	public void addContructionYard(constructionYard o){
+	public void addContructionYard(ConstructionYard o){
 		for(int i = 0; i < constructionYards.length; i++){
 			if(constructionYards[i] == null){
 				constructionYards[i] = o;
@@ -350,16 +349,16 @@ public class AssetManager {
 		}
 	}
 	
-	public void addPowerPlant(powerPlant o){
-		for(int i = 0; i < powerPlants.length; i++){
-			if(powerPlants[i] == null){
-				powerPlants[i] = o;
+	public void addPowerPlant(PowerPlant o){
+		for(int i = 0; i < PowerPlants.length; i++){
+			if(PowerPlants[i] == null){
+				PowerPlants[i] = o;
 				break;
 			}
 		}
 	}
 	
-	public void addRefinery(refinery o){
+	public void addRefinery(Refinery o){
 		for(int i = 0; i < refineries.length; i++){
 			if(refineries[i] == null){
 				refineries[i] = o;
@@ -368,7 +367,7 @@ public class AssetManager {
 		}
 	}
 	
-	public void addFactory(factory o){
+	public void addFactory(Factory o){
 		for(int i = 0; i < factories.length; i++){
 			if(factories[i] == null){
 				factories[i] = o;
@@ -377,7 +376,7 @@ public class AssetManager {
 		}
 	}
 	
-	public void addDrone(drone o){
+	public void addDrone(Drone o){
 		for(int i = 0; i < drones.length; i++){
 			if(drones[i] == null){
 				drones[i] = o;
@@ -386,7 +385,7 @@ public class AssetManager {
 		}
 	}
 	
-	public void addCommunicationCenter(communicationCenter o){
+	public void addCommunicationCenter(CommunicationCenter o){
 		for(int i = 0; i < communicationCenters.length; i++){
 			if(communicationCenters[i] == null){
 				communicationCenters[i] = o;
@@ -395,43 +394,43 @@ public class AssetManager {
 		}
 	}
 	
-	public void addTechCenter(techCenter o){
-		for(int i = 0; i < techCenters.length; i++){
-			if(techCenters[i] == null){
-				techCenters[i] = o;
+	public void addTechCenter(TechCenter o){
+		for(int i = 0; i < TechCenters.length; i++){
+			if(TechCenters[i] == null){
+				TechCenters[i] = o;
 				break;
 			}
 		}
 	}
 	
-	public void addHarvester(harvester o){
-		for(int i = 0; i < harvesters.length; i++){
-			if(harvesters[i] == null){
-				harvesters[i] = o;
+	public void addHarvester(Harvester o){
+		for(int i = 0; i < Harvesters.length; i++){
+			if(Harvesters[i] == null){
+				Harvesters[i] = o;
 				break;
 			}
 		}
 	}
 	
-	public void addLightTank(lightTank o){
-		for(int i = 0; i < lightTanks.length; i++){
-			if(lightTanks[i] == null){
-				lightTanks[i] = o;
+	public void addLightTank(LightTank o){
+		for(int i = 0; i < LightTanks.length; i++){
+			if(LightTanks[i] == null){
+				LightTanks[i] = o;
 				break;
 			}
 		}
 	}
 	
-	public void addHeavyTank(heavyTank o){
-		for(int i = 0; i < heavyTanks.length; i++){
-			if(heavyTanks[i] == null){
-				heavyTanks[i] = o;
+	public void addHeavyTank(HeavyTank o){
+		for(int i = 0; i < HeavyTanks.length; i++){
+			if(HeavyTanks[i] == null){
+				HeavyTanks[i] = o;
 				break;
 			}
 		}
 	}
 	
-	public void addStealthTank(stealthTank o){
+	public void addStealthTank(StealthTank o){
 		for(int i = 0; i < stealthTanks.length; i++){
 			if(stealthTanks[i] == null){
 				stealthTanks[i] = o;
@@ -440,16 +439,16 @@ public class AssetManager {
 		}
 	}
 	
-	public void addRocketTank(rocketTank o){
-		for(int i = 0; i < rocketTanks.length; i++){
-			if(rocketTanks[i] == null){
-				rocketTanks[i] = o;
+	public void addRocketTank(RocketTank o){
+		for(int i = 0; i < RocketTanks.length; i++){
+			if(RocketTanks[i] == null){
+				RocketTanks[i] = o;
 				break;
 			}
 		}
 	}
 	
-	public void addConstructionVehicle(constructionVehicle o){
+	public void addConstructionVehicle(ConstructionVehicle o){
 		for(int i = 0; i < constructionVehicles.length; i++){
 			if(constructionVehicles[i] == null){
 				constructionVehicles[i] = o;
@@ -458,36 +457,36 @@ public class AssetManager {
 		}
 	}
 	
-	public void addGunTurret(gunTurret o){
-		for(int i = 0; i < gunTurrets.length; i++){
-			if(gunTurrets[i] == null){
-				gunTurrets[i] = o;
+	public void addGunTurret(GunTurrent o){
+		for(int i = 0; i < GunTurrents.length; i++){
+			if(GunTurrents[i] == null){
+				GunTurrents[i] = o;
 				break;
 			}
 		}
 	}
 	
-	public void addMissileTurret(missileTurret o){
-		for(int i = 0; i < missileTurrets.length; i++){
-			if(missileTurrets[i] == null){
-				missileTurrets[i] = o;
+	public void addMissileTurret(MissileTurret o){
+		for(int i = 0; i < MissileTurrets.length; i++){
+			if(MissileTurrets[i] == null){
+				MissileTurrets[i] = o;
 				break;
 			}
 		}
 	}
 	
 	public void destoryAllUnit(int teamNo) {
-		for(int i = 0; i < lightTanks.length; i++){
-			if(lightTanks[i] != null && lightTanks[i].teamNo == teamNo){
-				lightTanks[i].currentHP = 0;
-				lightTanks[i].attacker = goldMines[0];
+		for(int i = 0; i < LightTanks.length; i++){
+			if(LightTanks[i] != null && LightTanks[i].teamNo == teamNo){
+				LightTanks[i].currentHP = 0;
+				LightTanks[i].attacker = goldMines[0];
 			}
 		}
 		
-		for(int i = 0; i < rocketTanks.length; i++){
-			if(rocketTanks[i] != null && rocketTanks[i].teamNo == teamNo){
-				rocketTanks[i].currentHP = 0;
-				rocketTanks[i].attacker = goldMines[0];
+		for(int i = 0; i < RocketTanks.length; i++){
+			if(RocketTanks[i] != null && RocketTanks[i].teamNo == teamNo){
+				RocketTanks[i].currentHP = 0;
+				RocketTanks[i].attacker = goldMines[0];
 			}
 		}
 		
@@ -498,17 +497,17 @@ public class AssetManager {
 			}
 		}
 		
-		for(int i = 0; i < heavyTanks.length; i++){
-			if(heavyTanks[i] != null && heavyTanks[i].teamNo == teamNo){
-				heavyTanks[i].currentHP = 0;
-				heavyTanks[i].attacker = goldMines[0];
+		for(int i = 0; i < HeavyTanks.length; i++){
+			if(HeavyTanks[i] != null && HeavyTanks[i].teamNo == teamNo){
+				HeavyTanks[i].currentHP = 0;
+				HeavyTanks[i].attacker = goldMines[0];
 			}
 		}
 		
-		for(int i = 0; i < harvesters.length; i++){
-			if(harvesters[i] != null && harvesters[i].teamNo == teamNo){
-				harvesters[i].currentHP = 0;
-				harvesters[i].attacker = goldMines[0];
+		for(int i = 0; i < Harvesters.length; i++){
+			if(Harvesters[i] != null && Harvesters[i].teamNo == teamNo){
+				Harvesters[i].currentHP = 0;
+				Harvesters[i].attacker = goldMines[0];
 			}
 		}
 	}
@@ -518,22 +517,22 @@ public class AssetManager {
 		
 		//check end game condition
 		//game ends when either player or the AI have lost all the buildings and construction vehicles
-		if(mainThread.gameStarted) {
-			if(!mainThread.playerVictory && !mainThread.AIVictory && !mainThread.afterMatch) {
+		if(MainThread.gameStarted) {
+			if(!MainThread.playerVictory && !MainThread.AIVictory && !MainThread.afterMatch) {
 				if(numberOfAIBuildings == 0) {
-					mainThread.playerVictory = true;
-					mainThread.gamePaused = true;
+					MainThread.playerVictory = true;
+					MainThread.gamePaused = true;
 					destoryAllUnit(1);
 				}else if(numberOfPlayerBuildings == 0) {
-					mainThread.AIVictory = true;
-					mainThread.gamePaused = true;
+					MainThread.AIVictory = true;
+					MainThread.gamePaused = true;
 					destoryAllUnit(0);
 				}
 				
 				
 			}
 			
-			if(mainThread.AIVictory || mainThread.playerVictory)
+			if(MainThread.AIVictory || MainThread.playerVictory)
 				return;
 		}
 		
@@ -548,15 +547,15 @@ public class AssetManager {
 		
 		
 		
-		if(mainThread.gameStarted) {
-			for(int i = 0; i < lightTanks.length; i++){
-				if(lightTanks[i] != null)
-					lightTanks[i].update();
+		if(MainThread.gameStarted) {
+			for(int i = 0; i < LightTanks.length; i++){
+				if(LightTanks[i] != null)
+					LightTanks[i].update();
 			}
 			
-			for(int i = 0; i < heavyTanks.length; i++){
-				if(heavyTanks[i] != null)
-					heavyTanks[i].update();
+			for(int i = 0; i < HeavyTanks.length; i++){
+				if(HeavyTanks[i] != null)
+					HeavyTanks[i].update();
 			}
 			
 			for(int i = 0; i < stealthTanks.length; i++){
@@ -569,24 +568,24 @@ public class AssetManager {
 					constructionYards[i].update();
 			}
 			
-			for(int i = 0; i < powerPlants.length; i++){
-				if(powerPlants[i] != null)
-					powerPlants[i].update();
+			for(int i = 0; i < PowerPlants.length; i++){
+				if(PowerPlants[i] != null)
+					PowerPlants[i].update();
 			}
 			
-			for(int i = 0; i < techCenters.length; i++){
-				if(techCenters[i] != null)
-					techCenters[i].update();
+			for(int i = 0; i < TechCenters.length; i++){
+				if(TechCenters[i] != null)
+					TechCenters[i].update();
 			}
 			
-			for(int i = 0; i < gunTurrets.length; i++){
-				if(gunTurrets[i] != null)
-					gunTurrets[i].update();
+			for(int i = 0; i < GunTurrents.length; i++){
+				if(GunTurrents[i] != null)
+					GunTurrents[i].update();
 			}
 			
-			for(int i = 0; i < missileTurrets.length; i++){
-				if(missileTurrets[i] != null)
-					missileTurrets[i].update();
+			for(int i = 0; i < MissileTurrets.length; i++){
+				if(MissileTurrets[i] != null)
+					MissileTurrets[i].update();
 			}
 			
 			for(int i = 0; i < communicationCenters.length; i++){
@@ -610,14 +609,14 @@ public class AssetManager {
 			}
 			
 			
-			for(int i = 0; i < rocketTanks.length; i++){
-				if(rocketTanks[i] != null)
-					rocketTanks[i].update();
+			for(int i = 0; i < RocketTanks.length; i++){
+				if(RocketTanks[i] != null)
+					RocketTanks[i].update();
 			}
 			
-			for(int i = 0; i < harvesters.length; i++){
-				if(harvesters[i] != null)
-					harvesters[i].update();
+			for(int i = 0; i < Harvesters.length; i++){
+				if(Harvesters[i] != null)
+					Harvesters[i].update();
 			}
 			
 			for(int i = 0; i < constructionVehicles.length; i++){
@@ -643,7 +642,7 @@ public class AssetManager {
 		
 		//start drawing
 		//maximize the zbuffer value in the  area that are occupied by  UI, so the drawing process will not waste time filling the pixels which would eventually get overdrawn 
-		if(mainThread.gameStarted) {
+		if(MainThread.gameStarted) {
 			numberOfPlayerBuildings = 0;
 			numberOfAIBuildings = 0;
 			
@@ -651,26 +650,26 @@ public class AssetManager {
 			int start2 = (screen_height-131) * screen_width + (screen_width-133);
 			for(int y = 0; y < 131; y++){
 				for(int x = 0; x < 128; x ++){
-					mainThread.zBuffer[start + x + y*screen_width]	= Integer.MAX_VALUE;
-					mainThread.zBuffer[start2 + x + y*screen_width]	= Integer.MAX_VALUE;
+					MainThread.zBuffer[start + x + y*screen_width]	= Integer.MAX_VALUE;
+					MainThread.zBuffer[start2 + x + y*screen_width]	= Integer.MAX_VALUE;
 				}
 			}
 		
 			for(int i = 0; i < 200; i ++)
-				bullets[i].updateAndDraw();
+				Bullets[i].updateAndDraw();
 			
 			for(int i = 0; i < 200; i ++)
-				rockets[i].update();
+				Rockets[i].update();
 			
 	
-			for(int i = 0; i < lightTanks.length; i++){
-				if(lightTanks[i] != null)
-					lightTanks[i].draw();
+			for(int i = 0; i < LightTanks.length; i++){
+				if(LightTanks[i] != null)
+					LightTanks[i].draw();
 			}
 			
-			for(int i = 0; i < heavyTanks.length; i++){
-				if(heavyTanks[i] != null)
-					heavyTanks[i].draw();
+			for(int i = 0; i < HeavyTanks.length; i++){
+				if(HeavyTanks[i] != null)
+					HeavyTanks[i].draw();
 			}
 			
 			for(int i = 0; i < stealthTanks.length; i++){
@@ -678,30 +677,30 @@ public class AssetManager {
 					stealthTanks[i].draw();
 			}
 			
-			for(int i = 0; i < powerPlants.length; i++){
-				if(powerPlants[i] != null) {
-					powerPlants[i].draw();
-					if(powerPlants[i].teamNo == 0)
+			for(int i = 0; i < PowerPlants.length; i++){
+				if(PowerPlants[i] != null) {
+					PowerPlants[i].draw();
+					if(PowerPlants[i].teamNo == 0)
 						numberOfPlayerBuildings++;
 					else
 						numberOfAIBuildings++;
 				}
 			}
 			
-			for(int i = 0; i < gunTurrets.length; i++){
-				if(gunTurrets[i] != null) {
-					gunTurrets[i].draw();
-					if(gunTurrets[i].teamNo == 0)
+			for(int i = 0; i < GunTurrents.length; i++){
+				if(GunTurrents[i] != null) {
+					GunTurrents[i].draw();
+					if(GunTurrents[i].teamNo == 0)
 						numberOfPlayerBuildings++;
 					else
 						numberOfAIBuildings++;
 				}
 			}
 			
-			for(int i = 0; i < missileTurrets.length; i++){
-				if(missileTurrets[i] != null) {
-					missileTurrets[i].draw();
-					if(missileTurrets[i].teamNo == 0)
+			for(int i = 0; i < MissileTurrets.length; i++){
+				if(MissileTurrets[i] != null) {
+					MissileTurrets[i].draw();
+					if(MissileTurrets[i].teamNo == 0)
 						numberOfPlayerBuildings++;
 					else
 						numberOfAIBuildings++;
@@ -718,10 +717,10 @@ public class AssetManager {
 				}
 			}
 			
-			for(int i = 0; i < techCenters.length; i++){
-				if(techCenters[i] != null) {
-					techCenters[i].draw();
-					if(techCenters[i].teamNo == 0)
+			for(int i = 0; i < TechCenters.length; i++){
+				if(TechCenters[i] != null) {
+					TechCenters[i].draw();
+					if(TechCenters[i].teamNo == 0)
 						numberOfPlayerBuildings++;
 					else
 						numberOfAIBuildings++;
@@ -738,14 +737,14 @@ public class AssetManager {
 				}
 			}
 			
-			for(int i = 0; i < rocketTanks.length; i++){
-				if(rocketTanks[i] != null)
-					rocketTanks[i].draw();
+			for(int i = 0; i < RocketTanks.length; i++){
+				if(RocketTanks[i] != null)
+					RocketTanks[i].draw();
 			}
 			
-			for(int i = 0; i < harvesters.length; i++){
-				if(harvesters[i] != null)
-					harvesters[i].draw();
+			for(int i = 0; i < Harvesters.length; i++){
+				if(Harvesters[i] != null)
+					Harvesters[i].draw();
 			}
 			
 			for(int i = 0; i < constructionVehicles.length; i++){
@@ -769,7 +768,7 @@ public class AssetManager {
 			}
 			
 			for(int i = 0; i < 200; i ++)
-				rockets[i].draw();
+				Rockets[i].draw();
 			
 			
 			for(int i = 0; i < drones.length; i++){
@@ -799,9 +798,9 @@ public class AssetManager {
 		Terrain.draw();
 		
 	
-		if(mainThread.gameStarted) {
-			if(mainThread.pc.selectedConstructionYard != null){
-				mainThread.pc.selectedConstructionYard.drawDeploymentGrid();
+		if(MainThread.gameStarted) {
+			if(MainThread.playerCommander.selectedConstructionYard != null){
+				MainThread.playerCommander.selectedConstructionYard.drawDeploymentGrid();
 			}
 			
 			for(int i = 0; i < factories.length; i++){
@@ -812,18 +811,18 @@ public class AssetManager {
 			
 			//prepare selected unit list
 			for(int i = 0; i < 99; i++){
-				if(mainThread.pc.selectedUnits[i] != null && mainThread.pc.selectedUnits[i].isSelectable){
-					selectedUnitsInfo[i][0] =  mainThread.pc.selectedUnits[i].level << 16 | mainThread.pc.selectedUnits[i].groupNo << 8 | mainThread.pc.selectedUnits[i].type;
-					selectedUnitsInfo[i][1] = (int)mainThread.pc.selectedUnits[i].tempCentre.screenX;
-					selectedUnitsInfo[i][2] = (int)mainThread.pc.selectedUnits[i].tempCentre.screenY;
-					if(mainThread.pc.selectedUnits[i].type == 199){
-						selectedUnitsInfo[i][1] = (int)mainThread.pc.selectedUnits[i].screenX_gui;
-						selectedUnitsInfo[i][2] = (int)mainThread.pc.selectedUnits[i].screenY_gui;
+				if(MainThread.playerCommander.selectedUnits[i] != null && MainThread.playerCommander.selectedUnits[i].isSelectable){
+					selectedUnitsInfo[i][0] =  MainThread.playerCommander.selectedUnits[i].level << 16 | MainThread.playerCommander.selectedUnits[i].groupNo << 8 | MainThread.playerCommander.selectedUnits[i].type;
+					selectedUnitsInfo[i][1] = (int) MainThread.playerCommander.selectedUnits[i].tempCentre.screenX;
+					selectedUnitsInfo[i][2] = (int) MainThread.playerCommander.selectedUnits[i].tempCentre.screenY;
+					if(MainThread.playerCommander.selectedUnits[i].type == 199){
+						selectedUnitsInfo[i][1] = (int) MainThread.playerCommander.selectedUnits[i].screenX_gui;
+						selectedUnitsInfo[i][2] = (int) MainThread.playerCommander.selectedUnits[i].screenY_gui;
 					}
 					
-					selectedUnitsInfo[i][3] = (int)mainThread.pc.selectedUnits[i].type;
-					selectedUnitsInfo[i][4] = mainThread.pc.selectedUnits[i].currentHP;
-					selectedUnitsInfo[i][5] = mainThread.pc.selectedUnits[i].progressStatus;
+					selectedUnitsInfo[i][3] = (int) MainThread.playerCommander.selectedUnits[i].type;
+					selectedUnitsInfo[i][4] = MainThread.playerCommander.selectedUnits[i].currentHP;
+					selectedUnitsInfo[i][5] = MainThread.playerCommander.selectedUnits[i].progressStatus;
 				}else{
 					selectedUnitsInfo[i][0] = -1;
 				}
@@ -872,31 +871,31 @@ public class AssetManager {
 		confirmationIconInfo2 = iconInfo;
 	}
 	
-	//spawn a bullet
-	public void spawnBullet(int angle, int damage, solidObject target, vector centre, solidObject attacker){
+	//spawn a Bullet
+	public void spawnBullet(int angle, int damage, SolidObject target, vector centre, SolidObject attacker){
 		for(int i = 0; i < 200; i ++)
-			if(!bullets[i].isInAction){
-				bullets[i].setActive(angle, damage, target, centre, attacker);
+			if(!Bullets[i].isInAction){
+				Bullets[i].setActive(angle, damage, target, centre, attacker);
 				break;
 			}
 	}
 	
-	//spawn a rocket
-	public void spawnRocket(int angle, int damage, solidObject target, vector centre, solidObject attacker){
+	//spawn a Rocket
+	public void spawnRocket(int angle, int damage, SolidObject target, vector centre, SolidObject attacker){
 		for(int i = 0; i < 200; i ++)
-			if(!rockets[i].isInAction){
-				rockets[i].setActive(angle, damage, target, centre, attacker);
+			if(!Rockets[i].isInAction){
+				Rockets[i].setActive(angle, damage, target, centre, attacker);
 				break;
 			}
 	}
 	
 	//remove object that ceased to exist (e.g get destroyed)
-	public void removeObject(solidObject o){
+	public void removeObject(SolidObject o){
 		
-		mainThread.pc.removeDestoryedObjectFromSelection(o);
-		for(int i = 0; i < lightTanks.length; i++){
-			if(lightTanks[i] == o){
-				lightTanks[i] = null;
+		MainThread.playerCommander.removeDestoryedObjectFromSelection(o);
+		for(int i = 0; i < LightTanks.length; i++){
+			if(LightTanks[i] == o){
+				LightTanks[i] = null;
 				return;
 			}
 		}
@@ -908,30 +907,30 @@ public class AssetManager {
 			}
 		}
 			
-		for(int i = 0; i < powerPlants.length; i++){
-			if(powerPlants[i] == o){
-				powerPlants[i] = null;
+		for(int i = 0; i < PowerPlants.length; i++){
+			if(PowerPlants[i] == o){
+				PowerPlants[i] = null;
 				return;
 			}
 		}
 		
-		for(int i = 0; i < techCenters.length; i++){
-			if(techCenters[i] == o){
-				techCenters[i] = null;
+		for(int i = 0; i < TechCenters.length; i++){
+			if(TechCenters[i] == o){
+				TechCenters[i] = null;
 				return;
 			}
 		}
 		
-		for(int i = 0; i < gunTurrets.length; i++){
-			if(gunTurrets[i] == o){
-				gunTurrets[i] = null;
+		for(int i = 0; i < GunTurrents.length; i++){
+			if(GunTurrents[i] == o){
+				GunTurrents[i] = null;
 				return;
 			}
 		}
 		
-		for(int i = 0; i < missileTurrets.length; i++){
-			if(missileTurrets[i] == o){
-				missileTurrets[i] = null;
+		for(int i = 0; i < MissileTurrets.length; i++){
+			if(MissileTurrets[i] == o){
+				MissileTurrets[i] = null;
 				return;
 			}
 		}
@@ -964,23 +963,23 @@ public class AssetManager {
 			}
 		}
 		
-		for(int i = 0; i < rocketTanks.length; i++){
-			if(rocketTanks[i] == o){
-				rocketTanks[i] = null;
+		for(int i = 0; i < RocketTanks.length; i++){
+			if(RocketTanks[i] == o){
+				RocketTanks[i] = null;
 				return;
 			}
 		}
 		
-		for(int i = 0; i < heavyTanks.length; i++){
-			if(heavyTanks[i] == o){
-				heavyTanks[i] = null;
+		for(int i = 0; i < HeavyTanks.length; i++){
+			if(HeavyTanks[i] == o){
+				HeavyTanks[i] = null;
 				return;
 			}
 		}
 			
-		for(int i = 0; i < harvesters.length; i++){
-			if(harvesters[i] == o){
-				harvesters[i] = null;
+		for(int i = 0; i < Harvesters.length; i++){
+			if(Harvesters[i] == o){
+				Harvesters[i] = null;
 				return;
 			}
 		}	

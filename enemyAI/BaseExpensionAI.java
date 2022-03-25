@@ -1,21 +1,21 @@
 package enemyAI;
 
-import core.baseInfo;
-import core.gameData;
-import core.mainThread;
+import core.BaseInfo;
+import core.GameData;
+import core.MainThread;
 import core.vector;
 import entity.*;
 
-public class baseExpensionAI {
-	public baseInfo theBaseInfo;
+public class BaseExpensionAI {
+	public BaseInfo theBaseInfo;
 	public int[] expensionPiorityList;
 	public boolean expensionListRerolled;
-	public stealthTank[] scouts;
-	public constructionVehicle myMCV;
+	public StealthTank[] scouts;
+	public ConstructionVehicle myMCV;
 	public boolean isExpanding;
 	public int targetExpension;
-	public goldMine[] goldMines;
-	public goldMine expensionGoldMine;
+	public GoldMine[] goldMines;
+	public GoldMine expensionGoldMine;
 	public int numberOfActiveScout;
 	public int numberOfStealthTankScout;
 	public int frameAI;
@@ -25,14 +25,14 @@ public class baseExpensionAI {
 	public int  lowGoldmineThreshold;
 	
 	
-	public baseExpensionAI(){
-		this.theBaseInfo = mainThread.ec.theBaseInfo;
+	public BaseExpensionAI(){
+		this.theBaseInfo = MainThread.enemyCommander.theBaseInfo;
 		temp = new vector(0,0,0);
 		
 		//generate a expension piority list
 		expensionPiorityList = new int[5];
 		
-		int randomeNumber = gameData.getRandom();
+		int randomeNumber = GameData.getRandom();
 		
 		if(randomeNumber < 100)
 			expensionPiorityList = new int[]{5,6,2,3,7};
@@ -47,7 +47,7 @@ public class baseExpensionAI {
 		else
 			expensionPiorityList = new int[]{5,3,2,6,7};
 		
-		scouts = new stealthTank[3];
+		scouts = new StealthTank[3];
 		
 		lastExpansionLocation = 7;
 		
@@ -57,7 +57,7 @@ public class baseExpensionAI {
 	
 	public void processAI(){
 	
-		frameAI = mainThread.ec.frameAI;
+		frameAI = MainThread.enemyCommander.frameAI;
 		
 		//when all the expansion position has been utilized then do nothing 
 		if(allExpansionOccupied)
@@ -65,8 +65,8 @@ public class baseExpensionAI {
 		
 		if(frameAI > 750 && frameAI < 1000 && !expensionListRerolled) {
 			//if the AI has smaller force than player when it's time to grab a third base,  use the less aggressive base expansion route
-			if(mainThread.ec.theCombatManagerAI.checkIfAIHasBiggerForce(1) == false && expensionPiorityList[targetExpension] == 6) {
-				int randomeNumber = gameData.getRandom();
+			if(MainThread.enemyCommander.theCombatManagerAI.checkIfAIHasBiggerForce(1) == false && expensionPiorityList[targetExpension] == 6) {
+				int randomeNumber = GameData.getRandom();
 				if(randomeNumber < 512)
 					expensionPiorityList = new int[]{5,2,3,6,7};
 				else
@@ -77,7 +77,7 @@ public class baseExpensionAI {
 		}
 		
 		if(goldMines == null)
-			goldMines = mainThread.theAssetManager.goldMines;
+			goldMines = MainThread.theAssetManager.goldMines;
 		
 		//find the next potential expansion location
 		for(int i = 0; i<5; i++){	
@@ -106,15 +106,15 @@ public class baseExpensionAI {
 		}
 		
 		int numberOfStealthTankOnQueue = 0;
-		for(int i = 0; i < mainThread.theAssetManager.factories.length; i++){
-			if(mainThread.theAssetManager.factories[i] != null && mainThread.theAssetManager.factories[i].teamNo != 0){
-				numberOfStealthTankOnQueue += mainThread.theAssetManager.factories[i].numOfStealthTankOnQueue;
+		for(int i = 0; i < MainThread.theAssetManager.factories.length; i++){
+			if(MainThread.theAssetManager.factories[i] != null && MainThread.theAssetManager.factories[i].teamNo != 0){
+				numberOfStealthTankOnQueue += MainThread.theAssetManager.factories[i].numOfStealthTankOnQueue;
 			}
 		}
 		
 		int numberOfUnassignedStealthTank = 0;
-		for(int i = 0; i < mainThread.theAssetManager.stealthTanks.length; i++){
-			if(mainThread.theAssetManager.stealthTanks[i] != null && mainThread.theAssetManager.stealthTanks[i].teamNo != 0 && mainThread.ec.theMapAwarenessAI.mapAsset[mainThread.theAssetManager.stealthTanks[i].ID] == null)
+		for(int i = 0; i < MainThread.theAssetManager.stealthTanks.length; i++){
+			if(MainThread.theAssetManager.stealthTanks[i] != null && MainThread.theAssetManager.stealthTanks[i].teamNo != 0 && MainThread.enemyCommander.theMapAwarenessAI.mapAsset[MainThread.theAssetManager.stealthTanks[i].ID] == null)
 				numberOfUnassignedStealthTank++;
 				
 		}
@@ -126,13 +126,13 @@ public class baseExpensionAI {
 		
 			
 		
-		//pick an idle factory to produce stealth tank. If there is no idle factory, cancel the one that is building lightTank
+		//pick an idle Factory to produce stealth tank. If there is no idle Factory, cancel the one that is building LightTank
 		if(numberOfActiveScout + numberOfStealthTankOnQueue + numberOfUnassignedStealthTank < scoutsNumberLimit && theBaseInfo.canBuildStealthTank){
-			for(int i = 0; i < mainThread.theAssetManager.factories.length; i++){
-				if(mainThread.theAssetManager.factories[i] != null && mainThread.theAssetManager.factories[i].teamNo != 0){
-					if(mainThread.theAssetManager.factories[i].lightTankProgress < 240 || mainThread.theAssetManager.factories[i].isIdle()){
-						mainThread.theAssetManager.factories[i].cancelItemFromProductionQueue(factory.lightTankType);
-						mainThread.theAssetManager.factories[i].buildStealthTank();
+			for(int i = 0; i < MainThread.theAssetManager.factories.length; i++){
+				if(MainThread.theAssetManager.factories[i] != null && MainThread.theAssetManager.factories[i].teamNo != 0){
+					if(MainThread.theAssetManager.factories[i].lightTankProgress < 240 || MainThread.theAssetManager.factories[i].isIdle()){
+						MainThread.theAssetManager.factories[i].cancelItemFromProductionQueue(Factory.lightTankType);
+						MainThread.theAssetManager.factories[i].buildStealthTank();
 						break;
 					}
 				}
@@ -142,47 +142,47 @@ public class baseExpensionAI {
 				
 		//build a mcv when the current mine is running low
 		myMCV = null;
-		for(int i = 0; i <  mainThread.theAssetManager.constructionVehicles.length; i++){
-			if( mainThread.theAssetManager.constructionVehicles[i] != null && mainThread.theAssetManager.constructionVehicles[i].currentHP >0 && mainThread.theAssetManager.constructionVehicles[i].teamNo != 0){
-				myMCV = mainThread.theAssetManager.constructionVehicles[i];
+		for(int i = 0; i <  MainThread.theAssetManager.constructionVehicles.length; i++){
+			if( MainThread.theAssetManager.constructionVehicles[i] != null && MainThread.theAssetManager.constructionVehicles[i].currentHP >0 && MainThread.theAssetManager.constructionVehicles[i].teamNo != 0){
+				myMCV = MainThread.theAssetManager.constructionVehicles[i];
 			}
 		}
 		
 		
-		boolean playerHasLessUnits = mainThread.ec.theCombatManagerAI.checkIfAIHasBiggerForce(1f);
+		boolean playerHasLessUnits = MainThread.enemyCommander.theCombatManagerAI.checkIfAIHasBiggerForce(1f);
 				
 		if(playerHasLessUnits) {
 			lowGoldmineThreshold = 32500;
 			
-			if(mainThread.ec.theEconomyManagerAI.preferedGoldMine == mainThread.theAssetManager.goldMines[4])
+			if(MainThread.enemyCommander.theEconomyManagerAI.preferedGoldMine == MainThread.theAssetManager.goldMines[4])
 				lowGoldmineThreshold = 30000;
 			
-			if(mainThread.ec.theEconomyManagerAI.preferedGoldMine == mainThread.theAssetManager.goldMines[5]) {
+			if(MainThread.enemyCommander.theEconomyManagerAI.preferedGoldMine == MainThread.theAssetManager.goldMines[5]) {
 				lowGoldmineThreshold = 38750;
 			}
 		}
 		
-		if(mainThread.ec.difficulty == 1)
+		if(MainThread.enemyCommander.difficulty == 1)
 			lowGoldmineThreshold = 22500;
-		else if(mainThread.ec.difficulty == 0)
+		else if(MainThread.enemyCommander.difficulty == 0)
 			lowGoldmineThreshold = 15000;
 		
-		if(myMCV == null && expensionGoldMine.goldDeposite >= 17500 && (mainThread.ec.theEconomyManagerAI.preferedGoldMine.goldDeposite < lowGoldmineThreshold || 
-			(!hasRefineryNearTheGoldmine(mainThread.ec.theEconomyManagerAI.preferedGoldMine) && !hasConstructionYardNearGoldMine(mainThread.ec.theEconomyManagerAI.preferedGoldMine)) ||
-			(mainThread.ec.theEconomyManagerAI.preferedGoldMine == expensionGoldMine && !hasConstructionYardNearGoldMine(expensionGoldMine) && !hasRefineryNearTheGoldmine(expensionGoldMine)))){
+		if(myMCV == null && expensionGoldMine.goldDeposite >= 17500 && (MainThread.enemyCommander.theEconomyManagerAI.preferedGoldMine.goldDeposite < lowGoldmineThreshold ||
+			(!hasRefineryNearTheGoldmine(MainThread.enemyCommander.theEconomyManagerAI.preferedGoldMine) && !hasConstructionYardNearGoldMine(MainThread.enemyCommander.theEconomyManagerAI.preferedGoldMine)) ||
+			(MainThread.enemyCommander.theEconomyManagerAI.preferedGoldMine == expensionGoldMine && !hasConstructionYardNearGoldMine(expensionGoldMine) && !hasRefineryNearTheGoldmine(expensionGoldMine)))){
 			
 			int numberOfMCVOnQueue = 0;
-			for(int i = 0; i < mainThread.theAssetManager.factories.length; i++){
-				if(mainThread.theAssetManager.factories[i] != null && mainThread.theAssetManager.factories[i].teamNo != 0){
-					numberOfMCVOnQueue += mainThread.theAssetManager.factories[i].numOfMCVOnQueue;
+			for(int i = 0; i < MainThread.theAssetManager.factories.length; i++){
+				if(MainThread.theAssetManager.factories[i] != null && MainThread.theAssetManager.factories[i].teamNo != 0){
+					numberOfMCVOnQueue += MainThread.theAssetManager.factories[i].numOfMCVOnQueue;
 				}
 			}
 		
 			if(numberOfMCVOnQueue == 0 &&  theBaseInfo.canBuildMCV){
-				for(int i = 0; i < mainThread.theAssetManager.factories.length; i++){
-					if(mainThread.theAssetManager.factories[i] != null && mainThread.theAssetManager.factories[i].teamNo != 0){
-						mainThread.theAssetManager.factories[i].cancelBuilding();
-						mainThread.theAssetManager.factories[i].buildMCV();
+				for(int i = 0; i < MainThread.theAssetManager.factories.length; i++){
+					if(MainThread.theAssetManager.factories[i] != null && MainThread.theAssetManager.factories[i].teamNo != 0){
+						MainThread.theAssetManager.factories[i].cancelBuilding();
+						MainThread.theAssetManager.factories[i].buildMCV();
 						break;
 					}
 				}
@@ -192,18 +192,18 @@ public class baseExpensionAI {
 		//move mcv to the next expension location
 		if(myMCV != null){
 			if(frameAI > 400 && frameAI < 550) {
-				mainThread.ec.theUnitProductionAI.rallyPoint.set(expensionGoldMine.centre.x, 0, expensionGoldMine.centre.z - 1.5f);
+				MainThread.enemyCommander.theUnitProductionAI.rallyPoint.set(expensionGoldMine.centre.x, 0, expensionGoldMine.centre.z - 1.5f);
 			}
 			
 			
 			isExpanding = true;
 			if(myMCV.getDistance(expensionGoldMine) > 2 && !(myMCV.destinationX == expensionGoldMine.centre.x && myMCV.destinationY == expensionGoldMine.centre.z)){
 				myMCV.moveTo(expensionGoldMine.centre.x, expensionGoldMine.centre.z); 
-				myMCV.currentCommand = solidObject.move;
+				myMCV.currentCommand = SolidObject.move;
 				
 			}else if(frameAI%5 == 0 && myMCV.getDistance(expensionGoldMine) <=2){
-				myMCV.moveTo(expensionGoldMine.centre.x + (float)(gameData.getRandom() -512) * 2 / 1024, expensionGoldMine.centre.z + (float)(gameData.getRandom() -512) * 2 / 1024); 
-				myMCV.currentCommand = solidObject.move;
+				myMCV.moveTo(expensionGoldMine.centre.x + (float)(GameData.getRandom() -512) * 2 / 1024, expensionGoldMine.centre.z + (float)(GameData.getRandom() -512) * 2 / 1024);
+				myMCV.currentCommand = SolidObject.move;
 			}
 			
 			//change the preferred gold mine to the one near the new expension once MCV is deployed
@@ -212,15 +212,15 @@ public class baseExpensionAI {
 					allExpansionOccupied = true;
 					for(int i = 0; i < scouts.length; i++){
 						if(scouts[i] != null && scouts[i].currentHP >0){
-							mainThread.ec.theUnitProductionAI.addStealthTank((stealthTank)scouts[i]);
-							scouts[i].moveTo(mainThread.ec.theUnitProductionAI.rallyPoint.x, mainThread.ec.theUnitProductionAI.rallyPoint.z);
-							scouts[i].currentCommand = solidObject.attackMove;
-							scouts[i].secondaryCommand = solidObject.attackMove;
+							MainThread.enemyCommander.theUnitProductionAI.addStealthTank((StealthTank)scouts[i]);
+							scouts[i].moveTo(MainThread.enemyCommander.theUnitProductionAI.rallyPoint.x, MainThread.enemyCommander.theUnitProductionAI.rallyPoint.z);
+							scouts[i].currentCommand = SolidObject.attackMove;
+							scouts[i].secondaryCommand = SolidObject.attackMove;
 						}
 					}
 				}
 				myMCV.expand();
-				mainThread.ec.theEconomyManagerAI.preferedGoldMine = expensionGoldMine;
+				MainThread.enemyCommander.theEconomyManagerAI.preferedGoldMine = expensionGoldMine;
 			}	
 		}else{
 			isExpanding = false;
@@ -234,8 +234,8 @@ public class baseExpensionAI {
 				if(scouts[i] != null && scouts[i].currentHP >0){
 					if(scouts[i].getDistance(expensionGoldMine) > 3){
 						scouts[i].moveTo(expensionGoldMine.centre.x, expensionGoldMine.centre.z); 
-						scouts[i].currentCommand = solidObject.move;
-						scouts[i].secondaryCommand = solidObject.StandBy;
+						scouts[i].currentCommand = SolidObject.move;
+						scouts[i].secondaryCommand = SolidObject.StandBy;
 					}else{
 						scoutReachesExpension = true;
 					}
@@ -268,9 +268,9 @@ public class baseExpensionAI {
 				if(threatLevel <= numberOfActiveScout*6 && noneCombatID > 0 && !playerHasStaticDefence){
 					for(int i = 0; i < scouts.length; i++){
 						if(scouts[i] != null && scouts[i].currentHP >0){
-							scouts[i].attackMoveTo(mainThread.ec.theMapAwarenessAI.mapAsset[noneCombatID].centre.x,mainThread.ec.theMapAwarenessAI.mapAsset[noneCombatID].centre.z); 
-							scouts[i].currentCommand = solidObject.attackMove;
-							scouts[i].secondaryCommand = solidObject.attackMove;
+							scouts[i].attackMoveTo(MainThread.enemyCommander.theMapAwarenessAI.mapAsset[noneCombatID].centre.x, MainThread.enemyCommander.theMapAwarenessAI.mapAsset[noneCombatID].centre.z);
+							scouts[i].currentCommand = SolidObject.attackMove;
+							scouts[i].secondaryCommand = SolidObject.attackMove;
 						}
 					}
 					
@@ -282,8 +282,8 @@ public class baseExpensionAI {
 						for(int i = 0; i < scouts.length; i++){
 							if(scouts[i] != null && scouts[i].currentHP >0){
 								scouts[i].attackMoveTo(targetX, targetZ); 
-								scouts[i].currentCommand = solidObject.attackMove;
-								scouts[i].secondaryCommand = solidObject.attackMove;
+								scouts[i].currentCommand = SolidObject.attackMove;
+								scouts[i].secondaryCommand = SolidObject.attackMove;
 							}
 						}
 					}else{
@@ -317,8 +317,8 @@ public class baseExpensionAI {
 						for(int i = 0; i < scouts.length; i++){
 							if(scouts[i] != null && scouts[i].currentHP >0){
 								scouts[i].attackMoveTo(expensionGoldMine.centre.x, expensionGoldMine.centre.z); 
-								scouts[i].currentCommand = solidObject.attackMove;
-								scouts[i].secondaryCommand = solidObject.attackMove;
+								scouts[i].currentCommand = SolidObject.attackMove;
+								scouts[i].secondaryCommand = SolidObject.attackMove;
 							}
 						}
 					}else{
@@ -341,8 +341,8 @@ public class baseExpensionAI {
 							if(scouts[i] != null && scouts[i].currentHP >0){
 								if(scouts[i].getDistance(expensionGoldMine) > 3){
 									scouts[i].moveTo(expensionGoldMine.centre.x, expensionGoldMine.centre.z); 
-									scouts[i].currentCommand = solidObject.move;
-									scouts[i].secondaryCommand = solidObject.StandBy;
+									scouts[i].currentCommand = SolidObject.move;
+									scouts[i].secondaryCommand = SolidObject.StandBy;
 								}
 							}
 						}
@@ -353,8 +353,8 @@ public class baseExpensionAI {
 						for(int i = 0; i < scouts.length; i++){
 							if(scouts[i] != null && scouts[i].currentHP >0){
 								scouts[i].attackMoveTo(myMCV.attacker.centre.x, myMCV.attacker.centre.z); 
-								scouts[i].currentCommand = solidObject.attackMove;
-								scouts[i].secondaryCommand = solidObject.attackMove;
+								scouts[i].currentCommand = SolidObject.attackMove;
+								scouts[i].secondaryCommand = SolidObject.attackMove;
 							}
 						}
 					}else{
@@ -366,8 +366,8 @@ public class baseExpensionAI {
 						for(int i = 1; i < scouts.length; i++){
 							if(scouts[i] != null && scouts[i].currentHP >0){
 								scouts[i].attackMoveTo(myMCV.centre.x + temp.x, myMCV.centre.z + temp.z); 
-								scouts[i].currentCommand = solidObject.attackMove;
-								scouts[i].secondaryCommand = solidObject.attackMove;
+								scouts[i].currentCommand = SolidObject.attackMove;
+								scouts[i].secondaryCommand = SolidObject.attackMove;
 							}
 						}
 					}
@@ -380,13 +380,13 @@ public class baseExpensionAI {
 	
 	
 	//check if the scout units can fend off  hostile aggression near a goldmine expension
-	public int threatLevelNearTarget(solidObject o){
+	public int threatLevelNearTarget(SolidObject o){
 		//the 0xfff bits store the treatLevel of hostile Unit
-		//the 0xfff000 bits store the id number of a nearby harvester/construction vehicle
+		//the 0xfff000 bits store the id number of a nearby Harvester/construction vehicle
 		//the 0xf000000 bit tells if the player has static defense setup near the target area
 		
-		solidObject[] playerUnitInMinimap = mainThread.ec.theMapAwarenessAI.playerUnitInMinimap;
-		solidObject[] playerStaticDefenceInMinimap = mainThread.ec.theMapAwarenessAI.playerStaticDefenceInMinimap;
+		SolidObject[] playerUnitInMinimap = MainThread.enemyCommander.theMapAwarenessAI.playerUnitInMinimap;
+		SolidObject[] playerStaticDefenceInMinimap = MainThread.enemyCommander.theMapAwarenessAI.playerStaticDefenceInMinimap;
 		boolean playerNoneCombatUnitDetected = false;
 		int threatLevel = 0;
 		for(int i = 0; i < playerUnitInMinimap.length; i++){
@@ -421,7 +421,7 @@ public class baseExpensionAI {
 	
 	
 	//add a stealth tank to scouts
-	public void addStealthTank(stealthTank o){
+	public void addStealthTank(StealthTank o){
 		for(int i = 0; i < scouts.length; i++){
 			if(scouts[i] == null || scouts[i].currentHP <=0){
 				scouts[i] = o;
@@ -432,7 +432,7 @@ public class baseExpensionAI {
 	
 	//3 stealth tanks will make a perfect scout team for the base expansion exploration 
 	public boolean needStealthTank(){
-		if(mainThread.ec.difficulty == 0)
+		if(MainThread.enemyCommander.difficulty == 0)
 			return false;
 		
 		for(int i = 0; i < scouts.length; i++){
@@ -443,10 +443,10 @@ public class baseExpensionAI {
 		return false;
 	}
 	
-	public boolean hasRefineryNearTheGoldmine(goldMine g){
-		for(int j = 0; j < mainThread.theAssetManager.refineries.length; j++){
-			if(mainThread.theAssetManager.refineries[j] != null){
-				if(mainThread.theAssetManager.refineries[j].getDistance(g) < 2){
+	public boolean hasRefineryNearTheGoldmine(GoldMine g){
+		for(int j = 0; j < MainThread.theAssetManager.refineries.length; j++){
+			if(MainThread.theAssetManager.refineries[j] != null){
+				if(MainThread.theAssetManager.refineries[j].getDistance(g) < 2){
 					return true;
 				}
 			}
@@ -454,10 +454,10 @@ public class baseExpensionAI {
 		return false;
 	}
 	
-	public boolean hasConstructionYardNearGoldMine(goldMine g){
-		for(int j = 0; j < mainThread.theAssetManager.constructionYards.length; j++){
-			if(mainThread.theAssetManager.constructionYards[j] != null){
-				if(mainThread.theAssetManager.constructionYards[j].getDistance(g) < 3){
+	public boolean hasConstructionYardNearGoldMine(GoldMine g){
+		for(int j = 0; j < MainThread.theAssetManager.constructionYards.length; j++){
+			if(MainThread.theAssetManager.constructionYards[j] != null){
+				if(MainThread.theAssetManager.constructionYards[j].getDistance(g) < 3){
 					return true;
 				}
 			}

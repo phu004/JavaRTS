@@ -1,23 +1,23 @@
 package enemyAI;
 
-import core.baseInfo;
-import core.gameData;
-import core.mainThread;
+import core.BaseInfo;
+import core.GameData;
+import core.MainThread;
 import core.vector;
 import entity.*;
 
 //decide which unit to produce to counter player's force
 //keep track of the units that are under control by combatAI.
 
-public class unitProductionAI {
+public class UnitProductionAI {
 	
-	public baseInfo theBaseInfo;
+	public BaseInfo theBaseInfo;
 	
-	public lightTank[] lightTanksControlledByCombatAI;
-	public rocketTank[] rocketTanksControlledByCombatAI;
-	public stealthTank[] stealthTanksControlledByCombatAI;
-	public heavyTank[] heavyTanksControlledByCombatAI;
-	public solidObject[] troopsControlledByCombatAI;
+	public LightTank[] lightTanksControlledByCombatAI;
+	public RocketTank[] rocketTanksControlledByCombatAI;
+	public StealthTank[] stealthTanksControlledByCombatAI;
+	public HeavyTank[] heavyTanksControlledByCombatAI;
+	public SolidObject[] troopsControlledByCombatAI;
 	
 	public float combatAICenterX;
 	public float combatAICenterZ;
@@ -40,15 +40,15 @@ public class unitProductionAI {
 	public int numberOfStealthTanksControlledByCombatAI;
 	public int numberOfHeavyTanksControlledByCombatAI;
 	
-	public solidObject[] unitInCombatRadius;
-	public solidObject[] unitOutsideCombatRadius;
+	public SolidObject[] unitInCombatRadius;
+	public SolidObject[] unitOutsideCombatRadius;
 	
 	public float rushRallyPointX, rushRallyPointZ;
 	
 	public int frameAI;
 	
-	public unitProductionAI(){
-		this.theBaseInfo = mainThread.ec.theBaseInfo;
+	public UnitProductionAI(){
+		this.theBaseInfo = MainThread.enemyCommander.theBaseInfo;
 		rallyPoint = new vector(0,0,0);
 		
 		
@@ -57,14 +57,14 @@ public class unitProductionAI {
 	
 		
 		
-		lightTanksControlledByCombatAI = new lightTank[192];
-		rocketTanksControlledByCombatAI = new rocketTank[72];
-		stealthTanksControlledByCombatAI = new stealthTank[96];
-		heavyTanksControlledByCombatAI = new heavyTank[60];
+		lightTanksControlledByCombatAI = new LightTank[192];
+		rocketTanksControlledByCombatAI = new RocketTank[72];
+		stealthTanksControlledByCombatAI = new StealthTank[96];
+		heavyTanksControlledByCombatAI = new HeavyTank[60];
 		
-		troopsControlledByCombatAI = new solidObject[512];
-		unitInCombatRadius = new solidObject[384];
-		unitOutsideCombatRadius = new solidObject[128];
+		troopsControlledByCombatAI = new SolidObject[512];
+		unitInCombatRadius = new SolidObject[384];
+		unitOutsideCombatRadius = new SolidObject[128];
 		
 		combatAICenterX = -1;
 		combatAICenterZ = -1;
@@ -74,27 +74,27 @@ public class unitProductionAI {
 
 	
 	public void processAI(){
-		frameAI = mainThread.ec.frameAI;
+		frameAI = MainThread.enemyCommander.frameAI;
 		
 		//set the rally point to near the construction yard which is closest to the AI player's starting position
 		float x = 0;
 		float z = 999999;
 		
 		
-		int numberOfLightTanks_AI = mainThread.ec.theUnitProductionAI.numberOfLightTanksControlledByCombatAI;
-		int numberOfRocketTanks_AI = mainThread.ec.theUnitProductionAI.numberOfRocketTanksControlledByCombatAI;
-		int numberOfStealthTanks_AI = mainThread.ec.theUnitProductionAI.numberOfStealthTanksControlledByCombatAI;
-		int numberOfHeavyTanks_AI = mainThread.ec.theUnitProductionAI.numberOfHeavyTanksControlledByCombatAI;
-		boolean unitCountLow = mainThread.ec.theCombatManagerAI.unitCountLow;
+		int numberOfLightTanks_AI = MainThread.enemyCommander.theUnitProductionAI.numberOfLightTanksControlledByCombatAI;
+		int numberOfRocketTanks_AI = MainThread.enemyCommander.theUnitProductionAI.numberOfRocketTanksControlledByCombatAI;
+		int numberOfStealthTanks_AI = MainThread.enemyCommander.theUnitProductionAI.numberOfStealthTanksControlledByCombatAI;
+		int numberOfHeavyTanks_AI = MainThread.enemyCommander.theUnitProductionAI.numberOfHeavyTanksControlledByCombatAI;
+		boolean unitCountLow = MainThread.enemyCommander.theCombatManagerAI.unitCountLow;
 		
 		int index = 0;
-		for(int i = 0; i < mainThread.theAssetManager.constructionYards.length; i++){
-			if(mainThread.theAssetManager.constructionYards[i] != null && mainThread.theAssetManager.constructionYards[i].currentHP > 0 &&  mainThread.theAssetManager.constructionYards[i].teamNo != 0){
-				if(unitCountLow && mainThread.ec.theDefenseManagerAI.majorThreatLocation.x != 0) {
-					float xPos1 = mainThread.theAssetManager.constructionYards[i].centre.x;
-					float zPos1 = mainThread.theAssetManager.constructionYards[i].centre.z;
-					float xPos2 = mainThread.ec.theDefenseManagerAI.majorThreatLocation.x;
-					float zPos2 = mainThread.ec.theDefenseManagerAI.majorThreatLocation.z;
+		for(int i = 0; i < MainThread.theAssetManager.constructionYards.length; i++){
+			if(MainThread.theAssetManager.constructionYards[i] != null && MainThread.theAssetManager.constructionYards[i].currentHP > 0 &&  MainThread.theAssetManager.constructionYards[i].teamNo != 0){
+				if(unitCountLow && MainThread.enemyCommander.theDefenseManagerAI.majorThreatLocation.x != 0) {
+					float xPos1 = MainThread.theAssetManager.constructionYards[i].centre.x;
+					float zPos1 = MainThread.theAssetManager.constructionYards[i].centre.z;
+					float xPos2 = MainThread.enemyCommander.theDefenseManagerAI.majorThreatLocation.x;
+					float zPos2 = MainThread.enemyCommander.theDefenseManagerAI.majorThreatLocation.z;
 					float d = (xPos1 - xPos2) * (xPos1 - xPos2) + (zPos1 - zPos2) * (zPos1 - zPos2);
 					if(d < 9) {
 						continue;
@@ -102,9 +102,9 @@ public class unitProductionAI {
 				}
 				
 				index = i;
-				if(mainThread.theAssetManager.constructionYards[i].centre.z < z && mainThread.theAssetManager.constructionYards[i].centre.z > 7 && mainThread.theAssetManager.constructionYards[i].centre.x > 7){
-					x = mainThread.theAssetManager.constructionYards[i].centre.x;
-					z = mainThread.theAssetManager.constructionYards[i].centre.z;
+				if(MainThread.theAssetManager.constructionYards[i].centre.z < z && MainThread.theAssetManager.constructionYards[i].centre.z > 7 && MainThread.theAssetManager.constructionYards[i].centre.x > 7){
+					x = MainThread.theAssetManager.constructionYards[i].centre.x;
+					z = MainThread.theAssetManager.constructionYards[i].centre.z;
 				}
 			}
 		}
@@ -112,17 +112,17 @@ public class unitProductionAI {
 			
 			rallyPoint.set(x - 2f, 0, z - 1.5f);
 			
-			if(frameAI < 240 && mainThread.ec.difficulty == 2) {
-				rallyPoint.set(mainThread.theAssetManager.goldMines[5].centre);
+			if(frameAI < 240 && MainThread.enemyCommander.difficulty == 2) {
+				rallyPoint.set(MainThread.theAssetManager.goldMines[5].centre);
 			}
 		}else {
-			if(mainThread.theAssetManager.constructionYards[index] != null && mainThread.theAssetManager.constructionYards[index].teamNo !=0)
-				rallyPoint.set(mainThread.theAssetManager.constructionYards[index].centre.x - 2.5f, 0,  mainThread.theAssetManager.constructionYards[index].centre.z -2.5f);
+			if(MainThread.theAssetManager.constructionYards[index] != null && MainThread.theAssetManager.constructionYards[index].teamNo !=0)
+				rallyPoint.set(MainThread.theAssetManager.constructionYards[index].centre.x - 2.5f, 0,  MainThread.theAssetManager.constructionYards[index].centre.z -2.5f);
 		}
 		
 		//If the difficulty is set to normal or hard, set the rally point just outside of player's natural expansion. 
 		//So if the player is going for a fast expansion and don't have much units, the AI can perform a rush attack. 
-		//if(mainThread.ec.theMapAwarenessAI.canRushPlayer && frameAI < 360 && mainThread.ec.theCombatManagerAI.checkIfAIHasBiggerForce(0.75f)) {
+		//if(MainThread.ec.theMapAwarenessAI.canRushPlayer && frameAI < 360 && MainThread.ec.theCombatManagerAI.checkIfAIHasBiggerForce(0.75f)) {
 		//	rallyPoint.set(rushRallyPointX, 0,  rushRallyPointZ);
 		//}
 		
@@ -130,16 +130,16 @@ public class unitProductionAI {
 		int maxNumOfUnitCanBeProduced =  theBaseInfo.currentCredit / 500 + 1;
 		
 		
-		for(int i = 0; i < mainThread.theAssetManager.factories.length; i++){
-			factory f = mainThread.theAssetManager.factories[i];
+		for(int i = 0; i < MainThread.theAssetManager.factories.length; i++){
+			Factory f = MainThread.theAssetManager.factories[i];
 			if(f != null && f.teamNo !=0){
 				if(!f.isIdle())
 					maxNumOfUnitCanBeProduced--;
 			}
 		}
 		
-		for(int i = 0; i < mainThread.theAssetManager.constructionYards.length; i++){
-			constructionYard c = mainThread.theAssetManager.constructionYards[i];
+		for(int i = 0; i < MainThread.theAssetManager.constructionYards.length; i++){
+			ConstructionYard c = MainThread.theAssetManager.constructionYards[i];
 			if(c != null && c.teamNo !=0){
 				if(!c.isIdle())
 					maxNumOfUnitCanBeProduced--;
@@ -147,36 +147,36 @@ public class unitProductionAI {
 		}
 		
 		
-		if(mainThread.ec.difficulty > 0) {
+		if(MainThread.enemyCommander.difficulty > 0) {
 			//make decision on what unit to produce
-			int numberOfPlayerGunTurrets=   mainThread.ec.theMapAwarenessAI.numberOfGunTurret_player;
-			int numberOfPlayerMissileTurrets=  mainThread.ec.theMapAwarenessAI.numberOfMissileTurret_player;
-			int numberOfLightTanks_player = mainThread.ec.theMapAwarenessAI.numberOfLightTanks_player;
-			int numberOfRocketTanks_player = mainThread.ec.theMapAwarenessAI.numberOfRocketTanks_player;
-			int numberOfStealthTanks_player = mainThread.ec.theMapAwarenessAI.numberOfStealthTanks_player;
-			int numberOfHeavyTanks_player = mainThread.ec.theMapAwarenessAI.numberOfHeavyTanks_player;
-			int maxNumberOfStealthTanks_playerInLastFiveMinutes =  mainThread.ec.theMapAwarenessAI.maxNumberOfStealthTanks_playerInLastFiveMinutes;
+			int numberOfPlayerGunTurrets=   MainThread.enemyCommander.theMapAwarenessAI.numberOfGunTurret_player;
+			int numberOfPlayerMissileTurrets=  MainThread.enemyCommander.theMapAwarenessAI.numberOfMissileTurret_player;
+			int numberOfLightTanks_player = MainThread.enemyCommander.theMapAwarenessAI.numberOfLightTanks_player;
+			int numberOfRocketTanks_player = MainThread.enemyCommander.theMapAwarenessAI.numberOfRocketTanks_player;
+			int numberOfStealthTanks_player = MainThread.enemyCommander.theMapAwarenessAI.numberOfStealthTanks_player;
+			int numberOfHeavyTanks_player = MainThread.enemyCommander.theMapAwarenessAI.numberOfHeavyTanks_player;
+			int maxNumberOfStealthTanks_playerInLastFiveMinutes =  MainThread.enemyCommander.theMapAwarenessAI.maxNumberOfStealthTanks_playerInLastFiveMinutes;
 			
-			boolean playerHasMostlyLightTanks = mainThread.ec.theMapAwarenessAI.playerHasMostlyLightTanks;
-			boolean playerHasMostlyHeavyTanks =  mainThread.ec.theMapAwarenessAI.playerHasMostlyHeavyTanks;
-			boolean playIsRushingHighTierUnits = mainThread.ec.theMapAwarenessAI.playIsRushingHighTierUnits;
-			boolean playerLikelyCanNotProduceHighTierUnits = mainThread.ec.theMapAwarenessAI.playerLikelyCanNotProduceHighTierUnits;
-			boolean playerDoesntHaveMassHeavyTanks = mainThread.ec.theMapAwarenessAI.playerDoesntHaveMassHeavyTanks;
-			boolean playerHasManyLightTanksButNoHeavyTank = mainThread.ec.theMapAwarenessAI.playerHasManyLightTanksButNoHeavyTank;
-			boolean playerHasMostlyHeavyAndStealthTanks = mainThread.ec.theMapAwarenessAI.playerHasMostlyHeavyAndStealthTanks;
-			boolean playerHasMostlyLightAndStealthTanks = mainThread.ec.theMapAwarenessAI.playerHasMostlyLightAndStealthTanks;
-			boolean playerArmyCanBeCounteredWithLightTanks = mainThread.ec.theMapAwarenessAI.playerArmyCanBeCounteredWithLightTanks;
-			boolean playerArmyCanBeCounteredWithStealthTanks = mainThread.ec.theMapAwarenessAI.playerArmyCanBeCounteredWithStealthTanks;
+			boolean playerHasMostlyLightTanks = MainThread.enemyCommander.theMapAwarenessAI.playerHasMostlyLightTanks;
+			boolean playerHasMostlyHeavyTanks =  MainThread.enemyCommander.theMapAwarenessAI.playerHasMostlyHeavyTanks;
+			boolean playIsRushingHighTierUnits = MainThread.enemyCommander.theMapAwarenessAI.playIsRushingHighTierUnits;
+			boolean playerLikelyCanNotProduceHighTierUnits = MainThread.enemyCommander.theMapAwarenessAI.playerLikelyCanNotProduceHighTierUnits;
+			boolean playerDoesntHaveMassHeavyTanks = MainThread.enemyCommander.theMapAwarenessAI.playerDoesntHaveMassHeavyTanks;
+			boolean playerHasManyLightTanksButNoHeavyTank = MainThread.enemyCommander.theMapAwarenessAI.playerHasManyLightTanksButNoHeavyTank;
+			boolean playerHasMostlyHeavyAndStealthTanks = MainThread.enemyCommander.theMapAwarenessAI.playerHasMostlyHeavyAndStealthTanks;
+			boolean playerHasMostlyLightAndStealthTanks = MainThread.enemyCommander.theMapAwarenessAI.playerHasMostlyLightAndStealthTanks;
+			boolean playerArmyCanBeCounteredWithLightTanks = MainThread.enemyCommander.theMapAwarenessAI.playerArmyCanBeCounteredWithLightTanks;
+			boolean playerArmyCanBeCounteredWithStealthTanks = MainThread.enemyCommander.theMapAwarenessAI.playerArmyCanBeCounteredWithStealthTanks;
 			
 			int timeToBuildHeavyTank = 500;
 			int timeToBuildStealthTank = 200;
-			if(mainThread.ec.theMapAwarenessAI.canRushPlayer) {
+			if(MainThread.enemyCommander.theMapAwarenessAI.canRushPlayer) {
 				//when AI decides to rush the player, then dont build higher tier units so it can mass produce light tanks
 				timeToBuildHeavyTank = 500;
 				timeToBuildStealthTank = 300;
 			}
 			
-			boolean b1 = (numberOfRocketTanks_AI < 3 && !playerHasMostlyHeavyTanks  && (frameAI > 400 || frameAI > 170 && frameAI < 240 && mainThread.ec.theMapAwarenessAI.numberOfConstructionYard_player > 0) && !playerHasMostlyLightTanks);
+			boolean b1 = (numberOfRocketTanks_AI < 3 && !playerHasMostlyHeavyTanks  && (frameAI > 400 || frameAI > 170 && frameAI < 240 && MainThread.enemyCommander.theMapAwarenessAI.numberOfConstructionYard_player > 0) && !playerHasMostlyLightTanks);
 			boolean b2 = (numberOfRocketTanks_AI < numberOfPlayerGunTurrets + numberOfPlayerMissileTurrets*1.5);
 			if( b1 || b2){
 				currentProductionOrder = produceRocketTank;
@@ -195,61 +195,61 @@ public class unitProductionAI {
 			}
 			
 			//make decision on what tech to research
-			if(mainThread.ec.theBuildingManagerAI.theBaseInfo.numberOfCommunicationCenter > 0 && mainThread.ec.difficulty > 1) {
-				if(mainThread.ec.theDefenseManagerAI.needMissileTurret || theBaseInfo.currentCredit > 1500 && frameAI > 450) {
-					if(!communicationCenter.rapidfireResearched_enemy) {
-						if(communicationCenter.rapidfireResearchProgress_enemy == 255){
-							communicationCenter.researchRapidfire(1);
+			if(MainThread.enemyCommander.theBuildingManagerAI.theBaseInfo.numberOfCommunicationCenter > 0 && MainThread.enemyCommander.difficulty > 1) {
+				if(MainThread.enemyCommander.theDefenseManagerAI.needMissileTurret || theBaseInfo.currentCredit > 1500 && frameAI > 450) {
+					if(!CommunicationCenter.rapidfireResearched_enemy) {
+						if(CommunicationCenter.rapidfireResearchProgress_enemy == 255){
+							CommunicationCenter.researchRapidfire(1);
 							System.out.println("----------------------------AI starts researching rapid fire ability------------------------------------");
 						}
 					}
 				}
 				
-				if(mainThread.ec.theEconomyManagerAI.numberOfharvesters >= 6 && theBaseInfo.currentCredit > 1500 &&  mainThread.ec.difficulty > 1) {
-					if(!communicationCenter.harvesterSpeedResearched_enemy) {
-						if(communicationCenter.harvesterSpeedResearchProgress_enemy == 255){
-							communicationCenter.researchHarvesterSpeed(1);
-							System.out.println("----------------------------AI starts researching harvester  speed ability------------------------------------");
+				if(MainThread.enemyCommander.theEconomyManagerAI.numberOfharvesters >= 6 && theBaseInfo.currentCredit > 1500 &&  MainThread.enemyCommander.difficulty > 1) {
+					if(!CommunicationCenter.harvesterSpeedResearched_enemy) {
+						if(CommunicationCenter.harvesterSpeedResearchProgress_enemy == 255){
+							CommunicationCenter.researchHarvesterSpeed(1);
+							System.out.println("----------------------------AI starts researching Harvester  speed ability------------------------------------");
 						}
 					}
 				}
 			}
 			
-			if(mainThread.ec.theBuildingManagerAI.theBaseInfo.numberOfTechCenter > 0){	
+			if(MainThread.enemyCommander.theBuildingManagerAI.theBaseInfo.numberOfTechCenter > 0){
 						
 				//Immediately  start  stealth tank upgrades  when a tech center is built
-				if(!techCenter.stealthTankResearched_enemy){
-					if(techCenter.stealthTankResearchProgress_enemy == 255){
-						techCenter.cancelResearch(1);
-						techCenter.researchStealthTank(1);
+				if(!TechCenter.stealthTankResearched_enemy){
+					if(TechCenter.stealthTankResearchProgress_enemy == 255){
+						TechCenter.cancelResearch(1);
+						TechCenter.researchStealthTank(1);
 						System.out.println("----------------------------AI starts researching stealth tank------------------------------------");
 					}
 				}
 			
 				
 				if(numberOfLightTanks_AI >= 15  && theBaseInfo.currentCredit > 1000){
-					if(!techCenter.lightTankResearched_enemy){
-						if(techCenter.lightTankResearchProgress_enemy >= 240 && techCenter.stealthTankResearchProgress_enemy >= 240 && techCenter.rocketTankResearchProgress_enemy >= 240 && techCenter.heavyTankResearchProgress_enemy >= 240){
-							techCenter.researchLightTank(1);
+					if(!TechCenter.lightTankResearched_enemy){
+						if(TechCenter.lightTankResearchProgress_enemy >= 240 && TechCenter.stealthTankResearchProgress_enemy >= 240 && TechCenter.rocketTankResearchProgress_enemy >= 240 && TechCenter.heavyTankResearchProgress_enemy >= 240){
+							TechCenter.researchLightTank(1);
 							System.out.println("----------------------------AI starts researching light tank------------------------------------");
 						}
 					}
 				}
 				
 				if(numberOfRocketTanks_AI > 2 && theBaseInfo.currentCredit > 1250 && (numberOfPlayerGunTurrets > 0 || numberOfPlayerMissileTurrets > 0 || frameAI > 600)){
-					if(!techCenter.rocketTankResearched_enemy){
-						if(techCenter.lightTankResearchProgress_enemy >= 240 && techCenter.stealthTankResearchProgress_enemy >= 240 && techCenter.rocketTankResearchProgress_enemy >= 240 && techCenter.heavyTankResearchProgress_enemy >= 240){
+					if(!TechCenter.rocketTankResearched_enemy){
+						if(TechCenter.lightTankResearchProgress_enemy >= 240 && TechCenter.stealthTankResearchProgress_enemy >= 240 && TechCenter.rocketTankResearchProgress_enemy >= 240 && TechCenter.heavyTankResearchProgress_enemy >= 240){
 	
-							techCenter.researchRocketTank(1);
-							System.out.println("----------------------------AI starts researching rocket tank------------------------------------");
+							TechCenter.researchRocketTank(1);
+							System.out.println("----------------------------AI starts researching Rocket tank------------------------------------");
 						}
 					}
 				}
 				
 				if(numberOfHeavyTanks_AI > 5 && theBaseInfo.currentCredit > 1000){
-					if(!techCenter.heavyTankResearched_enemy){
-						if(techCenter.lightTankResearchProgress_enemy >= 240 && techCenter.stealthTankResearchProgress_enemy >= 240 && techCenter.rocketTankResearchProgress_enemy >= 240 && techCenter.heavyTankResearchProgress_enemy >= 240){
-							techCenter.researchHeavyTank(1);
+					if(!TechCenter.heavyTankResearched_enemy){
+						if(TechCenter.lightTankResearchProgress_enemy >= 240 && TechCenter.stealthTankResearchProgress_enemy >= 240 && TechCenter.rocketTankResearchProgress_enemy >= 240 && TechCenter.heavyTankResearchProgress_enemy >= 240){
+							TechCenter.researchHeavyTank(1);
 							System.out.println("----------------------------AI starts researching heavy tank------------------------------------");
 						}
 					}
@@ -258,7 +258,7 @@ public class unitProductionAI {
 				
 			}
 		}else {
-			int roll = gameData.getRandom();
+			int roll = GameData.getRandom();
 			if(roll < 612) {
 				currentProductionOrder = produceLightTank;
 			}else if(roll >= 612 && roll < 700) {
@@ -272,8 +272,8 @@ public class unitProductionAI {
 		}
 		
 	
-		for(int i = 0; i < mainThread.theAssetManager.factories.length; i++){
-			factory f = mainThread.theAssetManager.factories[i];
+		for(int i = 0; i < MainThread.theAssetManager.factories.length; i++){
+			Factory f = MainThread.theAssetManager.factories[i];
 			if(f != null && f.teamNo !=0){
 				f.moveTo(rallyPoint.x, rallyPoint.z);
 				if(f.isIdle()){
@@ -301,11 +301,11 @@ public class unitProductionAI {
 
 	}
 	
-	public void addLightTank(lightTank o){
+	public void addLightTank(LightTank o){
 		//check if other AI agent need light tank
 		
-		if(mainThread.ec.theScoutingManagerAI.needLightTank()){
-			mainThread.ec.theScoutingManagerAI.addLightTank(o);
+		if(MainThread.enemyCommander.theScoutingManagerAI.needLightTank()){
+			MainThread.enemyCommander.theScoutingManagerAI.addLightTank(o);
 			
 			return;
 		}
@@ -315,8 +315,8 @@ public class unitProductionAI {
 		for(int i = 0; i < lightTanksControlledByCombatAI.length; i++){
 			if(lightTanksControlledByCombatAI[i] == null || (lightTanksControlledByCombatAI[i] != null && lightTanksControlledByCombatAI[i].currentHP <=0)){
 				lightTanksControlledByCombatAI[i] = o;
-				if(mainThread.ec.difficulty > 0)
-					mainThread.ec.theDefenseManagerAI.addUnitToDefenders(o);
+				if(MainThread.enemyCommander.difficulty > 0)
+					MainThread.enemyCommander.theDefenseManagerAI.addUnitToDefenders(o);
 				break;
 			}
 		}
@@ -324,10 +324,10 @@ public class unitProductionAI {
 		
 	}
 	
-	public void addRocketTank(rocketTank o){
-		//check if other AI agent need rocket tank
+	public void addRocketTank(RocketTank o){
+		//check if other AI agent need Rocket tank
 		
-		//add the new rocket tank to combat AI's command
+		//add the new Rocket tank to combat AI's command
 		for(int i = 0; i < rocketTanksControlledByCombatAI.length; i++){
 			if(rocketTanksControlledByCombatAI[i] == null || (rocketTanksControlledByCombatAI[i] != null && rocketTanksControlledByCombatAI[i].currentHP <=0)){
 				rocketTanksControlledByCombatAI[i] = o;
@@ -336,16 +336,16 @@ public class unitProductionAI {
 		}
 	}
 	
-	public void addStealthTank(stealthTank o){
+	public void addStealthTank(StealthTank o){
 		//check if other AI agent need stealth tank
 		
-		if(mainThread.ec.theScoutingManagerAI.needStealthTank()){
-			mainThread.ec.theScoutingManagerAI.scout.addStealthTank(o, mainThread.ec.theScoutingManagerAI);
+		if(MainThread.enemyCommander.theScoutingManagerAI.needStealthTank()){
+			MainThread.enemyCommander.theScoutingManagerAI.scout.addStealthTank(o, MainThread.enemyCommander.theScoutingManagerAI);
 			return;
 		}
 		
-		if(mainThread.ec.theBaseExpentionAI.needStealthTank()){
-			mainThread.ec.theBaseExpentionAI.addStealthTank(o);
+		if(MainThread.enemyCommander.theBaseExpentionAI.needStealthTank()){
+			MainThread.enemyCommander.theBaseExpentionAI.addStealthTank(o);
 			return;
 		}
 		
@@ -355,14 +355,14 @@ public class unitProductionAI {
 		for(int i = 0; i < stealthTanksControlledByCombatAI.length; i++){
 			if(stealthTanksControlledByCombatAI[i] == null || (stealthTanksControlledByCombatAI[i] != null && stealthTanksControlledByCombatAI[i].currentHP <=0)){
 				stealthTanksControlledByCombatAI[i] = o;
-				if(mainThread.ec.difficulty > 0)
-					mainThread.ec.theDefenseManagerAI.addUnitToDefenders(o);
+				if(MainThread.enemyCommander.difficulty > 0)
+					MainThread.enemyCommander.theDefenseManagerAI.addUnitToDefenders(o);
 				break;
 			}
 		}
 	}
 	
-	public void addHeavyTank(heavyTank o){
+	public void addHeavyTank(HeavyTank o){
 		//add the new heavy tank to combat AI's command
 		for(int i = 0; i < heavyTanksControlledByCombatAI.length; i++){
 			if(heavyTanksControlledByCombatAI[i] == null || (heavyTanksControlledByCombatAI[i] != null && heavyTanksControlledByCombatAI[i].currentHP <=0)){
@@ -464,7 +464,7 @@ public class unitProductionAI {
 			combatAICenterZ /= numberOfCombatUnit;
 		}
 		
-		//exclude the units are too far away from the center of the troops, (i.e the unites that just come out of the factory), and recalculate the center
+		//exclude the units are too far away from the center of the troops, (i.e the unites that just come out of the Factory), and recalculate the center
 		for(int i =0; i < numberOfCombatUnit; i++){
 			centre = troopsControlledByCombatAI[i].centre;
 			distance = Math.sqrt((centre.x - combatAICenterX)*(centre.x - combatAICenterX) + (centre.z - combatAICenterZ)*(centre.z - combatAICenterZ));
@@ -486,8 +486,8 @@ public class unitProductionAI {
 			unitInCombactRadiusPercentage = (float)numberOfUnitInCombatRadius/(float)(numberOfUnitInCombatRadius + numberOfUnitOutsideCombatRadius);
 		
 		float unitInCombactRadiusPercentageThreshold = 0.7f;
-		if(mainThread.ec.theCombatManagerAI.currentState == mainThread.ec.theCombatManagerAI.aggressing) {
-			if(mainThread.ec.theCombatManagerAI.distanceToTarget < 6)
+		if(MainThread.enemyCommander.theCombatManagerAI.currentState == MainThread.enemyCommander.theCombatManagerAI.aggressing) {
+			if(MainThread.enemyCommander.theCombatManagerAI.distanceToTarget < 6)
 				unitInCombactRadiusPercentageThreshold = 0.475f;
 		}
 		if(numberOfCombatUnitsUnderAttack > 0)

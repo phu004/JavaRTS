@@ -4,8 +4,8 @@ import java.awt.Rectangle;
 
 import core.*;
 
-//palmTree model 
-public class lightPole extends solidObject{
+//PalmTree model
+public class LightPole extends SolidObject {
 	//the polygons of the model
 	public   polygon3D[] polygons; 
 	
@@ -15,7 +15,7 @@ public class lightPole extends solidObject{
 	
 	public vector shadowvertex0, tempshadowvertex0,shadowvertex1, tempshadowvertex1,shadowvertex2, tempshadowvertex2,shadowvertex3, tempshadowvertex3;
 	
-	//a screen space boundary which is used to test if the  object is visible from camera point of view
+	//a screen space boundary which is used to test if the  object is visible from Camera point of view
 	public final static Rectangle visibleBoundary = new Rectangle(-50,-50,screen_width+100, screen_height+100);
 		
 	//a screen space boundary which is used to test if the entire  object is within the screen
@@ -24,14 +24,14 @@ public class lightPole extends solidObject{
 	//screen space boundary which is used to test if the shadow of the  object is within the screen
 	public final static Rectangle shadowBoundary1 = new Rectangle(0,0,screen_width, screen_height);
 	
-	//lightPole never moves
+	//LightPole never moves
 	public final static vector movenment = new vector(0,0,0);
 	
 	public boolean vanished;
 	
 	
 
-	public lightPole(float x, float y, float z, int angle){
+	public LightPole(float x, float y, float z, int angle){
 		//uncontrollable unit, but act as a small sized static collidable agent
 		ID = -1;
 		type = 100;
@@ -43,7 +43,7 @@ public class lightPole extends solidObject{
 		
 		tileIndex = boundary2D.x1/16 + (127 - (boundary2D.y1)/16)*128;
 		if(tileIndex >= 0 && tileIndex < 128*128)
-			mainThread.gridMap.tiles[tileIndex][4] = this;
+			MainThread.gridMap.tiles[tileIndex][4] = this;
 		else
 			tileIndex = 0;
 		
@@ -93,12 +93,12 @@ public class lightPole extends solidObject{
 		float delta = (float)Math.PI/8;
 				
 		for(int i = 0; i < 16; i++){
-			v = new vector[]{put(r1*Math.cos(i*delta), 0.4, r1*Math.sin(i*delta)),
-							put(r1*Math.cos((i+1)*delta), 0.4, r1*Math.sin((i+1)*delta)),
-								put(r*Math.cos((i+1)*delta), 0,  r*Math.sin((i+1)*delta)),
-							 put(r*Math.cos(i*delta), 0, r*Math.sin(i*delta))
+			v = new vector[]{createArbitraryVertex(r1*Math.cos(i*delta), 0.4, r1*Math.sin(i*delta)),
+							createArbitraryVertex(r1*Math.cos((i+1)*delta), 0.4, r1*Math.sin((i+1)*delta)),
+								createArbitraryVertex(r*Math.cos((i+1)*delta), 0,  r*Math.sin((i+1)*delta)),
+							 createArbitraryVertex(r*Math.cos(i*delta), 0, r*Math.sin(i*delta))
 								};
-			polygons[i] = new polygon3D(v, v[0], v[1], v[3],  mainThread.textures[25], 10f,10f,1);
+			polygons[i] = new polygon3D(v, v[0], v[1], v[3],  MainThread.textures[25], 10f,10f,1);
 		}
 		
 		iDirection.rotate_YZ(30);
@@ -107,12 +107,12 @@ public class lightPole extends solidObject{
 		
 		start.z-=0.221f;
 		for(int i = 0; i < 16; i++){
-			v = new vector[]{put(r1*Math.cos(i*delta), 0.502, r1*Math.sin(i*delta)),
-							put(r1*Math.cos((i+1)*delta), 0.502, r1*Math.sin((i+1)*delta)),
-								put(r1*Math.cos((i+1)*delta), 0.449,  r1*Math.sin((i+1)*delta)),
-							 put(r1*Math.cos(i*delta), 0.449, r1*Math.sin(i*delta))
+			v = new vector[]{createArbitraryVertex(r1*Math.cos(i*delta), 0.502, r1*Math.sin(i*delta)),
+							createArbitraryVertex(r1*Math.cos((i+1)*delta), 0.502, r1*Math.sin((i+1)*delta)),
+								createArbitraryVertex(r1*Math.cos((i+1)*delta), 0.449,  r1*Math.sin((i+1)*delta)),
+							 createArbitraryVertex(r1*Math.cos(i*delta), 0.449, r1*Math.sin(i*delta))
 								};
-			polygons[i+16] = new polygon3D(v, v[0], v[1], v[3],  mainThread.textures[25], 10f,10f,1);
+			polygons[i+16] = new polygon3D(v, v[0], v[1], v[3],  MainThread.textures[25], 10f,10f,1);
 		}
 	
 		
@@ -124,12 +124,12 @@ public class lightPole extends solidObject{
 		start.y+=0.2f;
 		float r2 = 0.004f;
 		for(int i = 0; i < 16; i++){
-			v = new vector[]{put(r2*Math.cos(i*delta), 0.55, r2*Math.sin(i*delta)),
-							put(r2*Math.cos((i+1)*delta), 0.55, r2*Math.sin((i+1)*delta)),
-								put(r1*Math.cos((i+1)*delta), 0.45,  r1*Math.sin((i+1)*delta)),
-							 put(r1*Math.cos(i*delta), 0.45, r1*Math.sin(i*delta))
+			v = new vector[]{createArbitraryVertex(r2*Math.cos(i*delta), 0.55, r2*Math.sin(i*delta)),
+							createArbitraryVertex(r2*Math.cos((i+1)*delta), 0.55, r2*Math.sin((i+1)*delta)),
+								createArbitraryVertex(r1*Math.cos((i+1)*delta), 0.45,  r1*Math.sin((i+1)*delta)),
+							 createArbitraryVertex(r1*Math.cos(i*delta), 0.45, r1*Math.sin(i*delta))
 								};
-			polygons[i+32] = new polygon3D(v, v[0], v[1], v[3],  mainThread.textures[25], 10f,10f,1);
+			polygons[i+32] = new polygon3D(v, v[0], v[1], v[3],  MainThread.textures[25], 10f,10f,1);
 		}
 		
 		
@@ -154,34 +154,34 @@ public class lightPole extends solidObject{
 				
 		float thickness = 0.01f;
 		
-		v = new vector[]{put(w2,h, h1), put(w3,h,h1), put(w4,h, h2), put(w4,h, h3), put(w3,h, h4), put(w2,h, h4), put(w1,h, h3), put(w1,h, h2)};
-		polygons[48] = new polygon3D(v, v[0], v[1], v[3],  mainThread.textures[25], 10f,10f,1);
+		v = new vector[]{createArbitraryVertex(w2,h, h1), createArbitraryVertex(w3,h,h1), createArbitraryVertex(w4,h, h2), createArbitraryVertex(w4,h, h3), createArbitraryVertex(w3,h, h4), createArbitraryVertex(w2,h, h4), createArbitraryVertex(w1,h, h3), createArbitraryVertex(w1,h, h2)};
+		polygons[48] = new polygon3D(v, v[0], v[1], v[3],  MainThread.textures[25], 10f,10f,1);
 		
 		
-		v = new vector[]{put(w2, h, h4), put(w3, h, h4), put(w3, h-thickness, h4), put(w2, h-thickness, h4)};
-		polygons[49] = new polygon3D(v, v[0], v[1], v[3],  mainThread.textures[25], 10f,10f,1);
+		v = new vector[]{createArbitraryVertex(w2, h, h4), createArbitraryVertex(w3, h, h4), createArbitraryVertex(w3, h-thickness, h4), createArbitraryVertex(w2, h-thickness, h4)};
+		polygons[49] = new polygon3D(v, v[0], v[1], v[3],  MainThread.textures[25], 10f,10f,1);
 		
-		v = new vector[]{put(w2, h-thickness, h1), put(w3, h-thickness, h1), put(w3, h, h1), put(w2, h, h1)};
-		polygons[50] = new polygon3D(v, v[0], v[1], v[3],  mainThread.textures[25], 10f,10f,1);
+		v = new vector[]{createArbitraryVertex(w2, h-thickness, h1), createArbitraryVertex(w3, h-thickness, h1), createArbitraryVertex(w3, h, h1), createArbitraryVertex(w2, h, h1)};
+		polygons[50] = new polygon3D(v, v[0], v[1], v[3],  MainThread.textures[25], 10f,10f,1);
 		
 		
-		v = new vector[]{put(w3, h, h4), put(w4, h, h3), put(w4, h-thickness, h3), put(w3, h-thickness, h4) };
-		polygons[51] = new polygon3D(v, v[0], v[1], v[3],  mainThread.textures[25], 10f,10f,1);
+		v = new vector[]{createArbitraryVertex(w3, h, h4), createArbitraryVertex(w4, h, h3), createArbitraryVertex(w4, h-thickness, h3), createArbitraryVertex(w3, h-thickness, h4) };
+		polygons[51] = new polygon3D(v, v[0], v[1], v[3],  MainThread.textures[25], 10f,10f,1);
 		
-		v = new vector[]{put(w1, h, h3), put(w2, h, h4), put(w2, h-thickness, h4), put(w1, h-thickness, h3) };
-		polygons[52] = new polygon3D(v, v[0], v[1], v[3],  mainThread.textures[25], 10f,10f,1);
+		v = new vector[]{createArbitraryVertex(w1, h, h3), createArbitraryVertex(w2, h, h4), createArbitraryVertex(w2, h-thickness, h4), createArbitraryVertex(w1, h-thickness, h3) };
+		polygons[52] = new polygon3D(v, v[0], v[1], v[3],  MainThread.textures[25], 10f,10f,1);
 		
-		v = new vector[]{put(w4, h, h3), put(w4, h , h2), put(w4, h-thickness , h2), put(w4, h-thickness, h3)};
-		polygons[53] = new polygon3D(v, v[0], v[1], v[3],  mainThread.textures[25], 10f,10f,1);
+		v = new vector[]{createArbitraryVertex(w4, h, h3), createArbitraryVertex(w4, h , h2), createArbitraryVertex(w4, h-thickness , h2), createArbitraryVertex(w4, h-thickness, h3)};
+		polygons[53] = new polygon3D(v, v[0], v[1], v[3],  MainThread.textures[25], 10f,10f,1);
 		
-		v = new vector[]{put(w1, h-thickness, h3), put(w1, h-thickness , h2), put(w1, h , h2), put(w1, h, h3)};
-		polygons[54] = new polygon3D(v, v[0], v[1], v[3],  mainThread.textures[25], 10f,10f,1);
+		v = new vector[]{createArbitraryVertex(w1, h-thickness, h3), createArbitraryVertex(w1, h-thickness , h2), createArbitraryVertex(w1, h , h2), createArbitraryVertex(w1, h, h3)};
+		polygons[54] = new polygon3D(v, v[0], v[1], v[3],  MainThread.textures[25], 10f,10f,1);
 		
-		v = new vector[]{put(w4,h,h2), put(w3, h, h1),put(w3, h-thickness, h1), put(w4,h-thickness,h2)};
-		polygons[55] = new polygon3D(v, v[0], v[1], v[3],  mainThread.textures[25], 10f,10f,1);
+		v = new vector[]{createArbitraryVertex(w4,h,h2), createArbitraryVertex(w3, h, h1), createArbitraryVertex(w3, h-thickness, h1), createArbitraryVertex(w4,h-thickness,h2)};
+		polygons[55] = new polygon3D(v, v[0], v[1], v[3],  MainThread.textures[25], 10f,10f,1);
 		
-		v = new vector[]{put(w2, h, h1), put(w1,h,h2), put(w1,h-thickness,h2), put(w2, h-thickness, h1)};
-		polygons[56] = new polygon3D(v, v[0], v[1], v[3],  mainThread.textures[25], 10f,10f,1);
+		v = new vector[]{createArbitraryVertex(w2, h, h1), createArbitraryVertex(w1,h,h2), createArbitraryVertex(w1,h-thickness,h2), createArbitraryVertex(w2, h-thickness, h1)};
+		polygons[56] = new polygon3D(v, v[0], v[1], v[3],  MainThread.textures[25], 10f,10f,1);
 		
 		for(int i = 0; i < polygons.length; i++){
 			for(int j = 0; j < polygons[i].vertex3D.length; j++){
@@ -205,13 +205,13 @@ public class lightPole extends solidObject{
 		if(vanished)
 			return; 
 		
-		mainThread.gridMap.currentObstacleMap[tileIndex] = false;
+		MainThread.gridMap.currentObstacleMap[tileIndex] = false;
 		
-		//update center in camera coordinate
+		//update center in Camera coordinate
 		tempCentre.set(centre);
-		tempCentre.subtract(camera.position);
-		tempCentre.rotate_XZ(camera.XZ_angle);
-		tempCentre.rotate_YZ(camera.YZ_angle); 
+		tempCentre.subtract(Camera.position);
+		tempCentre.rotate_XZ(Camera.XZ_angle);
+		tempCentre.rotate_YZ(Camera.YZ_angle);
 		tempCentre.updateLocation();
 		
 		if(tempCentre.screenX > screen_width+150 || tempCentre.screenX < - 150 || tempCentre.screenY < - 150 || tempCentre.screenY > screen_height+150){
@@ -219,7 +219,7 @@ public class lightPole extends solidObject{
 			return;
 		}
 			
-		//test if the light pole is visible in camera point of view
+		//test if the light pole is visible in Camera point of view
 		if(visibleBoundary.contains(tempCentre.screenX, tempCentre.screenY)){
 			visible = true;
 			
@@ -237,27 +237,27 @@ public class lightPole extends solidObject{
 		
 		
 		tempshadowvertex0.set(shadowvertex0);
-		tempshadowvertex0.subtract(camera.position);
-		tempshadowvertex0.rotate_XZ(camera.XZ_angle);
-		tempshadowvertex0.rotate_YZ(camera.YZ_angle); 
+		tempshadowvertex0.subtract(Camera.position);
+		tempshadowvertex0.rotate_XZ(Camera.XZ_angle);
+		tempshadowvertex0.rotate_YZ(Camera.YZ_angle);
 		tempshadowvertex0.updateLocation();
 		
 		tempshadowvertex1.set(shadowvertex1);
-		tempshadowvertex1.subtract(camera.position);
-		tempshadowvertex1.rotate_XZ(camera.XZ_angle);
-		tempshadowvertex1.rotate_YZ(camera.YZ_angle); 
+		tempshadowvertex1.subtract(Camera.position);
+		tempshadowvertex1.rotate_XZ(Camera.XZ_angle);
+		tempshadowvertex1.rotate_YZ(Camera.YZ_angle);
 		tempshadowvertex1.updateLocation();
 		
 		tempshadowvertex2.set(shadowvertex2);
-		tempshadowvertex2.subtract(camera.position);
-		tempshadowvertex2.rotate_XZ(camera.XZ_angle);
-		tempshadowvertex2.rotate_YZ(camera.YZ_angle); 
+		tempshadowvertex2.subtract(Camera.position);
+		tempshadowvertex2.rotate_XZ(Camera.XZ_angle);
+		tempshadowvertex2.rotate_YZ(Camera.YZ_angle);
 		tempshadowvertex2.updateLocation();
 		
 		tempshadowvertex3.set(shadowvertex3);
-		tempshadowvertex3.subtract(camera.position);
-		tempshadowvertex3.rotate_XZ(camera.XZ_angle);
-		tempshadowvertex3.rotate_YZ(camera.YZ_angle); 
+		tempshadowvertex3.subtract(Camera.position);
+		tempshadowvertex3.rotate_XZ(Camera.XZ_angle);
+		tempshadowvertex3.rotate_YZ(Camera.YZ_angle);
 		tempshadowvertex3.updateLocation();
 
 		
@@ -281,8 +281,8 @@ public class lightPole extends solidObject{
 	}
 	
 	public void vanish(){
-		mainThread.gridMap.tiles[tileIndex][4] = null;
-		mainThread.gridMap.currentObstacleMap[tileIndex] = true;
+		MainThread.gridMap.tiles[tileIndex][4] = null;
+		MainThread.gridMap.currentObstacleMap[tileIndex] = true;
 		vanished = true;
 	}
 	
@@ -305,4 +305,35 @@ public class lightPole extends solidObject{
 		}
 	}
 
+	//clone a group of polygons (doesn't work on smooth shaded polygons)
+	public polygon3D[] clonePolygons(polygon3D[] polys, boolean createNewOUV){
+		int l = polys.length;
+
+		polygon3D[] clone = new polygon3D[l];
+
+		for(int i = 0; i < l; i++){
+			if(polys[i] == null)
+				continue;
+			int length = polys[i].vertex3D.length;
+			v = new vector[length];
+			for(int j = 0; j < length; j++){
+				v[j] = polys[i].vertex3D[j].myClone();
+			}
+
+			int myType = polys[i].type;
+			float scaleX = polys[i].scaleX;
+			float scaleY = polys[i].scaleY;
+			texture myTexture = polys[i].myTexture;
+			if(createNewOUV)
+				clone[i] = new polygon3D(v, polys[i].origin.myClone(), polys[i].rightEnd.myClone(), polys[i].bottomEnd.myClone(), myTexture, scaleX, scaleY, myType);
+			else
+				clone[i] = new polygon3D(v, v[0], v[1], v[3], myTexture, scaleX, scaleY, myType);
+			clone[i].shadowBias = polys[i].shadowBias;
+			clone[i].diffuse_I = polys[i].diffuse_I;
+			clone[i].Ambient_I = polys[i].Ambient_I;
+		}
+
+
+		return clone;
+	}
 }

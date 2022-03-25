@@ -3,12 +3,12 @@ package entity;
 import java.awt.Rectangle;
 
 import core.*;
-import enemyAI.enemyCommander;
+import enemyAI.EnemyCommander;
 
 
-//rocket tank 3D model
+//Rocket tank 3D model
 
-public class rocketTank extends solidObject{
+public class RocketTank extends SolidObject {
 	
 	public vector iDirectionBody, jDirectionBody, kDirectionBody, iDirectionTurret, jDirectionTurret, kDirectionTurret;
 	
@@ -18,11 +18,11 @@ public class rocketTank extends solidObject{
 	
 	public static int maxHP = 70;
 	
-	// a screen space boundary which is used to test if the harvester object is
-	// visible from camera point of view
+	// a screen space boundary which is used to test if the Harvester object is
+	// visible from Camera point of view
 	public final static Rectangle visibleBoundary = new Rectangle(-70, -25,screen_width+140, screen_height+85);
 
-	// a screen space boundary which is used to test if the entire harvester
+	// a screen space boundary which is used to test if the entire Harvester
 	// object is within the screen
 	public final static Rectangle screenBoundary = new Rectangle(40, 40, screen_width-90,screen_height-80);
 
@@ -59,7 +59,7 @@ public class rocketTank extends solidObject{
 	public int bodyAngleDelta_offscreen, turretAngleDelta_offscreen;
 	public vector movement_offscreen;
 	
-	//whether the geometry of the object in world coordinate neesd to be updated in the current frame
+	//whether the Geometry of the object in world coordinate neesd to be updated in the current frame
 	public boolean geometryNeedModify;
 	
 
@@ -80,7 +80,7 @@ public class rocketTank extends solidObject{
 	public final static float damageAginstBuildingMulitplier = 1.25f;
 		
 		
-	public rocketTank(vector origin, int bodyAngle, int teamNo){
+	public RocketTank(vector origin, int bodyAngle, int teamNo){
 		speed = 0.01f;
 		attackRange = 2.86f;
 		groupAttackRange = 2.6f;
@@ -105,9 +105,9 @@ public class rocketTank extends solidObject{
 		
 		
 		ID = globalUniqID++;
-		randomNumber = gameData.getRandom();
+		randomNumber = GameData.getRandom();
 		height = centre.y + 0.5f;  //?
-		theAssetManager = mainThread.theAssetManager; 
+		theAssetManager = MainThread.theAssetManager;
 		boundary2D = new Rect((int)(origin.x*64) - 8, (int)(origin.z*64) + 8, 16, 16);
 		movement = new vector(0,0,0);
 		updateOccupiedTiles(boundary2D.x1, boundary2D.y1);
@@ -184,51 +184,51 @@ public class rocketTank extends solidObject{
 			skinTextureIndex = 10;
 		
 		body = new polygon3D[14];
-		v = new vector[]{put(-0.07, 0.055, 0.07), put(0.07, 0.055, 0.07), put(0.07, 0.055, -0.13), put(-0.07, 0.055, -0.13)};
-		body[0] = new polygon3D(v, v[0], v[1], v[3], mainThread.textures[skinTextureIndex], 1,1,1);
+		v = new vector[]{createArbitraryVertex(-0.07, 0.055, 0.07), createArbitraryVertex(0.07, 0.055, 0.07), createArbitraryVertex(0.07, 0.055, -0.13), createArbitraryVertex(-0.07, 0.055, -0.13)};
+		body[0] = new polygon3D(v, v[0], v[1], v[3], MainThread.textures[skinTextureIndex], 1,1,1);
 	
-		v = new vector[]{put(-0.069, 0.055, 0.13), put(-0.069, 0.055, -0.13), put(-0.069, 0.02, -0.13), put(-0.069, 0.02, 0.13)};
-		body[1] = new polygon3D(v, v[0], v[1], v[3], mainThread.textures[skinTextureIndex], 1,0.1f,1);
+		v = new vector[]{createArbitraryVertex(-0.069, 0.055, 0.13), createArbitraryVertex(-0.069, 0.055, -0.13), createArbitraryVertex(-0.069, 0.02, -0.13), createArbitraryVertex(-0.069, 0.02, 0.13)};
+		body[1] = new polygon3D(v, v[0], v[1], v[3], MainThread.textures[skinTextureIndex], 1,0.1f,1);
 		
-		v = new vector[]{put(0.069, 0.02, 0.13), put(0.069, 0.02, -0.13), put(0.069, 0.055, -0.13), put(0.069, 0.055, 0.13)};
-		body[2] = new polygon3D(v, v[0], v[1], v[3], mainThread.textures[skinTextureIndex], 1,0.1f,1);
+		v = new vector[]{createArbitraryVertex(0.069, 0.02, 0.13), createArbitraryVertex(0.069, 0.02, -0.13), createArbitraryVertex(0.069, 0.055, -0.13), createArbitraryVertex(0.069, 0.055, 0.13)};
+		body[2] = new polygon3D(v, v[0], v[1], v[3], MainThread.textures[skinTextureIndex], 1,0.1f,1);
 		
-		v = new vector[]{put(0.07, 0.1, 0.13), put(-0.07, 0.1, 0.13), put(-0.07, 0.02, 0.13), put(0.07, 0.02, 0.13)};
-		body[3] = new polygon3D(v, v[0], v[1], v[3], mainThread.textures[skinTextureIndex], 1,0.3f,1);
+		v = new vector[]{createArbitraryVertex(0.07, 0.1, 0.13), createArbitraryVertex(-0.07, 0.1, 0.13), createArbitraryVertex(-0.07, 0.02, 0.13), createArbitraryVertex(0.07, 0.02, 0.13)};
+		body[3] = new polygon3D(v, v[0], v[1], v[3], MainThread.textures[skinTextureIndex], 1,0.3f,1);
 		
-		v = new vector[]{put(0.07, 0.14, 0.11), put(-0.07, 0.14, 0.11), put(-0.07, 0.1, 0.13), put(0.07, 0.1, 0.13)};
-		body[4] = new polygon3D(v, v[0], v[1], v[3], mainThread.textures[21], 1,0.3f,1);
+		v = new vector[]{createArbitraryVertex(0.07, 0.14, 0.11), createArbitraryVertex(-0.07, 0.14, 0.11), createArbitraryVertex(-0.07, 0.1, 0.13), createArbitraryVertex(0.07, 0.1, 0.13)};
+		body[4] = new polygon3D(v, v[0], v[1], v[3], MainThread.textures[21], 1,0.3f,1);
 		
-		v = new vector[]{put(0.07, 0.14, 0.07), put(0.07, 0.14, 0.11), put(0.07, 0.1, 0.13),  put(0.07, 0.055, 0.13), put(0.07, 0.055, 0.07)};
-		body[5] = new polygon3D(v, v[0], v[1], v[4], mainThread.textures[skinTextureIndex], 0.4f,0.3f,1);
+		v = new vector[]{createArbitraryVertex(0.07, 0.14, 0.07), createArbitraryVertex(0.07, 0.14, 0.11), createArbitraryVertex(0.07, 0.1, 0.13),  createArbitraryVertex(0.07, 0.055, 0.13), createArbitraryVertex(0.07, 0.055, 0.07)};
+		body[5] = new polygon3D(v, v[0], v[1], v[4], MainThread.textures[skinTextureIndex], 0.4f,0.3f,1);
 		
-		v = new vector[]{put(-0.07, 0.055, 0.07),  put(-0.07, 0.055, 0.13), put(-0.07, 0.1, 0.13),put(-0.07, 0.14, 0.11), put(-0.07, 0.14, 0.07), };
-		body[6] = new polygon3D(v, v[0], v[1], v[4], mainThread.textures[skinTextureIndex], 0.4f,0.3f,1);
+		v = new vector[]{createArbitraryVertex(-0.07, 0.055, 0.07),  createArbitraryVertex(-0.07, 0.055, 0.13), createArbitraryVertex(-0.07, 0.1, 0.13), createArbitraryVertex(-0.07, 0.14, 0.11), createArbitraryVertex(-0.07, 0.14, 0.07), };
+		body[6] = new polygon3D(v, v[0], v[1], v[4], MainThread.textures[skinTextureIndex], 0.4f,0.3f,1);
 		
-		v = new vector[]{put(-0.07, 0.14, 0.11), put(0.07, 0.14, 0.11), put(0.07, 0.14, 0.07), put(-0.07, 0.14, 0.07)};
-		body[7] = new polygon3D(v, v[0], v[1], v[3], mainThread.textures[skinTextureIndex], 1,0.3f,1);
+		v = new vector[]{createArbitraryVertex(-0.07, 0.14, 0.11), createArbitraryVertex(0.07, 0.14, 0.11), createArbitraryVertex(0.07, 0.14, 0.07), createArbitraryVertex(-0.07, 0.14, 0.07)};
+		body[7] = new polygon3D(v, v[0], v[1], v[3], MainThread.textures[skinTextureIndex], 1,0.3f,1);
 		
-		v = new vector[]{put(-0.07, 0.14, 0.07), put(0.07, 0.14, 0.07), put(0.07, 0.055, 0.07), put(-0.07, 0.055, 0.07)};
-		body[8] = new polygon3D(v, v[0], v[1], v[3], mainThread.textures[skinTextureIndex], 1,0.3f,1);
+		v = new vector[]{createArbitraryVertex(-0.07, 0.14, 0.07), createArbitraryVertex(0.07, 0.14, 0.07), createArbitraryVertex(0.07, 0.055, 0.07), createArbitraryVertex(-0.07, 0.055, 0.07)};
+		body[8] = new polygon3D(v, v[0], v[1], v[3], MainThread.textures[skinTextureIndex], 1,0.3f,1);
 		
-		v = new vector[]{put(-0.07, 0.055, -0.13), put(0.07, 0.055, -0.13), put(0.07, 0.02, -0.13), put(-0.07, 0.02, -0.13)};
-		body[9] = new polygon3D(v, v[0], v[1], v[3], mainThread.textures[skinTextureIndex], 1,0.3f,1);
+		v = new vector[]{createArbitraryVertex(-0.07, 0.055, -0.13), createArbitraryVertex(0.07, 0.055, -0.13), createArbitraryVertex(0.07, 0.02, -0.13), createArbitraryVertex(-0.07, 0.02, -0.13)};
+		body[9] = new polygon3D(v, v[0], v[1], v[3], MainThread.textures[skinTextureIndex], 1,0.3f,1);
 		
-		v = new vector[]{put(-0.068, 0.021, 0.13), put(-0.068, 0.021, -0.13), put(-0.068, -0.03, -0.11), put(-0.068, -0.03, 0.11)};
-		body[10] = new polygon3D(v, put(-0.068, 0.021, 0.13), put(-0.068, 0.021, -0.13), put(-0.068, -0.03, 0.13), mainThread.textures[3], 1,1,1);
+		v = new vector[]{createArbitraryVertex(-0.068, 0.021, 0.13), createArbitraryVertex(-0.068, 0.021, -0.13), createArbitraryVertex(-0.068, -0.03, -0.11), createArbitraryVertex(-0.068, -0.03, 0.11)};
+		body[10] = new polygon3D(v, createArbitraryVertex(-0.068, 0.021, 0.13), createArbitraryVertex(-0.068, 0.021, -0.13), createArbitraryVertex(-0.068, -0.03, 0.13), MainThread.textures[3], 1,1,1);
 		
-		v = new vector[]{put(0.068, -0.03, 0.11), put(0.068, -0.03, -0.11), put(0.068, 0.021, -0.13), put(0.068, 0.021, 0.13)};
-		body[11] = new polygon3D(v, put(0.068, 0.021, -0.13), put(0.068, 0.021, 0.13), put(0.068, -0.03, -0.13), mainThread.textures[3], 1,1,1);
+		v = new vector[]{createArbitraryVertex(0.068, -0.03, 0.11), createArbitraryVertex(0.068, -0.03, -0.11), createArbitraryVertex(0.068, 0.021, -0.13), createArbitraryVertex(0.068, 0.021, 0.13)};
+		body[11] = new polygon3D(v, createArbitraryVertex(0.068, 0.021, -0.13), createArbitraryVertex(0.068, 0.021, 0.13), createArbitraryVertex(0.068, -0.03, -0.13), MainThread.textures[3], 1,1,1);
 		
 		
 		
-		v = new vector[]{put(0.068, 0.021, 0.13), put(0.04, 0.021, 0.13), put(0.04, -0.03, 0.11),  put(0.068, -0.03, 0.11)};
-		body[12] = new polygon3D(v, v[0], v[1], v[3], mainThread.textures[3], 1,1,1);
+		v = new vector[]{createArbitraryVertex(0.068, 0.021, 0.13), createArbitraryVertex(0.04, 0.021, 0.13), createArbitraryVertex(0.04, -0.03, 0.11),  createArbitraryVertex(0.068, -0.03, 0.11)};
+		body[12] = new polygon3D(v, v[0], v[1], v[3], MainThread.textures[3], 1,1,1);
 		
-		v = new vector[]{put(-0.04, 0.021, 0.13), put(-0.068, 0.021, 0.13), put(-0.068, -0.03, 0.11),  put(-0.04, -0.03, 0.11)};
-		body[13] = new polygon3D(v, v[0], v[1], v[3], mainThread.textures[3], 1,1,1);
+		v = new vector[]{createArbitraryVertex(-0.04, 0.021, 0.13), createArbitraryVertex(-0.068, 0.021, 0.13), createArbitraryVertex(-0.068, -0.03, 0.11),  createArbitraryVertex(-0.04, -0.03, 0.11)};
+		body[13] = new polygon3D(v, v[0], v[1], v[3], MainThread.textures[3], 1,1,1);
 		
-		turretCenter = put(0, 0.08, -0.05);
+		turretCenter = createArbitraryVertex(0, 0.08, -0.05);
 		start.set(turretCenter);
 		
 		iDirection.set(iDirectionTurret);
@@ -237,40 +237,40 @@ public class rocketTank extends solidObject{
 		
 		
 		turret = new polygon3D[5];
-		v = new vector[]{put(-0.06, 0.065, 0.09), put(0.06, 0.065, 0.09), put(0.06, 0.065, -0.08), put(-0.06, 0.065, -0.08)};
-		turret[0] = new polygon3D(v, v[0], v[1], v[3], mainThread.textures[skinTextureIndex], 1,1,1);
+		v = new vector[]{createArbitraryVertex(-0.06, 0.065, 0.09), createArbitraryVertex(0.06, 0.065, 0.09), createArbitraryVertex(0.06, 0.065, -0.08), createArbitraryVertex(-0.06, 0.065, -0.08)};
+		turret[0] = new polygon3D(v, v[0], v[1], v[3], MainThread.textures[skinTextureIndex], 1,1,1);
 		
-		v = new vector[]{put(-0.06, 0.065, 0.09), put(-0.06, 0.065, -0.08), put(-0.06, 0.01, -0.08), put(-0.06, 0.01, 0.09)};
-		turret[1] = new polygon3D(v, v[0], v[1], v[3], mainThread.textures[skinTextureIndex], 1,0.3f,1);
+		v = new vector[]{createArbitraryVertex(-0.06, 0.065, 0.09), createArbitraryVertex(-0.06, 0.065, -0.08), createArbitraryVertex(-0.06, 0.01, -0.08), createArbitraryVertex(-0.06, 0.01, 0.09)};
+		turret[1] = new polygon3D(v, v[0], v[1], v[3], MainThread.textures[skinTextureIndex], 1,0.3f,1);
 		
-		v = new vector[]{put(0.06, 0.01, 0.09), put(0.06, 0.01, -0.08), put(0.06, 0.065, -0.08), put(0.06, 0.065, 0.09)};
-		turret[2] = new polygon3D(v, v[0], v[1], v[3], mainThread.textures[skinTextureIndex], 1,0.3f,1);
+		v = new vector[]{createArbitraryVertex(0.06, 0.01, 0.09), createArbitraryVertex(0.06, 0.01, -0.08), createArbitraryVertex(0.06, 0.065, -0.08), createArbitraryVertex(0.06, 0.065, 0.09)};
+		turret[2] = new polygon3D(v, v[0], v[1], v[3], MainThread.textures[skinTextureIndex], 1,0.3f,1);
 		
-		v = new vector[]{put(0.06, 0.065, 0.09), put(-0.06, 0.065, 0.09), put(-0.06, 0.01, 0.09),  put(0.06, 0.01, 0.09)};
-		turret[3] = new polygon3D(v, v[0], v[1], v[3], mainThread.textures[22], 1,0.5f,1);
+		v = new vector[]{createArbitraryVertex(0.06, 0.065, 0.09), createArbitraryVertex(-0.06, 0.065, 0.09), createArbitraryVertex(-0.06, 0.01, 0.09),  createArbitraryVertex(0.06, 0.01, 0.09)};
+		turret[3] = new polygon3D(v, v[0], v[1], v[3], MainThread.textures[22], 1,0.5f,1);
 		turret[3].shadowBias = 80000;
 		
 		
-		v = new vector[]{put(0.06, 0.01, -0.08), put(-0.06, 0.01, -0.08), put(-0.06, 0.065, -0.08) , put(0.06, 0.065, -0.08)};
-		turret[4] = new polygon3D(v, v[0], v[1], v[3], mainThread.textures[skinTextureIndex], 1,0.5f,1);
+		v = new vector[]{createArbitraryVertex(0.06, 0.01, -0.08), createArbitraryVertex(-0.06, 0.01, -0.08), createArbitraryVertex(-0.06, 0.065, -0.08) , createArbitraryVertex(0.06, 0.065, -0.08)};
+		turret[4] = new polygon3D(v, v[0], v[1], v[3], MainThread.textures[skinTextureIndex], 1,0.5f,1);
 		
 		
 		turretCenterClone = turretCenter.myClone();
 		turretClone = new polygon3D[5];
-		v = new vector[]{put(-0.06, 0.065, 0.09), put(0.06, 0.065, 0.09), put(0.06, 0.065, -0.08), put(-0.06, 0.065, -0.08)};
-		turretClone[0] = new polygon3D(v, v[0], v[1], v[3], mainThread.textures[skinTextureIndex], 1,1,1);
+		v = new vector[]{createArbitraryVertex(-0.06, 0.065, 0.09), createArbitraryVertex(0.06, 0.065, 0.09), createArbitraryVertex(0.06, 0.065, -0.08), createArbitraryVertex(-0.06, 0.065, -0.08)};
+		turretClone[0] = new polygon3D(v, v[0], v[1], v[3], MainThread.textures[skinTextureIndex], 1,1,1);
 		
-		v = new vector[]{put(-0.06, 0.065, 0.09), put(-0.06, 0.065, -0.08), put(-0.06, 0.01, -0.08), put(-0.06, 0.01, 0.09)};
-		turretClone[1] = new polygon3D(v, v[0], v[1], v[3], mainThread.textures[skinTextureIndex], 1,0.3f,1);
+		v = new vector[]{createArbitraryVertex(-0.06, 0.065, 0.09), createArbitraryVertex(-0.06, 0.065, -0.08), createArbitraryVertex(-0.06, 0.01, -0.08), createArbitraryVertex(-0.06, 0.01, 0.09)};
+		turretClone[1] = new polygon3D(v, v[0], v[1], v[3], MainThread.textures[skinTextureIndex], 1,0.3f,1);
 		
-		v = new vector[]{put(0.06, 0.01, 0.09), put(0.06, 0.01, -0.08), put(0.06, 0.065, -0.08), put(0.06, 0.065, 0.09)};
-		turretClone[2] = new polygon3D(v, v[0], v[1], v[3], mainThread.textures[skinTextureIndex], 1,0.3f,1);
+		v = new vector[]{createArbitraryVertex(0.06, 0.01, 0.09), createArbitraryVertex(0.06, 0.01, -0.08), createArbitraryVertex(0.06, 0.065, -0.08), createArbitraryVertex(0.06, 0.065, 0.09)};
+		turretClone[2] = new polygon3D(v, v[0], v[1], v[3], MainThread.textures[skinTextureIndex], 1,0.3f,1);
 		
-		v = new vector[]{put(0.06, 0.065, 0.09), put(-0.06, 0.065, 0.09), put(-0.06, 0.01, 0.09),  put(0.06, 0.01, 0.09)};
-		turretClone[3] = new polygon3D(v, v[0], v[1], v[3], mainThread.textures[22], 1,0.5f,1);
+		v = new vector[]{createArbitraryVertex(0.06, 0.065, 0.09), createArbitraryVertex(-0.06, 0.065, 0.09), createArbitraryVertex(-0.06, 0.01, 0.09),  createArbitraryVertex(0.06, 0.01, 0.09)};
+		turretClone[3] = new polygon3D(v, v[0], v[1], v[3], MainThread.textures[22], 1,0.5f,1);
 		
-		v = new vector[]{put(0.06, 0.01, -0.08), put(-0.06, 0.01, -0.08), put(-0.06, 0.065, -0.08) , put(0.06, 0.065, -0.08)};
-		turretClone[4] = new polygon3D(v, v[0], v[1], v[3], mainThread.textures[skinTextureIndex], 1,0.5f,1);
+		v = new vector[]{createArbitraryVertex(0.06, 0.01, -0.08), createArbitraryVertex(-0.06, 0.01, -0.08), createArbitraryVertex(-0.06, 0.065, -0.08) , createArbitraryVertex(0.06, 0.065, -0.08)};
+		turretClone[4] = new polygon3D(v, v[0], v[1], v[3], MainThread.textures[skinTextureIndex], 1,0.5f,1);
 		
 	}
 	
@@ -280,7 +280,7 @@ public class rocketTank extends solidObject{
 		
 		//check if tank has been destroyed
 		if(currentHP <= 0){
-			//spawn an explosion when the tank is destroyed
+			//spawn an Explosion when the tank is destroyed
 			float[] tempFloat = theAssetManager.explosionInfo[theAssetManager.explosionCount];	
 			tempFloat[0] = centre.x;
 			tempFloat[1] = centre.y - 0.05f;
@@ -305,7 +305,7 @@ public class rocketTank extends solidObject{
 			if(experience >= 100){
 				level = 2;
 				myDamage = 44;
-				if(currentHP < maxHP && mainThread.gameFrame%16==0)
+				if(currentHP < maxHP && MainThread.gameFrame%16==0)
 					currentHP++;
 			}
 		}
@@ -327,20 +327,20 @@ public class rocketTank extends solidObject{
 		if(underAttackCountDown > 0)
 			underAttackCountDown--;
 		
-		//find out if the geometry of the object need to be modified
+		//find out if the Geometry of the object need to be modified
 		geometryNeedModify = true;
 		if(movement.x == 0 && movement.z == 0){
 			if(turretAngleDelta == 0 && bodyAngleDelta == 0){
 				geometryNeedModify = false;
 			}
 			if(occupiedTile0 != -1)
-				mainThread.gridMap.currentObstacleMap[occupiedTile0] = false;
+				MainThread.gridMap.currentObstacleMap[occupiedTile0] = false;
 			if(occupiedTile1 != -1)
-				mainThread.gridMap.currentObstacleMap[occupiedTile1] = false;
+				MainThread.gridMap.currentObstacleMap[occupiedTile1] = false;
 			if(occupiedTile2 != -1)
-				mainThread.gridMap.currentObstacleMap[occupiedTile2] = false;
+				MainThread.gridMap.currentObstacleMap[occupiedTile2] = false;
 			if(occupiedTile3 != -1)
-				mainThread.gridMap.currentObstacleMap[occupiedTile3] = false;
+				MainThread.gridMap.currentObstacleMap[occupiedTile3] = false;
 		}else{
 			//update centre
 			if (Math.abs(movement.x) + Math.abs(movement.z) < 0.25f) {
@@ -350,30 +350,30 @@ public class rocketTank extends solidObject{
 			}else{
 				movement.reset();
 				if(occupiedTile0 != -1)
-					mainThread.gridMap.currentObstacleMap[occupiedTile0] = false;
+					MainThread.gridMap.currentObstacleMap[occupiedTile0] = false;
 				if(occupiedTile1 != -1)
-					mainThread.gridMap.currentObstacleMap[occupiedTile1] = false;
+					MainThread.gridMap.currentObstacleMap[occupiedTile1] = false;
 				if(occupiedTile2 != -1)
-					mainThread.gridMap.currentObstacleMap[occupiedTile2] = false;
+					MainThread.gridMap.currentObstacleMap[occupiedTile2] = false;
 				if(occupiedTile3 != -1)
-					mainThread.gridMap.currentObstacleMap[occupiedTile3] = false;
+					MainThread.gridMap.currentObstacleMap[occupiedTile3] = false;
 			}
 		}
 		
 		
-		//update center in camera coordinate
+		//update center in Camera coordinate
 		tempCentre.set(centre);
 		tempCentre.y -= 0.2f;
-		tempCentre.subtract(camera.position);
-		tempCentre.rotate_XZ(camera.XZ_angle);
-		tempCentre.rotate_YZ(camera.YZ_angle); 
+		tempCentre.subtract(Camera.position);
+		tempCentre.rotate_XZ(Camera.XZ_angle);
+		tempCentre.rotate_YZ(Camera.YZ_angle);
 		tempCentre.updateLocation();
 		
 		
 		
 		visionBoundary.x = (int) (tempCentre.screenX - visionW);
 		visionBoundary.y = (int) (tempCentre.screenY - visionH);
-		visionInsideScreen = camera.screen.intersects(visionBoundary);
+		visionInsideScreen = Camera.screen.intersects(visionBoundary);
 		
 		if(attackStatus == isAttacking && targetObject != null &&  targetObject.teamNo != teamNo)
 			exposedCountDown = 64;
@@ -387,7 +387,7 @@ public class rocketTank extends solidObject{
 			for(int y = 0; y < 13; y++){
 				for(int x = 0; x < 13; x++){
 					if(bitmapVisionForEnemy[x+ y*13])
-						enemyCommander.tempBitmap[xPos + x + (yPos+y)*148] =true;
+						EnemyCommander.tempBitmap[xPos + x + (yPos+y)*148] =true;
 				}
 			}
 		}else if(exposedCountDown > 0){
@@ -397,7 +397,7 @@ public class rocketTank extends solidObject{
 			for(int y = 0; y < 5; y++){
 				for(int x = 0; x < 5; x++){
 					if(bitmapVisionGainFromAttackingUnit[x+ y*5])
-						enemyCommander.tempBitmap[xPos + x + (yPos+y)*148] =true;
+						EnemyCommander.tempBitmap[xPos + x + (yPos+y)*148] =true;
 				}
 			}
 		}
@@ -443,9 +443,9 @@ public class rocketTank extends solidObject{
 		
 		
 		
-		//test if the tank object is visible in camera point of view
+		//test if the tank object is visible in Camera point of view
 		if(visible_minimap){
-			if(currentHP <= maxHP/2 && (mainThread.gameFrame + ID) % 3 ==0){
+			if(currentHP <= maxHP/2 && (MainThread.gameFrame + ID) % 3 ==0){
 				//spawn smoke particle if the tank is badly damaged
 				float[] tempFloat = theAssetManager.smokeEmmiterList[theAssetManager.smokeEmmiterCount];
 				tempFloat[0] = centre.x + (float)(Math.random()/20) - 0.025f;
@@ -472,7 +472,7 @@ public class rocketTank extends solidObject{
 				
 			}
 		}else{
-			mainThread.pc.deSelect(this);
+			MainThread.playerCommander.deSelect(this);
 			visible = false;
 		}
 		
@@ -650,9 +650,9 @@ public class rocketTank extends solidObject{
 		if(teamNo == 0)
 			bitmapVision = theAssetManager.minimapBitmap;
 		else
-			bitmapVision = enemyCommander.visionMap;
+			bitmapVision = EnemyCommander.visionMap;
 		
-		if((ID + mainThread.gameFrame)%32 == 0){
+		if((ID + MainThread.gameFrame)%32 == 0){
 			currentOccupiedTile = (int)(centre.x*64)/16 + (127 - (int)(centre.z*64)/16)*128;
 			
 			for(int i = 0; i < tileCheckList.length; i++){
@@ -661,13 +661,13 @@ public class rocketTank extends solidObject{
 					if(index < 0 || index >= 16384 || Math.abs(index%128 - currentOccupiedTile%128) > 20)
 						continue;
 					
-					tile = mainThread.gridMap.tiles[index];
+					tile = MainThread.gridMap.tiles[index];
 					
 					if(!bitmapVision[index]){
 						boolean isRevealedBuilding = false;
 						if(tile[4] != null)
 							if(tile[4].type > 100 && tile[4].ID != -1)
-								if((tile[4].isRevealed == true && teamNo == 0) || (mainThread.ec.theMapAwarenessAI.mapAsset[tile[4].ID] != null && teamNo != 0) )
+								if((tile[4].isRevealed == true && teamNo == 0) || (MainThread.enemyCommander.theMapAwarenessAI.mapAsset[tile[4].ID] != null && teamNo != 0) )
 									isRevealedBuilding = true;
 						if(!isRevealedBuilding)
 							continue;
@@ -679,13 +679,13 @@ public class rocketTank extends solidObject{
 						if(tile[j] != null){
 							if(tile[j].teamNo !=  teamNo && tile[j].teamNo != -1 && tile[j].currentHP > 0 && !tile[j].isCloaked){	
 								attack(tile[j]); 
-								currentCommand = solidObject.attackCautiously;
-								secondaryCommand = solidObject.StandBy;
+								currentCommand = SolidObject.attackCautiously;
+								secondaryCommand = SolidObject.StandBy;
 								
 								/*
 								attackMoveTo((tile[j].centre.x + centre.x)/2, (tile[j].centre.z+centre.z)/2);
-								currentCommand = solidObject.attackMove;
-								secondaryCommand = solidObject.attackMove;
+								currentCommand = SolidObject.attackMove;
+								secondaryCommand = SolidObject.attackMove;
 								*/
 								
 								  return;
@@ -714,7 +714,7 @@ public class rocketTank extends solidObject{
 		
 		if(currentMovementStatus !=  hugRight && currentMovementStatus != hugLeft){
 			calculateMovement();
-			destinationAngle = geometry.findAngle(centre.x, centre.z, destinationX, destinationY);
+			destinationAngle = Geometry.findAngle(centre.x, centre.z, destinationX, destinationY);
 			immediateDestinationAngle = destinationAngle;
 		}
 		
@@ -744,11 +744,11 @@ public class rocketTank extends solidObject{
 		
 		
 		if(attackStatus == isAttacking){
-			int attackAngle = geometry.findAngle(centre.x, centre.z, destinationX, destinationY);
+			int attackAngle = Geometry.findAngle(centre.x, centre.z, destinationX, destinationY);
 			
 			if(turretAngle != attackAngle){
 				
-				turretAngleDelta = 360 - (geometry.findAngleDelta(turretAngle, attackAngle, turretTurnRate) + 360)%360;
+				turretAngleDelta = 360 - (Geometry.findAngleDelta(turretAngle, attackAngle, turretTurnRate) + 360)%360;
 				turretAngle= (turretAngle - turretAngleDelta + 360)%360;
 				
 				if(Math.abs(turretAngle - attackAngle) < 10)
@@ -762,7 +762,7 @@ public class rocketTank extends solidObject{
 		
 		}else{
 			if(turretAngle != immediateDestinationAngle){
-				turretAngleDelta = 360 - (geometry.findAngleDelta(turretAngle, immediateDestinationAngle, turretTurnRate) + 360)%360;
+				turretAngleDelta = 360 - (Geometry.findAngleDelta(turretAngle, immediateDestinationAngle, turretTurnRate) + 360)%360;
 				turretAngle= (turretAngle - turretAngleDelta + 360)%360;
 			}else{
 				turretAngleDelta = 0;
@@ -771,7 +771,7 @@ public class rocketTank extends solidObject{
 		
 		if(Math.abs(bodyAngle - immediateDestinationAngle) > 45 && Math.abs(bodyAngle - immediateDestinationAngle) < 315){
 			if(!(distanceToDesination <  attackRange &&  movement.x ==0 && movement.z ==0)){
-				bodyAngleDelta = 360 - (geometry.findAngleDelta(bodyAngle, immediateDestinationAngle, bodyTurnRate) + 360)%360;
+				bodyAngleDelta = 360 - (Geometry.findAngleDelta(bodyAngle, immediateDestinationAngle, bodyTurnRate) + 360)%360;
 				bodyAngle= (bodyAngle - bodyAngleDelta + 360)%360;
 				movement.reset();
 			}else{
@@ -781,7 +781,7 @@ public class rocketTank extends solidObject{
 		}else{
 			if(bodyAngle != immediateDestinationAngle){
 				if(!(distanceToDesination <  attackRange && movement.x ==0 && movement.z ==0)){
-					bodyAngleDelta = 360 - (geometry.findAngleDelta(bodyAngle, immediateDestinationAngle, bodyTurnRate) + 360)%360;
+					bodyAngleDelta = 360 - (Geometry.findAngleDelta(bodyAngle, immediateDestinationAngle, bodyTurnRate) + 360)%360;
 					bodyAngle= (bodyAngle - bodyAngleDelta + 360)%360;
 					
 				}
@@ -877,23 +877,23 @@ public class rocketTank extends solidObject{
 		if(teamNo == 0)
 			bitmapVision = theAssetManager.minimapBitmap;
 		else
-			bitmapVision = enemyCommander.visionMap;
+			bitmapVision = EnemyCommander.visionMap;
 		
-		solidObject target = null;
+		SolidObject target = null;
 		for(int i = 0; i < tileCheckList.length; i++){
 			if(tileCheckList[i] != Integer.MAX_VALUE){
 				int index = currentOccupiedTile + tileCheckList[i];
 				if(index < 0 || index >= 16384 || Math.abs(index%128 - currentOccupiedTile%128) > 20)
 					continue;
 				
-				tile = mainThread.gridMap.tiles[index];
+				tile = MainThread.gridMap.tiles[index];
 				
 				//ignore unrevealed buildings
 				if(!bitmapVision[index]){
 					boolean isRevealedBuilding = false;
 					if(tile[4] != null)
 						if(tile[4].type > 100 && tile[4].ID != -1)
-							if((tile[4].isRevealed == true && teamNo == 0) || (mainThread.ec.theMapAwarenessAI.mapAsset[tile[4].ID] != null && teamNo != 0))
+							if((tile[4].isRevealed == true && teamNo == 0) || (MainThread.enemyCommander.theMapAwarenessAI.mapAsset[tile[4].ID] != null && teamNo != 0))
 								isRevealedBuilding = true;
 					if(!isRevealedBuilding)
 						continue;
@@ -907,7 +907,7 @@ public class rocketTank extends solidObject{
 							if(distanceToDesination <= attackRange){
 								if((tile[j].type == 199 || tile[j].type == 200)  && (tile[j].visible_minimap || (teamNo !=0 && tile[j].isRevealed_AI) )){
 									attack(tile[j]);
-									currentCommand = solidObject.attackInNumbers;
+									currentCommand = SolidObject.attackInNumbers;
 									return;
 								}else{
 									if(target == null){
@@ -925,7 +925,7 @@ public class rocketTank extends solidObject{
 		
 		if(target != null && (target.visible_minimap || teamNo != 0)){
 			attack(target);
-			currentCommand = solidObject.attackInNumbers;
+			currentCommand = SolidObject.attackInNumbers;
 			return;
 		}
 		
@@ -935,7 +935,7 @@ public class rocketTank extends solidObject{
 	
 	//move to a destination position,  ignore any hostile units it encounters 
 	public void performMovementLogic(){
-		attackStatus = solidObject.noTarget;
+		attackStatus = SolidObject.noTarget;
 		//clear things a bit
 		unStableObstacle = null;
 		
@@ -944,7 +944,7 @@ public class rocketTank extends solidObject{
 			
 			distanceToDesination = (float)Math.sqrt((destinationX - centre.x) * (destinationX - centre.x) + (destinationY - centre.z) * (destinationY - centre.z));
 			calculateMovement();
-			destinationAngle = geometry.findAngle(centre.x, centre.z, destinationX, destinationY);
+			destinationAngle = Geometry.findAngle(centre.x, centre.z, destinationX, destinationY);
 			immediateDestinationAngle = destinationAngle;
 			
 			//currentMovementStatus = validateMovement();
@@ -952,7 +952,7 @@ public class rocketTank extends solidObject{
 		
 		
 		if(turretAngle != immediateDestinationAngle){
-			turretAngleDelta = 360 - (geometry.findAngleDelta(turretAngle, immediateDestinationAngle, turretTurnRate) + 360)%360;
+			turretAngleDelta = 360 - (Geometry.findAngleDelta(turretAngle, immediateDestinationAngle, turretTurnRate) + 360)%360;
 			turretAngle= (turretAngle - turretAngleDelta + 360)%360;
 		}else{
 			turretAngleDelta = 0;
@@ -960,13 +960,13 @@ public class rocketTank extends solidObject{
 		
 		if(Math.abs(bodyAngle - immediateDestinationAngle) > 45 && Math.abs(bodyAngle - immediateDestinationAngle) < 315){
 			
-			bodyAngleDelta = 360 - (geometry.findAngleDelta(bodyAngle, immediateDestinationAngle, bodyTurnRate) + 360)%360;
+			bodyAngleDelta = 360 - (Geometry.findAngleDelta(bodyAngle, immediateDestinationAngle, bodyTurnRate) + 360)%360;
 			bodyAngle= (bodyAngle - bodyAngleDelta + 360)%360;
 			movement.reset();
 			
 		}else{
 			if(bodyAngle != immediateDestinationAngle){
-				bodyAngleDelta = 360 - (geometry.findAngleDelta(bodyAngle, immediateDestinationAngle, bodyTurnRate) + 360)%360;
+				bodyAngleDelta = 360 - (Geometry.findAngleDelta(bodyAngle, immediateDestinationAngle, bodyTurnRate) + 360)%360;
 				bodyAngle= (bodyAngle - bodyAngleDelta + 360)%360;
 			}else{
 			
@@ -1055,7 +1055,7 @@ public class rocketTank extends solidObject{
 			theAssetManager.spawnRocket(attackAngle, (int)(myDamage*multiplier), targetObject, firingPosition, this);
 			attackCoolDown = myAttackCooldown;
 			
-			//spawn a mini explosion  
+			//spawn a mini Explosion
 			firingPosition.set(-0.03f, -0.35f, 0.08f);
 			firingPosition.rotate_XZ(360 - attackAngle);
 			firingPosition.add(tempVector.x, 0, tempVector.z);
@@ -1066,7 +1066,7 @@ public class rocketTank extends solidObject{
 			tempFloat[3] = 0.5f;
 			tempFloat[4] = 2;
 			tempFloat[5] = 0;
-			tempFloat[6] = 6 + (gameData.getRandom()%4);
+			tempFloat[6] = 6 + (GameData.getRandom()%4);
 			tempFloat[7] = centre.y;
 			theAssetManager.explosionCount++;
 			
@@ -1078,7 +1078,7 @@ public class rocketTank extends solidObject{
 			firingPosition.add(tempVector.x, 0, tempVector.z);
 			theAssetManager.spawnRocket(attackAngle, (int)(myDamage*multiplier), targetObject, firingPosition, this);
 			
-			//spawn a mini explosion  
+			//spawn a mini Explosion
 			firingPosition.set(0.03f, -0.35f, 0.08f);
 			firingPosition.rotate_XZ(360 - attackAngle);
 			firingPosition.add(tempVector.x, 0, tempVector.z);
@@ -1089,7 +1089,7 @@ public class rocketTank extends solidObject{
 			tempFloat[3] = 0.5f;
 			tempFloat[4] = 2;
 			tempFloat[5] = 0;
-			tempFloat[6] = 6 + (gameData.getRandom()%4);
+			tempFloat[6] = 6 + (GameData.getRandom()%4);
 			tempFloat[7] = centre.y;
 			theAssetManager.explosionCount++;
 		}
@@ -1116,4 +1116,35 @@ public class rocketTank extends solidObject{
 	}
 	public int getMaxHp(){return maxHP;}
 
+    //clone a group of polygons (doesn't work on smooth shaded polygons)
+    public polygon3D[] clonePolygons(polygon3D[] polys, boolean createNewOUV){
+        int l = polys.length;
+
+        polygon3D[] clone = new polygon3D[l];
+
+        for(int i = 0; i < l; i++){
+            if(polys[i] == null)
+                continue;
+            int length = polys[i].vertex3D.length;
+            v = new vector[length];
+            for(int j = 0; j < length; j++){
+                v[j] = polys[i].vertex3D[j].myClone();
+            }
+
+            int myType = polys[i].type;
+            float scaleX = polys[i].scaleX;
+            float scaleY = polys[i].scaleY;
+            texture myTexture = polys[i].myTexture;
+            if(createNewOUV)
+                clone[i] = new polygon3D(v, polys[i].origin.myClone(), polys[i].rightEnd.myClone(), polys[i].bottomEnd.myClone(), myTexture, scaleX, scaleY, myType);
+            else
+                clone[i] = new polygon3D(v, v[0], v[1], v[3], myTexture, scaleX, scaleY, myType);
+            clone[i].shadowBias = polys[i].shadowBias;
+            clone[i].diffuse_I = polys[i].diffuse_I;
+            clone[i].Ambient_I = polys[i].Ambient_I;
+        }
+
+
+        return clone;
+    }
 }

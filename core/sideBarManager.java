@@ -1,12 +1,12 @@
 package core;
 
 import entity.*;
-import gui.inputHandler;
+import gui.InputHandler;
 
 //this class handles player's interaction with the sidebar
 public class sideBarManager {
 
-	public playerCommander pc;
+	public PlayerCommander pc;
 	public boolean rightMouseButtonClicked;
 	public boolean leftMouseButtonClicked;
 	
@@ -27,11 +27,11 @@ public class sideBarManager {
 	public int[] sideBarInfo;
 	public int[] sideBarInfo2;
 	
-	public static int screen_width = mainThread.screen_width;
-	public static int screen_height = mainThread.screen_height;
+	public static int screen_width = MainThread.screen_width;
+	public static int screen_height = MainThread.screen_height;
 	
 	 
-	public sideBarManager(playerCommander pc){
+	public sideBarManager(PlayerCommander pc){
 		this.pc = pc;
 		sideBarInfo = new int[9];
 		sideBarInfo2 = new int[9];
@@ -49,13 +49,13 @@ public class sideBarManager {
 			sideBarInfo[i] = -1;
 		
 		//check selected units;
-		solidObject[] selectedUnits = pc.selectedUnits;
-		solidObject selectedObject = null;
+		SolidObject[] selectedUnits = pc.selectedUnits;
+		SolidObject selectedObject = null;
 		
 	
 		
-		int mouseX = inputHandler.mouse_x;
-		int mouseY = inputHandler.mouse_y;
+		int mouseX = InputHandler.mouse_x;
+		int mouseY = InputHandler.mouse_y;
 	
 		
 		//int x1 = 635; int y1 = 381; 
@@ -126,7 +126,7 @@ public class sideBarManager {
 		
 		//check if there is only one construction yard among the selected objects
 		int numOfselectedConstructionYard = 0;
-		solidObject selecterdConyard = null;
+		SolidObject selecterdConyard = null;
 		for(int i = 0; i < selectedUnits.length;i++){
 			if(selectedUnits[i] != null && selectedUnits[i].teamNo == 0 && selectedUnits[i].currentHP > 0){
 				if(selectedUnits[i].type == 104) {
@@ -140,9 +140,9 @@ public class sideBarManager {
 			selectedObject = selecterdConyard;
 		}
 		
-		//check if there is only one factory among the selected objects
+		//check if there is only one Factory among the selected objects
 		int numOfselectedFactory = 0;
-		solidObject selecterdFactory = null;
+		SolidObject selecterdFactory = null;
 		for(int i = 0; i < selectedUnits.length;i++){
 			if(selectedUnits[i] != null && selectedUnits[i].teamNo == 0 && selectedUnits[i].currentHP > 0){
 				if(selectedUnits[i].type == 105) {
@@ -203,7 +203,7 @@ public class sideBarManager {
 				for(int i = 0; i < selectedUnits.length;i++){
 					if(selectedUnits[i] != null){
 						
-						constructionVehicle cv = (constructionVehicle)selectedUnits[i];
+						ConstructionVehicle cv = (ConstructionVehicle)selectedUnits[i];
 						if(cv.canBeDeployed()){
 							
 							constructionVehicleCanBeDeployed = true;
@@ -231,7 +231,7 @@ public class sideBarManager {
 			}
 			
 			
-			//handle factory side bar interaction
+			//handle Factory side bar interaction
 			if(selectedObject.type == 105 && !(numOfselectedConstructionYard == 1)){
 				onlyFactorySelected = true;
 				for(int i = 0; i < selectedUnits.length; i++) {
@@ -245,10 +245,10 @@ public class sideBarManager {
 				
 				factoryRallyOnSameGoldMine = true;
 				boolean firstFactory = true;
-				goldMine o = null;
+				GoldMine o = null;
 				for(int i = 0; i < selectedUnits.length;i++){
 					if(selectedUnits[i] != null && selectedUnits[i].type == 105){
-						factory f = (factory)(selectedUnits[i]);
+						Factory f = (Factory)(selectedUnits[i]);
 						if(firstFactory){
 							o = f.targetGoldMine;
 							firstFactory = false;
@@ -260,13 +260,13 @@ public class sideBarManager {
 					}
 				}
 				
-				//can  interact with one than 1 factory at a time
-				if(mainThread.pc.numberOfSelectedUnits != 0){
-					factory f = null;
+				//can  interact with one than 1 Factory at a time
+				if(MainThread.playerCommander.numberOfSelectedUnits != 0){
+					Factory f = null;
 					boolean productionQueueDisplayed = false;
 					for(int i = 0; i < selectedUnits.length;i++){
 						if(selectedUnits[i] != null && selectedUnits[i].type == 105){
-							f = (factory)selectedUnits[i];
+							f = (Factory)selectedUnits[i];
 							
 							//handle light tank building progress and display info
 							if(f.canBuildLightTank){
@@ -294,7 +294,7 @@ public class sideBarManager {
 								
 							}
 							
-							//handle rocket tank building progress and display info
+							//handle Rocket tank building progress and display info
 							if(f.canBuildRocketTank){
 								//start building 
 								if(cursorInBlock1 && leftMouseButtonClicked){
@@ -318,7 +318,7 @@ public class sideBarManager {
 								
 							}
 							
-							//handle harvester building progress and display info
+							//handle Harvester building progress and display info
 							if(f.canBuildHarvester){
 								//start building 
 								if(cursorInBlock2 && leftMouseButtonClicked){
@@ -340,7 +340,7 @@ public class sideBarManager {
 									sideBarInfo[2] = displayInfo << 24 | 8 << 16 | f.harvesterProgress << 8 | (f.numOfHarvesterOnQueue + 100);
 							}
 							
-							//handle drone building progress and display info
+							//handle Drone building progress and display info
 							if(f.canBuildDrone){
 								//start building 
 								if(cursorInBlock3 && leftMouseButtonClicked){
@@ -446,16 +446,16 @@ public class sideBarManager {
 			
 			//handle missile turret side bar interaction
 			if(selectedObject.type == 199){
-				if(communicationCenter.rapidfireResearched_player){
+				if(CommunicationCenter.rapidfireResearched_player){
 					
 					if(cursorInBlock5 && leftMouseButtonClicked){
 						for(int i = 0; i < selectedUnits.length;i++)
 							if(selectedUnits[i] != null&& selectedUnits[i].teamNo == 0)
 								if(selectedUnits[i].type == 199){
-									missileTurret o = (missileTurret)selectedUnits[i];
+									MissileTurret o = (MissileTurret)selectedUnits[i];
 									if(o.overCharge == false){
 										o.overCharge = true;
-										mainThread.pc.theBaseInfo.numberOfOverChargedMissileTurret++;
+										MainThread.playerCommander.theBaseInfo.numberOfOverChargedMissileTurret++;
 									}
 								}
 					}
@@ -464,10 +464,10 @@ public class sideBarManager {
 						for(int i = 0; i < selectedUnits.length;i++)
 							if(selectedUnits[i] != null&& selectedUnits[i].teamNo == 0)
 								if(selectedUnits[i].type == 199){
-									missileTurret o = (missileTurret)selectedUnits[i];
+									MissileTurret o = (MissileTurret)selectedUnits[i];
 									if(o.overCharge == true){
 										o.overCharge = false;
-										mainThread.pc.theBaseInfo.numberOfOverChargedMissileTurret--;
+										MainThread.playerCommander.theBaseInfo.numberOfOverChargedMissileTurret--;
 									}
 								}
 					}
@@ -483,7 +483,7 @@ public class sideBarManager {
 					for(int i = 0; i < selectedUnits.length;i++){
 						if(selectedUnits[i] != null&& selectedUnits[i].teamNo == 0){
 							if(selectedUnits[i].type == 199){
-								missileTurret o = (missileTurret)selectedUnits[i];
+								MissileTurret o = (MissileTurret)selectedUnits[i];
 								if(!o.overCharge)
 									showRapidfireMark = false;
 							}
@@ -500,16 +500,16 @@ public class sideBarManager {
 			//handle communication center side bar interaction
 			if(selectedObject.type == 106){
 				
-				//handle harvester speed research
-				if(!communicationCenter.harvesterSpeedResearched_player){
+				//handle Harvester speed research
+				if(!CommunicationCenter.harvesterSpeedResearched_player){
 					//start researching
-					if(cursorInBlock0 && leftMouseButtonClicked && communicationCenter.harvesterSpeedResearchProgress_player == 255){
-						communicationCenter.researchHarvesterSpeed(0);
+					if(cursorInBlock0 && leftMouseButtonClicked && CommunicationCenter.harvesterSpeedResearchProgress_player == 255){
+						CommunicationCenter.researchHarvesterSpeed(0);
 					}
 					
 					//cancel researching
-					if(cursorInBlock0 && rightMouseButtonClicked && communicationCenter.harvesterSpeedResearchProgress_player != 255 && communicationCenter.harvesterSpeedResearchProgress_player != 254){
-						communicationCenter.cancelResearch(0);
+					if(cursorInBlock0 && rightMouseButtonClicked && CommunicationCenter.harvesterSpeedResearchProgress_player != 255 && CommunicationCenter.harvesterSpeedResearchProgress_player != 254){
+						CommunicationCenter.cancelResearch(0);
 
 					}
 					
@@ -519,19 +519,19 @@ public class sideBarManager {
 						displayInfo = 15;
 					}
 					
-					sideBarInfo[0] = displayInfo << 24 | 16 << 16 | communicationCenter.harvesterSpeedResearchProgress_player << 8 | 0;
+					sideBarInfo[0] = displayInfo << 24 | 16 << 16 | CommunicationCenter.harvesterSpeedResearchProgress_player << 8 | 0;
 				}
 				
 				//handle rapid fire research
-				if(!communicationCenter.rapidfireResearched_player){
+				if(!CommunicationCenter.rapidfireResearched_player){
 					//start researching
-					if(cursorInBlock1 && leftMouseButtonClicked && communicationCenter.rapidfireResearchProgress_player == 255){
-						communicationCenter.researchRapidfire(0);
+					if(cursorInBlock1 && leftMouseButtonClicked && CommunicationCenter.rapidfireResearchProgress_player == 255){
+						CommunicationCenter.researchRapidfire(0);
 					}
 					
 					//cancel researching
-					if(cursorInBlock1 && rightMouseButtonClicked && communicationCenter.rapidfireResearchProgress_player != 255 && communicationCenter.rapidfireResearchProgress_player != 254){
-						communicationCenter.cancelResearch(0);
+					if(cursorInBlock1 && rightMouseButtonClicked && CommunicationCenter.rapidfireResearchProgress_player != 255 && CommunicationCenter.rapidfireResearchProgress_player != 254){
+						CommunicationCenter.cancelResearch(0);
 						
 					}
 					
@@ -541,7 +541,7 @@ public class sideBarManager {
 						displayInfo = 16;
 					}
 					
-					sideBarInfo[1] = displayInfo << 24 | 17 << 16 | communicationCenter.rapidfireResearchProgress_player << 8 | 0;
+					sideBarInfo[1] = displayInfo << 24 | 17 << 16 | CommunicationCenter.rapidfireResearchProgress_player << 8 | 0;
 				}
 				
 			}
@@ -550,14 +550,14 @@ public class sideBarManager {
 			if(selectedObject.type == 107){
 				
 				//handle light tank range research
-				if(!techCenter.lightTankResearched_player){
-					if(cursorInBlock0 && leftMouseButtonClicked && techCenter.lightTankResearchProgress_player == 255){
-						techCenter.researchLightTank(0);
+				if(!TechCenter.lightTankResearched_player){
+					if(cursorInBlock0 && leftMouseButtonClicked && TechCenter.lightTankResearchProgress_player == 255){
+						TechCenter.researchLightTank(0);
 					}
 					
 					//cancel researching
-					if(cursorInBlock0 && rightMouseButtonClicked && techCenter.lightTankResearchProgress_player != 255 && techCenter.lightTankResearchProgress_player != 254){
-						techCenter.cancelResearch(0);
+					if(cursorInBlock0 && rightMouseButtonClicked && TechCenter.lightTankResearchProgress_player != 255 && TechCenter.lightTankResearchProgress_player != 254){
+						TechCenter.cancelResearch(0);
 					}
 					
 					//display info
@@ -565,19 +565,19 @@ public class sideBarManager {
 					if(cursorInBlock0){
 						displayInfo = 20;
 					}
-					sideBarInfo[0] = displayInfo << 24 | 20 << 16 | techCenter.lightTankResearchProgress_player << 8 | 0;
+					sideBarInfo[0] = displayInfo << 24 | 20 << 16 | TechCenter.lightTankResearchProgress_player << 8 | 0;
 				}
 				
-				//handle rocket tank damage research
-				if(!techCenter.rocketTankResearched_player){
-					if(cursorInBlock1 && leftMouseButtonClicked && techCenter.rocketTankResearchProgress_player == 255){
+				//handle Rocket tank damage research
+				if(!TechCenter.rocketTankResearched_player){
+					if(cursorInBlock1 && leftMouseButtonClicked && TechCenter.rocketTankResearchProgress_player == 255){
 						
-						techCenter.researchRocketTank(0);
+						TechCenter.researchRocketTank(0);
 					}
 					
 					//cancel researching
-					if(cursorInBlock1 && rightMouseButtonClicked && techCenter.rocketTankResearchProgress_player != 255 && techCenter.rocketTankResearchProgress_player != 254){
-						techCenter.cancelResearch(0);
+					if(cursorInBlock1 && rightMouseButtonClicked && TechCenter.rocketTankResearchProgress_player != 255 && TechCenter.rocketTankResearchProgress_player != 254){
+						TechCenter.cancelResearch(0);
 					}
 					
 					//display info
@@ -586,19 +586,19 @@ public class sideBarManager {
 						displayInfo = 21;
 					}
 					
-					sideBarInfo[1] = displayInfo << 24 | 21 << 16 | techCenter.rocketTankResearchProgress_player << 8 | 0;	
+					sideBarInfo[1] = displayInfo << 24 | 21 << 16 | TechCenter.rocketTankResearchProgress_player << 8 | 0;
 				}
 				
 				//handle stealth multishot research
-				if(!techCenter.stealthTankResearched_player){
-					if(cursorInBlock2 && leftMouseButtonClicked && techCenter.stealthTankResearchProgress_player == 255){
+				if(!TechCenter.stealthTankResearched_player){
+					if(cursorInBlock2 && leftMouseButtonClicked && TechCenter.stealthTankResearchProgress_player == 255){
 						
-						techCenter.researchStealthTank(0);
+						TechCenter.researchStealthTank(0);
 					}
 					
 					//cancel researching
-					if(cursorInBlock2 && rightMouseButtonClicked && techCenter.stealthTankResearchProgress_player != 255 && techCenter.stealthTankResearchProgress_player != 254){
-						techCenter.cancelResearch(0);
+					if(cursorInBlock2 && rightMouseButtonClicked && TechCenter.stealthTankResearchProgress_player != 255 && TechCenter.stealthTankResearchProgress_player != 254){
+						TechCenter.cancelResearch(0);
 					}
 					
 					//display info
@@ -607,19 +607,19 @@ public class sideBarManager {
 						displayInfo = 22;
 					}
 					
-					sideBarInfo[2] = displayInfo << 24 | 22 << 16 | techCenter.stealthTankResearchProgress_player << 8 | 0;	
+					sideBarInfo[2] = displayInfo << 24 | 22 << 16 | TechCenter.stealthTankResearchProgress_player << 8 | 0;
 				}
 				
 				//handle heavy tank self repair research
-				if(!techCenter.heavyTankResearched_player){
-					if(cursorInBlock3 && leftMouseButtonClicked && techCenter.heavyTankResearchProgress_player == 255){
+				if(!TechCenter.heavyTankResearched_player){
+					if(cursorInBlock3 && leftMouseButtonClicked && TechCenter.heavyTankResearchProgress_player == 255){
 						
-						techCenter.researchHeavyTank(0);
+						TechCenter.researchHeavyTank(0);
 					}
 					
 					//cancel researching
-					if(cursorInBlock3 && rightMouseButtonClicked && techCenter.heavyTankResearchProgress_player != 255 && techCenter.heavyTankResearchProgress_player != 254){
-						techCenter.cancelResearch(0);
+					if(cursorInBlock3 && rightMouseButtonClicked && TechCenter.heavyTankResearchProgress_player != 255 && TechCenter.heavyTankResearchProgress_player != 254){
+						TechCenter.cancelResearch(0);
 					}
 					
 					//display info
@@ -628,7 +628,7 @@ public class sideBarManager {
 						displayInfo = 23;
 					}
 					
-					sideBarInfo[3] = displayInfo << 24 | 23 << 16 | techCenter.heavyTankResearchProgress_player << 8 | 0;	
+					sideBarInfo[3] = displayInfo << 24 | 23 << 16 | TechCenter.heavyTankResearchProgress_player << 8 | 0;
 				}
 				
 			}
@@ -640,26 +640,26 @@ public class sideBarManager {
 				//can only interact with one construction yard at a time
 				if(numOfselectedConstructionYard == 1){
 					
-					constructionYard cy = (constructionYard)selecterdConyard;
+					ConstructionYard cy = (ConstructionYard)selecterdConyard;
 					
 					
 					//handle power plant building progress and display info
 					if(cy.canBuildPowerPlant){
 						//start building 
-						if(cursorInBlock0 && leftMouseButtonClicked && cy.powerPlantProgress == 255 && !mainThread.pc.isDeployingBuilding){
+						if(cursorInBlock0 && leftMouseButtonClicked && cy.powerPlantProgress == 255 && !MainThread.playerCommander.isDeployingBuilding){
 							cy.buildPowerPlant();
 						}
 						
 						if(cursorInBlock0 && leftMouseButtonClicked && cy.powerPlantProgress == 240){
 							cy.needToDrawDeploymentGrid = true;
-							mainThread.pc.isDeployingBuilding = true;
-							mainThread.pc.selectedConstructionYard = cy;
+							MainThread.playerCommander.isDeployingBuilding = true;
+							MainThread.playerCommander.selectedConstructionYard = cy;
 						}
 						
 						//cancel buidling 
 						if(cursorInBlock0 && rightMouseButtonClicked && cy.powerPlantProgress != 255 && cy.powerPlantProgress != 254){
-							mainThread.pc.isDeployingBuilding = false;
-							mainThread.pc.selectedConstructionYard = null;
+							MainThread.playerCommander.isDeployingBuilding = false;
+							MainThread.playerCommander.selectedConstructionYard = null;
 							cy.needToDrawDeploymentGrid = false;
 							cy.cancelBuilding();
 						}
@@ -675,23 +675,23 @@ public class sideBarManager {
 	
 					}
 					
-					//handle refinery building progress and display info
+					//handle Refinery building progress and display info
 					if(cy.canBuildRefinery){
 						//start building 
-						if(cursorInBlock1 && leftMouseButtonClicked && cy.refineryProgress == 255 && !mainThread.pc.isDeployingBuilding){
+						if(cursorInBlock1 && leftMouseButtonClicked && cy.refineryProgress == 255 && !MainThread.playerCommander.isDeployingBuilding){
 							cy.buildRefinery();
 						}
 						
 						if(cursorInBlock1 && leftMouseButtonClicked && cy.refineryProgress == 240){
 							cy.needToDrawDeploymentGrid = true;
-							mainThread.pc.isDeployingBuilding = true;
-							mainThread.pc.selectedConstructionYard = cy;
+							MainThread.playerCommander.isDeployingBuilding = true;
+							MainThread.playerCommander.selectedConstructionYard = cy;
 						}
 						
 						//cancel buidling 
 						if(cursorInBlock1 && rightMouseButtonClicked && cy.refineryProgress != 255 && cy.refineryProgress != 254){
-							mainThread.pc.isDeployingBuilding = false;
-							mainThread.pc.selectedConstructionYard = null;
+							MainThread.playerCommander.isDeployingBuilding = false;
+							MainThread.playerCommander.selectedConstructionYard = null;
 							cy.needToDrawDeploymentGrid = false;
 							cy.cancelBuilding();
 						}
@@ -705,23 +705,23 @@ public class sideBarManager {
 						sideBarInfo[1] = displayInfo << 24 | 2 << 16 | cy.refineryProgress << 8 | (cy.refineryProgress/240 + cy.refineryProgress/240 * cy.refineryProgress%240);
 					}
 					
-					//handle factory building progress and display info
+					//handle Factory building progress and display info
 					if(cy.canBuildFactory){
 						//start building 
-						if(cursorInBlock2 && leftMouseButtonClicked && cy.factoryProgress == 255 && !mainThread.pc.isDeployingBuilding){
+						if(cursorInBlock2 && leftMouseButtonClicked && cy.factoryProgress == 255 && !MainThread.playerCommander.isDeployingBuilding){
 							cy.buildFactory();
 						}
 						
 						if(cursorInBlock2 && leftMouseButtonClicked && cy.factoryProgress == 240){
 							cy.needToDrawDeploymentGrid = true;
-							mainThread.pc.isDeployingBuilding = true;
-							mainThread.pc.selectedConstructionYard = cy;
+							MainThread.playerCommander.isDeployingBuilding = true;
+							MainThread.playerCommander.selectedConstructionYard = cy;
 						}
 						
 						//cancel buidling 
 						if(cursorInBlock2 && rightMouseButtonClicked && cy.factoryProgress != 255 && cy.factoryProgress != 254){
-							mainThread.pc.isDeployingBuilding = false;
-							mainThread.pc.selectedConstructionYard = null;
+							MainThread.playerCommander.isDeployingBuilding = false;
+							MainThread.playerCommander.selectedConstructionYard = null;
 							cy.needToDrawDeploymentGrid = false;
 							cy.cancelBuilding();
 						}
@@ -739,20 +739,20 @@ public class sideBarManager {
 					//handle communication center building progress and display info
 					if(cy.canBuildCommunicationCenter){
 						//start building 
-						if(cursorInBlock3 && leftMouseButtonClicked && cy.communicationCenterProgress == 255 && !mainThread.pc.isDeployingBuilding){
+						if(cursorInBlock3 && leftMouseButtonClicked && cy.communicationCenterProgress == 255 && !MainThread.playerCommander.isDeployingBuilding){
 							cy.buildCommunicationCentre();
 						}
 						
 						if(cursorInBlock3  && leftMouseButtonClicked && cy.communicationCenterProgress == 240){
 							cy.needToDrawDeploymentGrid = true;
-							mainThread.pc.isDeployingBuilding = true;
-							mainThread.pc.selectedConstructionYard = cy;
+							MainThread.playerCommander.isDeployingBuilding = true;
+							MainThread.playerCommander.selectedConstructionYard = cy;
 						}
 						
 						//cancel buidling 
 						if(cursorInBlock3 && rightMouseButtonClicked && cy.communicationCenterProgress != 255 && cy.communicationCenterProgress != 254){
-							mainThread.pc.isDeployingBuilding = false;
-							mainThread.pc.selectedConstructionYard = null;
+							MainThread.playerCommander.isDeployingBuilding = false;
+							MainThread.playerCommander.selectedConstructionYard = null;
 							cy.needToDrawDeploymentGrid = false;
 							cy.cancelBuilding();
 						}
@@ -770,21 +770,21 @@ public class sideBarManager {
 					//handle turret building process and display info 
 					if(cy.canBuildGunTurret){
 						//start building 
-						if(cursorInBlock4 && leftMouseButtonClicked && cy.gunTurretProgress == 255 && !mainThread.pc.isDeployingBuilding){
+						if(cursorInBlock4 && leftMouseButtonClicked && cy.gunTurretProgress == 255 && !MainThread.playerCommander.isDeployingBuilding){
 							cy.buildGunTurret();
 				
 						}
 						
 						if(cursorInBlock4  && leftMouseButtonClicked && cy.gunTurretProgress == 240){
 							cy.needToDrawDeploymentGrid = true;
-							mainThread.pc.isDeployingBuilding = true;
-							mainThread.pc.selectedConstructionYard = cy;
+							MainThread.playerCommander.isDeployingBuilding = true;
+							MainThread.playerCommander.selectedConstructionYard = cy;
 						}
 						
 						//cancel buidling 
 						if(cursorInBlock4 && rightMouseButtonClicked && cy.gunTurretProgress != 255 && cy.gunTurretProgress != 254){
-							mainThread.pc.isDeployingBuilding = false;
-							mainThread.pc.selectedConstructionYard = null;
+							MainThread.playerCommander.isDeployingBuilding = false;
+							MainThread.playerCommander.selectedConstructionYard = null;
 							cy.needToDrawDeploymentGrid = false;
 							cy.cancelBuilding();
 						}
@@ -801,21 +801,21 @@ public class sideBarManager {
 					//handle missile turret building process and display info 
 					if(cy.canBuildMissileTurret){
 						//start building 
-						if(cursorInBlock5 && leftMouseButtonClicked && cy.missileTurretProgress == 255 && !mainThread.pc.isDeployingBuilding){
+						if(cursorInBlock5 && leftMouseButtonClicked && cy.missileTurretProgress == 255 && !MainThread.playerCommander.isDeployingBuilding){
 							cy.buildMissileTurret();
 				
 						}
 						
 						if(cursorInBlock5  && leftMouseButtonClicked && cy.missileTurretProgress == 240){
 							cy.needToDrawDeploymentGrid = true;
-							mainThread.pc.isDeployingBuilding = true;
-							mainThread.pc.selectedConstructionYard = cy;
+							MainThread.playerCommander.isDeployingBuilding = true;
+							MainThread.playerCommander.selectedConstructionYard = cy;
 						}
 						
 						//cancel buidling 
 						if(cursorInBlock5 && rightMouseButtonClicked && cy.missileTurretProgress != 255 && cy.missileTurretProgress != 254){
-							mainThread.pc.isDeployingBuilding = false;
-							mainThread.pc.selectedConstructionYard = null;
+							MainThread.playerCommander.isDeployingBuilding = false;
+							MainThread.playerCommander.selectedConstructionYard = null;
 							cy.needToDrawDeploymentGrid = false;
 							cy.cancelBuilding();
 						}
@@ -832,21 +832,21 @@ public class sideBarManager {
 					//handle tech center building process and display info
 					if(cy.canBuildTechCenter){
 						//start building 
-						if(cursorInBlock6 && leftMouseButtonClicked && cy.techCenterProgress == 255 && !mainThread.pc.isDeployingBuilding){
+						if(cursorInBlock6 && leftMouseButtonClicked && cy.techCenterProgress == 255 && !MainThread.playerCommander.isDeployingBuilding){
 							cy.buildTechCenter();
 						
 						}
 						
 						if(cursorInBlock6  && leftMouseButtonClicked && cy.techCenterProgress == 240){
 							cy.needToDrawDeploymentGrid = true;
-							mainThread.pc.isDeployingBuilding = true;
-							mainThread.pc.selectedConstructionYard = cy;
+							MainThread.playerCommander.isDeployingBuilding = true;
+							MainThread.playerCommander.selectedConstructionYard = cy;
 						}
 						
 						//cancel buidling 
 						if(cursorInBlock6 && rightMouseButtonClicked && cy.techCenterProgress != 255 && cy.techCenterProgress != 254){
-							mainThread.pc.isDeployingBuilding = false;
-							mainThread.pc.selectedConstructionYard = null;
+							MainThread.playerCommander.isDeployingBuilding = false;
+							MainThread.playerCommander.selectedConstructionYard = null;
 							cy.needToDrawDeploymentGrid = false;
 							cy.cancelBuilding();
 						}

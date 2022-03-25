@@ -3,11 +3,11 @@ package entity;
 import java.awt.Rectangle;
 
 import core.*;
-import enemyAI.enemyCommander;
+import enemyAI.EnemyCommander;
 
 
 //the power plant model
-public class missileTurret extends solidObject{
+public class MissileTurret extends SolidObject {
 	
 	public static int maxHP = 250;
 	
@@ -26,7 +26,7 @@ public class missileTurret extends solidObject{
 	
 	public vector shadowvertex0, tempshadowvertex0,shadowvertex1, tempshadowvertex1,shadowvertex2, tempshadowvertex2,shadowvertex3, tempshadowvertex3;
 	
-	//a screen space boundary which is used to test if the  object is visible from camera point of view
+	//a screen space boundary which is used to test if the  object is visible from Camera point of view
 	public final static Rectangle visibleBoundary = new Rectangle(-85,-85,screen_width+152, screen_height+250);  
 		
 	//a screen space boundary which is used to test if the entire  object is within the screen
@@ -66,7 +66,7 @@ public class missileTurret extends solidObject{
 	//once the  turret starts attacking, it exposed itself to the enemy
 	public int exposedCountDown;
 	
-	public baseInfo theBaseInfo;
+	public BaseInfo theBaseInfo;
 	
 	public boolean overCharge;
 	
@@ -92,18 +92,18 @@ public class missileTurret extends solidObject{
 	
 	public boolean attackLock;
 	
-	public missileTurret(float x, float y, float z,  int teamNo){
+	public MissileTurret(float x, float y, float z, int teamNo){
 		//uncontrollable unit, but act as a big sized static collidable agent
 		type = 199;
 		
 		ID = globalUniqID++;
-		randomInt = gameData.getRandom();
+		randomInt = GameData.getRandom();
 		
 		if(teamNo == 0){
 			isRevealed = true;
-			theBaseInfo = mainThread.pc.theBaseInfo;
+			theBaseInfo = MainThread.playerCommander.theBaseInfo;
 		}else{
-			theBaseInfo = mainThread.ec.theBaseInfo;
+			theBaseInfo = MainThread.enemyCommander.theBaseInfo;
 		}
 		
 		theBaseInfo.numberOfMissileTurret++;
@@ -138,11 +138,11 @@ public class missileTurret extends solidObject{
 		tileIndex[0] = centerX/16 + (127 - centerY/16)*128; 
 	
 		
-		mainThread.gridMap.tiles[tileIndex[0]][0] = this;  
-		mainThread.gridMap.tiles[tileIndex[0]][1] = this;  
-	    mainThread.gridMap.tiles[tileIndex[0]][2] = this;  
-		mainThread.gridMap.tiles[tileIndex[0]][3] = this;  
-		mainThread.gridMap.tiles[tileIndex[0]][4] = this;  
+		MainThread.gridMap.tiles[tileIndex[0]][0] = this;
+		MainThread.gridMap.tiles[tileIndex[0]][1] = this;
+	    MainThread.gridMap.tiles[tileIndex[0]][2] = this;
+		MainThread.gridMap.tiles[tileIndex[0]][3] = this;
+		MainThread.gridMap.tiles[tileIndex[0]][4] = this;
 	
 		
 
@@ -197,60 +197,60 @@ public class missileTurret extends solidObject{
 		
 		h = 0.3f;
 		
-		vector a1 = put(-0.06, h, 0.08);
-		vector a2 =  put(0.06, h, 0.08);
-		vector a3 = put(0.08, h, 0.06);
-		vector a4 = put(0.08, h, -0.06);
-		vector a5 =  put(0.06, h, -0.08);
-		vector a6 = put(-0.06, h, -0.08);
-		vector a7 = put(-0.08, h, -0.06);
-		vector a8  = put(-0.08, h, 0.06);
+		vector a1 = createArbitraryVertex(-0.06, h, 0.08);
+		vector a2 =  createArbitraryVertex(0.06, h, 0.08);
+		vector a3 = createArbitraryVertex(0.08, h, 0.06);
+		vector a4 = createArbitraryVertex(0.08, h, -0.06);
+		vector a5 =  createArbitraryVertex(0.06, h, -0.08);
+		vector a6 = createArbitraryVertex(-0.06, h, -0.08);
+		vector a7 = createArbitraryVertex(-0.08, h, -0.06);
+		vector a8  = createArbitraryVertex(-0.08, h, 0.06);
 		
 		int textureIndex = 66;
 		if(teamNo != 0)
 			textureIndex = 67;
 		
 		v = new vector[]{a1, a2, a3, a4,a5, a6, a7, a8};
-		polygons[0] =  new polygon3D(v, v[0].myClone(), v[1].myClone(), v[5].myClone(), mainThread.textures[12], 0.7f, 1f, 1);
+		polygons[0] =  new polygon3D(v, v[0].myClone(), v[1].myClone(), v[5].myClone(), MainThread.textures[12], 0.7f, 1f, 1);
 		
 		iDirection.scale(1.4f);
 		kDirection.scale(1.4f);
 		
-		vector b1 = put(-0.06, 0, 0.08);
-		vector b2 =  put(0.06, 0, 0.08);
-		vector b3 = put(0.08, 0, 0.06);
-		vector b4 = put(0.08, 0, -0.06);
-		vector b5 =  put(0.06, 0, -0.08);
-		vector b6 = put(-0.06, 0, -0.08);
-		vector b7 = put(-0.08, 0, -0.06);
-		vector b8  = put(-0.08, 0, 0.06);
+		vector b1 = createArbitraryVertex(-0.06, 0, 0.08);
+		vector b2 =  createArbitraryVertex(0.06, 0, 0.08);
+		vector b3 = createArbitraryVertex(0.08, 0, 0.06);
+		vector b4 = createArbitraryVertex(0.08, 0, -0.06);
+		vector b5 =  createArbitraryVertex(0.06, 0, -0.08);
+		vector b6 = createArbitraryVertex(-0.06, 0, -0.08);
+		vector b7 = createArbitraryVertex(-0.08, 0, -0.06);
+		vector b8  = createArbitraryVertex(-0.08, 0, 0.06);
 		
 		
 		v = new vector[]{a2.myClone(), a1.myClone(), b1.myClone(), b2.myClone()};
-		polygons[1] = new polygon3D(v, v[0].myClone(), v[1].myClone(), v[3].myClone(), mainThread.textures[12], 0.5f, 1f, 1);
+		polygons[1] = new polygon3D(v, v[0].myClone(), v[1].myClone(), v[3].myClone(), MainThread.textures[12], 0.5f, 1f, 1);
 		polygons[1].shadowBias = 20000;
 		
 		
 		v = new vector[]{a1.myClone(), a8.myClone(), b8.myClone(), b1.myClone()};
-		polygons[2] = new polygon3D(v, v[0].myClone(), v[1].myClone(), v[2].myClone(), mainThread.textures[12], 0.5f, 1f, 1);
+		polygons[2] = new polygon3D(v, v[0].myClone(), v[1].myClone(), v[2].myClone(), MainThread.textures[12], 0.5f, 1f, 1);
 		
 		v = new vector[]{a3.myClone(), a2.myClone(), b2.myClone(), b3.myClone()}; 
-		polygons[3] = new polygon3D(v, v[0].myClone(), v[1].myClone(), v[3].myClone(), mainThread.textures[12], 0.5f, 1f, 1);
+		polygons[3] = new polygon3D(v, v[0].myClone(), v[1].myClone(), v[3].myClone(), MainThread.textures[12], 0.5f, 1f, 1);
 		
 		v = new vector[]{a4.myClone(), a3.myClone(), b3.myClone(), b4.myClone()};
-		polygons[4] = new polygon3D(v, v[0].myClone(), v[1].myClone(), v[3].myClone(), mainThread.textures[12], 0.5f, 1f, 1);
+		polygons[4] = new polygon3D(v, v[0].myClone(), v[1].myClone(), v[3].myClone(), MainThread.textures[12], 0.5f, 1f, 1);
 		
 		v = new vector[]{a5.myClone(), a4.myClone(), b4.myClone(), b5.myClone()};
-		polygons[5] = new polygon3D(v, v[0].myClone(), v[1].myClone(), v[3].myClone(), mainThread.textures[12], 0.5f, 1f, 1);
+		polygons[5] = new polygon3D(v, v[0].myClone(), v[1].myClone(), v[3].myClone(), MainThread.textures[12], 0.5f, 1f, 1);
 		
 		v = new vector[]{a6.myClone(), a5.myClone(), b5.myClone(), b6.myClone()};
-		polygons[6] = new polygon3D(v, v[0].myClone(), v[1].myClone(), v[3].myClone(), mainThread.textures[12], 0.5f, 1f, 1);
+		polygons[6] = new polygon3D(v, v[0].myClone(), v[1].myClone(), v[3].myClone(), MainThread.textures[12], 0.5f, 1f, 1);
 		
 		v = new vector[]{a7.myClone(), a6.myClone(), b6.myClone(), b7.myClone()};
-		polygons[7] = new polygon3D(v, v[0].myClone(), v[1].myClone(), v[3].myClone(), mainThread.textures[12], 0.5f, 1f, 1);
+		polygons[7] = new polygon3D(v, v[0].myClone(), v[1].myClone(), v[3].myClone(), MainThread.textures[12], 0.5f, 1f, 1);
 		
 		v = new vector[]{a8.myClone(), a7.myClone(), b7.myClone(), b8.myClone()};
-		polygons[8] = new polygon3D(v, v[0].myClone(), v[1].myClone(), v[3].myClone(), mainThread.textures[12], 0.5f, 1f, 1);
+		polygons[8] = new polygon3D(v, v[0].myClone(), v[1].myClone(), v[3].myClone(), MainThread.textures[12], 0.5f, 1f, 1);
 		
 		float r = 0.052f;
 		float r2 = 0.046f;
@@ -260,25 +260,25 @@ public class missileTurret extends solidObject{
 	
 		for(int i = 0; i < 32; i++){
 			v = new vector[]{
-					put(r2*Math.cos(i*theta), 0.3101, r2*Math.sin(i*theta)),
-					put(r2*Math.cos((i+1)*theta), 0.3101, r2*Math.sin((i+1)*theta)),
-					put(r*Math.cos((i+1)*theta),  0.3101, r*Math.sin((i+1)*theta)),
-					put(r*Math.cos(i*theta),  0.3101, r*Math.sin(i*theta))
+					createArbitraryVertex(r2*Math.cos(i*theta), 0.3101, r2*Math.sin(i*theta)),
+					createArbitraryVertex(r2*Math.cos((i+1)*theta), 0.3101, r2*Math.sin((i+1)*theta)),
+					createArbitraryVertex(r*Math.cos((i+1)*theta),  0.3101, r*Math.sin((i+1)*theta)),
+					createArbitraryVertex(r*Math.cos(i*theta),  0.3101, r*Math.sin(i*theta))
 					 	
 					 	
 					 	
 							};
-			polygons[9 +i] = new polygon3D(v, v[0].myClone(), v[1].myClone(), v[3].myClone(),  mainThread.textures[26], 10,10,0);
+			polygons[9 +i] = new polygon3D(v, v[0].myClone(), v[1].myClone(), v[3].myClone(),  MainThread.textures[26], 10,10,0);
 			polygons[9 +i].color = 8 << 10 |  16 << 5  | 21;
 		}
 		
 		for(int i = 0; i < 32; i++){
-			v = new vector[]{put(r*Math.cos(i*theta),  0.31, r*Math.sin(i*theta)),
-					 	put(r*Math.cos((i+1)*theta),  0.31, r*Math.sin((i+1)*theta)),
-					 	put(r*Math.cos((i+1)*theta), 0.3, r*Math.sin((i+1)*theta)),
-					 	put(r*Math.cos(i*theta), 0.3, r*Math.sin(i*theta))
+			v = new vector[]{createArbitraryVertex(r*Math.cos(i*theta),  0.31, r*Math.sin(i*theta)),
+					 	createArbitraryVertex(r*Math.cos((i+1)*theta),  0.31, r*Math.sin((i+1)*theta)),
+					 	createArbitraryVertex(r*Math.cos((i+1)*theta), 0.3, r*Math.sin((i+1)*theta)),
+					 	createArbitraryVertex(r*Math.cos(i*theta), 0.3, r*Math.sin(i*theta))
 							};
-			polygons[41 +i] = new polygon3D(v, v[0].myClone(), v[1].myClone(), v[3].myClone(),  mainThread.textures[26], 10,10,0);
+			polygons[41 +i] = new polygon3D(v, v[0].myClone(), v[1].myClone(), v[3].myClone(),  MainThread.textures[26], 10,10,0);
 			polygons[41 +i].color = 8 << 10 |  16 << 5  | 21;
 		}
 		
@@ -287,9 +287,9 @@ public class missileTurret extends solidObject{
 		
 		v = new vector[32];
 		for(int i = 0; i < 32; i++){
-			v[31-i] = put(r*Math.cos(i*theta),  0.31, r*Math.sin(i*theta));
+			v[31-i] = createArbitraryVertex(r*Math.cos(i*theta),  0.31, r*Math.sin(i*theta));
 		}
-		polygons[73] = new polygon3D(v, v[0].myClone(), v[1].myClone(), v[3].myClone(),  mainThread.textures[26], 10,10,1);
+		polygons[73] = new polygon3D(v, v[0].myClone(), v[1].myClone(), v[3].myClone(),  MainThread.textures[26], 10,10,1);
 		polygons[73].shadowBias = 5000;
 		
 		
@@ -299,47 +299,47 @@ public class missileTurret extends solidObject{
 		kDirection.rotate_XZ(360-turretAngle);
 		
 		
-		v = new vector[]{put(-0.02f, 0.4f, 0.0f), put(-0.02f, 0.4f, -0.04f), put(-0.02f, 0.31f, -0.02f), put(-0.02f, 0.31f, 0.02f)};
-		polygons[74] = new polygon3D(v, v[0].myClone(), v[1].myClone(), v[3].myClone(),  mainThread.textures[textureIndex], 0.5f,0.5f,1);
+		v = new vector[]{createArbitraryVertex(-0.02f, 0.4f, 0.0f), createArbitraryVertex(-0.02f, 0.4f, -0.04f), createArbitraryVertex(-0.02f, 0.31f, -0.02f), createArbitraryVertex(-0.02f, 0.31f, 0.02f)};
+		polygons[74] = new polygon3D(v, v[0].myClone(), v[1].myClone(), v[3].myClone(),  MainThread.textures[textureIndex], 0.5f,0.5f,1);
 		
 		
-		v = new vector[]{put(0.02f, 0.31f, 0.02f), put(0.02f, 0.31f, -0.02f), put(0.02f, 0.4f, -0.04f), put(0.02f, 0.4f, 0.0f)};
-		polygons[75] = new polygon3D(v, v[0].myClone(), v[1].myClone(), v[3].myClone(),  mainThread.textures[textureIndex], 0.5f,0.5f,1);
+		v = new vector[]{createArbitraryVertex(0.02f, 0.31f, 0.02f), createArbitraryVertex(0.02f, 0.31f, -0.02f), createArbitraryVertex(0.02f, 0.4f, -0.04f), createArbitraryVertex(0.02f, 0.4f, 0.0f)};
+		polygons[75] = new polygon3D(v, v[0].myClone(), v[1].myClone(), v[3].myClone(),  MainThread.textures[textureIndex], 0.5f,0.5f,1);
 		
-		v = new vector[]{put(0.02f, 0.4f, 0.0f), put(-0.02f, 0.4f, 0.0f), put(-0.02f, 0.31f, 0.02f), put(0.02f, 0.31f, 0.02f)};
-		polygons[76] = new polygon3D(v, v[0].myClone(), v[1].myClone(), v[3].myClone(),  mainThread.textures[textureIndex], 0.5f,0.5f,1);
+		v = new vector[]{createArbitraryVertex(0.02f, 0.4f, 0.0f), createArbitraryVertex(-0.02f, 0.4f, 0.0f), createArbitraryVertex(-0.02f, 0.31f, 0.02f), createArbitraryVertex(0.02f, 0.31f, 0.02f)};
+		polygons[76] = new polygon3D(v, v[0].myClone(), v[1].myClone(), v[3].myClone(),  MainThread.textures[textureIndex], 0.5f,0.5f,1);
 		
-		v = new vector[]{put(0.02f, 0.31f, -0.02f), put(-0.02f, 0.31f, -0.02f), put(-0.02f, 0.4f, -0.04f), put(0.02f, 0.4f, -0.04f)};
-		polygons[77] = new polygon3D(v, v[0].myClone(), v[1].myClone(), v[3].myClone(),  mainThread.textures[textureIndex], 0.5f,0.5f,1);
+		v = new vector[]{createArbitraryVertex(0.02f, 0.31f, -0.02f), createArbitraryVertex(-0.02f, 0.31f, -0.02f), createArbitraryVertex(-0.02f, 0.4f, -0.04f), createArbitraryVertex(0.02f, 0.4f, -0.04f)};
+		polygons[77] = new polygon3D(v, v[0].myClone(), v[1].myClone(), v[3].myClone(),  MainThread.textures[textureIndex], 0.5f,0.5f,1);
 		
-		v = new vector[]{put(-0.02f, 0.4f, 0.0f), put(0.02f, 0.4f, 0.0f), put(0.02f, 0.4f, -0.04f), put(-0.02f, 0.4f, -0.04f)};
-		polygons[78] = new polygon3D(v, v[0].myClone(), v[1].myClone(), v[3].myClone(),  mainThread.textures[textureIndex], 0.5f,0.5f,1);
+		v = new vector[]{createArbitraryVertex(-0.02f, 0.4f, 0.0f), createArbitraryVertex(0.02f, 0.4f, 0.0f), createArbitraryVertex(0.02f, 0.4f, -0.04f), createArbitraryVertex(-0.02f, 0.4f, -0.04f)};
+		polygons[78] = new polygon3D(v, v[0].myClone(), v[1].myClone(), v[3].myClone(),  MainThread.textures[textureIndex], 0.5f,0.5f,1);
 		
 		
-		v = new vector[]{put(-0.07f, 0.41f, 0.09f), put(-0.04f, 0.41f, 0.09f), put(-0.04f, 0.41f, -0.07f), put(-0.07f, 0.41f, -0.07f)};
-		polygons[79] = new polygon3D(v, v[0].myClone(), v[1].myClone(), v[3].myClone(),  mainThread.textures[33], 0.5f,0.5f,1);
+		v = new vector[]{createArbitraryVertex(-0.07f, 0.41f, 0.09f), createArbitraryVertex(-0.04f, 0.41f, 0.09f), createArbitraryVertex(-0.04f, 0.41f, -0.07f), createArbitraryVertex(-0.07f, 0.41f, -0.07f)};
+		polygons[79] = new polygon3D(v, v[0].myClone(), v[1].myClone(), v[3].myClone(),  MainThread.textures[33], 0.5f,0.5f,1);
 		
-		v = new vector[]{put(-0.07f, 0.41f, 0.09f), put(-0.07f, 0.41f, -0.07f), put(-0.075f, 0.405f, -0.07f), put(-0.075f, 0.405f, 0.09f)};
-		polygons[80] = new polygon3D(v, v[0].myClone(), v[1].myClone(), v[3].myClone(),  mainThread.textures[33], 0.5f,0.5f,1);
+		v = new vector[]{createArbitraryVertex(-0.07f, 0.41f, 0.09f), createArbitraryVertex(-0.07f, 0.41f, -0.07f), createArbitraryVertex(-0.075f, 0.405f, -0.07f), createArbitraryVertex(-0.075f, 0.405f, 0.09f)};
+		polygons[80] = new polygon3D(v, v[0].myClone(), v[1].myClone(), v[3].myClone(),  MainThread.textures[33], 0.5f,0.5f,1);
 		
-		v = new vector[]{ put(-0.035f, 0.405f, 0.09f), put(-0.035f, 0.405f, -0.07f), put(-0.04f, 0.41f, -0.07f),put(-0.04f, 0.41f, 0.09f)};
-		polygons[81] = new polygon3D(v, v[0].myClone(), v[1].myClone(), v[3].myClone(),  mainThread.textures[33], 0.5f,0.5f,1);
+		v = new vector[]{ createArbitraryVertex(-0.035f, 0.405f, 0.09f), createArbitraryVertex(-0.035f, 0.405f, -0.07f), createArbitraryVertex(-0.04f, 0.41f, -0.07f), createArbitraryVertex(-0.04f, 0.41f, 0.09f)};
+		polygons[81] = new polygon3D(v, v[0].myClone(), v[1].myClone(), v[3].myClone(),  MainThread.textures[33], 0.5f,0.5f,1);
 		
-		v = new vector[]{put(-0.075f, 0.405f, 0.09f), put(-0.075f, 0.405f, -0.07f), put(-0.075f, 0.37f, -0.07f), put(-0.075f, 0.37f, 0.09f)};
-		polygons[82] = new polygon3D(v, v[0].myClone(), v[1].myClone(), v[3].myClone(),  mainThread.textures[33], 0.5f,0.5f,1);
+		v = new vector[]{createArbitraryVertex(-0.075f, 0.405f, 0.09f), createArbitraryVertex(-0.075f, 0.405f, -0.07f), createArbitraryVertex(-0.075f, 0.37f, -0.07f), createArbitraryVertex(-0.075f, 0.37f, 0.09f)};
+		polygons[82] = new polygon3D(v, v[0].myClone(), v[1].myClone(), v[3].myClone(),  MainThread.textures[33], 0.5f,0.5f,1);
 		
-		v = new vector[]{put(-0.035f, 0.37f, 0.09f), put(-0.035f, 0.37f, -0.07f), put(-0.035f, 0.405f, -0.07f), put(-0.035f, 0.405f, 0.09f)};
-		polygons[83] = new polygon3D(v, v[0].myClone(), v[1].myClone(), v[3].myClone(),  mainThread.textures[33], 0.5f,0.5f,1);
+		v = new vector[]{createArbitraryVertex(-0.035f, 0.37f, 0.09f), createArbitraryVertex(-0.035f, 0.37f, -0.07f), createArbitraryVertex(-0.035f, 0.405f, -0.07f), createArbitraryVertex(-0.035f, 0.405f, 0.09f)};
+		polygons[83] = new polygon3D(v, v[0].myClone(), v[1].myClone(), v[3].myClone(),  MainThread.textures[33], 0.5f,0.5f,1);
 		
-		v = new vector[]{put(-0.04f, 0.41f, 0.09f), put(-0.07f, 0.41f, 0.09f), put(-0.075f, 0.405f, 0.09f), put(-0.075f, 0.37f, 0.09f), put(-0.07f, 0.365f, 0.09f), put(-0.04f, 0.365f, 0.09f), put(-0.035f, 0.37f, 0.09f), put(-0.035f, 0.405f, 0.09f) };
-		polygons[84] = new polygon3D(v, v[0].myClone(), v[1].myClone(), v[3].myClone(),  mainThread.textures[33], 0.5f,0.5f,1);
+		v = new vector[]{createArbitraryVertex(-0.04f, 0.41f, 0.09f), createArbitraryVertex(-0.07f, 0.41f, 0.09f), createArbitraryVertex(-0.075f, 0.405f, 0.09f), createArbitraryVertex(-0.075f, 0.37f, 0.09f), createArbitraryVertex(-0.07f, 0.365f, 0.09f), createArbitraryVertex(-0.04f, 0.365f, 0.09f), createArbitraryVertex(-0.035f, 0.37f, 0.09f), createArbitraryVertex(-0.035f, 0.405f, 0.09f) };
+		polygons[84] = new polygon3D(v, v[0].myClone(), v[1].myClone(), v[3].myClone(),  MainThread.textures[33], 0.5f,0.5f,1);
 		
-		v = new vector[]{put(-0.042f, 0.401f, 0.091f), put(-0.067f, 0.401f, 0.091f),  put(-0.067f, 0.375f, 0.091f),  put(-0.042f, 0.375f, 0.091f) };
-		polygons[85] = new polygon3D(v, v[0].myClone(), v[1].myClone(), v[3].myClone(),  mainThread.textures[68], 0.5f,0.5f,1);
+		v = new vector[]{createArbitraryVertex(-0.042f, 0.401f, 0.091f), createArbitraryVertex(-0.067f, 0.401f, 0.091f),  createArbitraryVertex(-0.067f, 0.375f, 0.091f),  createArbitraryVertex(-0.042f, 0.375f, 0.091f) };
+		polygons[85] = new polygon3D(v, v[0].myClone(), v[1].myClone(), v[3].myClone(),  MainThread.textures[68], 0.5f,0.5f,1);
 		polygons[85].Ambient_I+=20;
 		
-		v = new vector[]{put(-0.035f, 0.405f, -0.07f),  put(-0.035f, 0.37f, -0.07f), put(-0.04f, 0.365f, -0.07f), put(-0.07f, 0.365f, -0.07f), put(-0.075f, 0.37f, -0.07f), put(-0.075f, 0.405f, -0.07f), put(-0.07f, 0.41f, -0.07f), put(-0.04f, 0.41f, -0.07f)};
-		polygons[86] = new polygon3D(v, v[0].myClone(), v[1].myClone(), v[3].myClone(),  mainThread.textures[33], 0.5f,0.5f,1);
+		v = new vector[]{createArbitraryVertex(-0.035f, 0.405f, -0.07f),  createArbitraryVertex(-0.035f, 0.37f, -0.07f), createArbitraryVertex(-0.04f, 0.365f, -0.07f), createArbitraryVertex(-0.07f, 0.365f, -0.07f), createArbitraryVertex(-0.075f, 0.37f, -0.07f), createArbitraryVertex(-0.075f, 0.405f, -0.07f), createArbitraryVertex(-0.07f, 0.41f, -0.07f), createArbitraryVertex(-0.04f, 0.41f, -0.07f)};
+		polygons[86] = new polygon3D(v, v[0].myClone(), v[1].myClone(), v[3].myClone(),  MainThread.textures[33], 0.5f,0.5f,1);
 		
 		
 		
@@ -352,26 +352,26 @@ public class missileTurret extends solidObject{
 		start.z-=0.02;
 		
 		
-		v = new vector[]{put(-0.07f, 0.41f, 0.09f), put(-0.04f, 0.41f, 0.09f), put(-0.04f, 0.41f, -0.07f), put(-0.07f, 0.41f, -0.07f)};
-		polygons[87] = new polygon3D(v, v[0].myClone(), v[1].myClone(), v[3].myClone(),  mainThread.textures[textureIndex], 0.5f,0.5f,1);
+		v = new vector[]{createArbitraryVertex(-0.07f, 0.41f, 0.09f), createArbitraryVertex(-0.04f, 0.41f, 0.09f), createArbitraryVertex(-0.04f, 0.41f, -0.07f), createArbitraryVertex(-0.07f, 0.41f, -0.07f)};
+		polygons[87] = new polygon3D(v, v[0].myClone(), v[1].myClone(), v[3].myClone(),  MainThread.textures[textureIndex], 0.5f,0.5f,1);
 		
-		v = new vector[]{put(-0.07f, 0.41f, 0.09f), put(-0.07f, 0.41f, -0.07f), put(-0.075f, 0.405f, -0.07f), put(-0.075f, 0.405f, 0.09f)};
-		polygons[88] = new polygon3D(v, v[0].myClone(), v[1].myClone(), v[3].myClone(),  mainThread.textures[textureIndex], 0.5f,0.5f,1);
+		v = new vector[]{createArbitraryVertex(-0.07f, 0.41f, 0.09f), createArbitraryVertex(-0.07f, 0.41f, -0.07f), createArbitraryVertex(-0.075f, 0.405f, -0.07f), createArbitraryVertex(-0.075f, 0.405f, 0.09f)};
+		polygons[88] = new polygon3D(v, v[0].myClone(), v[1].myClone(), v[3].myClone(),  MainThread.textures[textureIndex], 0.5f,0.5f,1);
 		
-		v = new vector[]{ put(-0.035f, 0.405f, 0.09f), put(-0.035f, 0.405f, -0.07f), put(-0.04f, 0.41f, -0.07f),put(-0.04f, 0.41f, 0.09f)};
-		polygons[89] = new polygon3D(v, v[0].myClone(), v[1].myClone(), v[3].myClone(),  mainThread.textures[textureIndex], 0.5f,0.5f,1);
+		v = new vector[]{ createArbitraryVertex(-0.035f, 0.405f, 0.09f), createArbitraryVertex(-0.035f, 0.405f, -0.07f), createArbitraryVertex(-0.04f, 0.41f, -0.07f), createArbitraryVertex(-0.04f, 0.41f, 0.09f)};
+		polygons[89] = new polygon3D(v, v[0].myClone(), v[1].myClone(), v[3].myClone(),  MainThread.textures[textureIndex], 0.5f,0.5f,1);
 		
-		v = new vector[]{put(-0.075f, 0.405f, 0.09f), put(-0.075f, 0.405f, -0.07f), put(-0.075f, 0.37f, -0.07f), put(-0.075f, 0.37f, 0.09f)};
-		polygons[90] = new polygon3D(v, v[0].myClone(), v[1].myClone(), v[3].myClone(),  mainThread.textures[textureIndex], 0.5f,0.5f,1);
+		v = new vector[]{createArbitraryVertex(-0.075f, 0.405f, 0.09f), createArbitraryVertex(-0.075f, 0.405f, -0.07f), createArbitraryVertex(-0.075f, 0.37f, -0.07f), createArbitraryVertex(-0.075f, 0.37f, 0.09f)};
+		polygons[90] = new polygon3D(v, v[0].myClone(), v[1].myClone(), v[3].myClone(),  MainThread.textures[textureIndex], 0.5f,0.5f,1);
 		
-		v = new vector[]{put(-0.035f, 0.37f, 0.09f), put(-0.035f, 0.37f, -0.07f), put(-0.035f, 0.405f, -0.07f), put(-0.035f, 0.405f, 0.09f)};
-		polygons[91] = new polygon3D(v, v[0].myClone(), v[1].myClone(), v[3].myClone(),  mainThread.textures[textureIndex], 0.5f,0.5f,1);
+		v = new vector[]{createArbitraryVertex(-0.035f, 0.37f, 0.09f), createArbitraryVertex(-0.035f, 0.37f, -0.07f), createArbitraryVertex(-0.035f, 0.405f, -0.07f), createArbitraryVertex(-0.035f, 0.405f, 0.09f)};
+		polygons[91] = new polygon3D(v, v[0].myClone(), v[1].myClone(), v[3].myClone(),  MainThread.textures[textureIndex], 0.5f,0.5f,1);
 		
-		v = new vector[]{put(-0.04f, 0.41f, 0.09f), put(-0.07f, 0.41f, 0.09f), put(-0.075f, 0.405f, 0.09f), put(-0.075f, 0.37f, 0.09f), put(-0.07f, 0.365f, 0.09f), put(-0.04f, 0.365f, 0.09f), put(-0.035f, 0.37f, 0.09f), put(-0.035f, 0.405f, 0.09f) };
-		polygons[92] = new polygon3D(v, v[0].myClone(), v[1].myClone(), v[3].myClone(),  mainThread.textures[textureIndex], 0.5f,0.5f,1);
+		v = new vector[]{createArbitraryVertex(-0.04f, 0.41f, 0.09f), createArbitraryVertex(-0.07f, 0.41f, 0.09f), createArbitraryVertex(-0.075f, 0.405f, 0.09f), createArbitraryVertex(-0.075f, 0.37f, 0.09f), createArbitraryVertex(-0.07f, 0.365f, 0.09f), createArbitraryVertex(-0.04f, 0.365f, 0.09f), createArbitraryVertex(-0.035f, 0.37f, 0.09f), createArbitraryVertex(-0.035f, 0.405f, 0.09f) };
+		polygons[92] = new polygon3D(v, v[0].myClone(), v[1].myClone(), v[3].myClone(),  MainThread.textures[textureIndex], 0.5f,0.5f,1);
 		
-		v = new vector[]{put(-0.035f, 0.405f, -0.07f),  put(-0.035f, 0.37f, -0.07f), put(-0.04f, 0.365f, -0.07f), put(-0.07f, 0.365f, -0.07f), put(-0.075f, 0.37f, -0.07f), put(-0.075f, 0.405f, -0.07f), put(-0.07f, 0.41f, -0.07f), put(-0.04f, 0.41f, -0.07f)};
-		polygons[93] = new polygon3D(v, v[0].myClone(), v[1].myClone(), v[3].myClone(),  mainThread.textures[textureIndex], 0.5f,0.5f,1);
+		v = new vector[]{createArbitraryVertex(-0.035f, 0.405f, -0.07f),  createArbitraryVertex(-0.035f, 0.37f, -0.07f), createArbitraryVertex(-0.04f, 0.365f, -0.07f), createArbitraryVertex(-0.07f, 0.365f, -0.07f), createArbitraryVertex(-0.075f, 0.37f, -0.07f), createArbitraryVertex(-0.075f, 0.405f, -0.07f), createArbitraryVertex(-0.07f, 0.41f, -0.07f), createArbitraryVertex(-0.04f, 0.41f, -0.07f)};
+		polygons[93] = new polygon3D(v, v[0].myClone(), v[1].myClone(), v[3].myClone(),  MainThread.textures[textureIndex], 0.5f,0.5f,1);
 		
 		
 		jDirection.scale(1f/1.5f);
@@ -392,7 +392,7 @@ public class missileTurret extends solidObject{
 	
 	//update the model 
 	public void update(){	
-		theAssetManager = mainThread.theAssetManager;
+		theAssetManager = MainThread.theAssetManager;
 		
 		//process emerging from  ground animation
 		if(centre.y < -0.5f){
@@ -445,7 +445,7 @@ public class missileTurret extends solidObject{
 			countDownToDeath--;
 
 			if(countDownToDeath == 0){
-				//spawn an explosion when the tank is destroyed
+				//spawn an Explosion when the tank is destroyed
 				float[] tempFloat = theAssetManager.explosionInfo[theAssetManager.explosionCount];	
 				tempFloat[0] = centre.x;
 				tempFloat[1] = centre.y + 0.15f;
@@ -465,11 +465,11 @@ public class missileTurret extends solidObject{
 					theBaseInfo.numberOfOverChargedMissileTurret--;
 				
 				//removeFromGridMap();
-				mainThread.gridMap.tiles[tileIndex[0]][0] = null;  
-				mainThread.gridMap.tiles[tileIndex[0]][1] = null;  
-				mainThread.gridMap.tiles[tileIndex[0]][2] = null;  
-				mainThread.gridMap.tiles[tileIndex[0]][3] = null;  
-				mainThread.gridMap.tiles[tileIndex[0]][4] = null;  
+				MainThread.gridMap.tiles[tileIndex[0]][0] = null;
+				MainThread.gridMap.tiles[tileIndex[0]][1] = null;
+				MainThread.gridMap.tiles[tileIndex[0]][2] = null;
+				MainThread.gridMap.tiles[tileIndex[0]][3] = null;
+				MainThread.gridMap.tiles[tileIndex[0]][4] = null;
 				
 				if(attacker.teamNo != teamNo)
 					attacker.experience+=35;
@@ -477,7 +477,7 @@ public class missileTurret extends solidObject{
 				return;
 			}else{
 				
-				if(mainThread.gameFrame%2==0){
+				if(MainThread.gameFrame%2==0){
 					float[] tempFloat = theAssetManager.explosionInfo[theAssetManager.explosionCount];	
 					tempFloat[0] = centre.x + (float)Math.random()/4f - 0.125f;
 					tempFloat[1] = centre.y + 0.15f;
@@ -485,7 +485,7 @@ public class missileTurret extends solidObject{
 					tempFloat[3] = 1.5f;
 					tempFloat[4] = 1;
 					tempFloat[5] = 0;
-					tempFloat[6] = 6 + (gameData.getRandom()%4);
+					tempFloat[6] = 6 + (GameData.getRandom()%4);
 					tempFloat[7] = this.height;
 					theAssetManager.explosionCount++; 
 				}
@@ -494,7 +494,7 @@ public class missileTurret extends solidObject{
 		}
 		
 		if(isRepairing && currentHP >0){
-			if(mainThread.gameFrame%5==0 && theBaseInfo.currentCredit > 0 && currentHP <maxHP){
+			if(MainThread.gameFrame%5==0 && theBaseInfo.currentCredit > 0 && currentHP <maxHP){
 				currentHP+=1;
 				theBaseInfo.currentCredit--;
 			}
@@ -513,29 +513,29 @@ public class missileTurret extends solidObject{
 			myAttackCooldown = 9;
 	
 		//mark itself on obstacle map
-		mainThread.gridMap.currentObstacleMap[tileIndex[0]] = false;
+		MainThread.gridMap.currentObstacleMap[tileIndex[0]] = false;
 	
 	
-		//update center in camera coordinate
+		//update center in Camera coordinate
 		tempCentre.set(centre);
 		tempCentre.y+=0.4f;
-		tempCentre.subtract(camera.position);
-		tempCentre.rotate_XZ(camera.XZ_angle);
-		tempCentre.rotate_YZ(camera.YZ_angle); 
+		tempCentre.subtract(Camera.position);
+		tempCentre.rotate_XZ(Camera.XZ_angle);
+		tempCentre.rotate_YZ(Camera.YZ_angle);
 		tempCentre.updateLocation();
 		screenX_gui = (int)tempCentre.screenX;
 		screenY_gui = (int)tempCentre.screenY;
 		
 		tempCentre.set(centre);
 		tempCentre.y+=0.1f;
-		tempCentre.subtract(camera.position);
-		tempCentre.rotate_XZ(camera.XZ_angle);
-		tempCentre.rotate_YZ(camera.YZ_angle); 
+		tempCentre.subtract(Camera.position);
+		tempCentre.rotate_XZ(Camera.XZ_angle);
+		tempCentre.rotate_YZ(Camera.YZ_angle);
 		tempCentre.updateLocation();
 			
 		
 		
-		//test if the gun turret is visible in camera point of view
+		//test if the gun turret is visible in Camera point of view
 		if(visibleBoundary.contains(tempCentre.screenX, tempCentre.screenY) && isRevealed){
 			visible = true;
 			
@@ -545,27 +545,27 @@ public class missileTurret extends solidObject{
 				withinViewScreen = false;
 			
 			tempshadowvertex0.set(shadowvertex0);
-			tempshadowvertex0.subtract(camera.position);
-			tempshadowvertex0.rotate_XZ(camera.XZ_angle);
-			tempshadowvertex0.rotate_YZ(camera.YZ_angle); 
+			tempshadowvertex0.subtract(Camera.position);
+			tempshadowvertex0.rotate_XZ(Camera.XZ_angle);
+			tempshadowvertex0.rotate_YZ(Camera.YZ_angle);
 			tempshadowvertex0.updateLocation();
 			
 			tempshadowvertex1.set(shadowvertex1);
-			tempshadowvertex1.subtract(camera.position);
-			tempshadowvertex1.rotate_XZ(camera.XZ_angle);
-			tempshadowvertex1.rotate_YZ(camera.YZ_angle); 
+			tempshadowvertex1.subtract(Camera.position);
+			tempshadowvertex1.rotate_XZ(Camera.XZ_angle);
+			tempshadowvertex1.rotate_YZ(Camera.YZ_angle);
 			tempshadowvertex1.updateLocation();
 			
 			tempshadowvertex2.set(shadowvertex2);
-			tempshadowvertex2.subtract(camera.position);
-			tempshadowvertex2.rotate_XZ(camera.XZ_angle);
-			tempshadowvertex2.rotate_YZ(camera.YZ_angle); 
+			tempshadowvertex2.subtract(Camera.position);
+			tempshadowvertex2.rotate_XZ(Camera.XZ_angle);
+			tempshadowvertex2.rotate_YZ(Camera.YZ_angle);
 			tempshadowvertex2.updateLocation();
 			
 			tempshadowvertex3.set(shadowvertex3);
-			tempshadowvertex3.subtract(camera.position);
-			tempshadowvertex3.rotate_XZ(camera.XZ_angle);
-			tempshadowvertex3.rotate_YZ(camera.YZ_angle); 
+			tempshadowvertex3.subtract(Camera.position);
+			tempshadowvertex3.rotate_XZ(Camera.XZ_angle);
+			tempshadowvertex3.rotate_YZ(Camera.YZ_angle);
 			tempshadowvertex3.updateLocation();
 
 			
@@ -602,7 +602,7 @@ public class missileTurret extends solidObject{
 			for(int y = 0; y < 17; y++){
 				for(int x = 0; x < 17; x++){
 					if(bitmapVisionForEnemy[x+ y*17])
-						enemyCommander.tempBitmap[xPos + x + (yPos+y)*148] =true;
+						EnemyCommander.tempBitmap[xPos + x + (yPos+y)*148] =true;
 				}
 			}
 		}else if(exposedCountDown > 0){
@@ -612,7 +612,7 @@ public class missileTurret extends solidObject{
 			for(int y = 0; y < 5; y++){
 				for(int x = 0; x < 5; x++){
 					if(bitmapVisionGainFromAttackingUnit[x+ y*5])
-						enemyCommander.tempBitmap[xPos + x + (yPos+y)*148] =true;
+						EnemyCommander.tempBitmap[xPos + x + (yPos+y)*148] =true;
 				}
 			}
 		}
@@ -620,7 +620,7 @@ public class missileTurret extends solidObject{
 
 		visionBoundary.x = (int)(tempCentre.screenX - 500);
 		visionBoundary.y = (int)(tempCentre.screenY - 1200);
-		visionInsideScreen = camera.screen.intersects(visionBoundary);
+		visionInsideScreen = Camera.screen.intersects(visionBoundary);
 		
 		
 		if(visionInsideScreen){
@@ -679,7 +679,7 @@ public class missileTurret extends solidObject{
 		accumulatedDelta= accumulatedDelta%360;
 		if(visible){
 			if(!overCharge){
-				float ratio = ((float)Math.sin((float)(mainThread.gameFrame + ID)/10) + 1)/2;
+				float ratio = ((float)Math.sin((float)(MainThread.gameFrame + ID)/10) + 1)/2;
 				
 				if(theBaseInfo.lowPower)
 					ratio = 0;
@@ -691,7 +691,7 @@ public class missileTurret extends solidObject{
 					polygons[i].diffuse_I = 100;
 				}
 			}else{
-				float ratio = ((float)Math.sin((float)(mainThread.gameFrame + ID)/10) + 1)/2;
+				float ratio = ((float)Math.sin((float)(MainThread.gameFrame + ID)/10) + 1)/2;
 				
 				if(theBaseInfo.lowPower)
 					ratio = 0;
@@ -752,7 +752,7 @@ public class missileTurret extends solidObject{
 		if(targetObject != null){
 			
 			//target enemy military unit first
-			if((targetObject.type > 100 ||targetObject.type <199) && !attackLock && (randomInt + mainThread.gameFrame)%4   == 2){
+			if((targetObject.type > 100 ||targetObject.type <199) && !attackLock && (randomInt + MainThread.gameFrame)%4   == 2){
 				currentOccupiedTile = (int)(centre.x*64)/16 + (127 - (int)(centre.z*64)/16)*128;
 				
 				for(int i = 0; i < tileCheckList.length; i++){
@@ -760,7 +760,7 @@ public class missileTurret extends solidObject{
 						int index = currentOccupiedTile + tileCheckList[i];
 						if(index < 0 || index >= 16384)
 							continue;
-						tile = mainThread.gridMap.tiles[index];
+						tile = MainThread.gridMap.tiles[index];
 						
 						for(int j = 0; j < 4; j++){
 							if(tile[j] != null){
@@ -798,11 +798,11 @@ public class missileTurret extends solidObject{
 				return;
 			}
 		
-			attackAngle = geometry.findAngle(centre.x, centre.z, destinationX, destinationY);
+			attackAngle = Geometry.findAngle(centre.x, centre.z, destinationX, destinationY);
 			
 			if(turretAngle != attackAngle){
 				
-				turretAngleDelta = 360 - (geometry.findAngleDelta(turretAngle, attackAngle, turretTurnRate) + 360)%360;
+				turretAngleDelta = 360 - (Geometry.findAngleDelta(turretAngle, attackAngle, turretTurnRate) + 360)%360;
 				turretAngle= (turretAngle - turretAngleDelta + 360)%360;
 				
 				if(Math.abs(turretAngle - attackAngle) < 10)
@@ -818,18 +818,18 @@ public class missileTurret extends solidObject{
 			
 			boolean[] bitmapVision;
 			if(teamNo == 0)
-				bitmapVision = mainThread.theAssetManager.minimapBitmap;
+				bitmapVision = MainThread.theAssetManager.minimapBitmap;
 			else
-				bitmapVision = enemyCommander.visionMap;
+				bitmapVision = EnemyCommander.visionMap;
 			
 			attackLock = false;
 			
-			if((randomInt + mainThread.gameFrame)%240 == 0){
+			if((randomInt + MainThread.gameFrame)%240 == 0){
 				attackAngle = (int)(Math.random()*360);
 			}
 			if(turretAngle != attackAngle){
 				
-				turretAngleDelta = 360 - (geometry.findAngleDelta(turretAngle, attackAngle, 2) + 360)%360;
+				turretAngleDelta = 360 - (Geometry.findAngleDelta(turretAngle, attackAngle, 2) + 360)%360;
 				turretAngle= (turretAngle - turretAngleDelta + 360)%360;
 				
 			}else{
@@ -838,7 +838,7 @@ public class missileTurret extends solidObject{
 			}
 			
 	
-			if((ID + mainThread.gameFrame)%4 == 0){
+			if((ID + MainThread.gameFrame)%4 == 0){
 				currentOccupiedTile = (int)(centre.x*64)/16 + (127 - (int)(centre.z*64)/16)*128;
 				
 				for(int i = 0; i < tileCheckList.length; i++){
@@ -846,7 +846,7 @@ public class missileTurret extends solidObject{
 						int index = currentOccupiedTile + tileCheckList[i];
 						if(index < 0 || index >= 16384)
 							continue;
-						tile = mainThread.gridMap.tiles[index];
+						tile = MainThread.gridMap.tiles[index];
 						
 						if(!bitmapVision[index]){
 							boolean isRevealedBuilding = false;
@@ -893,7 +893,7 @@ public class missileTurret extends solidObject{
 		}
 	}
 	
-	public void attack(solidObject o){
+	public void attack(SolidObject o){
 		if(targetObject != o){
 			
 			distanceToDesination = (float)Math.sqrt((o.centre.x - centre.x) * (o.centre.x - centre.x) + (o.centre.z - centre.z) * (o.centre.z - centre.z));
@@ -923,7 +923,7 @@ public class missileTurret extends solidObject{
 			theAssetManager.spawnRocket(attackAngle, myDamage, targetObject, firingPosition, this);
 			attackCoolDown = myAttackCooldown;
 			
-			//spawn a mini explosion  
+			//spawn a mini Explosion
 			firingPosition.set(-0.05f, -0.1f, 0.13f);
 			firingPosition.rotate_XZ(360 - attackAngle);
 			firingPosition.add(tempVector.x, 0, tempVector.z);
@@ -934,7 +934,7 @@ public class missileTurret extends solidObject{
 			tempFloat[3] = 0.5f;
 			tempFloat[4] = 2;
 			tempFloat[5] = 0;
-			tempFloat[6] = 6 + (gameData.getRandom()%4);
+			tempFloat[6] = 6 + (GameData.getRandom()%4);
 			tempFloat[7] = centre.y;
 			theAssetManager.explosionCount++;
 		}
@@ -948,4 +948,36 @@ public class missileTurret extends solidObject{
 	public vector getMovement(){
 		return movenment;
 	}
+
+    //clone a group of polygons (doesn't work on smooth shaded polygons)
+    public polygon3D[] clonePolygons(polygon3D[] polys, boolean createNewOUV){
+        int l = polys.length;
+
+        polygon3D[] clone = new polygon3D[l];
+
+        for(int i = 0; i < l; i++){
+            if(polys[i] == null)
+                continue;
+            int length = polys[i].vertex3D.length;
+            v = new vector[length];
+            for(int j = 0; j < length; j++){
+                v[j] = polys[i].vertex3D[j].myClone();
+            }
+
+            int myType = polys[i].type;
+            float scaleX = polys[i].scaleX;
+            float scaleY = polys[i].scaleY;
+            texture myTexture = polys[i].myTexture;
+            if(createNewOUV)
+                clone[i] = new polygon3D(v, polys[i].origin.myClone(), polys[i].rightEnd.myClone(), polys[i].bottomEnd.myClone(), myTexture, scaleX, scaleY, myType);
+            else
+                clone[i] = new polygon3D(v, v[0], v[1], v[3], myTexture, scaleX, scaleY, myType);
+            clone[i].shadowBias = polys[i].shadowBias;
+            clone[i].diffuse_I = polys[i].diffuse_I;
+            clone[i].Ambient_I = polys[i].Ambient_I;
+        }
+
+
+        return clone;
+    }
 }

@@ -1,16 +1,16 @@
 package enemyAI;
 
-import core.baseInfo;
-import core.mainThread;
-import entity.solidObject;
-import entity.techCenter;
-import entity.rocketTank;
+import core.BaseInfo;
+import core.MainThread;
+import entity.RocketTank;
+import entity.SolidObject;
+import entity.TechCenter;
 
 //micro manage the units on the battle field to trade units better against player
 
-public class microManagementAI {
+public class MicroManagementAI {
 	
-	public baseInfo theBaseInfo;
+	public BaseInfo theBaseInfo;
 	
 	
 	public int currentState;
@@ -18,31 +18,31 @@ public class microManagementAI {
 	public final int aggressing = 1;
 	public final int defending = 2;
 	
-	public solidObject[] playerUnitInMinimap;
-	public solidObject[] unitInCombatRadius;
-	public solidObject[] playerStaticDefenceInMinimap;
+	public SolidObject[] playerUnitInMinimap;
+	public SolidObject[] unitInCombatRadius;
+	public SolidObject[] playerStaticDefenceInMinimap;
 	
 	public float combatCenterX;
 	public float combatCenterZ;
 
 	public int numberOfPlayerUnitsOnMinimap;
 	
-	public microManagementAI(){
-		this.theBaseInfo = mainThread.ec.theBaseInfo;
+	public MicroManagementAI(){
+		this.theBaseInfo = MainThread.enemyCommander.theBaseInfo;
 	}
 	
 	public void processAI(){
 	
-		unitInCombatRadius = mainThread.ec.theUnitProductionAI.unitInCombatRadius;
-		playerUnitInMinimap = mainThread.ec.theMapAwarenessAI.playerUnitInMinimap;
-		playerStaticDefenceInMinimap = mainThread.ec.theMapAwarenessAI.playerStaticDefenceInMinimap;
+		unitInCombatRadius = MainThread.enemyCommander.theUnitProductionAI.unitInCombatRadius;
+		playerUnitInMinimap = MainThread.enemyCommander.theMapAwarenessAI.playerUnitInMinimap;
+		playerStaticDefenceInMinimap = MainThread.enemyCommander.theMapAwarenessAI.playerStaticDefenceInMinimap;
 		
-		currentState = mainThread.ec.theCombatManagerAI.currentState;
+		currentState = MainThread.enemyCommander.theCombatManagerAI.currentState;
 		
-		combatCenterX = mainThread.ec.theUnitProductionAI.combatAICenterX;
-		combatCenterZ = mainThread.ec.theUnitProductionAI.combatAICenterZ;
+		combatCenterX = MainThread.enemyCommander.theUnitProductionAI.combatAICenterX;
+		combatCenterZ = MainThread.enemyCommander.theUnitProductionAI.combatAICenterZ;
 		
-		numberOfPlayerUnitsOnMinimap = mainThread.ec.theMapAwarenessAI.numberOfPlayerUnitsOnMinimap;
+		numberOfPlayerUnitsOnMinimap = MainThread.enemyCommander.theMapAwarenessAI.numberOfPlayerUnitsOnMinimap;
 		
 		float x1 = 0;
 		float x2 = 0;
@@ -58,7 +58,7 @@ public class microManagementAI {
 			if(unitInCombatRadius[i] == null  || unitInCombatRadius[i].currentHP <=0)
 				continue;
 			
-			//micro  rocket tanks, so they don't overkill targets,
+			//micro  Rocket tanks, so they don't overkill targets,
 			if(unitInCombatRadius[i].type == 1) {
 				
 				float myRange= (unitInCombatRadius[i].attackRange) * (unitInCombatRadius[i].attackRange);
@@ -67,7 +67,7 @@ public class microManagementAI {
 				//Prioritize searching for  targets among static defenses
 				boolean suitableTargertFound = false;
 				float distanceToDesination = 999;
-				solidObject target = null;
+				SolidObject target = null;
 				for(int j = 0; j < playerStaticDefenceInMinimap.length; j++) {
 					if(playerStaticDefenceInMinimap[j] != null && !playerStaticDefenceInMinimap[j].willDieFromIncomingAttack()){
 						x1 = playerStaticDefenceInMinimap[j].centre.x;
@@ -86,17 +86,17 @@ public class microManagementAI {
 				if(target != null) {
 					unitInCombatRadius[i].attack(target);
 					
-					unitInCombatRadius[i].currentCommand = solidObject.attackCautiously;
-					unitInCombatRadius[i].secondaryCommand = solidObject.StandBy;
+					unitInCombatRadius[i].currentCommand = SolidObject.attackCautiously;
+					unitInCombatRadius[i].secondaryCommand = SolidObject.StandBy;
 					
 					suitableTargertFound = true;
 					
 					if(distanceToDesination < myRange) {
 						int myDamage = unitInCombatRadius[i].myDamage;
-						if(techCenter.rocketTankResearched_enemy) {
+						if(TechCenter.rocketTankResearched_enemy) {
 							myDamage*=2;
 						}
-						myDamage = (int)(myDamage*rocketTank.damageAginstBuildingMulitplier);
+						myDamage = (int)(myDamage* RocketTank.damageAginstBuildingMulitplier);
 						
 						target.incomingDamage+=myDamage*2;
 					}
@@ -108,15 +108,15 @@ public class microManagementAI {
 					continue;
 				
 				
-				//if rocket tank has no target or the target will die from incoming attack, find a new target
+				//if Rocket tank has no target or the target will die from incoming attack, find a new target
 				if(unitInCombatRadius[i].targetObject != null && !unitInCombatRadius[i].targetObject.willDieFromIncomingAttack()) {
 					
 					int myDamage = unitInCombatRadius[i].myDamage;
 					if(unitInCombatRadius[i].targetObject .type > 100) {
-						if(techCenter.rocketTankResearched_enemy) {
+						if(TechCenter.rocketTankResearched_enemy) {
 							myDamage*=2;
 						}
-						myDamage = (int)(myDamage*rocketTank.damageAginstBuildingMulitplier);
+						myDamage = (int)(myDamage* RocketTank.damageAginstBuildingMulitplier);
 					}
 					
 					unitInCombatRadius[i].targetObject.incomingDamage+=myDamage*2;
@@ -153,8 +153,8 @@ public class microManagementAI {
 			
 			float myRange= unitInCombatRadius[i].attackRange * unitInCombatRadius[i].attackRange;
 			
-			solidObject target = null;
-			solidObject currentTarget = unitInCombatRadius[i].targetObject;
+			SolidObject target = null;
+			SolidObject currentTarget = unitInCombatRadius[i].targetObject;
 			int targetHP = 99999;
 			int level = 0;
 			float distanceToDesination = 99999;
@@ -196,22 +196,22 @@ public class microManagementAI {
 			
 			if(target !=null ){
 				unitInCombatRadius[i].attack(target);
-				unitInCombatRadius[i].currentCommand = solidObject.attackCautiously;
-				unitInCombatRadius[i].attackStatus = solidObject.isAttacking;
+				unitInCombatRadius[i].currentCommand = SolidObject.attackCautiously;
+				unitInCombatRadius[i].attackStatus = SolidObject.isAttacking;
 				unitInCombatRadius[i].closeToDestination = true;
 			}
 			
 		}
 		
 		//reset incoming damage for all units
-		for(int i = 0; i <  mainThread.ec.theMapAwarenessAI.mapAsset.length; i++) {
-			if(mainThread.ec.theMapAwarenessAI.mapAsset[i] != null)
-				mainThread.ec.theMapAwarenessAI.mapAsset[i].incomingDamage = 0;
+		for(int i = 0; i <  MainThread.enemyCommander.theMapAwarenessAI.mapAsset.length; i++) {
+			if(MainThread.enemyCommander.theMapAwarenessAI.mapAsset[i] != null)
+				MainThread.enemyCommander.theMapAwarenessAI.mapAsset[i].incomingDamage = 0;
 		}
 			
 	}
 	
-	public boolean hasLineOfSight(float distanceToDesination, float x1, float x2, float z1, float z2, solidObject targetObject){
+	public boolean hasLineOfSight(float distanceToDesination, float x1, float x2, float z1, float z2, SolidObject targetObject){
 		boolean hasLineOfSight = true;
 		int numberOfIterations = (int)(Math.sqrt(distanceToDesination) * 8);
 		float dx = (x1 - x2)/numberOfIterations;
@@ -222,7 +222,7 @@ public class microManagementAI {
 		for(int i = 0; i < numberOfIterations; i++){
 			xStart+=dx;
 			yStart+=dy;
-			solidObject s = mainThread.gridMap.tiles[(int)(xStart*4) + (127 - (int)(yStart*4))*128][0];
+			SolidObject s = MainThread.gridMap.tiles[(int)(xStart*4) + (127 - (int)(yStart*4))*128][0];
 			if(s != null){
 				if(s.type > 100 && s.type < 200 && s != targetObject){
 					hasLineOfSight = false;

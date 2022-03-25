@@ -1,19 +1,19 @@
 package gui;
 
 import core.*;
-import entity.constructionYard;
-import entity.solidObject;
+import entity.SolidObject;
+import entity.ConstructionYard;
 
-public class deployGrid {
+public class DeployGrid {
 	public polygon3D[] polygons;
 	public boolean canBeDeployed;
 	public int[] gridArea;
 	public vector gridOneCenter;
 	public vector iDirection, jDirection, kDirection, start;
 	public vector clickPoint;
-	public constructionYard cy;
+	public ConstructionYard cy;
 	public int gridOneIndex;
-	public deployGrid(){
+	public DeployGrid(){
 		gridArea = new int[9];
 		iDirection = new vector(1,0,0);
 		jDirection = new vector(0,1,0);
@@ -88,8 +88,8 @@ public class deployGrid {
 	}
 	
 	public void update(){
-		cy = mainThread.pc.selectedConstructionYard;
-		clickPoint.set(mainThread.my2Dto3DFactory.get3DLocation(mainThread.theAssetManager.Terrain.ground[0], inputHandler.mouse_x, inputHandler.mouse_y)); 
+		cy = MainThread.playerCommander.selectedConstructionYard;
+		clickPoint.set(MainThread.my2Dto3DFactory.get3DLocation(MainThread.theAssetManager.Terrain.ground[0], InputHandler.mouse_x, InputHandler.mouse_y));
 		
 		gridOneIndex = (int)(clickPoint.x*4) + (127 - (int)(clickPoint.z*4))*128;
 		
@@ -169,14 +169,14 @@ public class deployGrid {
 		int x = index%128;
 		
 		if(y > 0 && y < 127 && x > 0 && x < 127){
-			solidObject[] tile = mainThread.gridMap.tiles[index];
+			SolidObject[] tile = MainThread.gridMap.tiles[index];
 			for(int j = 0; j < 5; j++){
 				if(tile[j] != null){
 					return false;
 				}
 			}
 			
-			constructionYard[] cys = mainThread.theAssetManager.constructionYards;
+			ConstructionYard[] cys = MainThread.theAssetManager.constructionYards;
 			
 			for(int i = 0; i < cys.length; i++){
 				if(cys[i] != null && cys[i].teamNo == 0){

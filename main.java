@@ -1,9 +1,9 @@
-import core.mainThread;
+import core.MainThread;
 
 public class main {
 	
 	public static void main(String[] args){
-		new mainThread();
+		new MainThread();
 	}
 	
 }

@@ -1,17 +1,13 @@
 package particles;
 
-import core.camera;
-import core.gameData;
-import core.geometry;
-import core.mainThread;
-import core.polygon3D;
-import core.vector;
-import entity.solidObject;
+import core.*;
+import core.Camera;
+import entity.SolidObject;
 
-public class rocket {
+public class Rocket {
 	public vector centre;
 	
-	public solidObject target;
+	public SolidObject target;
 	
 	public int damage;
 	
@@ -35,7 +31,7 @@ public class rocket {
 	
 	public static polygon3D[] polygonsClone;
 	
-	public solidObject attacker;
+	public SolidObject attacker;
 	
 	public boolean visible;
 	
@@ -43,10 +39,10 @@ public class rocket {
 	
 	public static int[] tiles3x3 = new int[]{-129, -128, -127, -1, 0, 1, 127, 128, 129};
 	
-	public static int screen_width = mainThread.screen_width;
-	public static int screen_height = mainThread.screen_height;
+	public static int screen_width = MainThread.screen_width;
+	public static int screen_height = MainThread.screen_height;
 	
-	public rocket(){
+	public Rocket(){
 		centre = new vector(0,0,0);
 		iDirection = new vector(1,0,0);
 		jDirection = new vector(0,1,0);
@@ -57,7 +53,7 @@ public class rocket {
 			tempCentre = new vector(0,0,0);
 	}
 	
-	public void  setActive(int angle, int damage, solidObject target, vector centre, solidObject attacker){
+	public void  setActive(int angle, int damage, SolidObject target, vector centre, SolidObject attacker){
 		isInAction = true;
 		this.angle = 360 - angle;
 		this.damage = damage; 
@@ -105,8 +101,8 @@ public class rocket {
 		distanceToTarget = (float)Math.sqrt((target.centre.x - centre.x) * (target.centre.x - centre.x) + (target.centre.z - centre.z) * (target.centre.z - centre.z));
 		if(distanceToTarget <= 0.065){
 			
-			//spawn an explosion at the end of the rocket life
-			float[] tempFloat = mainThread.theAssetManager.explosionInfo[mainThread.theAssetManager.explosionCount];	
+			//spawn an Explosion at the end of the Rocket life
+			float[] tempFloat = MainThread.theAssetManager.explosionInfo[MainThread.theAssetManager.explosionCount];
 			tempFloat[0] = centre.x;
 			if(target.type > 100 && target.type != 200){
 				
@@ -121,9 +117,9 @@ public class rocket {
 			tempFloat[3] = 1.5f;
 			tempFloat[4] = 1;
 			tempFloat[5] = 0;
-			tempFloat[6] = 6 + (gameData.getRandom()%4);
+			tempFloat[6] = 6 + (GameData.getRandom()%4);
 			tempFloat[7] = target.height;
-			mainThread.theAssetManager.explosionCount++; 
+			MainThread.theAssetManager.explosionCount++;
 			isInAction = false;
 			
 			
@@ -136,19 +132,19 @@ public class rocket {
 			int yPos = (int)(target.centre.z*64);
 			int start = xPos/16 + (127 - yPos/16)*128;
 			int targetTeamNo = target.teamNo;
-			solidObject[] tile;
+			SolidObject[] tile;
 			for(int i  = 0; i < 9; i++){
 				int index = start + tiles3x3[i];
 				if(index > 16383 || index < 0)
 					continue;
-				tile = mainThread.gridMap.tiles[index];
+				tile = MainThread.gridMap.tiles[index];
 				for(int j = 0; j < 4; j++){
 					if(tile[j] != null){						
-						if(tile[j].teamNo == targetTeamNo && tile[j].teamNo != attacker.teamNo && tile[j].currentCommand != solidObject.move && tile[j].attackStatus != solidObject.isAttacking && tile[j].isCloaked == false
-						   && 	tile[j].currentCommand != solidObject.attackCautiously && tile[j].currentCommand != solidObject.attackInNumbers){
+						if(tile[j].teamNo == targetTeamNo && tile[j].teamNo != attacker.teamNo && tile[j].currentCommand != SolidObject.move && tile[j].attackStatus != SolidObject.isAttacking && tile[j].isCloaked == false
+						   && 	tile[j].currentCommand != SolidObject.attackCautiously && tile[j].currentCommand != SolidObject.attackInNumbers){
 							if(tile[j].type < 100){								
 								tile[j].attack(attacker);
-								tile[j].currentCommand = solidObject.attackInNumbers; 
+								tile[j].currentCommand = SolidObject.attackInNumbers;
 							}
 						}
 						
@@ -186,8 +182,8 @@ public class rocket {
 		//spawn tail particle
 		if(distanceTravelled > 0.08f){
 			distanceTravelled = 0;
-			if(mainThread.theAssetManager.smokeEmmiterCount < 100){
-				float[] tempFloat = mainThread.theAssetManager.smokeEmmiterList[mainThread.theAssetManager.smokeEmmiterCount];
+			if(MainThread.theAssetManager.smokeEmmiterCount < 100){
+				float[] tempFloat = MainThread.theAssetManager.smokeEmmiterList[MainThread.theAssetManager.smokeEmmiterCount];
 				
 				
 				
@@ -199,11 +195,11 @@ public class rocket {
 				tempFloat[5] = 11;
 				tempFloat[6] = this.height;
 				
-				mainThread.theAssetManager.smokeEmmiterCount++;
+				MainThread.theAssetManager.smokeEmmiterCount++;
 			}
 		}
 		
-		angle = 360 - geometry.findAngle(centre.x, centre.z, target.centre.x, target.centre.z);
+		angle = 360 - Geometry.findAngle(centre.x, centre.z, target.centre.x, target.centre.z);
 		
 		movement.set(0,0,1);
 		movement.rotate_XZ(angle);
@@ -211,11 +207,11 @@ public class rocket {
 		
 		reconstructPolygons();
 		
-		//update center in camera coordinate
+		//update center in Camera coordinate
 		tempCentre.set(centre);
-		tempCentre.subtract(camera.position);
-		tempCentre.rotate_XZ(camera.XZ_angle);
-		tempCentre.rotate_YZ(camera.YZ_angle); 
+		tempCentre.subtract(Camera.position);
+		tempCentre.rotate_XZ(Camera.XZ_angle);
+		tempCentre.rotate_YZ(Camera.YZ_angle);
 		tempCentre.updateLocation();
 		
 		visible = true;
@@ -268,7 +264,7 @@ public class rocket {
 		
 		
 		for(int i = 0; i < size; i ++){
-			polygons[i] = new polygon3D(new vector[]{v1[i],v1[(i+1)%size],v2[(i+1)%size],v2[i]}, v1[i],v1[(i+1)%size], v2[i], mainThread.textures[68], 1,1,1);
+			polygons[i] = new polygon3D(new vector[]{v1[i],v1[(i+1)%size],v2[(i+1)%size],v2[i]}, v1[i],v1[(i+1)%size], v2[i], MainThread.textures[68], 1,1,1);
 			polygons[i].color = 25 + (25 << 5) + (25 << 10);
 		}
 		
@@ -285,7 +281,7 @@ public class rocket {
 		
 		
 		for(int i = 0; i < size; i ++){
-			polygons[i + size] = new polygon3D(new vector[]{v1[i],v1[(i+1)%size],v2[(i+1)%size],v2[i]}, v1[i],v1[(i+1)%size], v2[i],  mainThread.textures[69], 1,1,1);
+			polygons[i + size] = new polygon3D(new vector[]{v1[i],v1[(i+1)%size],v2[(i+1)%size],v2[i]}, v1[i],v1[(i+1)%size], v2[i],  MainThread.textures[69], 1,1,1);
 			polygons[i + size].color = 0 + (0 << 5) + (25 << 10);
 		}
 		

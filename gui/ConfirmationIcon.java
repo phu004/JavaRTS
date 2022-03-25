@@ -1,10 +1,10 @@
 package gui;
 
-import core.mainThread;
+import core.MainThread;
 import core.postProcessingThread;
 import core.vector;
 
-public class confirmationIcon {
+public class ConfirmationIcon {
 
 	public int color;
 	
@@ -16,11 +16,11 @@ public class confirmationIcon {
 	public vector tempCentre;
 	
 	public int frameIndex;
-	public static int screen_width = mainThread.screen_width;
-	public static int screen_height = mainThread.screen_height;
+	public static int screen_width = MainThread.screen_width;
+	public static int screen_height = MainThread.screen_height;
 	
 	
-	public confirmationIcon(){
+	public ConfirmationIcon(){
 		//Make sin and cos look up tables
 		sin = new float[361];
 		cos = new float[361];

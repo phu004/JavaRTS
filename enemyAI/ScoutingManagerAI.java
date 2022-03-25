@@ -1,15 +1,15 @@
 package enemyAI;
 
+import core.BaseInfo;
+import core.MainThread;
 import core.Rect;
-import core.baseInfo;
-import core.mainThread;
 import core.vector;
-import entity.lightTank;
-import entity.solidObject;
+import entity.SolidObject;
+import entity.LightTank;
 
-public class scoutingManagerAI {
+public class ScoutingManagerAI {
 
-	public baseInfo theBaseInfo;
+	public BaseInfo theBaseInfo;
 	
 	public int frameAI;
 	
@@ -30,10 +30,10 @@ public class scoutingManagerAI {
 	public int avoidingIncomingPlayerUnitCooldown;
 	
 	//scout unit consists a sole light tank
-	public solidObject scout;
+	public SolidObject scout;
 	
-	public scoutingManagerAI(){
-		this.theBaseInfo = mainThread.ec.theBaseInfo;
+	public ScoutingManagerAI(){
+		this.theBaseInfo = MainThread.enemyCommander.theBaseInfo;
 		
 		patrolNodes = new float[][]{
 				{16, 30}, {2, 29}, {15, 17}, {16, 14}, {27f, 1}, {30, 16}, {16, 14}, {15, 17}
@@ -55,7 +55,7 @@ public class scoutingManagerAI {
 	
 	public void processAI(){
 		
-		frameAI = mainThread.ec.frameAI;
+		frameAI = MainThread.enemyCommander.frameAI;
 		
 		if(avoidingIncomingPlayerUnitCooldown > 0)
 			avoidingIncomingPlayerUnitCooldown--;
@@ -70,16 +70,16 @@ public class scoutingManagerAI {
 		//produce a scout unit if there is no scout unit on the map or the scout unit has been destroyed
 
 		int numberOfLightTankOnQueue = 0;
-		for(int i = 0; i < mainThread.theAssetManager.factories.length; i++){
-			if(mainThread.theAssetManager.factories[i] != null && mainThread.theAssetManager.factories[i].teamNo != 0){
-				numberOfLightTankOnQueue += mainThread.theAssetManager.factories[i].numOfLightTankOnQueue;
+		for(int i = 0; i < MainThread.theAssetManager.factories.length; i++){
+			if(MainThread.theAssetManager.factories[i] != null && MainThread.theAssetManager.factories[i].teamNo != 0){
+				numberOfLightTankOnQueue += MainThread.theAssetManager.factories[i].numOfLightTankOnQueue;
 			}
 		}
 		if(numberOfLightTankOnQueue == 0 && needLightTank()){
-			for(int i = 0; i < mainThread.theAssetManager.factories.length; i++){
-				if(mainThread.theAssetManager.factories[i] != null && mainThread.theAssetManager.factories[i].teamNo != 0){
-					if(mainThread.theAssetManager.factories[i].isIdle()){
-						mainThread.theAssetManager.factories[i].buildLightTank();
+			for(int i = 0; i < MainThread.theAssetManager.factories.length; i++){
+				if(MainThread.theAssetManager.factories[i] != null && MainThread.theAssetManager.factories[i].teamNo != 0){
+					if(MainThread.theAssetManager.factories[i].isIdle()){
+						MainThread.theAssetManager.factories[i].buildLightTank();
 						break;
 					}
 				}
@@ -87,16 +87,16 @@ public class scoutingManagerAI {
 		}
 		
 		int numberOfStealthTankOnQueue = 0;
-		for(int i = 0; i < mainThread.theAssetManager.factories.length; i++){
-			if(mainThread.theAssetManager.factories[i] != null && mainThread.theAssetManager.factories[i].teamNo != 0){
-				numberOfStealthTankOnQueue += mainThread.theAssetManager.factories[i].numOfStealthTankOnQueue;
+		for(int i = 0; i < MainThread.theAssetManager.factories.length; i++){
+			if(MainThread.theAssetManager.factories[i] != null && MainThread.theAssetManager.factories[i].teamNo != 0){
+				numberOfStealthTankOnQueue += MainThread.theAssetManager.factories[i].numOfStealthTankOnQueue;
 			}
 		}
 		if(numberOfStealthTankOnQueue == 0 && needStealthTank()){
-			for(int i = 0; i < mainThread.theAssetManager.factories.length; i++){
-				if(mainThread.theAssetManager.factories[i] != null && mainThread.theAssetManager.factories[i].teamNo != 0){
-					if(mainThread.theAssetManager.factories[i].isIdle()){
-						mainThread.theAssetManager.factories[i].buildStealthTank();
+			for(int i = 0; i < MainThread.theAssetManager.factories.length; i++){
+				if(MainThread.theAssetManager.factories[i] != null && MainThread.theAssetManager.factories[i].teamNo != 0){
+					if(MainThread.theAssetManager.factories[i].isIdle()){
+						MainThread.theAssetManager.factories[i].buildStealthTank();
 						break;
 					}
 				}
@@ -123,8 +123,8 @@ public class scoutingManagerAI {
 						if(!movementOrderIssued){
 							
 							scout.moveTo(patrolNodes[destinationNode][0], patrolNodes[destinationNode][1]);
-							scout.currentCommand = solidObject.move;
-							scout.secondaryCommand = solidObject.StandBy;
+							scout.currentCommand = SolidObject.move;
+							scout.secondaryCommand = SolidObject.StandBy;
 							
 							if(scout.leftFactory)
 								movementOrderIssued = true;
@@ -146,8 +146,8 @@ public class scoutingManagerAI {
 						if(!movementOrderIssued){
 							
 							scout.moveTo(exploringNodes[destinationNode][0], exploringNodes[destinationNode][1]);
-							scout.currentCommand = solidObject.move;
-							scout.secondaryCommand = solidObject.StandBy;
+							scout.currentCommand = SolidObject.move;
+							scout.secondaryCommand = SolidObject.StandBy;
 							
 				 
 							if(scout.leftFactory)
@@ -173,23 +173,23 @@ public class scoutingManagerAI {
 					
 					
 					
-					if(mainThread.ec.theDefenseManagerAI.minorThreatLocation.x != 0 || mainThread.ec.theDefenseManagerAI.majorThreatLocation.x != 0 || (!mainThread.ec.theMapAwarenessAI.canRushPlayer && frameAI > 240)) {
+					if(MainThread.enemyCommander.theDefenseManagerAI.minorThreatLocation.x != 0 || MainThread.enemyCommander.theDefenseManagerAI.majorThreatLocation.x != 0 || (!MainThread.enemyCommander.theMapAwarenessAI.canRushPlayer && frameAI > 240)) {
 						if(scout.currentHP > 0) {							
-							scout.moveTo(mainThread.ec.theUnitProductionAI.rallyPoint.x, mainThread.ec.theUnitProductionAI.rallyPoint.z);
-							scout.currentCommand = solidObject.attackMove;
-							scout.secondaryCommand = solidObject.attackMove;
+							scout.moveTo(MainThread.enemyCommander.theUnitProductionAI.rallyPoint.x, MainThread.enemyCommander.theUnitProductionAI.rallyPoint.z);
+							scout.currentCommand = SolidObject.attackMove;
+							scout.secondaryCommand = SolidObject.attackMove;
 							
 							if(frameAI > 310) {
-								mainThread.ec.theUnitProductionAI.addLightTank((lightTank)scout);
+								MainThread.enemyCommander.theUnitProductionAI.addLightTank((LightTank)scout);
 								scout = null;
 							}
 						}
-					}else if(mainThread.ec.theMapAwarenessAI.canRushPlayer && frameAI > 290) {
-						mainThread.ec.theUnitProductionAI.addLightTank((lightTank)scout);
+					}else if(MainThread.enemyCommander.theMapAwarenessAI.canRushPlayer && frameAI > 290) {
+						MainThread.enemyCommander.theUnitProductionAI.addLightTank((LightTank)scout);
 						
-						scout.moveTo(mainThread.ec.theUnitProductionAI.rallyPoint.x, mainThread.ec.theUnitProductionAI.rallyPoint.z);
-						scout.currentCommand = solidObject.attackMove;
-						scout.secondaryCommand = solidObject.attackMove;
+						scout.moveTo(MainThread.enemyCommander.theUnitProductionAI.rallyPoint.x, MainThread.enemyCommander.theUnitProductionAI.rallyPoint.z);
+						scout.currentCommand = SolidObject.attackMove;
+						scout.secondaryCommand = SolidObject.attackMove;
 						scout = null;
 					}
 					
@@ -217,12 +217,12 @@ public class scoutingManagerAI {
 						//increased size of the 2D boundary of the scount for better collision detection.
 						scout.boundary2D.expand(8);
 					
-						solidObject obstacle = checkForCollision(scout.boundary2D);
+						SolidObject obstacle = checkForCollision(scout.boundary2D);
 						
 						scout.boundary2D.shrink(8);
 						
 						
-						//ignore harvesters
+						//ignore Harvesters
 						if(obstacle != null && obstacle.type == 2)
 							continue;
 						
@@ -239,8 +239,8 @@ public class scoutingManagerAI {
 							avoidingIncomingPlayerUnitCooldown = 2;
 							
 							scout.moveTo(scout.centre.x + tempVector3.x, scout.centre.z + tempVector3.z);
-							scout.currentCommand = solidObject.move;
-							scout.secondaryCommand = solidObject.StandBy;
+							scout.currentCommand = SolidObject.move;
+							scout.secondaryCommand = SolidObject.StandBy;
 							movementOrderIssued = false;
 							break;
 						}
@@ -255,7 +255,7 @@ public class scoutingManagerAI {
 		
 	}
 		
-	public solidObject checkForCollision(Rect myRect){
+	public SolidObject checkForCollision(Rect myRect){
 			
 		//check if the tank collide with the border
 		if(myRect.x1 < 0 || myRect.x2 > 2047 || myRect.y2 < 1 || myRect.y1 > 2048){
@@ -268,11 +268,11 @@ public class scoutingManagerAI {
 		int newOccupiedTile2 = newOccupiedTile0 + 128;
 		int newOccupiedTile3 = newOccupiedTile0 + 129;
 		
-		solidObject tempObstacle = null;
-		solidObject[] tile;
+		SolidObject tempObstacle = null;
+		SolidObject[] tile;
 		
 		if(newOccupiedTile0 >= 0 && newOccupiedTile0 < 16384){
-			tile = mainThread.gridMap.tiles[newOccupiedTile0];
+			tile = MainThread.gridMap.tiles[newOccupiedTile0];
 			for(int i = 0; i < 5; i++){
 				if(tile[i] != null){
 					if(tile[i].boundary2D.intersect(myRect) && tile[i].teamNo == 0 && tile[i].type < 100 && !tile[i].isCloaked)
@@ -282,7 +282,7 @@ public class scoutingManagerAI {
 		}
 		
 		if(newOccupiedTile1 >= 0 && newOccupiedTile1 < 16384){
-			tile = mainThread.gridMap.tiles[newOccupiedTile1];
+			tile = MainThread.gridMap.tiles[newOccupiedTile1];
 			for(int i = 0; i < 5; i++){
 				if(tile[i] != null){
 					if(tile[i].boundary2D.intersect(myRect) && tile[i].teamNo == 0 && tile[i].type < 100 && !tile[i].isCloaked)
@@ -292,7 +292,7 @@ public class scoutingManagerAI {
 		}
 	
 		if(newOccupiedTile2 >= 0 && newOccupiedTile2 < 16384){
-			tile = mainThread.gridMap.tiles[newOccupiedTile2];
+			tile = MainThread.gridMap.tiles[newOccupiedTile2];
 			for(int i = 0; i < 5; i++){
 				if(tile[i] != null){
 					if(tile[i].boundary2D.intersect(myRect) && tile[i].teamNo == 0 && tile[i].type < 100 && !tile[i].isCloaked)
@@ -302,7 +302,7 @@ public class scoutingManagerAI {
 		}
 	
 		if(newOccupiedTile3 >= 0 && newOccupiedTile3 < 16384){
-			tile = mainThread.gridMap.tiles[newOccupiedTile3];
+			tile = MainThread.gridMap.tiles[newOccupiedTile3];
 			for(int i = 0; i < 5; i++){
 				if(tile[i] != null){
 					if(tile[i].boundary2D.intersect(myRect) && tile[i].teamNo == 0 && tile[i].type < 100 && !tile[i].isCloaked)
@@ -314,7 +314,7 @@ public class scoutingManagerAI {
 		return tempObstacle;
 	}
 	
-	public boolean scountReachedDestination(solidObject o, float[][] nodes, int nodeIndex){
+	public boolean scountReachedDestination(SolidObject o, float[][] nodes, int nodeIndex){
 		float distanceToDestination = (float)Math.sqrt((o.centre.x - nodes[nodeIndex][0]) * (o.centre.x - nodes[nodeIndex][0]) + (o.centre.z - nodes[nodeIndex][1]) * (o.centre.z - nodes[nodeIndex][1]));
 	
 		
@@ -330,7 +330,7 @@ public class scoutingManagerAI {
 	
 	//build light tank as scout when stealth tank tech is locked
 	public boolean needLightTank(){
-		if(frameAI < 200 &&  scout == null  && !theBaseInfo.canBuildStealthTank && mainThread.ec.theDefenseManagerAI.minorThreatLocation.x == 0 && mainThread.ec.theDefenseManagerAI.majorThreatLocation.x == 0){
+		if(frameAI < 200 &&  scout == null  && !theBaseInfo.canBuildStealthTank && MainThread.enemyCommander.theDefenseManagerAI.minorThreatLocation.x == 0 && MainThread.enemyCommander.theDefenseManagerAI.majorThreatLocation.x == 0){
 			return true;
 		}
 		
@@ -346,7 +346,7 @@ public class scoutingManagerAI {
 		return false;
 	}
 	
-	public void addLightTank(solidObject o){
+	public void addLightTank(SolidObject o){
 		scout = o;
 	}
 

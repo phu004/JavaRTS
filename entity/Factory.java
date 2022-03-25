@@ -3,10 +3,10 @@ package entity;
 import java.awt.Rectangle;
 
 import core.*;
-import enemyAI.enemyCommander;
+import enemyAI.EnemyCommander;
 
-//the factory model
-public class factory extends solidObject{
+//the Factory model
+public class Factory extends SolidObject {
 
 	//the polygons of the model
 	private polygon3D[] polygons; 
@@ -25,7 +25,7 @@ public class factory extends solidObject{
 	public vector tempVector2 = new vector(0,0,0);
 	public vector tempVector3 = new vector(0,0,0);
 	
-	//factory occupies 6 tiles
+	//Factory occupies 6 tiles
 	public int [] tileIndex = new int[6];
 	
 	public int[] tempInt;
@@ -34,7 +34,7 @@ public class factory extends solidObject{
 	
 	public vector shadowvertex0, tempshadowvertex0,shadowvertex1, tempshadowvertex1,shadowvertex2, tempshadowvertex2,shadowvertex3, tempshadowvertex3;
 	
-	//a screen space boundary which is used to test if the  object is visible from camera point of view
+	//a screen space boundary which is used to test if the  object is visible from Camera point of view
 	public final static Rectangle visibleBoundary = new Rectangle(-85,-85,screen_width+152, screen_height+250);  
 		
 	//a screen space boundary which is used to test if the entire  object is within the screen
@@ -49,7 +49,7 @@ public class factory extends solidObject{
 	//a bitmap representation of the vision of the building for enemy commander
 	public static boolean[] bitmapVisionForEnemy; 
 	
-	//factory never moves
+	//Factory never moves
 	public final static vector movenment = new vector(0,0,0);
 	
 	//number of polygons
@@ -64,14 +64,14 @@ public class factory extends solidObject{
 	public boolean canBuildLightTank, canBuildDrone, canBuildRocketTank, canBuildHarvester, canBuildStealthTank, canBuildHeavyTank, canBuildMCV;
 	public int lightTankProgress, droneProgress, rocketTankProgress, harvesterProgress, stealthTankProgress, heavyTankProgress, MCVProgress;
 	public int creditSpentOnBuilding;
-	public baseInfo theBaseInfo;
+	public BaseInfo theBaseInfo;
 	public byte[] productionQueue; 
 	public int numOfLightTankOnQueue, numOfRocketTankOnQueue, numOfStealthTankOnQueue, numOfHarvesterOnQueue, numOfHeavyTankOnQueue, numOfDroneOnQueue, numOfMCVOnQueue;
 	public int numOfDrones;
 	public boolean isDeliveringUnit, doorOpened, doorClosed, openingDoor, closingDoor;
 	public float doorHeightMark;
 	public boolean doorHeightMarked;
-	public solidObject deliveredUnit;
+	public SolidObject deliveredUnit;
 	
 	
 	public static int lightTankType = 0;
@@ -90,25 +90,25 @@ public class factory extends solidObject{
 	public vector[] rallyPoints;
 	public boolean rallyPointChanged;
 	
-	public goldMine targetGoldMine;
+	public GoldMine targetGoldMine;
 	
-	public drone[] myDrones;
+	public Drone[] myDrones;
 	
 	
 	
-	public factory(float x, float y, float z,  int teamNo){
+	public Factory(float x, float y, float z, int teamNo){
 		//uncontrollable unit, but act as a big sized static collidable agent
 		type = 105;
 		
 		currentHP = 850;
 		
-		myDrones = new drone[3];
+		myDrones = new Drone[3];
 		
 		if(teamNo == 0){
 			isRevealed = true;
-			theBaseInfo = mainThread.pc.theBaseInfo;
+			theBaseInfo = MainThread.playerCommander.theBaseInfo;
 		}else{
-			theBaseInfo = mainThread.ec.theBaseInfo;
+			theBaseInfo = MainThread.enemyCommander.theBaseInfo;
 		}
 		
 		theBaseInfo.numberOfFactory++;
@@ -150,49 +150,49 @@ public class factory extends solidObject{
 		
 		
 		
-		mainThread.gridMap.tiles[tileIndex[0]][0] = this;  
-		mainThread.gridMap.tiles[tileIndex[1]][0] = this; 
-		mainThread.gridMap.tiles[tileIndex[2]][0] = this; 
-		mainThread.gridMap.tiles[tileIndex[3]][0] = this; 
-		mainThread.gridMap.tiles[tileIndex[4]][0] = this; 
-		mainThread.gridMap.tiles[tileIndex[5]][0] = this; 
+		MainThread.gridMap.tiles[tileIndex[0]][0] = this;
+		MainThread.gridMap.tiles[tileIndex[1]][0] = this;
+		MainThread.gridMap.tiles[tileIndex[2]][0] = this;
+		MainThread.gridMap.tiles[tileIndex[3]][0] = this;
+		MainThread.gridMap.tiles[tileIndex[4]][0] = this;
+		MainThread.gridMap.tiles[tileIndex[5]][0] = this;
 		
 		
-		mainThread.gridMap.tiles[tileIndex[0]][1] = this;  
-		mainThread.gridMap.tiles[tileIndex[1]][1] = this; 
-		mainThread.gridMap.tiles[tileIndex[2]][1] = this; 
-		mainThread.gridMap.tiles[tileIndex[3]][1] = this; 
-		mainThread.gridMap.tiles[tileIndex[4]][1] = this; 
-		mainThread.gridMap.tiles[tileIndex[5]][1] = this; 
+		MainThread.gridMap.tiles[tileIndex[0]][1] = this;
+		MainThread.gridMap.tiles[tileIndex[1]][1] = this;
+		MainThread.gridMap.tiles[tileIndex[2]][1] = this;
+		MainThread.gridMap.tiles[tileIndex[3]][1] = this;
+		MainThread.gridMap.tiles[tileIndex[4]][1] = this;
+		MainThread.gridMap.tiles[tileIndex[5]][1] = this;
 		
-		mainThread.gridMap.tiles[tileIndex[0]][2] = this;  
-		mainThread.gridMap.tiles[tileIndex[1]][2] = this; 
-		mainThread.gridMap.tiles[tileIndex[2]][2] = this; 
-		mainThread.gridMap.tiles[tileIndex[3]][2] = this; 
-		mainThread.gridMap.tiles[tileIndex[4]][2] = this; 
-		mainThread.gridMap.tiles[tileIndex[5]][2] = this; 
+		MainThread.gridMap.tiles[tileIndex[0]][2] = this;
+		MainThread.gridMap.tiles[tileIndex[1]][2] = this;
+		MainThread.gridMap.tiles[tileIndex[2]][2] = this;
+		MainThread.gridMap.tiles[tileIndex[3]][2] = this;
+		MainThread.gridMap.tiles[tileIndex[4]][2] = this;
+		MainThread.gridMap.tiles[tileIndex[5]][2] = this;
 		
-		mainThread.gridMap.tiles[tileIndex[0]][3] = this;  
-		mainThread.gridMap.tiles[tileIndex[1]][3] = this; 
-		mainThread.gridMap.tiles[tileIndex[2]][3] = this; 
-		mainThread.gridMap.tiles[tileIndex[3]][3] = this; 
-		mainThread.gridMap.tiles[tileIndex[4]][3] = this; 
-		mainThread.gridMap.tiles[tileIndex[5]][3] = this; 
+		MainThread.gridMap.tiles[tileIndex[0]][3] = this;
+		MainThread.gridMap.tiles[tileIndex[1]][3] = this;
+		MainThread.gridMap.tiles[tileIndex[2]][3] = this;
+		MainThread.gridMap.tiles[tileIndex[3]][3] = this;
+		MainThread.gridMap.tiles[tileIndex[4]][3] = this;
+		MainThread.gridMap.tiles[tileIndex[5]][3] = this;
 
 
-		mainThread.gridMap.tiles[tileIndex[0]][4] = this;  
-		mainThread.gridMap.tiles[tileIndex[1]][4] = this; 
-		mainThread.gridMap.tiles[tileIndex[2]][4] = this; 
-		mainThread.gridMap.tiles[tileIndex[3]][4] = this; 
-		mainThread.gridMap.tiles[tileIndex[4]][4] = this; 
-		mainThread.gridMap.tiles[tileIndex[5]][4] = this; 
+		MainThread.gridMap.tiles[tileIndex[0]][4] = this;
+		MainThread.gridMap.tiles[tileIndex[1]][4] = this;
+		MainThread.gridMap.tiles[tileIndex[2]][4] = this;
+		MainThread.gridMap.tiles[tileIndex[3]][4] = this;
+		MainThread.gridMap.tiles[tileIndex[4]][4] = this;
+		MainThread.gridMap.tiles[tileIndex[5]][4] = this;
 		
 		int tileIndex6 = tileIndex[5] + 128;
 		int tileIndex7 = tileIndex[5] + 128 - 1;
 		int tileIndex8 = tileIndex[5] + 128 + 1;
-		mainThread.gridMap.tiles[tileIndex6][4] = this;
-		mainThread.gridMap.tiles[tileIndex7][4] = this;
-		mainThread.gridMap.tiles[tileIndex8][4] = this;
+		MainThread.gridMap.tiles[tileIndex6][4] = this;
+		MainThread.gridMap.tiles[tileIndex7][4] = this;
+		MainThread.gridMap.tiles[tileIndex8][4] = this;
 		
 		
 		//init model
@@ -255,127 +255,127 @@ public class factory extends solidObject{
 		
 		
 		//roof
-		v = new vector[]{put(-0.27, 0.56, 0.16), put(0.11, 0.56, 0.16), put(0.11, 0.56, 0.1), put(-0.27, 0.56, 0.1)};
-		polyIndex = addPolygon(polygons, new polygon3D(v, v[0].myClone(), v[1].myClone(), v[3].myClone(), mainThread.textures[roofSkin], 10,2,1));
+		v = new vector[]{createArbitraryVertex(-0.27, 0.56, 0.16), createArbitraryVertex(0.11, 0.56, 0.16), createArbitraryVertex(0.11, 0.56, 0.1), createArbitraryVertex(-0.27, 0.56, 0.1)};
+		polyIndex = addPolygon(polygons, new polygon3D(v, v[0].myClone(), v[1].myClone(), v[3].myClone(), MainThread.textures[roofSkin], 10,2,1));
 		
-		v = new vector[]{put(0.11, 0.56, 0.16), put(-0.27, 0.56, 0.16), put(-0.27, 0.55, 0.16), put(0.11, 0.55, 0.16)};
-		polyIndex = addPolygon(polygons, new polygon3D(v, v[0].myClone(), v[1].myClone(), v[3].myClone(), mainThread.textures[roofSkin], 10,1,1));
+		v = new vector[]{createArbitraryVertex(0.11, 0.56, 0.16), createArbitraryVertex(-0.27, 0.56, 0.16), createArbitraryVertex(-0.27, 0.55, 0.16), createArbitraryVertex(0.11, 0.55, 0.16)};
+		polyIndex = addPolygon(polygons, new polygon3D(v, v[0].myClone(), v[1].myClone(), v[3].myClone(), MainThread.textures[roofSkin], 10,1,1));
 		
-		v = new vector[]{put(0.11, 0.55, 0.1), put(-0.27, 0.55, 0.1), put(-0.27, 0.56, 0.1), put(0.11, 0.56, 0.1)};
-		polyIndex = addPolygon(polygons, new polygon3D(v, v[0].myClone(), v[1].myClone(), v[3].myClone(), mainThread.textures[roofSkin], 10,1,1));
+		v = new vector[]{createArbitraryVertex(0.11, 0.55, 0.1), createArbitraryVertex(-0.27, 0.55, 0.1), createArbitraryVertex(-0.27, 0.56, 0.1), createArbitraryVertex(0.11, 0.56, 0.1)};
+		polyIndex = addPolygon(polygons, new polygon3D(v, v[0].myClone(), v[1].myClone(), v[3].myClone(), MainThread.textures[roofSkin], 10,1,1));
 		
-		v = new vector[]{put(0.11, 0.56, 0.1), put(0.11, 0.56, 0.16), put(0.204, 0.3, 0.16), put(0.204, 0.3, 0.1)};
-		polyIndex = addPolygon(polygons, new polygon3D(v, v[0].myClone(), v[1].myClone(), v[3].myClone(), mainThread.textures[roofSkin], 1,10,1));
+		v = new vector[]{createArbitraryVertex(0.11, 0.56, 0.1), createArbitraryVertex(0.11, 0.56, 0.16), createArbitraryVertex(0.204, 0.3, 0.16), createArbitraryVertex(0.204, 0.3, 0.1)};
+		polyIndex = addPolygon(polygons, new polygon3D(v, v[0].myClone(), v[1].myClone(), v[3].myClone(), MainThread.textures[roofSkin], 1,10,1));
 		
-		v = new vector[]{put(0.11, 0.56, 0.1), put(0.204, 0.3, 0.1), put(0.19, 0.3, 0.1), put(0.094, 0.56, 0.1)};
-		polyIndex = addPolygon(polygons, new polygon3D(v, v[0].myClone(), v[1].myClone(), v[3].myClone(), mainThread.textures[roofSkin], 10,10,1));
+		v = new vector[]{createArbitraryVertex(0.11, 0.56, 0.1), createArbitraryVertex(0.204, 0.3, 0.1), createArbitraryVertex(0.19, 0.3, 0.1), createArbitraryVertex(0.094, 0.56, 0.1)};
+		polyIndex = addPolygon(polygons, new polygon3D(v, v[0].myClone(), v[1].myClone(), v[3].myClone(), MainThread.textures[roofSkin], 10,10,1));
 		
-		v = new vector[]{put(0.094, 0.56, 0.16), put(0.19, 0.3, 0.16), put(0.204, 0.3, 0.16), put(0.11, 0.56, 0.16)};
-		polyIndex = addPolygon(polygons, new polygon3D(v, v[0].myClone(), v[1].myClone(), v[3].myClone(), mainThread.textures[roofSkin], 10,10,1));
+		v = new vector[]{createArbitraryVertex(0.094, 0.56, 0.16), createArbitraryVertex(0.19, 0.3, 0.16), createArbitraryVertex(0.204, 0.3, 0.16), createArbitraryVertex(0.11, 0.56, 0.16)};
+		polyIndex = addPolygon(polygons, new polygon3D(v, v[0].myClone(), v[1].myClone(), v[3].myClone(), MainThread.textures[roofSkin], 10,10,1));
 		
-		v = new vector[]{put(-0.27, 0.56, 0.16), put(-0.27, 0.56, 0.1), put(-0.364, 0.3, 0.1), put(-0.364, 0.3, 0.16)};
-		polyIndex = addPolygon(polygons, new polygon3D(v, v[0].myClone(), v[1].myClone(), v[3].myClone(), mainThread.textures[roofSkin], 1,10,1));
+		v = new vector[]{createArbitraryVertex(-0.27, 0.56, 0.16), createArbitraryVertex(-0.27, 0.56, 0.1), createArbitraryVertex(-0.364, 0.3, 0.1), createArbitraryVertex(-0.364, 0.3, 0.16)};
+		polyIndex = addPolygon(polygons, new polygon3D(v, v[0].myClone(), v[1].myClone(), v[3].myClone(), MainThread.textures[roofSkin], 1,10,1));
 		
-		v = new vector[]{put(-0.27, 0.56, 0.16),  put(-0.364, 0.3, 0.16), put(-0.35, 0.3, 0.16), put(-0.255, 0.56, 0.16)};
-		polyIndex = addPolygon(polygons, new polygon3D(v, v[0].myClone(), v[1].myClone(), v[3].myClone(), mainThread.textures[roofSkin], 10,10,1));
+		v = new vector[]{createArbitraryVertex(-0.27, 0.56, 0.16),  createArbitraryVertex(-0.364, 0.3, 0.16), createArbitraryVertex(-0.35, 0.3, 0.16), createArbitraryVertex(-0.255, 0.56, 0.16)};
+		polyIndex = addPolygon(polygons, new polygon3D(v, v[0].myClone(), v[1].myClone(), v[3].myClone(), MainThread.textures[roofSkin], 10,10,1));
 		
-		v = new vector[]{put(-0.255, 0.56, 0.1), put(-0.35, 0.3, 0.1),  put(-0.364, 0.3, 0.1), put(-0.27, 0.56, 0.1)};
-		polyIndex = addPolygon(polygons, new polygon3D(v, v[0].myClone(), v[1].myClone(), v[3].myClone(), mainThread.textures[roofSkin], 10,10,1));
+		v = new vector[]{createArbitraryVertex(-0.255, 0.56, 0.1), createArbitraryVertex(-0.35, 0.3, 0.1),  createArbitraryVertex(-0.364, 0.3, 0.1), createArbitraryVertex(-0.27, 0.56, 0.1)};
+		polyIndex = addPolygon(polygons, new polygon3D(v, v[0].myClone(), v[1].myClone(), v[3].myClone(), MainThread.textures[roofSkin], 10,10,1));
 
 		start.z-=0.27f;
-		v = new vector[]{put(-0.27, 0.56, 0.16), put(0.11, 0.56, 0.16), put(0.11, 0.56, 0.1), put(-0.27, 0.56, 0.1)};
-		polyIndex = addPolygon(polygons, new polygon3D(v, v[0].myClone(), v[1].myClone(), v[3].myClone(), mainThread.textures[roofSkin], 10,2,1));
+		v = new vector[]{createArbitraryVertex(-0.27, 0.56, 0.16), createArbitraryVertex(0.11, 0.56, 0.16), createArbitraryVertex(0.11, 0.56, 0.1), createArbitraryVertex(-0.27, 0.56, 0.1)};
+		polyIndex = addPolygon(polygons, new polygon3D(v, v[0].myClone(), v[1].myClone(), v[3].myClone(), MainThread.textures[roofSkin], 10,2,1));
 		
-		v = new vector[]{put(0.11, 0.56, 0.16), put(-0.27, 0.56, 0.16), put(-0.27, 0.55, 0.16), put(0.11, 0.55, 0.16)};
-		polyIndex = addPolygon(polygons, new polygon3D(v, v[0].myClone(), v[1].myClone(), v[3].myClone(), mainThread.textures[roofSkin], 10,1,1));
+		v = new vector[]{createArbitraryVertex(0.11, 0.56, 0.16), createArbitraryVertex(-0.27, 0.56, 0.16), createArbitraryVertex(-0.27, 0.55, 0.16), createArbitraryVertex(0.11, 0.55, 0.16)};
+		polyIndex = addPolygon(polygons, new polygon3D(v, v[0].myClone(), v[1].myClone(), v[3].myClone(), MainThread.textures[roofSkin], 10,1,1));
 		
-		v = new vector[]{put(0.11, 0.55, 0.1), put(-0.27, 0.55, 0.1), put(-0.27, 0.56, 0.1), put(0.11, 0.56, 0.1)};
-		polyIndex = addPolygon(polygons, new polygon3D(v, v[0].myClone(), v[1].myClone(), v[3].myClone(), mainThread.textures[roofSkin], 10,1,1));
+		v = new vector[]{createArbitraryVertex(0.11, 0.55, 0.1), createArbitraryVertex(-0.27, 0.55, 0.1), createArbitraryVertex(-0.27, 0.56, 0.1), createArbitraryVertex(0.11, 0.56, 0.1)};
+		polyIndex = addPolygon(polygons, new polygon3D(v, v[0].myClone(), v[1].myClone(), v[3].myClone(), MainThread.textures[roofSkin], 10,1,1));
 		
-		v = new vector[]{put(0.11, 0.56, 0.1), put(0.11, 0.56, 0.16), put(0.204, 0.3, 0.16), put(0.204, 0.3, 0.1)};
-		polyIndex = addPolygon(polygons, new polygon3D(v, v[0].myClone(), v[1].myClone(), v[3].myClone(), mainThread.textures[roofSkin], 1,10,1));
+		v = new vector[]{createArbitraryVertex(0.11, 0.56, 0.1), createArbitraryVertex(0.11, 0.56, 0.16), createArbitraryVertex(0.204, 0.3, 0.16), createArbitraryVertex(0.204, 0.3, 0.1)};
+		polyIndex = addPolygon(polygons, new polygon3D(v, v[0].myClone(), v[1].myClone(), v[3].myClone(), MainThread.textures[roofSkin], 1,10,1));
 		
-		v = new vector[]{put(0.11, 0.56, 0.1), put(0.204, 0.3, 0.1), put(0.19, 0.3, 0.1), put(0.094, 0.56, 0.1)};
-		polyIndex = addPolygon(polygons, new polygon3D(v, v[0].myClone(), v[1].myClone(), v[3].myClone(), mainThread.textures[roofSkin], 10,10,1));
+		v = new vector[]{createArbitraryVertex(0.11, 0.56, 0.1), createArbitraryVertex(0.204, 0.3, 0.1), createArbitraryVertex(0.19, 0.3, 0.1), createArbitraryVertex(0.094, 0.56, 0.1)};
+		polyIndex = addPolygon(polygons, new polygon3D(v, v[0].myClone(), v[1].myClone(), v[3].myClone(), MainThread.textures[roofSkin], 10,10,1));
 		
-		v = new vector[]{put(0.094, 0.56, 0.16), put(0.19, 0.3, 0.16), put(0.204, 0.3, 0.16), put(0.11, 0.56, 0.16)};
-		polyIndex = addPolygon(polygons, new polygon3D(v, v[0].myClone(), v[1].myClone(), v[3].myClone(), mainThread.textures[roofSkin], 10,10,1));
+		v = new vector[]{createArbitraryVertex(0.094, 0.56, 0.16), createArbitraryVertex(0.19, 0.3, 0.16), createArbitraryVertex(0.204, 0.3, 0.16), createArbitraryVertex(0.11, 0.56, 0.16)};
+		polyIndex = addPolygon(polygons, new polygon3D(v, v[0].myClone(), v[1].myClone(), v[3].myClone(), MainThread.textures[roofSkin], 10,10,1));
 		
-		v = new vector[]{put(-0.27, 0.56, 0.16), put(-0.27, 0.56, 0.1), put(-0.364, 0.3, 0.1), put(-0.364, 0.3, 0.16)};
-		polyIndex = addPolygon(polygons, new polygon3D(v, v[0].myClone(), v[1].myClone(), v[3].myClone(), mainThread.textures[roofSkin], 1,10,1));
+		v = new vector[]{createArbitraryVertex(-0.27, 0.56, 0.16), createArbitraryVertex(-0.27, 0.56, 0.1), createArbitraryVertex(-0.364, 0.3, 0.1), createArbitraryVertex(-0.364, 0.3, 0.16)};
+		polyIndex = addPolygon(polygons, new polygon3D(v, v[0].myClone(), v[1].myClone(), v[3].myClone(), MainThread.textures[roofSkin], 1,10,1));
 		
-		v = new vector[]{put(-0.27, 0.56, 0.16),  put(-0.364, 0.3, 0.16), put(-0.35, 0.3, 0.16), put(-0.255, 0.56, 0.16)};
-		polyIndex = addPolygon(polygons, new polygon3D(v, v[0].myClone(), v[1].myClone(), v[3].myClone(), mainThread.textures[roofSkin], 10,10,1));
+		v = new vector[]{createArbitraryVertex(-0.27, 0.56, 0.16),  createArbitraryVertex(-0.364, 0.3, 0.16), createArbitraryVertex(-0.35, 0.3, 0.16), createArbitraryVertex(-0.255, 0.56, 0.16)};
+		polyIndex = addPolygon(polygons, new polygon3D(v, v[0].myClone(), v[1].myClone(), v[3].myClone(), MainThread.textures[roofSkin], 10,10,1));
 		
-		v = new vector[]{put(-0.255, 0.56, 0.1), put(-0.35, 0.3, 0.1),  put(-0.364, 0.3, 0.1), put(-0.27, 0.56, 0.1)};
-		polyIndex = addPolygon(polygons, new polygon3D(v, v[0].myClone(), v[1].myClone(), v[3].myClone(), mainThread.textures[roofSkin], 10,10,1));
+		v = new vector[]{createArbitraryVertex(-0.255, 0.56, 0.1), createArbitraryVertex(-0.35, 0.3, 0.1),  createArbitraryVertex(-0.364, 0.3, 0.1), createArbitraryVertex(-0.27, 0.56, 0.1)};
+		polyIndex = addPolygon(polygons, new polygon3D(v, v[0].myClone(), v[1].myClone(), v[3].myClone(), MainThread.textures[roofSkin], 10,10,1));
 		start.z+=0.27f;
 		
 
 	
 		
 		//main structure
-		v = new vector[]{put(-0.26, 0.55, 0.24), put(-0.26, 0.55, -0.24), put(-0.35, 0.3, -0.24), put(-0.35, 0.3, 0.24)};
-		polyIndex = addPolygon(polygons, new polygon3D(v, v[0].myClone(), v[1].myClone(), v[3].myClone(), mainThread.textures[factorySkin], 1,1,1));
+		v = new vector[]{createArbitraryVertex(-0.26, 0.55, 0.24), createArbitraryVertex(-0.26, 0.55, -0.24), createArbitraryVertex(-0.35, 0.3, -0.24), createArbitraryVertex(-0.35, 0.3, 0.24)};
+		polyIndex = addPolygon(polygons, new polygon3D(v, v[0].myClone(), v[1].myClone(), v[3].myClone(), MainThread.textures[factorySkin], 1,1,1));
 		polygons[polyIndex].shadowBias = 10000;
 		
-		v = new vector[]{put(0.19, 0.3, 0.24), put(0.19, 0.3, -0.24), put(0.1, 0.55, -0.24), put(0.1, 0.55, 0.24)};
-		polyIndex = addPolygon(polygons, new polygon3D(v, v[0].myClone(), v[1].myClone(), v[3].myClone(), mainThread.textures[factorySkin], 1,1,1));
+		v = new vector[]{createArbitraryVertex(0.19, 0.3, 0.24), createArbitraryVertex(0.19, 0.3, -0.24), createArbitraryVertex(0.1, 0.55, -0.24), createArbitraryVertex(0.1, 0.55, 0.24)};
+		polyIndex = addPolygon(polygons, new polygon3D(v, v[0].myClone(), v[1].myClone(), v[3].myClone(), MainThread.textures[factorySkin], 1,1,1));
 		polygons[polyIndex].shadowBias = 10000;
 		
-		v = new vector[]{put(-0.26, 0.55, 0.24), put(0.1, 0.55, 0.24), put(0.1, 0.55, -0.24), put(-0.26, 0.55, -0.24)};
-		polyIndex = addPolygon(polygons, new polygon3D(v, v[0].myClone(), v[1].myClone(), v[3].myClone(), mainThread.textures[factorySkin], 1,1,1));
+		v = new vector[]{createArbitraryVertex(-0.26, 0.55, 0.24), createArbitraryVertex(0.1, 0.55, 0.24), createArbitraryVertex(0.1, 0.55, -0.24), createArbitraryVertex(-0.26, 0.55, -0.24)};
+		polyIndex = addPolygon(polygons, new polygon3D(v, v[0].myClone(), v[1].myClone(), v[3].myClone(), MainThread.textures[factorySkin], 1,1,1));
 		polygons[polyIndex].shadowBias = 10000;
 		
 		
-		v = new vector[]{put(0.085, 0.55, 0.24),put(0.085, 0.55, -0.24), put(0.175, 0.3, -0.24),  put(0.175, 0.3, 0.24)};
-		polyIndex = addPolygon(polygons, new polygon3D(v, v[0].myClone(), v[1].myClone(), v[3].myClone(), mainThread.textures[factorySkin], 1,1,1));
+		v = new vector[]{createArbitraryVertex(0.085, 0.55, 0.24), createArbitraryVertex(0.085, 0.55, -0.24), createArbitraryVertex(0.175, 0.3, -0.24),  createArbitraryVertex(0.175, 0.3, 0.24)};
+		polyIndex = addPolygon(polygons, new polygon3D(v, v[0].myClone(), v[1].myClone(), v[3].myClone(), MainThread.textures[factorySkin], 1,1,1));
 		
-		v = new vector[]{put(0.085, 0.55, 0.24), put(0.175, 0.3, 0.24), put(0.19, 0.3, 0.24), put(0.1, 0.55, 0.24)};
-		polyIndex = addPolygon(polygons, new polygon3D(v, v[0].myClone(), v[1].myClone(), v[3].myClone(), mainThread.textures[factorySkin], 1,1,1));
-		
-		
-		v = new vector[]{put(-0.335, 0.3, 0.24), put(-0.335, 0.3, -0.24), put(-0.245, 0.55, -0.24), put(-0.245, 0.55, 0.24)};
-		polyIndex = addPolygon(polygons, new polygon3D(v, v[0].myClone(), v[1].myClone(), v[3].myClone(), mainThread.textures[factorySkin], 1,1,1));
-		
-		v = new vector[]{put(-0.245, 0.55, 0.24), put(-0.26, 0.55, 0.24), put(-0.35, 0.3, 0.24),put(-0.335, 0.3, 0.24)};
-		polyIndex = addPolygon(polygons, new polygon3D(v, v[0].myClone(), v[1].myClone(), v[3].myClone(), mainThread.textures[factorySkin], 1,1,1));
+		v = new vector[]{createArbitraryVertex(0.085, 0.55, 0.24), createArbitraryVertex(0.175, 0.3, 0.24), createArbitraryVertex(0.19, 0.3, 0.24), createArbitraryVertex(0.1, 0.55, 0.24)};
+		polyIndex = addPolygon(polygons, new polygon3D(v, v[0].myClone(), v[1].myClone(), v[3].myClone(), MainThread.textures[factorySkin], 1,1,1));
 		
 		
+		v = new vector[]{createArbitraryVertex(-0.335, 0.3, 0.24), createArbitraryVertex(-0.335, 0.3, -0.24), createArbitraryVertex(-0.245, 0.55, -0.24), createArbitraryVertex(-0.245, 0.55, 0.24)};
+		polyIndex = addPolygon(polygons, new polygon3D(v, v[0].myClone(), v[1].myClone(), v[3].myClone(), MainThread.textures[factorySkin], 1,1,1));
 		
-		v = new vector[]{put(0.1, 0.55, 0.225), put(-0.26, 0.55, 0.225), put(-0.35, 0.3, 0.225), put(0.19, 0.3, 0.225)};
-		polyIndex = addPolygon(polygons, new polygon3D(v, v[0].myClone(), v[1].myClone(), v[3].myClone(), mainThread.textures[factorySkin], 1,1,1));
+		v = new vector[]{createArbitraryVertex(-0.245, 0.55, 0.24), createArbitraryVertex(-0.26, 0.55, 0.24), createArbitraryVertex(-0.35, 0.3, 0.24), createArbitraryVertex(-0.335, 0.3, 0.24)};
+		polyIndex = addPolygon(polygons, new polygon3D(v, v[0].myClone(), v[1].myClone(), v[3].myClone(), MainThread.textures[factorySkin], 1,1,1));
+		
+		
+		
+		v = new vector[]{createArbitraryVertex(0.1, 0.55, 0.225), createArbitraryVertex(-0.26, 0.55, 0.225), createArbitraryVertex(-0.35, 0.3, 0.225), createArbitraryVertex(0.19, 0.3, 0.225)};
+		polyIndex = addPolygon(polygons, new polygon3D(v, v[0].myClone(), v[1].myClone(), v[3].myClone(), MainThread.textures[factorySkin], 1,1,1));
 		polygons[polyIndex].shadowBias = 10000;
 		
-		v = new vector[]{put(0.1, 0.55, 0.24), put(-0.26, 0.55, 0.24), put(-0.26, 0.535, 0.24), put(0.1, 0.535, 0.24)};
-		polyIndex = addPolygon(polygons, new polygon3D(v, v[0].myClone(), v[1].myClone(), v[3].myClone(), mainThread.textures[factorySkin], 1,1,1));
+		v = new vector[]{createArbitraryVertex(0.1, 0.55, 0.24), createArbitraryVertex(-0.26, 0.55, 0.24), createArbitraryVertex(-0.26, 0.535, 0.24), createArbitraryVertex(0.1, 0.535, 0.24)};
+		polyIndex = addPolygon(polygons, new polygon3D(v, v[0].myClone(), v[1].myClone(), v[3].myClone(), MainThread.textures[factorySkin], 1,1,1));
 		
-		v = new vector[]{put(0.1, 0.535, -0.24), put(-0.26, 0.535, -0.24), put(-0.26, 0.55, -0.24), put(0.1, 0.55, -0.24)};
-		polyIndex = addPolygon(polygons, new polygon3D(v, v[0].myClone(), v[1].myClone(), v[3].myClone(), mainThread.textures[factorySkin], 1,1,1));
+		v = new vector[]{createArbitraryVertex(0.1, 0.535, -0.24), createArbitraryVertex(-0.26, 0.535, -0.24), createArbitraryVertex(-0.26, 0.55, -0.24), createArbitraryVertex(0.1, 0.55, -0.24)};
+		polyIndex = addPolygon(polygons, new polygon3D(v, v[0].myClone(), v[1].myClone(), v[3].myClone(), MainThread.textures[factorySkin], 1,1,1));
 		
-		v = new vector[]{put(0.1, 0.55, -0.24), put(0.19, 0.3, -0.24), put(0.175, 0.3, -0.24), put(0.085, 0.55, -0.24)};
-		polyIndex = addPolygon(polygons, new polygon3D(v, v[0].myClone(), v[1].myClone(), v[3].myClone(), mainThread.textures[factorySkin], 1,1,1));
+		v = new vector[]{createArbitraryVertex(0.1, 0.55, -0.24), createArbitraryVertex(0.19, 0.3, -0.24), createArbitraryVertex(0.175, 0.3, -0.24), createArbitraryVertex(0.085, 0.55, -0.24)};
+		polyIndex = addPolygon(polygons, new polygon3D(v, v[0].myClone(), v[1].myClone(), v[3].myClone(), MainThread.textures[factorySkin], 1,1,1));
 		
-		v = new vector[]{put(-0.335, 0.3, -0.24), put(-0.35, 0.3, -0.24), put(-0.26, 0.55, -0.24),put(-0.245, 0.55, -0.24)};
-		polyIndex = addPolygon(polygons, new polygon3D(v, v[0].myClone(), v[1].myClone(), v[3].myClone(), mainThread.textures[factorySkin], 1,1,1));
+		v = new vector[]{createArbitraryVertex(-0.335, 0.3, -0.24), createArbitraryVertex(-0.35, 0.3, -0.24), createArbitraryVertex(-0.26, 0.55, -0.24), createArbitraryVertex(-0.245, 0.55, -0.24)};
+		polyIndex = addPolygon(polygons, new polygon3D(v, v[0].myClone(), v[1].myClone(), v[3].myClone(), MainThread.textures[factorySkin], 1,1,1));
 		
-		v = new vector[]{put(-0.26, 0.55, -0.225),put(-0.21, 0.55, -0.225), put(-0.21, 0.3, -0.225), put(-0.35, 0.3, -0.225), };
-		polyIndex = addPolygon(polygons, new polygon3D(v, put(-0.26, 0.55, -0.225), put(0.1, 0.55, -0.225), put(-0.26, 0, -0.225), mainThread.textures[12], 1,1,1));
+		v = new vector[]{createArbitraryVertex(-0.26, 0.55, -0.225), createArbitraryVertex(-0.21, 0.55, -0.225), createArbitraryVertex(-0.21, 0.3, -0.225), createArbitraryVertex(-0.35, 0.3, -0.225), };
+		polyIndex = addPolygon(polygons, new polygon3D(v, createArbitraryVertex(-0.26, 0.55, -0.225), createArbitraryVertex(0.1, 0.55, -0.225), createArbitraryVertex(-0.26, 0, -0.225), MainThread.textures[12], 1,1,1));
 		polygons[polyIndex].diffuse_I-=5;
 		
-		v = new vector[]{  put(0.05, 0.55, -0.225),put(0.1, 0.55, -0.225),put(0.19, 0.3, -0.225), put(0.05, 0.3, -0.225)};
-		polyIndex = addPolygon(polygons, new polygon3D(v, put(-0.26, 0.55, -0.225), put(0.1, 0.55, -0.225), put(-0.26, 0, -0.225), mainThread.textures[12], 1,1,1));
+		v = new vector[]{  createArbitraryVertex(0.05, 0.55, -0.225), createArbitraryVertex(0.1, 0.55, -0.225), createArbitraryVertex(0.19, 0.3, -0.225), createArbitraryVertex(0.05, 0.3, -0.225)};
+		polyIndex = addPolygon(polygons, new polygon3D(v, createArbitraryVertex(-0.26, 0.55, -0.225), createArbitraryVertex(0.1, 0.55, -0.225), createArbitraryVertex(-0.26, 0, -0.225), MainThread.textures[12], 1,1,1));
 		polygons[polyIndex].diffuse_I-=5;
 		
-		v= new vector[]{put(-0.21, 0.55, -0.225), put(0.05, 0.55, -0.225), put(0.05, 0.5, -0.225), put(-0.21, 0.5, -0.225)};
-		polyIndex = addPolygon(polygons, new polygon3D(v, put(-0.26, 0.55, -0.225), put(0.1, 0.55, -0.225), put(-0.26, 0, -0.225), mainThread.textures[12], 1,1,1));
+		v= new vector[]{createArbitraryVertex(-0.21, 0.55, -0.225), createArbitraryVertex(0.05, 0.55, -0.225), createArbitraryVertex(0.05, 0.5, -0.225), createArbitraryVertex(-0.21, 0.5, -0.225)};
+		polyIndex = addPolygon(polygons, new polygon3D(v, createArbitraryVertex(-0.26, 0.55, -0.225), createArbitraryVertex(0.1, 0.55, -0.225), createArbitraryVertex(-0.26, 0, -0.225), MainThread.textures[12], 1,1,1));
 		polygons[polyIndex].diffuse_I-=5;
 		
-		v = new vector[]{put(-0.21, 0.55, -0.225), put(-0.21, 0.55, -0.19), put(-0.21, 0.3, -0.19), put(-0.21, 0.3, -0.225)};
-		polyIndex = addPolygon(polygons, new polygon3D(v, v[0].myClone(), v[1].myClone(), v[3].myClone(), mainThread.textures[27], 0.1f,0.7f,1));
+		v = new vector[]{createArbitraryVertex(-0.21, 0.55, -0.225), createArbitraryVertex(-0.21, 0.55, -0.19), createArbitraryVertex(-0.21, 0.3, -0.19), createArbitraryVertex(-0.21, 0.3, -0.225)};
+		polyIndex = addPolygon(polygons, new polygon3D(v, v[0].myClone(), v[1].myClone(), v[3].myClone(), MainThread.textures[27], 0.1f,0.7f,1));
 	
-		v = new vector[]{put(0.05, 0.55, -0.19), put(0.05, 0.55, -0.225),put(0.05, 0.3, -0.225), put(0.05, 0.3, -0.19)};
-		polyIndex = addPolygon(polygons, new polygon3D(v, v[0].myClone(), v[1].myClone(), v[3].myClone(), mainThread.textures[27], 0.1f,0.7f,1));
+		v = new vector[]{createArbitraryVertex(0.05, 0.55, -0.19), createArbitraryVertex(0.05, 0.55, -0.225), createArbitraryVertex(0.05, 0.3, -0.225), createArbitraryVertex(0.05, 0.3, -0.19)};
+		polyIndex = addPolygon(polygons, new polygon3D(v, v[0].myClone(), v[1].myClone(), v[3].myClone(), MainThread.textures[27], 0.1f,0.7f,1));
 		
 		
 		int doorIndex = 31;
@@ -401,8 +401,8 @@ public class factory extends solidObject{
 		
 	
 		
-		v = new vector[]{put(-0.21, 0.38, -0.215), put(0.05, 0.38, -0.215), put(0.05, 0.3, -0.215), put(-0.21, 0.3, -0.215)};
-		polyIndex = addPolygon(polygons, new polygon3D(v, v[0].myClone(), v[1].myClone(), v[3].myClone(), mainThread.textures[36], 1,0.5f,1));
+		v = new vector[]{createArbitraryVertex(-0.21, 0.38, -0.215), createArbitraryVertex(0.05, 0.38, -0.215), createArbitraryVertex(0.05, 0.3, -0.215), createArbitraryVertex(-0.21, 0.3, -0.215)};
+		polyIndex = addPolygon(polygons, new polygon3D(v, v[0].myClone(), v[1].myClone(), v[3].myClone(), MainThread.textures[36], 1,0.5f,1));
 		
 		float v1 = a;
 		float v2 = a;
@@ -411,20 +411,20 @@ public class factory extends solidObject{
 		float v5 = d;
 		
 		
-		v = new vector[]{put(v1, 0.38, -0.215), put(v2, 0.42, -0.215),put(v3, 0.42, -0.215), put(v4, 0.38, -0.215)};
-		polyIndex = addPolygon(polygons, new polygon3D(v,put(-0.21, 0.42, -0.215), put(0.05, 0.42, -0.215), put(-0.21, 0.38, -0.215), mainThread.textures[doorIndex], 7,0.7f,1));
+		v = new vector[]{createArbitraryVertex(v1, 0.38, -0.215), createArbitraryVertex(v2, 0.42, -0.215), createArbitraryVertex(v3, 0.42, -0.215), createArbitraryVertex(v4, 0.38, -0.215)};
+		polyIndex = addPolygon(polygons, new polygon3D(v, createArbitraryVertex(-0.21, 0.42, -0.215), createArbitraryVertex(0.05, 0.42, -0.215), createArbitraryVertex(-0.21, 0.38, -0.215), MainThread.textures[doorIndex], 7,0.7f,1));
 		
-		v = new vector[]{put(v2, 0.42, -0.205), put(v2, 0.42, -0.215), put(v1, 0.38, -0.215), put(v1, 0.38, -0.205)};
-		polyIndex = addPolygon(polygons, new polygon3D(v, v[0].myClone(), v[1].myClone(), v[3].myClone(), mainThread.textures[27], 0.1f,0.8f,1));
+		v = new vector[]{createArbitraryVertex(v2, 0.42, -0.205), createArbitraryVertex(v2, 0.42, -0.215), createArbitraryVertex(v1, 0.38, -0.215), createArbitraryVertex(v1, 0.38, -0.205)};
+		polyIndex = addPolygon(polygons, new polygon3D(v, v[0].myClone(), v[1].myClone(), v[3].myClone(), MainThread.textures[27], 0.1f,0.8f,1));
 		
-		v = new vector[]{put(v2, 0.42, -0.215), put(v2, 0.42, -0.205), put(v3, 0.42, -0.205), put(v3, 0.42, -0.215)};
-		polyIndex = addPolygon(polygons, new polygon3D(v, v[0].myClone(), v[1].myClone(), v[3].myClone(), mainThread.textures[27], 0.1f,0.8f,1));
+		v = new vector[]{createArbitraryVertex(v2, 0.42, -0.215), createArbitraryVertex(v2, 0.42, -0.205), createArbitraryVertex(v3, 0.42, -0.205), createArbitraryVertex(v3, 0.42, -0.215)};
+		polyIndex = addPolygon(polygons, new polygon3D(v, v[0].myClone(), v[1].myClone(), v[3].myClone(), MainThread.textures[27], 0.1f,0.8f,1));
 		
-		v = new vector[]{put(v3, 0.42, -0.215), put(v3, 0.42, -0.205), put(v4, 0.38, -0.205), put(v4, 0.38, -0.215)};
-		polyIndex = addPolygon(polygons, new polygon3D(v, v[0].myClone(), v[1].myClone(), v[3].myClone(), mainThread.textures[27], 0.1f,0.8f,1));
+		v = new vector[]{createArbitraryVertex(v3, 0.42, -0.215), createArbitraryVertex(v3, 0.42, -0.205), createArbitraryVertex(v4, 0.38, -0.205), createArbitraryVertex(v4, 0.38, -0.215)};
+		polyIndex = addPolygon(polygons, new polygon3D(v, v[0].myClone(), v[1].myClone(), v[3].myClone(), MainThread.textures[27], 0.1f,0.8f,1));
 		
-		v = new vector[]{put(v4, 0.38, -0.215), put(v4, 0.38, -0.205), put(v5, 0.38, -0.205), put(v5, 0.38, -0.215)};
-		polyIndex = addPolygon(polygons, new polygon3D(v, v[0].myClone(), v[1].myClone(), v[3].myClone(), mainThread.textures[27], 0.1f,0.8f,1));
+		v = new vector[]{createArbitraryVertex(v4, 0.38, -0.215), createArbitraryVertex(v4, 0.38, -0.205), createArbitraryVertex(v5, 0.38, -0.205), createArbitraryVertex(v5, 0.38, -0.215)};
+		polyIndex = addPolygon(polygons, new polygon3D(v, v[0].myClone(), v[1].myClone(), v[3].myClone(), MainThread.textures[27], 0.1f,0.8f,1));
 		
 		v1 = d;
 		v2 = e;
@@ -433,20 +433,20 @@ public class factory extends solidObject{
 		v5 = h;
 		
 		
-		v = new vector[]{put(v1, 0.38, -0.215), put(v2, 0.42, -0.215),put(v3, 0.42, -0.215), put(v4, 0.38, -0.215)};
-		polyIndex = addPolygon(polygons, new polygon3D(v,put(-0.21, 0.42, -0.215), put(0.05, 0.42, -0.215), put(-0.21, 0.38, -0.215), mainThread.textures[doorIndex], 7,0.7f,1));
+		v = new vector[]{createArbitraryVertex(v1, 0.38, -0.215), createArbitraryVertex(v2, 0.42, -0.215), createArbitraryVertex(v3, 0.42, -0.215), createArbitraryVertex(v4, 0.38, -0.215)};
+		polyIndex = addPolygon(polygons, new polygon3D(v, createArbitraryVertex(-0.21, 0.42, -0.215), createArbitraryVertex(0.05, 0.42, -0.215), createArbitraryVertex(-0.21, 0.38, -0.215), MainThread.textures[doorIndex], 7,0.7f,1));
 		
-		v = new vector[]{put(v2, 0.42, -0.205), put(v2, 0.42, -0.215), put(v1, 0.38, -0.215), put(v1, 0.38, -0.205)};
-		polyIndex = addPolygon(polygons, new polygon3D(v, v[0].myClone(), v[1].myClone(), v[3].myClone(), mainThread.textures[27], 0.1f,1f,1));
+		v = new vector[]{createArbitraryVertex(v2, 0.42, -0.205), createArbitraryVertex(v2, 0.42, -0.215), createArbitraryVertex(v1, 0.38, -0.215), createArbitraryVertex(v1, 0.38, -0.205)};
+		polyIndex = addPolygon(polygons, new polygon3D(v, v[0].myClone(), v[1].myClone(), v[3].myClone(), MainThread.textures[27], 0.1f,1f,1));
 		
-		v = new vector[]{put(v2, 0.42, -0.215), put(v2, 0.42, -0.205), put(v3, 0.42, -0.205), put(v3, 0.42, -0.215)};
-		polyIndex = addPolygon(polygons, new polygon3D(v, v[0].myClone(), v[1].myClone(), v[3].myClone(), mainThread.textures[27], 0.1f,1f,1));
+		v = new vector[]{createArbitraryVertex(v2, 0.42, -0.215), createArbitraryVertex(v2, 0.42, -0.205), createArbitraryVertex(v3, 0.42, -0.205), createArbitraryVertex(v3, 0.42, -0.215)};
+		polyIndex = addPolygon(polygons, new polygon3D(v, v[0].myClone(), v[1].myClone(), v[3].myClone(), MainThread.textures[27], 0.1f,1f,1));
 		
-		v = new vector[]{put(v3, 0.42, -0.215), put(v3, 0.42, -0.205), put(v4, 0.38, -0.205), put(v4, 0.38, -0.215)};
-		polyIndex = addPolygon(polygons, new polygon3D(v, v[0].myClone(), v[1].myClone(), v[3].myClone(), mainThread.textures[27], 0.1f,1f,1));
+		v = new vector[]{createArbitraryVertex(v3, 0.42, -0.215), createArbitraryVertex(v3, 0.42, -0.205), createArbitraryVertex(v4, 0.38, -0.205), createArbitraryVertex(v4, 0.38, -0.215)};
+		polyIndex = addPolygon(polygons, new polygon3D(v, v[0].myClone(), v[1].myClone(), v[3].myClone(), MainThread.textures[27], 0.1f,1f,1));
 		
-		v = new vector[]{put(v4, 0.38, -0.215), put(v4, 0.38, -0.205), put(v5, 0.38, -0.205), put(v5, 0.38, -0.215)};
-		polyIndex = addPolygon(polygons, new polygon3D(v, v[0].myClone(), v[1].myClone(), v[3].myClone(), mainThread.textures[27], 0.1f,1f,1));
+		v = new vector[]{createArbitraryVertex(v4, 0.38, -0.215), createArbitraryVertex(v4, 0.38, -0.205), createArbitraryVertex(v5, 0.38, -0.205), createArbitraryVertex(v5, 0.38, -0.215)};
+		polyIndex = addPolygon(polygons, new polygon3D(v, v[0].myClone(), v[1].myClone(), v[3].myClone(), MainThread.textures[27], 0.1f,1f,1));
 		
 		v1 = h;
 		v2 = i;
@@ -455,20 +455,20 @@ public class factory extends solidObject{
 		v5 = l;
 		
 		
-		v = new vector[]{put(v1, 0.38, -0.215), put(v2, 0.42, -0.215),put(v3, 0.42, -0.215), put(v4, 0.38, -0.215)};
-		polyIndex = addPolygon(polygons, new polygon3D(v,put(-0.21, 0.42, -0.215), put(0.05, 0.42, -0.215), put(-0.21, 0.38, -0.215), mainThread.textures[doorIndex], 7,0.7f,1));
+		v = new vector[]{createArbitraryVertex(v1, 0.38, -0.215), createArbitraryVertex(v2, 0.42, -0.215), createArbitraryVertex(v3, 0.42, -0.215), createArbitraryVertex(v4, 0.38, -0.215)};
+		polyIndex = addPolygon(polygons, new polygon3D(v, createArbitraryVertex(-0.21, 0.42, -0.215), createArbitraryVertex(0.05, 0.42, -0.215), createArbitraryVertex(-0.21, 0.38, -0.215), MainThread.textures[doorIndex], 7,0.7f,1));
 		
-		v = new vector[]{put(v2, 0.42, -0.205), put(v2, 0.42, -0.215), put(v1, 0.38, -0.215), put(v1, 0.38, -0.205)};
-		polyIndex = addPolygon(polygons, new polygon3D(v, v[0].myClone(), v[1].myClone(), v[3].myClone(), mainThread.textures[27], 0.1f,1f,1));
+		v = new vector[]{createArbitraryVertex(v2, 0.42, -0.205), createArbitraryVertex(v2, 0.42, -0.215), createArbitraryVertex(v1, 0.38, -0.215), createArbitraryVertex(v1, 0.38, -0.205)};
+		polyIndex = addPolygon(polygons, new polygon3D(v, v[0].myClone(), v[1].myClone(), v[3].myClone(), MainThread.textures[27], 0.1f,1f,1));
 		
-		v = new vector[]{put(v2, 0.42, -0.215), put(v2, 0.42, -0.205), put(v3, 0.42, -0.205), put(v3, 0.42, -0.215)};
-		polyIndex = addPolygon(polygons, new polygon3D(v, v[0].myClone(), v[1].myClone(), v[3].myClone(), mainThread.textures[27], 0.1f,1f,1));
+		v = new vector[]{createArbitraryVertex(v2, 0.42, -0.215), createArbitraryVertex(v2, 0.42, -0.205), createArbitraryVertex(v3, 0.42, -0.205), createArbitraryVertex(v3, 0.42, -0.215)};
+		polyIndex = addPolygon(polygons, new polygon3D(v, v[0].myClone(), v[1].myClone(), v[3].myClone(), MainThread.textures[27], 0.1f,1f,1));
 		
-		v = new vector[]{put(v3, 0.42, -0.215), put(v3, 0.42, -0.205), put(v4, 0.38, -0.205), put(v4, 0.38, -0.215)};
-		polyIndex = addPolygon(polygons, new polygon3D(v, v[0].myClone(), v[1].myClone(), v[3].myClone(), mainThread.textures[27], 0.1f,1f,1));
+		v = new vector[]{createArbitraryVertex(v3, 0.42, -0.215), createArbitraryVertex(v3, 0.42, -0.205), createArbitraryVertex(v4, 0.38, -0.205), createArbitraryVertex(v4, 0.38, -0.215)};
+		polyIndex = addPolygon(polygons, new polygon3D(v, v[0].myClone(), v[1].myClone(), v[3].myClone(), MainThread.textures[27], 0.1f,1f,1));
 		
-		v = new vector[]{put(v4, 0.38, -0.215), put(v4, 0.38, -0.205), put(v5, 0.38, -0.205), put(v5, 0.38, -0.215)};
-		polyIndex = addPolygon(polygons, new polygon3D(v, v[0].myClone(), v[1].myClone(), v[3].myClone(), mainThread.textures[27], 0.1f,1f,1));
+		v = new vector[]{createArbitraryVertex(v4, 0.38, -0.215), createArbitraryVertex(v4, 0.38, -0.205), createArbitraryVertex(v5, 0.38, -0.205), createArbitraryVertex(v5, 0.38, -0.215)};
+		polyIndex = addPolygon(polygons, new polygon3D(v, v[0].myClone(), v[1].myClone(), v[3].myClone(), MainThread.textures[27], 0.1f,1f,1));
 		
 		v1 = l;
 		v2 = m;
@@ -477,17 +477,17 @@ public class factory extends solidObject{
 		
 		
 		
-		v = new vector[]{put(v1, 0.38, -0.215), put(v2, 0.42, -0.215),put(v3, 0.42, -0.215), put(v4, 0.38, -0.215)};
-		polyIndex = addPolygon(polygons, new polygon3D(v,put(-0.21, 0.42, -0.215), put(0.05, 0.42, -0.215), put(-0.21, 0.38, -0.215), mainThread.textures[doorIndex], 7,0.7f,1));
+		v = new vector[]{createArbitraryVertex(v1, 0.38, -0.215), createArbitraryVertex(v2, 0.42, -0.215), createArbitraryVertex(v3, 0.42, -0.215), createArbitraryVertex(v4, 0.38, -0.215)};
+		polyIndex = addPolygon(polygons, new polygon3D(v, createArbitraryVertex(-0.21, 0.42, -0.215), createArbitraryVertex(0.05, 0.42, -0.215), createArbitraryVertex(-0.21, 0.38, -0.215), MainThread.textures[doorIndex], 7,0.7f,1));
 		
-		v = new vector[]{put(v2, 0.42, -0.205), put(v2, 0.42, -0.215), put(v1, 0.38, -0.215), put(v1, 0.38, -0.205)};
-		polyIndex = addPolygon(polygons, new polygon3D(v, v[0].myClone(), v[1].myClone(), v[3].myClone(), mainThread.textures[27], 0.1f,1f,1));
+		v = new vector[]{createArbitraryVertex(v2, 0.42, -0.205), createArbitraryVertex(v2, 0.42, -0.215), createArbitraryVertex(v1, 0.38, -0.215), createArbitraryVertex(v1, 0.38, -0.205)};
+		polyIndex = addPolygon(polygons, new polygon3D(v, v[0].myClone(), v[1].myClone(), v[3].myClone(), MainThread.textures[27], 0.1f,1f,1));
 		
-		v = new vector[]{put(v2, 0.42, -0.215), put(v2, 0.42, -0.205), put(v3, 0.42, -0.205), put(v3, 0.42, -0.215)};
-		polyIndex = addPolygon(polygons, new polygon3D(v, v[0].myClone(), v[1].myClone(), v[3].myClone(), mainThread.textures[27], 0.1f,1f,1));
+		v = new vector[]{createArbitraryVertex(v2, 0.42, -0.215), createArbitraryVertex(v2, 0.42, -0.205), createArbitraryVertex(v3, 0.42, -0.205), createArbitraryVertex(v3, 0.42, -0.215)};
+		polyIndex = addPolygon(polygons, new polygon3D(v, v[0].myClone(), v[1].myClone(), v[3].myClone(), MainThread.textures[27], 0.1f,1f,1));
 		
-		v = new vector[]{put(v3, 0.42, -0.215), put(v3, 0.42, -0.205), put(v4, 0.38, -0.205), put(v4, 0.38, -0.215)};
-		polyIndex = addPolygon(polygons, new polygon3D(v, v[0].myClone(), v[1].myClone(), v[3].myClone(), mainThread.textures[27], 0.1f,1f,1));
+		v = new vector[]{createArbitraryVertex(v3, 0.42, -0.215), createArbitraryVertex(v3, 0.42, -0.205), createArbitraryVertex(v4, 0.38, -0.205), createArbitraryVertex(v4, 0.38, -0.215)};
+		polyIndex = addPolygon(polygons, new polygon3D(v, v[0].myClone(), v[1].myClone(), v[3].myClone(), MainThread.textures[27], 0.1f,1f,1));
 		
 		
 		doorLower = new polygon3D[20];
@@ -499,20 +499,20 @@ public class factory extends solidObject{
 		
 		
 		//door upper
-		v = new vector[]{put(-0.21, 0.57, -0.215), put(0.05, 0.57, -0.215), put(0.05, 0.42, -0.215), put(-0.21, 0.42, -0.215)};
-		polyIndex = addPolygon(polygons, new polygon3D(v, v[0].myClone(), v[1].myClone(), v[3].myClone(), mainThread.textures[36], 1,0.5f,1));
+		v = new vector[]{createArbitraryVertex(-0.21, 0.57, -0.215), createArbitraryVertex(0.05, 0.57, -0.215), createArbitraryVertex(0.05, 0.42, -0.215), createArbitraryVertex(-0.21, 0.42, -0.215)};
+		polyIndex = addPolygon(polygons, new polygon3D(v, v[0].myClone(), v[1].myClone(), v[3].myClone(), MainThread.textures[36], 1,0.5f,1));
 		
-		v = new vector[]{put(-0.21, 0.42, -0.205), put(0.05, 0.42, -0.205), put(0.05, 0.57, -0.205), put(-0.21, 0.57, -0.205)};
-		polyIndex = addPolygon(polygons, new polygon3D(v, v[0].myClone(), v[1].myClone(), v[3].myClone(), mainThread.textures[36], 1,0.5f,1));
+		v = new vector[]{createArbitraryVertex(-0.21, 0.42, -0.205), createArbitraryVertex(0.05, 0.42, -0.205), createArbitraryVertex(0.05, 0.57, -0.205), createArbitraryVertex(-0.21, 0.57, -0.205)};
+		polyIndex = addPolygon(polygons, new polygon3D(v, v[0].myClone(), v[1].myClone(), v[3].myClone(), MainThread.textures[36], 1,0.5f,1));
 		
-		v = new vector[]{put(-0.21, 0.57, -0.215), put(-0.21, 0.57, -0.205), put(0.05, 0.57, -0.205), put(0.05, 0.57, -0.215)};
-		polyIndex = addPolygon(polygons, new polygon3D(v, v[0].myClone(), v[1].myClone(), v[3].myClone(), mainThread.textures[36], 0.1f,1f,1));
+		v = new vector[]{createArbitraryVertex(-0.21, 0.57, -0.215), createArbitraryVertex(-0.21, 0.57, -0.205), createArbitraryVertex(0.05, 0.57, -0.205), createArbitraryVertex(0.05, 0.57, -0.215)};
+		polyIndex = addPolygon(polygons, new polygon3D(v, v[0].myClone(), v[1].myClone(), v[3].myClone(), MainThread.textures[36], 0.1f,1f,1));
 		
-		v = new vector[]{put(-0.21, 0.57, -0.205), put(-0.21, 0.57, -0.215), put(-0.21, 0.42, -0.215), put(-0.21, 0.42, -0.205)};
-		polyIndex = addPolygon(polygons, new polygon3D(v, v[0].myClone(), v[1].myClone(), v[3].myClone(), mainThread.textures[36], 0.1f,1f,1));
+		v = new vector[]{createArbitraryVertex(-0.21, 0.57, -0.205), createArbitraryVertex(-0.21, 0.57, -0.215), createArbitraryVertex(-0.21, 0.42, -0.215), createArbitraryVertex(-0.21, 0.42, -0.205)};
+		polyIndex = addPolygon(polygons, new polygon3D(v, v[0].myClone(), v[1].myClone(), v[3].myClone(), MainThread.textures[36], 0.1f,1f,1));
 		
-		v = new vector[]{put(0.05, 0.42, -0.205), put(0.05, 0.42, -0.215), put(0.05, 0.57, -0.215), put(0.05, 0.57, -0.205)};
-		polyIndex = addPolygon(polygons, new polygon3D(v, v[0].myClone(), v[1].myClone(), v[3].myClone(), mainThread.textures[36], 0.1f,1f,1));
+		v = new vector[]{createArbitraryVertex(0.05, 0.42, -0.205), createArbitraryVertex(0.05, 0.42, -0.215), createArbitraryVertex(0.05, 0.57, -0.215), createArbitraryVertex(0.05, 0.57, -0.205)};
+		polyIndex = addPolygon(polygons, new polygon3D(v, v[0].myClone(), v[1].myClone(), v[3].myClone(), MainThread.textures[36], 0.1f,1f,1));
 		
 
 		v1 = b;
@@ -520,42 +520,42 @@ public class factory extends solidObject{
 		v3 = d;
 		v4 = c;
 		
-		v = new vector[]{put(v1, 0.42,-0.215), put(v2, 0.42,-0.215), put(v3, 0.38,-0.215), put(v4, 0.38,-0.215)};
-		polyIndex = addPolygon(polygons, new polygon3D(v,put(-0.21, 0.42, -0.215), put(0.05, 0.42, -0.215), put(-0.21, 0.38, -0.215), mainThread.textures[doorIndex], 7,0.7f,1));
+		v = new vector[]{createArbitraryVertex(v1, 0.42,-0.215), createArbitraryVertex(v2, 0.42,-0.215), createArbitraryVertex(v3, 0.38,-0.215), createArbitraryVertex(v4, 0.38,-0.215)};
+		polyIndex = addPolygon(polygons, new polygon3D(v, createArbitraryVertex(-0.21, 0.42, -0.215), createArbitraryVertex(0.05, 0.42, -0.215), createArbitraryVertex(-0.21, 0.38, -0.215), MainThread.textures[doorIndex], 7,0.7f,1));
 		
-		v = new vector[]{put(v2, 0.42,-0.215), put(v2, 0.42,-0.205), put(v3, 0.38,-0.205),put(v3, 0.38,-0.215)};
-		polyIndex = addPolygon(polygons, new polygon3D(v, v[0].myClone(), v[1].myClone(), v[3].myClone(), mainThread.textures[27], 0.1f,1f,1));
+		v = new vector[]{createArbitraryVertex(v2, 0.42,-0.215), createArbitraryVertex(v2, 0.42,-0.205), createArbitraryVertex(v3, 0.38,-0.205), createArbitraryVertex(v3, 0.38,-0.215)};
+		polyIndex = addPolygon(polygons, new polygon3D(v, v[0].myClone(), v[1].myClone(), v[3].myClone(), MainThread.textures[27], 0.1f,1f,1));
 		
-		v = new vector[]{put(v1, 0.42,-0.205), put(v1, 0.42,-0.215), put(v4, 0.38,-0.215), put(v4, 0.38,-0.205)};
-		polyIndex = addPolygon(polygons, new polygon3D(v, v[0].myClone(), v[1].myClone(), v[3].myClone(), mainThread.textures[27], 0.1f,1f,1));
+		v = new vector[]{createArbitraryVertex(v1, 0.42,-0.205), createArbitraryVertex(v1, 0.42,-0.215), createArbitraryVertex(v4, 0.38,-0.215), createArbitraryVertex(v4, 0.38,-0.205)};
+		polyIndex = addPolygon(polygons, new polygon3D(v, v[0].myClone(), v[1].myClone(), v[3].myClone(), MainThread.textures[27], 0.1f,1f,1));
 		
 		v1 = f;
 		v2 = i;
 		v3 = h;
 		v4 = g;
 		
-		v = new vector[]{put(v1, 0.42,-0.215), put(v2, 0.42,-0.215), put(v3, 0.38,-0.215), put(v4, 0.38,-0.215)};
-		polyIndex = addPolygon(polygons, new polygon3D(v,put(-0.21, 0.42, -0.215), put(0.05, 0.42, -0.215), put(-0.21, 0.38, -0.215), mainThread.textures[doorIndex], 7,0.7f,1));
+		v = new vector[]{createArbitraryVertex(v1, 0.42,-0.215), createArbitraryVertex(v2, 0.42,-0.215), createArbitraryVertex(v3, 0.38,-0.215), createArbitraryVertex(v4, 0.38,-0.215)};
+		polyIndex = addPolygon(polygons, new polygon3D(v, createArbitraryVertex(-0.21, 0.42, -0.215), createArbitraryVertex(0.05, 0.42, -0.215), createArbitraryVertex(-0.21, 0.38, -0.215), MainThread.textures[doorIndex], 7,0.7f,1));
 		
-		v = new vector[]{put(v2, 0.42,-0.215), put(v2, 0.42,-0.205), put(v3, 0.38,-0.205),put(v3, 0.38,-0.215)};
-		polyIndex = addPolygon(polygons, new polygon3D(v, v[0].myClone(), v[1].myClone(), v[3].myClone(), mainThread.textures[27], 0.1f,1f,1));
+		v = new vector[]{createArbitraryVertex(v2, 0.42,-0.215), createArbitraryVertex(v2, 0.42,-0.205), createArbitraryVertex(v3, 0.38,-0.205), createArbitraryVertex(v3, 0.38,-0.215)};
+		polyIndex = addPolygon(polygons, new polygon3D(v, v[0].myClone(), v[1].myClone(), v[3].myClone(), MainThread.textures[27], 0.1f,1f,1));
 		
-		v = new vector[]{put(v1, 0.42,-0.205), put(v1, 0.42,-0.215), put(v4, 0.38,-0.215), put(v4, 0.38,-0.205)};
-		polyIndex = addPolygon(polygons, new polygon3D(v, v[0].myClone(), v[1].myClone(), v[3].myClone(), mainThread.textures[27], 0.1f,1f,1));
+		v = new vector[]{createArbitraryVertex(v1, 0.42,-0.205), createArbitraryVertex(v1, 0.42,-0.215), createArbitraryVertex(v4, 0.38,-0.215), createArbitraryVertex(v4, 0.38,-0.205)};
+		polyIndex = addPolygon(polygons, new polygon3D(v, v[0].myClone(), v[1].myClone(), v[3].myClone(), MainThread.textures[27], 0.1f,1f,1));
 		
 		v1 = j;
 		v2 = m;
 		v3 = l;
 		v4 = k;
 		
-		v = new vector[]{put(v1, 0.42,-0.215), put(v2, 0.42,-0.215), put(v3, 0.38,-0.215), put(v4, 0.38,-0.215)};
-		polyIndex = addPolygon(polygons, new polygon3D(v,put(-0.21, 0.42, -0.215), put(0.05, 0.42, -0.215), put(-0.21, 0.38, -0.215), mainThread.textures[doorIndex], 7,0.7f,1));
+		v = new vector[]{createArbitraryVertex(v1, 0.42,-0.215), createArbitraryVertex(v2, 0.42,-0.215), createArbitraryVertex(v3, 0.38,-0.215), createArbitraryVertex(v4, 0.38,-0.215)};
+		polyIndex = addPolygon(polygons, new polygon3D(v, createArbitraryVertex(-0.21, 0.42, -0.215), createArbitraryVertex(0.05, 0.42, -0.215), createArbitraryVertex(-0.21, 0.38, -0.215), MainThread.textures[doorIndex], 7,0.7f,1));
 		
-		v = new vector[]{put(v2, 0.42,-0.215), put(v2, 0.42,-0.205), put(v3, 0.38,-0.205),put(v3, 0.38,-0.215)};
-		polyIndex = addPolygon(polygons, new polygon3D(v, v[0].myClone(), v[1].myClone(), v[3].myClone(), mainThread.textures[27], 0.1f,1f,1));
+		v = new vector[]{createArbitraryVertex(v2, 0.42,-0.215), createArbitraryVertex(v2, 0.42,-0.205), createArbitraryVertex(v3, 0.38,-0.205), createArbitraryVertex(v3, 0.38,-0.215)};
+		polyIndex = addPolygon(polygons, new polygon3D(v, v[0].myClone(), v[1].myClone(), v[3].myClone(), MainThread.textures[27], 0.1f,1f,1));
 		
-		v = new vector[]{put(v1, 0.42,-0.205), put(v1, 0.42,-0.215), put(v4, 0.38,-0.215), put(v4, 0.38,-0.205)};
-		polyIndex = addPolygon(polygons, new polygon3D(v, v[0].myClone(), v[1].myClone(), v[3].myClone(), mainThread.textures[27], 0.1f,1f,1));
+		v = new vector[]{createArbitraryVertex(v1, 0.42,-0.205), createArbitraryVertex(v1, 0.42,-0.215), createArbitraryVertex(v4, 0.38,-0.215), createArbitraryVertex(v4, 0.38,-0.205)};
+		polyIndex = addPolygon(polygons, new polygon3D(v, v[0].myClone(), v[1].myClone(), v[3].myClone(), MainThread.textures[27], 0.1f,1f,1));
 		
 		doorUpper = new polygon3D[14];
 		for(int count = 54; count < 68; count++){
@@ -568,13 +568,13 @@ public class factory extends solidObject{
 		float delta = (float)Math.PI/8;
 		float w = 0.29f;
 		h = 0.12f;
-		powerTowerCenterA = put(w, 0, h);
+		powerTowerCenterA = createArbitraryVertex(w, 0, h);
 
 		for(i = 0; i < 16; i++){
-			v = new vector[]{put(r*Math.cos(i*delta) + w, 0.5, r*Math.sin(i*delta) + h),
-							 put(r*Math.cos((i+1)*delta) + w, 0.5, r*Math.sin((i+1)*delta)+h),
-							 put(r*Math.cos((i+1)*delta) + w, 0.3,  r*Math.sin((i+1)*delta)+h),
-							 put(r*Math.cos(i*delta) + w, 0.3, r*Math.sin(i*delta)+h)
+			v = new vector[]{createArbitraryVertex(r*Math.cos(i*delta) + w, 0.5, r*Math.sin(i*delta) + h),
+							 createArbitraryVertex(r*Math.cos((i+1)*delta) + w, 0.5, r*Math.sin((i+1)*delta)+h),
+							 createArbitraryVertex(r*Math.cos((i+1)*delta) + w, 0.3,  r*Math.sin((i+1)*delta)+h),
+							 createArbitraryVertex(r*Math.cos(i*delta) + w, 0.3, r*Math.sin(i*delta)+h)
 							};
 			
 			tempVector.set(v[1]);
@@ -591,82 +591,82 @@ public class factory extends solidObject{
 		    	tempVector3.subtract(tempVector);
 		    }
 			
-		    change(w,0.5f,h, tempVector);
-			polyIndex = addPolygon(polygons,  new polygon3D(v, tempVector0.myClone(),tempVector1.myClone(), tempVector3.myClone(),  mainThread.textures[12], 1f,1f,1));
+		    changeVertex3DGeometry(w,0.5f,h, tempVector);
+			polyIndex = addPolygon(polygons,  new polygon3D(v, tempVector0.myClone(),tempVector1.myClone(), tempVector3.myClone(),  MainThread.textures[12], 1f,1f,1));
 			polygons[polyIndex].textureScaledWidth = (int)(polygons[polyIndex].myTexture.width*0.5);
 			polygons[polyIndex].createShadeSpan(tempVector, v[0].myClone(), v[1]);
 		}
 		
 		float r1= r - 0.02f;
 		for(i = 0; i < 16; i++){
-			v = new vector[]{put(r1*Math.cos(i*delta) + w, 0.515, r1*Math.sin(i*delta) + h),
-							 put(r1*Math.cos((i+1)*delta) + w, 0.515, r1*Math.sin((i+1)*delta)+h),
-							 put(r*Math.cos((i+1)*delta) + w, 0.5,  r*Math.sin((i+1)*delta)+h),
-							 put(r*Math.cos(i*delta) + w, 0.5, r*Math.sin(i*delta)+h)
+			v = new vector[]{createArbitraryVertex(r1*Math.cos(i*delta) + w, 0.515, r1*Math.sin(i*delta) + h),
+							 createArbitraryVertex(r1*Math.cos((i+1)*delta) + w, 0.515, r1*Math.sin((i+1)*delta)+h),
+							 createArbitraryVertex(r*Math.cos((i+1)*delta) + w, 0.5,  r*Math.sin((i+1)*delta)+h),
+							 createArbitraryVertex(r*Math.cos(i*delta) + w, 0.5, r*Math.sin(i*delta)+h)
 							};
 			
 		
-			polyIndex = addPolygon(polygons,  new polygon3D(v, v[0].myClone(),v[1].myClone(), v[3].myClone(),  mainThread.textures[12], 0.1f,0.1f,1));
+			polyIndex = addPolygon(polygons,  new polygon3D(v, v[0].myClone(),v[1].myClone(), v[3].myClone(),  MainThread.textures[12], 0.1f,0.1f,1));
 		}
 		
 		for(i = 0; i < 16; i++){
-			v = new vector[]{ put(r1*Math.cos(i*delta) + w, 0.3, r1*Math.sin(i*delta)+h),
-					 	put(r1*Math.cos((i+1)*delta) + w, 0.3,  r1*Math.sin((i+1)*delta)+h),
-					 	put(r1*Math.cos((i+1)*delta) + w, 0.515, r1*Math.sin((i+1)*delta)+h),
-					 	put(r1*Math.cos(i*delta) + w, 0.515, r1*Math.sin(i*delta) + h)
+			v = new vector[]{ createArbitraryVertex(r1*Math.cos(i*delta) + w, 0.3, r1*Math.sin(i*delta)+h),
+					 	createArbitraryVertex(r1*Math.cos((i+1)*delta) + w, 0.3,  r1*Math.sin((i+1)*delta)+h),
+					 	createArbitraryVertex(r1*Math.cos((i+1)*delta) + w, 0.515, r1*Math.sin((i+1)*delta)+h),
+					 	createArbitraryVertex(r1*Math.cos(i*delta) + w, 0.515, r1*Math.sin(i*delta) + h)
 							};
 			
 		
-			polyIndex = addPolygon(polygons,  new polygon3D(v, v[0].myClone(),v[1].myClone(), v[3].myClone(),  mainThread.textures[12], 0.1f,1f,1));
+			polyIndex = addPolygon(polygons,  new polygon3D(v, v[0].myClone(),v[1].myClone(), v[3].myClone(),  MainThread.textures[12], 0.1f,1f,1));
 		}
 		
 		float r2 = r1-0.035f;
 		v = new vector[16];
 		for(i = 0; i < 16; i++){
-			v[15 - (int)i] = put(r2*Math.cos((i+1)*delta) + w, 0.505, r2*Math.sin((i+1)*delta)+h);
+			v[15 - (int)i] = createArbitraryVertex(r2*Math.cos((i+1)*delta) + w, 0.505, r2*Math.sin((i+1)*delta)+h);
 		}
-		polyIndex = addPolygon(polygons,  new polygon3D(v, put(0,0.505, 1),put(1,0.505, 1), put(0,0.505, 0),  mainThread.textures[26], 5f,5f,1));
+		polyIndex = addPolygon(polygons,  new polygon3D(v, createArbitraryVertex(0,0.505, 1), createArbitraryVertex(1,0.505, 1), createArbitraryVertex(0,0.505, 0),  MainThread.textures[26], 5f,5f,1));
 		
 		for(i = 0; i < 16; i++){
-			v = new vector[]{ put(r2*Math.cos(i*delta) + w, 0.505, r2*Math.sin(i*delta) + h),
-					put(r2*Math.cos((i+1)*delta) + w, 0.505, r2*Math.sin((i+1)*delta)+h),
-					put(r2*Math.cos((i+1)*delta) + w, 0.47,  r2*Math.sin((i+1)*delta)+h),
-					put(r2*Math.cos(i*delta) + w, 0.47, r2*Math.sin(i*delta)+h)
+			v = new vector[]{ createArbitraryVertex(r2*Math.cos(i*delta) + w, 0.505, r2*Math.sin(i*delta) + h),
+					createArbitraryVertex(r2*Math.cos((i+1)*delta) + w, 0.505, r2*Math.sin((i+1)*delta)+h),
+					createArbitraryVertex(r2*Math.cos((i+1)*delta) + w, 0.47,  r2*Math.sin((i+1)*delta)+h),
+					createArbitraryVertex(r2*Math.cos(i*delta) + w, 0.47, r2*Math.sin(i*delta)+h)
 						};
-			polyIndex = addPolygon(polygons,  new polygon3D(v, v[0].myClone(),v[1].myClone(), v[3].myClone(),  mainThread.textures[26], 1f,1f,1));
+			polyIndex = addPolygon(polygons,  new polygon3D(v, v[0].myClone(),v[1].myClone(), v[3].myClone(),  MainThread.textures[26], 1f,1f,1));
 		}
 		
 		float r3 = r2 + 0.03f;
 		fanA = new polygon3D[32];
 		for(i = 0; i < 16; i++){
-			v = new vector[]{put(w,0.505, h), put(r3*Math.cos(i*delta) + w, 0.505, r3*Math.sin(i*delta) + h), put(r3*Math.cos(i*delta) + w, 0.47, r3*Math.sin(i*delta) + h), put(w,0.47, h)};
-			polyIndex = addPolygon(polygons,  new polygon3D(v, v[0].myClone(),v[1].myClone(), v[3].myClone(),  mainThread.textures[25], 1f,1f,1));
+			v = new vector[]{createArbitraryVertex(w,0.505, h), createArbitraryVertex(r3*Math.cos(i*delta) + w, 0.505, r3*Math.sin(i*delta) + h), createArbitraryVertex(r3*Math.cos(i*delta) + w, 0.47, r3*Math.sin(i*delta) + h), createArbitraryVertex(w,0.47, h)};
+			polyIndex = addPolygon(polygons,  new polygon3D(v, v[0].myClone(),v[1].myClone(), v[3].myClone(),  MainThread.textures[25], 1f,1f,1));
 			fanA[(int)i*2] = polygons[polyIndex];
 			
-			v = new vector[]{put(w,0.47, h), put(r3*Math.cos(i*delta) + w, 0.47, r3*Math.sin(i*delta) + h), put(r3*Math.cos(i*delta) + w, 0.505, r3*Math.sin(i*delta) + h), put(w,0.505, h)};
-			polyIndex = addPolygon(polygons,  new polygon3D(v, v[0].myClone(),v[1].myClone(), v[3].myClone(),  mainThread.textures[25], 1f,1f,1));
+			v = new vector[]{createArbitraryVertex(w,0.47, h), createArbitraryVertex(r3*Math.cos(i*delta) + w, 0.47, r3*Math.sin(i*delta) + h), createArbitraryVertex(r3*Math.cos(i*delta) + w, 0.505, r3*Math.sin(i*delta) + h), createArbitraryVertex(w,0.505, h)};
+			polyIndex = addPolygon(polygons,  new polygon3D(v, v[0].myClone(),v[1].myClone(), v[3].myClone(),  MainThread.textures[25], 1f,1f,1));
 			fanA[(int)i*2 + 1] = polygons[polyIndex];
 		}
 		
 	
 		v = new vector[16];
 		for(i = 0; i < 16; i++){
-			v[15 - (int)i] = put(r1*Math.cos((i+1)*delta) + w, 0.49, r1*Math.sin((i+1)*delta)+h);
+			v[15 - (int)i] = createArbitraryVertex(r1*Math.cos((i+1)*delta) + w, 0.49, r1*Math.sin((i+1)*delta)+h);
 		}
-		distortionA = addPolygon(polygons,  new polygon3D(v, put(0,0.49, 1),put(1,0.49, 1), put(0,0.49, 0),  mainThread.textures[54], 5f,5f,6));
+		distortionA = addPolygon(polygons,  new polygon3D(v, createArbitraryVertex(0,0.49, 1), createArbitraryVertex(1,0.49, 1), createArbitraryVertex(0,0.49, 0),  MainThread.textures[54], 5f,5f,6));
 		
 		
 		
 		
 		//power tower B
 		h = -0.12f;
-		powerTowerCenterB = put(w, 0, h);
+		powerTowerCenterB = createArbitraryVertex(w, 0, h);
 		
 		for(i = 0; i < 16; i++){
-			v = new vector[]{put(r*Math.cos(i*delta) + w, 0.5, r*Math.sin(i*delta) + h),
-							 put(r*Math.cos((i+1)*delta) + w, 0.5, r*Math.sin((i+1)*delta)+h),
-							 put(r*Math.cos((i+1)*delta) + w, 0.3,  r*Math.sin((i+1)*delta)+h),
-							 put(r*Math.cos(i*delta) + w, 0.3, r*Math.sin(i*delta)+h)
+			v = new vector[]{createArbitraryVertex(r*Math.cos(i*delta) + w, 0.5, r*Math.sin(i*delta) + h),
+							 createArbitraryVertex(r*Math.cos((i+1)*delta) + w, 0.5, r*Math.sin((i+1)*delta)+h),
+							 createArbitraryVertex(r*Math.cos((i+1)*delta) + w, 0.3,  r*Math.sin((i+1)*delta)+h),
+							 createArbitraryVertex(r*Math.cos(i*delta) + w, 0.3, r*Math.sin(i*delta)+h)
 							};
 			
 			tempVector.set(v[1]);
@@ -683,115 +683,115 @@ public class factory extends solidObject{
 		    	tempVector3.subtract(tempVector);
 		    }
 			
-		    change(w,0.5f,h, tempVector);
-			polyIndex = addPolygon(polygons,  new polygon3D(v, tempVector0.myClone(),tempVector1.myClone(), tempVector3.myClone(),  mainThread.textures[12], 1f,1f,1));
+		    changeVertex3DGeometry(w,0.5f,h, tempVector);
+			polyIndex = addPolygon(polygons,  new polygon3D(v, tempVector0.myClone(),tempVector1.myClone(), tempVector3.myClone(),  MainThread.textures[12], 1f,1f,1));
 			polygons[polyIndex].textureScaledWidth = (int)(polygons[polyIndex].myTexture.width*0.5);
 			polygons[polyIndex].createShadeSpan(tempVector, v[0].myClone(), v[1]);
 		}
 		
 		r1= r - 0.02f;
 		for(i = 0; i < 16; i++){
-			v = new vector[]{put(r1*Math.cos(i*delta) + w, 0.515, r1*Math.sin(i*delta) + h),
-							 put(r1*Math.cos((i+1)*delta) + w, 0.515, r1*Math.sin((i+1)*delta)+h),
-							 put(r*Math.cos((i+1)*delta) + w, 0.5,  r*Math.sin((i+1)*delta)+h),
-							 put(r*Math.cos(i*delta) + w, 0.5, r*Math.sin(i*delta)+h)
+			v = new vector[]{createArbitraryVertex(r1*Math.cos(i*delta) + w, 0.515, r1*Math.sin(i*delta) + h),
+							 createArbitraryVertex(r1*Math.cos((i+1)*delta) + w, 0.515, r1*Math.sin((i+1)*delta)+h),
+							 createArbitraryVertex(r*Math.cos((i+1)*delta) + w, 0.5,  r*Math.sin((i+1)*delta)+h),
+							 createArbitraryVertex(r*Math.cos(i*delta) + w, 0.5, r*Math.sin(i*delta)+h)
 							};
 			
 		
-			polyIndex = addPolygon(polygons,  new polygon3D(v, v[0].myClone(),v[1].myClone(), v[3].myClone(),  mainThread.textures[12], 0.1f,0.1f,1));
+			polyIndex = addPolygon(polygons,  new polygon3D(v, v[0].myClone(),v[1].myClone(), v[3].myClone(),  MainThread.textures[12], 0.1f,0.1f,1));
 		}
 		
 		for(i = 0; i < 16; i++){
-			v = new vector[]{ put(r1*Math.cos(i*delta) + w, 0.3, r1*Math.sin(i*delta)+h),
-					 	put(r1*Math.cos((i+1)*delta) + w, 0.3,  r1*Math.sin((i+1)*delta)+h),
-					 	put(r1*Math.cos((i+1)*delta) + w, 0.515, r1*Math.sin((i+1)*delta)+h),
-					 	put(r1*Math.cos(i*delta) + w, 0.515, r1*Math.sin(i*delta) + h)
+			v = new vector[]{ createArbitraryVertex(r1*Math.cos(i*delta) + w, 0.3, r1*Math.sin(i*delta)+h),
+					 	createArbitraryVertex(r1*Math.cos((i+1)*delta) + w, 0.3,  r1*Math.sin((i+1)*delta)+h),
+					 	createArbitraryVertex(r1*Math.cos((i+1)*delta) + w, 0.515, r1*Math.sin((i+1)*delta)+h),
+					 	createArbitraryVertex(r1*Math.cos(i*delta) + w, 0.515, r1*Math.sin(i*delta) + h)
 							};
 			
 		
-			polyIndex = addPolygon(polygons,  new polygon3D(v, v[0].myClone(),v[1].myClone(), v[3].myClone(),  mainThread.textures[12], 0.1f,1f,1));
+			polyIndex = addPolygon(polygons,  new polygon3D(v, v[0].myClone(),v[1].myClone(), v[3].myClone(),  MainThread.textures[12], 0.1f,1f,1));
 		}
 		
 		
 		v = new vector[16];
 		for(i = 0; i < 16; i++){
-			v[15 - (int)i] = put(r2*Math.cos((i+1)*delta) + w, 0.505, r2*Math.sin((i+1)*delta)+h);
+			v[15 - (int)i] = createArbitraryVertex(r2*Math.cos((i+1)*delta) + w, 0.505, r2*Math.sin((i+1)*delta)+h);
 		}
-		polyIndex = addPolygon(polygons,  new polygon3D(v, put(0,0.505, 1),put(1,0.505, 1), put(0,0.505, 0),  mainThread.textures[26], 5f,5f,1));
+		polyIndex = addPolygon(polygons,  new polygon3D(v, createArbitraryVertex(0,0.505, 1), createArbitraryVertex(1,0.505, 1), createArbitraryVertex(0,0.505, 0),  MainThread.textures[26], 5f,5f,1));
 		
 		for(i = 0; i < 16; i++){
-			v = new vector[]{ put(r2*Math.cos(i*delta) + w, 0.505, r2*Math.sin(i*delta) + h),
-					put(r2*Math.cos((i+1)*delta) + w, 0.505, r2*Math.sin((i+1)*delta)+h),
-					put(r2*Math.cos((i+1)*delta) + w, 0.47,  r2*Math.sin((i+1)*delta)+h),
-					put(r2*Math.cos(i*delta) + w, 0.47, r2*Math.sin(i*delta)+h)
+			v = new vector[]{ createArbitraryVertex(r2*Math.cos(i*delta) + w, 0.505, r2*Math.sin(i*delta) + h),
+					createArbitraryVertex(r2*Math.cos((i+1)*delta) + w, 0.505, r2*Math.sin((i+1)*delta)+h),
+					createArbitraryVertex(r2*Math.cos((i+1)*delta) + w, 0.47,  r2*Math.sin((i+1)*delta)+h),
+					createArbitraryVertex(r2*Math.cos(i*delta) + w, 0.47, r2*Math.sin(i*delta)+h)
 						};
-			polyIndex = addPolygon(polygons,  new polygon3D(v, v[0].myClone(),v[1].myClone(), v[3].myClone(),  mainThread.textures[26], 1f,1f,1));
+			polyIndex = addPolygon(polygons,  new polygon3D(v, v[0].myClone(),v[1].myClone(), v[3].myClone(),  MainThread.textures[26], 1f,1f,1));
 		}
 		
 		fanB = new polygon3D[32];
 		for(i = 0; i < 16; i++){
-			v = new vector[]{put(w,0.505, h), put(r3*Math.cos(i*delta) + w, 0.505, r3*Math.sin(i*delta) + h), put(r3*Math.cos(i*delta) + w, 0.47, r3*Math.sin(i*delta) + h), put(w,0.47, h)};
-			polyIndex = addPolygon(polygons,  new polygon3D(v, v[0].myClone(),v[1].myClone(), v[3].myClone(),  mainThread.textures[25], 1f,1f,1));
+			v = new vector[]{createArbitraryVertex(w,0.505, h), createArbitraryVertex(r3*Math.cos(i*delta) + w, 0.505, r3*Math.sin(i*delta) + h), createArbitraryVertex(r3*Math.cos(i*delta) + w, 0.47, r3*Math.sin(i*delta) + h), createArbitraryVertex(w,0.47, h)};
+			polyIndex = addPolygon(polygons,  new polygon3D(v, v[0].myClone(),v[1].myClone(), v[3].myClone(),  MainThread.textures[25], 1f,1f,1));
 			fanB[(int)i*2] = polygons[polyIndex];
 			
-			v = new vector[]{put(w,0.47, h), put(r3*Math.cos(i*delta) + w, 0.47, r3*Math.sin(i*delta) + h), put(r3*Math.cos(i*delta) + w, 0.505, r3*Math.sin(i*delta) + h), put(w,0.505, h)};
-			polyIndex = addPolygon(polygons,  new polygon3D(v, v[0].myClone(),v[1].myClone(), v[3].myClone(),  mainThread.textures[25], 1f,1f,1));
+			v = new vector[]{createArbitraryVertex(w,0.47, h), createArbitraryVertex(r3*Math.cos(i*delta) + w, 0.47, r3*Math.sin(i*delta) + h), createArbitraryVertex(r3*Math.cos(i*delta) + w, 0.505, r3*Math.sin(i*delta) + h), createArbitraryVertex(w,0.505, h)};
+			polyIndex = addPolygon(polygons,  new polygon3D(v, v[0].myClone(),v[1].myClone(), v[3].myClone(),  MainThread.textures[25], 1f,1f,1));
 			fanB[(int)i*2 + 1] = polygons[polyIndex];
 		}
 		
 		v = new vector[16];
 		for(i = 0; i < 16; i++){
-			v[15 - (int)i] = put(r1*Math.cos((i+1)*delta) + w, 0.48, r1*Math.sin((i+1)*delta)+h);
+			v[15 - (int)i] = createArbitraryVertex(r1*Math.cos((i+1)*delta) + w, 0.48, r1*Math.sin((i+1)*delta)+h);
 		}
-		distortionB = addPolygon(polygons,  new polygon3D(v, put(0,0.48, 1),put(1,0.48, 1), put(0,0.48, 0),  mainThread.textures[54], 5f,5f,6));
+		distortionB = addPolygon(polygons,  new polygon3D(v, createArbitraryVertex(0,0.48, 1), createArbitraryVertex(1,0.48, 1), createArbitraryVertex(0,0.48, 0),  MainThread.textures[54], 5f,5f,6));
 		
 		
 		
 		//Concrete foundation
-		v = new vector[]{put(-0.38, 0.3, -0.2), put(0.38, 0.3, -0.2), put(0.38, 0.3, -0.225),  put(0.345, 0.3, -0.26), put(-0.345, 0.3, -0.26), put(-0.38, 0.3, -0.225)};
-		polyIndex = addPolygon(polygons, new polygon3D(v, put(-0.38, 0.3, 0.26), put(0.38, 0.3, 0.26), put(-0.38, 0.3, -0.26), mainThread.textures[30], 1,1,1));
+		v = new vector[]{createArbitraryVertex(-0.38, 0.3, -0.2), createArbitraryVertex(0.38, 0.3, -0.2), createArbitraryVertex(0.38, 0.3, -0.225),  createArbitraryVertex(0.345, 0.3, -0.26), createArbitraryVertex(-0.345, 0.3, -0.26), createArbitraryVertex(-0.38, 0.3, -0.225)};
+		polyIndex = addPolygon(polygons, new polygon3D(v, createArbitraryVertex(-0.38, 0.3, 0.26), createArbitraryVertex(0.38, 0.3, 0.26), createArbitraryVertex(-0.38, 0.3, -0.26), MainThread.textures[30], 1,1,1));
 		polygons[polyIndex].shadowBias = 5000;
 
-		v = new vector[]{put(-0.38, 0.3, 0.225), put(-0.345, 0.3, 0.26),  put(0.345, 0.3, 0.26), put(0.38, 0.3, 0.225), put(0.38, 0.3, 0.2), put(-0.38, 0.3, 0.2)};
-		polyIndex = addPolygon(polygons, new polygon3D(v, put(-0.38, 0.3, 0.26), put(0.38, 0.3, 0.26), put(-0.38, 0.3, -0.26), mainThread.textures[30], 1,1,1));
+		v = new vector[]{createArbitraryVertex(-0.38, 0.3, 0.225), createArbitraryVertex(-0.345, 0.3, 0.26),  createArbitraryVertex(0.345, 0.3, 0.26), createArbitraryVertex(0.38, 0.3, 0.225), createArbitraryVertex(0.38, 0.3, 0.2), createArbitraryVertex(-0.38, 0.3, 0.2)};
+		polyIndex = addPolygon(polygons, new polygon3D(v, createArbitraryVertex(-0.38, 0.3, 0.26), createArbitraryVertex(0.38, 0.3, 0.26), createArbitraryVertex(-0.38, 0.3, -0.26), MainThread.textures[30], 1,1,1));
 		polygons[polyIndex].shadowBias = 5000;
 	
-		v = new vector[]{put(-0.14, 0.3, 0.225), put(0.38, 0.3, 0.225), put(0.38, 0.3, -0.225), put(-0.14, 0.3, -0.225) };
-		polyIndex = addPolygon(polygons, new polygon3D(v, put(-0.38, 0.3, 0.26), put(0.38, 0.3, 0.26), put(-0.38, 0.3, -0.26), mainThread.textures[30], 1,1,1));
+		v = new vector[]{createArbitraryVertex(-0.14, 0.3, 0.225), createArbitraryVertex(0.38, 0.3, 0.225), createArbitraryVertex(0.38, 0.3, -0.225), createArbitraryVertex(-0.14, 0.3, -0.225) };
+		polyIndex = addPolygon(polygons, new polygon3D(v, createArbitraryVertex(-0.38, 0.3, 0.26), createArbitraryVertex(0.38, 0.3, 0.26), createArbitraryVertex(-0.38, 0.3, -0.26), MainThread.textures[30], 1,1,1));
 		polygons[polyIndex].shadowBias = 5000;
 	
-		v = new vector[]{put(-0.38, 0.3, 0.225), put(-0.33, 0.3, 0.225), put(-0.33, 0.3, -0.225), put(-0.38, 0.3, -0.225) };
-		polyIndex = addPolygon(polygons, new polygon3D(v, put(-0.38, 0.3, 0.26), put(0.38, 0.3, 0.26), put(-0.38, 0.3, -0.26), mainThread.textures[30], 1,1,1));
+		v = new vector[]{createArbitraryVertex(-0.38, 0.3, 0.225), createArbitraryVertex(-0.33, 0.3, 0.225), createArbitraryVertex(-0.33, 0.3, -0.225), createArbitraryVertex(-0.38, 0.3, -0.225) };
+		polyIndex = addPolygon(polygons, new polygon3D(v, createArbitraryVertex(-0.38, 0.3, 0.26), createArbitraryVertex(0.38, 0.3, 0.26), createArbitraryVertex(-0.38, 0.3, -0.26), MainThread.textures[30], 1,1,1));
 		polygons[polyIndex].shadowBias = 5000;
 		
-		v = new vector[]{put(-0.345, 0.3, 0.225), put(-0.14, 0.3, 0.225), put(-0.14, 0.3, -0.225), put(-0.345, 0.3, -0.225) };
-		polyIndex = addPolygon(polygons, new polygon3D(v, put(-0.38, 0.3, 0.26), put(0.38, 0.3, 0.26), put(-0.38, 0.3, -0.26), mainThread.textures[30], 1,1,1));
+		v = new vector[]{createArbitraryVertex(-0.345, 0.3, 0.225), createArbitraryVertex(-0.14, 0.3, 0.225), createArbitraryVertex(-0.14, 0.3, -0.225), createArbitraryVertex(-0.345, 0.3, -0.225) };
+		polyIndex = addPolygon(polygons, new polygon3D(v, createArbitraryVertex(-0.38, 0.3, 0.26), createArbitraryVertex(0.38, 0.3, 0.26), createArbitraryVertex(-0.38, 0.3, -0.26), MainThread.textures[30], 1,1,1));
 		polygons[polyIndex].shadowBias = 5000;
 		
-		v = new vector[]{put(-0.345, 0.3, -0.26), put(0.345, 0.3, -0.26), put(0.345, 0.28, -0.26), put(-0.345, 0.28, -0.26)};
-		addPolygon(polygons, new polygon3D(v, v[0].myClone(), v[1].myClone(), v[3].myClone(), mainThread.textures[30], 1,1f,1));
+		v = new vector[]{createArbitraryVertex(-0.345, 0.3, -0.26), createArbitraryVertex(0.345, 0.3, -0.26), createArbitraryVertex(0.345, 0.28, -0.26), createArbitraryVertex(-0.345, 0.28, -0.26)};
+		addPolygon(polygons, new polygon3D(v, v[0].myClone(), v[1].myClone(), v[3].myClone(), MainThread.textures[30], 1,1f,1));
 		polygons[polyIndex].shadowBias = 5000;
 		
-		v = new vector[]{put(-0.345, 0.28,0.26), put(0.345, 0.28, 0.26), put(0.345, 0.3, 0.26), put(-0.345, 0.3, 0.26)};
-		addPolygon(polygons, new polygon3D(v, v[0].myClone(), v[1].myClone(), v[3].myClone(), mainThread.textures[30], 1,1f,1));
+		v = new vector[]{createArbitraryVertex(-0.345, 0.28,0.26), createArbitraryVertex(0.345, 0.28, 0.26), createArbitraryVertex(0.345, 0.3, 0.26), createArbitraryVertex(-0.345, 0.3, 0.26)};
+		addPolygon(polygons, new polygon3D(v, v[0].myClone(), v[1].myClone(), v[3].myClone(), MainThread.textures[30], 1,1f,1));
 		
-		v = new vector[]{put(-0.38, 0.3, 0.225), put(-0.38, 0.3, -0.225),  put(-0.38, 0.28, -0.225), put(-0.38, 0.28, 0.225)};
-		addPolygon(polygons, new polygon3D(v, v[0].myClone(), v[1].myClone(), v[3].myClone(), mainThread.textures[30], 1,1f,1));
+		v = new vector[]{createArbitraryVertex(-0.38, 0.3, 0.225), createArbitraryVertex(-0.38, 0.3, -0.225),  createArbitraryVertex(-0.38, 0.28, -0.225), createArbitraryVertex(-0.38, 0.28, 0.225)};
+		addPolygon(polygons, new polygon3D(v, v[0].myClone(), v[1].myClone(), v[3].myClone(), MainThread.textures[30], 1,1f,1));
 		
-		v = new vector[]{put(0.38, 0.28, 0.225),  put(0.38, 0.28, -0.225), put(0.38, 0.3, -0.225), put(0.38, 0.3, 0.225)};
-		addPolygon(polygons, new polygon3D(v, v[0].myClone(), v[1].myClone(), v[3].myClone(), mainThread.textures[30], 1,1f,1));
+		v = new vector[]{createArbitraryVertex(0.38, 0.28, 0.225),  createArbitraryVertex(0.38, 0.28, -0.225), createArbitraryVertex(0.38, 0.3, -0.225), createArbitraryVertex(0.38, 0.3, 0.225)};
+		addPolygon(polygons, new polygon3D(v, v[0].myClone(), v[1].myClone(), v[3].myClone(), MainThread.textures[30], 1,1f,1));
 		
-		v = new vector[]{put(-0.345, 0.3, 0.26), put(-0.38, 0.3, 0.225), put(-0.38, 0.28, 0.225), put(-0.345, 0.28, 0.26)};
-		addPolygon(polygons, new polygon3D(v, v[0].myClone(), v[1].myClone(), v[3].myClone(), mainThread.textures[30], 1,1f,1));
+		v = new vector[]{createArbitraryVertex(-0.345, 0.3, 0.26), createArbitraryVertex(-0.38, 0.3, 0.225), createArbitraryVertex(-0.38, 0.28, 0.225), createArbitraryVertex(-0.345, 0.28, 0.26)};
+		addPolygon(polygons, new polygon3D(v, v[0].myClone(), v[1].myClone(), v[3].myClone(), MainThread.textures[30], 1,1f,1));
 		
-		v = new vector[]{put(0.345, 0.28, 0.26), put(0.38, 0.28, 0.225), put(0.38, 0.3, 0.225), put(0.345, 0.3, 0.26)};
-		addPolygon(polygons, new polygon3D(v, v[0].myClone(), v[1].myClone(), v[3].myClone(), mainThread.textures[30], 1,1f,1));
+		v = new vector[]{createArbitraryVertex(0.345, 0.28, 0.26), createArbitraryVertex(0.38, 0.28, 0.225), createArbitraryVertex(0.38, 0.3, 0.225), createArbitraryVertex(0.345, 0.3, 0.26)};
+		addPolygon(polygons, new polygon3D(v, v[0].myClone(), v[1].myClone(), v[3].myClone(), MainThread.textures[30], 1,1f,1));
 		
-		v = new vector[]{put(-0.345, 0.28, -0.26), put(-0.38, 0.28, -0.225), put(-0.38, 0.3, -0.225), put(-0.345, 0.3, -0.26)};
-		addPolygon(polygons, new polygon3D(v, v[0].myClone(), v[1].myClone(), v[3].myClone(), mainThread.textures[30], 1,1f,1));
+		v = new vector[]{createArbitraryVertex(-0.345, 0.28, -0.26), createArbitraryVertex(-0.38, 0.28, -0.225), createArbitraryVertex(-0.38, 0.3, -0.225), createArbitraryVertex(-0.345, 0.3, -0.26)};
+		addPolygon(polygons, new polygon3D(v, v[0].myClone(), v[1].myClone(), v[3].myClone(), MainThread.textures[30], 1,1f,1));
 		
-		v = new vector[]{put(0.345, 0.3, -0.26), put(0.38, 0.3, -0.225), put(0.38, 0.28, -0.225), put(0.345, 0.28, -0.26)};
-		addPolygon(polygons, new polygon3D(v, v[0].myClone(), v[1].myClone(), v[3].myClone(), mainThread.textures[30], 1,1f,1));
+		v = new vector[]{createArbitraryVertex(0.345, 0.3, -0.26), createArbitraryVertex(0.38, 0.3, -0.225), createArbitraryVertex(0.38, 0.28, -0.225), createArbitraryVertex(0.345, 0.28, -0.26)};
+		addPolygon(polygons, new polygon3D(v, v[0].myClone(), v[1].myClone(), v[3].myClone(), MainThread.textures[30], 1,1f,1));
 	
 		
 		for(int z = 0; z < numOfPolygons; z++){
@@ -865,7 +865,7 @@ public class factory extends solidObject{
 			countDownToDeath--;
 			
 			if(countDownToDeath == 0){
-				//spawn an explosion when the object is destroyed
+				//spawn an Explosion when the object is destroyed
 				float[] tempFloat = theAssetManager.explosionInfo[theAssetManager.explosionCount];	
 				tempFloat[0] = centre.x;
 				tempFloat[1] = centre.y + 0.45f;
@@ -880,49 +880,49 @@ public class factory extends solidObject{
 				
 				
 				//removeFromGridMap();
-				mainThread.gridMap.tiles[tileIndex[0]][0] = null;  
-				mainThread.gridMap.tiles[tileIndex[1]][0] = null; 
-				mainThread.gridMap.tiles[tileIndex[2]][0] = null; 
-				mainThread.gridMap.tiles[tileIndex[3]][0] = null; 
-				mainThread.gridMap.tiles[tileIndex[4]][0] = null; 
-				mainThread.gridMap.tiles[tileIndex[5]][0] = null; 
+				MainThread.gridMap.tiles[tileIndex[0]][0] = null;
+				MainThread.gridMap.tiles[tileIndex[1]][0] = null;
+				MainThread.gridMap.tiles[tileIndex[2]][0] = null;
+				MainThread.gridMap.tiles[tileIndex[3]][0] = null;
+				MainThread.gridMap.tiles[tileIndex[4]][0] = null;
+				MainThread.gridMap.tiles[tileIndex[5]][0] = null;
 				
 				
-				mainThread.gridMap.tiles[tileIndex[0]][1] = null;  
-				mainThread.gridMap.tiles[tileIndex[1]][1] = null; 
-				mainThread.gridMap.tiles[tileIndex[2]][1] = null; 
-				mainThread.gridMap.tiles[tileIndex[3]][1] = null; 
-				mainThread.gridMap.tiles[tileIndex[4]][1] = null; 
-				mainThread.gridMap.tiles[tileIndex[5]][1] = null; 
+				MainThread.gridMap.tiles[tileIndex[0]][1] = null;
+				MainThread.gridMap.tiles[tileIndex[1]][1] = null;
+				MainThread.gridMap.tiles[tileIndex[2]][1] = null;
+				MainThread.gridMap.tiles[tileIndex[3]][1] = null;
+				MainThread.gridMap.tiles[tileIndex[4]][1] = null;
+				MainThread.gridMap.tiles[tileIndex[5]][1] = null;
 				
-				mainThread.gridMap.tiles[tileIndex[0]][2] = null;  
-				mainThread.gridMap.tiles[tileIndex[1]][2] = null; 
-				mainThread.gridMap.tiles[tileIndex[2]][2] = null; 
-				mainThread.gridMap.tiles[tileIndex[3]][2] = null; 
-				mainThread.gridMap.tiles[tileIndex[4]][2] = null; 
-				mainThread.gridMap.tiles[tileIndex[5]][2] = null; 
+				MainThread.gridMap.tiles[tileIndex[0]][2] = null;
+				MainThread.gridMap.tiles[tileIndex[1]][2] = null;
+				MainThread.gridMap.tiles[tileIndex[2]][2] = null;
+				MainThread.gridMap.tiles[tileIndex[3]][2] = null;
+				MainThread.gridMap.tiles[tileIndex[4]][2] = null;
+				MainThread.gridMap.tiles[tileIndex[5]][2] = null;
 				
-				mainThread.gridMap.tiles[tileIndex[0]][3] = null;  
-				mainThread.gridMap.tiles[tileIndex[1]][3] = null; 
-				mainThread.gridMap.tiles[tileIndex[2]][3] = null; 
-				mainThread.gridMap.tiles[tileIndex[3]][3] = null; 
-				mainThread.gridMap.tiles[tileIndex[4]][3] = null; 
-				mainThread.gridMap.tiles[tileIndex[5]][3] = null; 
+				MainThread.gridMap.tiles[tileIndex[0]][3] = null;
+				MainThread.gridMap.tiles[tileIndex[1]][3] = null;
+				MainThread.gridMap.tiles[tileIndex[2]][3] = null;
+				MainThread.gridMap.tiles[tileIndex[3]][3] = null;
+				MainThread.gridMap.tiles[tileIndex[4]][3] = null;
+				MainThread.gridMap.tiles[tileIndex[5]][3] = null;
 
 
-				mainThread.gridMap.tiles[tileIndex[0]][4] = null;  
-				mainThread.gridMap.tiles[tileIndex[1]][4] = null; 
-				mainThread.gridMap.tiles[tileIndex[2]][4] = null; 
-				mainThread.gridMap.tiles[tileIndex[3]][4] = null; 
-				mainThread.gridMap.tiles[tileIndex[4]][4] = null; 
-				mainThread.gridMap.tiles[tileIndex[5]][4] = null; 
+				MainThread.gridMap.tiles[tileIndex[0]][4] = null;
+				MainThread.gridMap.tiles[tileIndex[1]][4] = null;
+				MainThread.gridMap.tiles[tileIndex[2]][4] = null;
+				MainThread.gridMap.tiles[tileIndex[3]][4] = null;
+				MainThread.gridMap.tiles[tileIndex[4]][4] = null;
+				MainThread.gridMap.tiles[tileIndex[5]][4] = null;
 				
 				int tileIndex6 = tileIndex[5] + 128;
 				int tileIndex7 = tileIndex[5] + 128 - 1;
 				int tileIndex8 = tileIndex[5] + 128 + 1;
-				mainThread.gridMap.tiles[tileIndex6][4] = null;
-				mainThread.gridMap.tiles[tileIndex7][4] = null;
-				mainThread.gridMap.tiles[tileIndex8][4] = null;
+				MainThread.gridMap.tiles[tileIndex6][4] = null;
+				MainThread.gridMap.tiles[tileIndex7][4] = null;
+				MainThread.gridMap.tiles[tileIndex8][4] = null;
 				
 			
 				theBaseInfo.numberOfFactory--;
@@ -945,7 +945,7 @@ public class factory extends solidObject{
 				tempFloat[3] = 1.5f;
 				tempFloat[4] = 1;
 				tempFloat[5] = 0;
-				tempFloat[6] = 6 + (gameData.getRandom()%4);
+				tempFloat[6] = 6 + (GameData.getRandom()%4);
 				tempFloat[7] = this.height;
 				theAssetManager.explosionCount++; 
 			
@@ -953,7 +953,7 @@ public class factory extends solidObject{
 		}
 		
 		if(isRepairing && currentHP >0){
-			if(mainThread.gameFrame%8==0 && theBaseInfo.currentCredit > 0 && currentHP <maxHP){
+			if(MainThread.gameFrame%8==0 && theBaseInfo.currentCredit > 0 && currentHP <maxHP){
 				currentHP+=2;
 				theBaseInfo.currentCredit--;
 				if(currentHP > maxHP)
@@ -964,7 +964,7 @@ public class factory extends solidObject{
 		//process building event (at half speed when lower power)
 		if(currentStatus == isBuilding){
 			
-			if(!(theBaseInfo.lowPower && mainThread.gameFrame%2==0)){
+			if(!(theBaseInfo.lowPower && MainThread.gameFrame%2==0)){
 			
 				//light tank event
 				if(lightTankProgress < 240){
@@ -978,25 +978,25 @@ public class factory extends solidObject{
 				}
 				if(lightTankProgress == 240){
 					if(!isDeliveringUnit){
-						lightTank o = new lightTank(new vector(centre.x -0.07f,-0.3f, centre.z - 0.03f), 180, teamNo);
+						LightTank o = new LightTank(new vector(centre.x -0.07f,-0.3f, centre.z - 0.03f), 180, teamNo);
 						
-						if(teamNo == 0 && techCenter.lightTankResearched_player){
+						if(teamNo == 0 && TechCenter.lightTankResearched_player){
 							o.attackRange = 1.99f;
-						}else if(teamNo != 0 && techCenter.lightTankResearched_enemy){
+						}else if(teamNo != 0 && TechCenter.lightTankResearched_enemy){
 							o.attackRange = 1.99f;
 						}
 						
 						deliveredUnit = o;
 						o.disableUnitLevelAI = true;
 						
-						mainThread.theAssetManager.addLightTank(o);
+						MainThread.theAssetManager.addLightTank(o);
 						lightTankProgress = 255;
 						removelItemFromProductionQueue(lightTankType);
 						isDeliveringUnit = true;
 					}
 				}
 				
-				//rocket tank event
+				//Rocket tank event
 				if(rocketTankProgress < 240){
 					grayAllOtherIcons(rocketTankType, rocketTankProgress);
 					if(theBaseInfo.currentCredit >0){
@@ -1008,24 +1008,24 @@ public class factory extends solidObject{
 				}
 				if(rocketTankProgress == 240){
 					if(!isDeliveringUnit){
-						rocketTank o = new rocketTank(new vector(centre.x -0.07f,-0.3f, centre.z - 0.03f), 180, teamNo);
-						if(teamNo == 0 && techCenter.rocketTankResearched_player){
+						RocketTank o = new RocketTank(new vector(centre.x -0.07f,-0.3f, centre.z - 0.03f), 180, teamNo);
+						if(teamNo == 0 && TechCenter.rocketTankResearched_player){
 							o.damageMultiplier =2;
-						}else if(teamNo != 0 && techCenter.rocketTankResearched_enemy){
+						}else if(teamNo != 0 && TechCenter.rocketTankResearched_enemy){
 							o.damageMultiplier =2;
 						}
 					
 						deliveredUnit = o; 
 						o.disableUnitLevelAI = true;
 						
-						mainThread.theAssetManager.addRocketTank(o);
+						MainThread.theAssetManager.addRocketTank(o);
 						rocketTankProgress = 255;
 						removelItemFromProductionQueue(rocketTankType);
 						isDeliveringUnit = true;
 					}
 				}
 				
-				//harvester event
+				//Harvester event
 				if(harvesterProgress < 240){
 					grayAllOtherIcons(harvesterType, harvesterProgress);
 					
@@ -1049,12 +1049,12 @@ public class factory extends solidObject{
 							cancelItemFromProductionQueue(harvesterType);
 					}else{
 						if(!isDeliveringUnit){
-							harvester o = new harvester(new vector(centre.x -0.07f,-0.3f, centre.z - 0.03f), 180, teamNo);
+							Harvester o = new Harvester(new vector(centre.x -0.07f,-0.3f, centre.z - 0.03f), 180, teamNo);
 							
-							if(teamNo == 0 && communicationCenter.harvesterSpeedResearched_player){
+							if(teamNo == 0 && CommunicationCenter.harvesterSpeedResearched_player){
 								o.speed = 0.014f;
 								o.bodyTurnRate = 8;
-							}else if(teamNo != 0 && communicationCenter.harvesterSpeedResearched_enemy){
+							}else if(teamNo != 0 && CommunicationCenter.harvesterSpeedResearched_enemy){
 								o.speed = 0.014f;
 								o.bodyTurnRate = 8;
 							}
@@ -1062,7 +1062,7 @@ public class factory extends solidObject{
 							deliveredUnit = o;
 							o.disableUnitLevelAI = true;
 							
-							mainThread.theAssetManager.addHarvester(o);
+							MainThread.theAssetManager.addHarvester(o);
 							harvesterProgress = 255;
 							removelItemFromProductionQueue(harvesterType);
 							isDeliveringUnit = true;
@@ -1093,11 +1093,11 @@ public class factory extends solidObject{
 							cancelItemFromProductionQueue(MCVType);
 					}else{
 						if(!isDeliveringUnit){
-							constructionVehicle o = new constructionVehicle(new vector(centre.x -0.07f,-0.3f, centre.z - 0.03f), 180, teamNo);
+							ConstructionVehicle o = new ConstructionVehicle(new vector(centre.x -0.07f,-0.3f, centre.z - 0.03f), 180, teamNo);
 							deliveredUnit = o;
 							o.disableUnitLevelAI = true;
 							
-							mainThread.theAssetManager.addConstructionVehicle(o);
+							MainThread.theAssetManager.addConstructionVehicle(o);
 							MCVProgress = 255;
 							removelItemFromProductionQueue(MCVType);
 							isDeliveringUnit = true;
@@ -1106,7 +1106,7 @@ public class factory extends solidObject{
 				}
 				
 				
-				//drone event
+				//Drone event
 				if(droneProgress < 240){
 					grayAllOtherIcons(droneType, droneProgress);
 					if(theBaseInfo.currentCredit >0){
@@ -1118,12 +1118,12 @@ public class factory extends solidObject{
 				}
 				if(droneProgress == 240){
 					if(!isDeliveringUnit){
-						drone o = new drone(new vector(centre.x -0.07f,-0.27f, centre.z - 0.03f), 180, this);
+						Drone o = new Drone(new vector(centre.x -0.07f,-0.27f, centre.z - 0.03f), 180, this);
 						numOfDrones++;
 						deliveredUnit = o;
 						o.disableUnitLevelAI = true;
 						
-						mainThread.theAssetManager.addDrone(o);
+						MainThread.theAssetManager.addDrone(o);
 						droneProgress = 255;
 						removelItemFromProductionQueue(droneType);
 						isDeliveringUnit = true;
@@ -1154,17 +1154,17 @@ public class factory extends solidObject{
 							cancelItemFromProductionQueue(stealthTankType);
 					}else{
 						if(!isDeliveringUnit){
-							stealthTank o = new stealthTank(new vector(centre.x -0.07f,-0.3f, centre.z - 0.03f), 180, teamNo);
-							if(teamNo == 0 && techCenter.stealthTankResearched_player){
+							StealthTank o = new StealthTank(new vector(centre.x -0.07f,-0.3f, centre.z - 0.03f), 180, teamNo);
+							if(teamNo == 0 && TechCenter.stealthTankResearched_player){
 								o.hasMultiShotUpgrade = true;
-							}else if(teamNo != 0 && techCenter.stealthTankResearched_enemy){
+							}else if(teamNo != 0 && TechCenter.stealthTankResearched_enemy){
 								o.hasMultiShotUpgrade = true;
 							}
 							
 							deliveredUnit = o;
 							o.disableUnitLevelAI = true;
 							
-							mainThread.theAssetManager.addStealthTank(o);
+							MainThread.theAssetManager.addStealthTank(o);
 							stealthTankProgress = 255;
 							removelItemFromProductionQueue(stealthTankType);
 							isDeliveringUnit = true;
@@ -1196,16 +1196,16 @@ public class factory extends solidObject{
 							cancelItemFromProductionQueue(heavyTankType);
 					}else{
 						if(!isDeliveringUnit){
-							heavyTank o = new heavyTank(new vector(centre.x -0.07f,-0.3f, centre.z - 0.03f), 180, teamNo);
-							if(teamNo == 0 && techCenter.heavyTankResearched_player){
+							HeavyTank o = new HeavyTank(new vector(centre.x -0.07f,-0.3f, centre.z - 0.03f), 180, teamNo);
+							if(teamNo == 0 && TechCenter.heavyTankResearched_player){
 								o.canSelfRepair = true;
-							}else if(teamNo != 0 && techCenter.heavyTankResearched_enemy){
+							}else if(teamNo != 0 && TechCenter.heavyTankResearched_enemy){
 								o.canSelfRepair = true;
 							}
 							deliveredUnit = o;
 							o.disableUnitLevelAI = true;
 							
-							mainThread.theAssetManager.addHeavyTank(o);
+							MainThread.theAssetManager.addHeavyTank(o);
 							heavyTankProgress = 255;
 							removelItemFromProductionQueue(heavyTankType);
 							isDeliveringUnit = true;
@@ -1259,7 +1259,7 @@ public class factory extends solidObject{
 									deliveredUnit.harvest(targetGoldMine);
 								else
 									moveDeliveredUnitToRallyPoint();
-								harvester o = (harvester)deliveredUnit;
+								Harvester o = (Harvester)deliveredUnit;
 								o.heuristicRecalculationCountDown = 1;
 							
 								
@@ -1288,7 +1288,7 @@ public class factory extends solidObject{
 							
 							
 							for(int i = 0; i < 4; i++){
-								solidObject o = mainThread.gridMap.tiles[tileIndex[5]+128][i];
+								SolidObject o = MainThread.gridMap.tiles[tileIndex[5]+128][i];
 								if(o != null && o != deliveredUnit){
 									if(o.boundary2D.intersect(deliveredUnit.boundary2D)){
 										canMove = false;
@@ -1298,7 +1298,7 @@ public class factory extends solidObject{
 							}
 							
 							for(int i = 0; i < 4; i++){
-								solidObject o = mainThread.gridMap.tiles[tileIndex[5]+127][i];
+								SolidObject o = MainThread.gridMap.tiles[tileIndex[5]+127][i];
 								if(o != null && o != deliveredUnit){
 									if(o.boundary2D.intersect(deliveredUnit.boundary2D)){
 										canMove = false;
@@ -1391,24 +1391,24 @@ public class factory extends solidObject{
 		}
 		
 		//mark itself on obstacle map
-		mainThread.gridMap.currentObstacleMap[tileIndex[0]] = false;
-		mainThread.gridMap.currentObstacleMap[tileIndex[1]] = false;
-		mainThread.gridMap.currentObstacleMap[tileIndex[2]] = false;
-		mainThread.gridMap.currentObstacleMap[tileIndex[3]] = false;
-		mainThread.gridMap.currentObstacleMap[tileIndex[4]] = false;
-		mainThread.gridMap.currentObstacleMap[tileIndex[5]] = false;
+		MainThread.gridMap.currentObstacleMap[tileIndex[0]] = false;
+		MainThread.gridMap.currentObstacleMap[tileIndex[1]] = false;
+		MainThread.gridMap.currentObstacleMap[tileIndex[2]] = false;
+		MainThread.gridMap.currentObstacleMap[tileIndex[3]] = false;
+		MainThread.gridMap.currentObstacleMap[tileIndex[4]] = false;
+		MainThread.gridMap.currentObstacleMap[tileIndex[5]] = false;
 		
 		
-		//update center in camera coordinate
+		//update center in Camera coordinate
 		tempCentre.set(centre);
-		tempCentre.subtract(camera.position);
-		tempCentre.rotate_XZ(camera.XZ_angle);
-		tempCentre.rotate_YZ(camera.YZ_angle); 
+		tempCentre.subtract(Camera.position);
+		tempCentre.rotate_XZ(Camera.XZ_angle);
+		tempCentre.rotate_YZ(Camera.YZ_angle);
 		tempCentre.updateLocation();
 			
-		theAssetManager = mainThread.theAssetManager;
+		theAssetManager = MainThread.theAssetManager;
 		
-		//test if the object is visible in camera point of view
+		//test if the object is visible in Camera point of view
 		if(visibleBoundary.contains(tempCentre.screenX, tempCentre.screenY) && isRevealed){
 			visible = true;
 			
@@ -1418,27 +1418,27 @@ public class factory extends solidObject{
 				withinViewScreen = false;
 			
 			tempshadowvertex0.set(shadowvertex0);
-			tempshadowvertex0.subtract(camera.position);
-			tempshadowvertex0.rotate_XZ(camera.XZ_angle);
-			tempshadowvertex0.rotate_YZ(camera.YZ_angle); 
+			tempshadowvertex0.subtract(Camera.position);
+			tempshadowvertex0.rotate_XZ(Camera.XZ_angle);
+			tempshadowvertex0.rotate_YZ(Camera.YZ_angle);
 			tempshadowvertex0.updateLocation();
 			
 			tempshadowvertex1.set(shadowvertex1);
-			tempshadowvertex1.subtract(camera.position);
-			tempshadowvertex1.rotate_XZ(camera.XZ_angle);
-			tempshadowvertex1.rotate_YZ(camera.YZ_angle); 
+			tempshadowvertex1.subtract(Camera.position);
+			tempshadowvertex1.rotate_XZ(Camera.XZ_angle);
+			tempshadowvertex1.rotate_YZ(Camera.YZ_angle);
 			tempshadowvertex1.updateLocation();
 			
 			tempshadowvertex2.set(shadowvertex2);
-			tempshadowvertex2.subtract(camera.position);
-			tempshadowvertex2.rotate_XZ(camera.XZ_angle);
-			tempshadowvertex2.rotate_YZ(camera.YZ_angle); 
+			tempshadowvertex2.subtract(Camera.position);
+			tempshadowvertex2.rotate_XZ(Camera.XZ_angle);
+			tempshadowvertex2.rotate_YZ(Camera.YZ_angle);
 			tempshadowvertex2.updateLocation();
 			
 			tempshadowvertex3.set(shadowvertex3);
-			tempshadowvertex3.subtract(camera.position);
-			tempshadowvertex3.rotate_XZ(camera.XZ_angle);
-			tempshadowvertex3.rotate_YZ(camera.YZ_angle); 
+			tempshadowvertex3.subtract(Camera.position);
+			tempshadowvertex3.rotate_XZ(Camera.XZ_angle);
+			tempshadowvertex3.rotate_YZ(Camera.YZ_angle);
 			tempshadowvertex3.updateLocation();
 
 			
@@ -1475,14 +1475,14 @@ public class factory extends solidObject{
 			for(int y = 0; y < 17; y++){
 				for(int x = 0; x < 17; x++){
 					if(bitmapVisionForEnemy[x+ y*17])
-						enemyCommander.tempBitmap[xPos + x + (yPos+y)*148] =true;
+						EnemyCommander.tempBitmap[xPos + x + (yPos+y)*148] =true;
 				}
 			}
 		}
 		
 		visionBoundary.x = (int)(tempCentre.screenX - 800);
 		visionBoundary.y = (int)(tempCentre.screenY - 1000);
-		visionInsideScreen = camera.screen.intersects(visionBoundary);
+		visionInsideScreen = Camera.screen.intersects(visionBoundary);
 		
 		
 		if(visionInsideScreen){
@@ -1981,12 +1981,12 @@ public class factory extends solidObject{
 	}
 	
 	public void drawRallyPointLine(){
-		if(isSelected && teamNo == 0 && mainThread.pc.theSideBarManager.onlyFactorySelected){
-			geometry.drawLine(centre, rallyCenter, 0xff00, (byte)16);
+		if(isSelected && teamNo == 0 && MainThread.playerCommander.theSideBarManager.onlyFactorySelected){
+			Geometry.drawLine(centre, rallyCenter, 0xff00, (byte)16);
 		}
 		
-		if(isSelected && teamNo == 0 && mainThread.pc.theSideBarManager.onlyFactorySelected && targetGoldMine != null){
-			geometry.drawLine(centre, targetGoldMine.centre, 0xffff00, (byte)15);
+		if(isSelected && teamNo == 0 && MainThread.playerCommander.theSideBarManager.onlyFactorySelected && targetGoldMine != null){
+			Geometry.drawLine(centre, targetGoldMine.centre, 0xffff00, (byte)15);
 		}
 	}
 	
@@ -1995,9 +1995,9 @@ public class factory extends solidObject{
 	}
 	
 	
-	//factory can't not move, instead it will set its rally point to the destination position
+	//Factory can't not move, instead it will set its rally point to the destination position
 	public void moveTo(float destinationX, float destinationY){	
-		if(teamNo != 0 || mainThread.pc.theSideBarManager.onlyFactorySelected){
+		if(teamNo != 0 || MainThread.playerCommander.theSideBarManager.onlyFactorySelected){
 		
 			rallyCenter.set(destinationX, -0.3f, destinationY);
 			rallyPointChanged = true;
@@ -2010,13 +2010,13 @@ public class factory extends solidObject{
 		if(rallyPointChanged){
 			if(deliveredUnit.type != 0 && deliveredUnit.type != 1 && deliveredUnit.type != 6 && deliveredUnit.type !=7 ){
 				deliveredUnit.moveTo(rallyCenter.x, rallyCenter.z);
-				deliveredUnit.currentCommand = solidObject.move;
-				deliveredUnit.secondaryCommand = solidObject.StandBy;
+				deliveredUnit.currentCommand = SolidObject.move;
+				deliveredUnit.secondaryCommand = SolidObject.StandBy;
 				return;
 			}else{
 				deliveredUnit.attackMoveTo(rallyCenter.x, rallyCenter.z);
-				deliveredUnit.currentCommand = solidObject.attackMove;
-				deliveredUnit.secondaryCommand = solidObject.attackMove;
+				deliveredUnit.currentCommand = SolidObject.attackMove;
+				deliveredUnit.secondaryCommand = SolidObject.attackMove;
 				return;
 			}
 		}
@@ -2036,12 +2036,12 @@ public class factory extends solidObject{
 			
 			boolean rallyPointClear = true;
 			for(int j = 0; j < 4; j ++){
-				if(mainThread.gridMap.tiles[tileIndex][j]!= null && mainThread.gridMap.tiles[tileIndex][j] != deliveredUnit){
+				if(MainThread.gridMap.tiles[tileIndex][j]!= null && MainThread.gridMap.tiles[tileIndex][j] != deliveredUnit){
 					probeBlock.width = 8;
 					probeBlock.height = 8;
 					probeBlock.setOrigin((int)(rallyX*64)-4, (int)(rallyY*64)+4);
 					
-					if(mainThread.gridMap.tiles[tileIndex][j].boundary2D.intersect(probeBlock)){
+					if(MainThread.gridMap.tiles[tileIndex][j].boundary2D.intersect(probeBlock)){
 	
 						rallyPointClear = false;
 						break;
@@ -2051,8 +2051,8 @@ public class factory extends solidObject{
 			
 			if(rallyPointClear){
 				deliveredUnit.moveTo(rallyX, rallyY);
-				deliveredUnit.currentCommand = solidObject.move;
-				deliveredUnit.secondaryCommand = solidObject.StandBy;
+				deliveredUnit.currentCommand = SolidObject.move;
+				deliveredUnit.secondaryCommand = SolidObject.StandBy;
 				return;
 			}
 		}
@@ -2063,10 +2063,42 @@ public class factory extends solidObject{
 		return lightTankProgress == 255 && rocketTankProgress == 255 && harvesterProgress == 255 && droneProgress == 255 && MCVProgress == 255 && stealthTankProgress == 255 && heavyTankProgress == 255;
 	}
 	
-	public void harvest(solidObject o){    
+	public void harvest(SolidObject o){
 		if(targetGoldMine != o)
-			targetGoldMine =  (goldMine)o;
-		else if(targetGoldMine == o &&  mainThread.pc.theSideBarManager.factoryRallyOnSameGoldMine)
+			targetGoldMine =  (GoldMine)o;
+		else if(targetGoldMine == o &&  MainThread.playerCommander.theSideBarManager.factoryRallyOnSameGoldMine)
 			targetGoldMine = null;
 	}
+
+    //clone a group of polygons (doesn't work on smooth shaded polygons)
+    public polygon3D[] clonePolygons(polygon3D[] polys, boolean createNewOUV){
+        int l = polys.length;
+
+        polygon3D[] clone = new polygon3D[l];
+
+        for(int i = 0; i < l; i++){
+            if(polys[i] == null)
+                continue;
+            int length = polys[i].vertex3D.length;
+            v = new vector[length];
+            for(int j = 0; j < length; j++){
+                v[j] = polys[i].vertex3D[j].myClone();
+            }
+
+            int myType = polys[i].type;
+            float scaleX = polys[i].scaleX;
+            float scaleY = polys[i].scaleY;
+            texture myTexture = polys[i].myTexture;
+            if(createNewOUV)
+                clone[i] = new polygon3D(v, polys[i].origin.myClone(), polys[i].rightEnd.myClone(), polys[i].bottomEnd.myClone(), myTexture, scaleX, scaleY, myType);
+            else
+                clone[i] = new polygon3D(v, v[0], v[1], v[3], myTexture, scaleX, scaleY, myType);
+            clone[i].shadowBias = polys[i].shadowBias;
+            clone[i].diffuse_I = polys[i].diffuse_I;
+            clone[i].Ambient_I = polys[i].Ambient_I;
+        }
+
+
+        return clone;
+    }
 }

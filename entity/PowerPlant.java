@@ -3,10 +3,10 @@ package entity;
 import java.awt.Rectangle;
 
 import core.*;
-import enemyAI.enemyCommander;
+import enemyAI.EnemyCommander;
 
 //the power plant model
-public class powerPlant extends solidObject{
+public class PowerPlant extends SolidObject {
 	
 	//the polygons of the model
 	private polygon3D[] polygons; 
@@ -28,7 +28,7 @@ public class powerPlant extends solidObject{
 	
 	public vector shadowvertex0, tempshadowvertex0,shadowvertex1, tempshadowvertex1,shadowvertex2, tempshadowvertex2,shadowvertex3, tempshadowvertex3;
 	
-	//a screen space boundary which is used to test if the  object is visible from camera point of view
+	//a screen space boundary which is used to test if the  object is visible from Camera point of view
 	public final static Rectangle visibleBoundary = new Rectangle(-85,-85,screen_width+152, screen_height+250);  
 		
 	//a screen space boundary which is used to test if the entire  object is within the screen
@@ -46,19 +46,19 @@ public class powerPlant extends solidObject{
 	//power plant never moves
 	public final static vector movenment = new vector(0,0,0);
 	
-	public baseInfo theBaseInfo;
+	public BaseInfo theBaseInfo;
 	
 	public static int intendedDeployLocation = -1;
 	
-	public powerPlant(float x, float y, float z,  int teamNo){
+	public PowerPlant(float x, float y, float z, int teamNo){
 		//uncontrollable unit, but act as a big sized static collidable agent
 		type = 101;
 		
 		if(teamNo == 0){
 			isRevealed = true;
-			theBaseInfo = mainThread.pc.theBaseInfo;
+			theBaseInfo = MainThread.playerCommander.theBaseInfo;
 		}else{
-			theBaseInfo = mainThread.ec.theBaseInfo;
+			theBaseInfo = MainThread.enemyCommander.theBaseInfo;
 		}
 		
 		theBaseInfo.numberOfPowerPlant++;
@@ -90,30 +90,30 @@ public class powerPlant extends solidObject{
 		tileIndex[2] = (centerX + 8)/16 + (127 - (centerY - 8)/16)*128;
 		tileIndex[3] = (centerX - 8)/16 + (127 - (centerY - 8)/16)*128;
 		
-		mainThread.gridMap.tiles[tileIndex[0]][0] = this;  
-		mainThread.gridMap.tiles[tileIndex[1]][0] = this; 
-		mainThread.gridMap.tiles[tileIndex[2]][0] = this; 
-		mainThread.gridMap.tiles[tileIndex[3]][0] = this; 
+		MainThread.gridMap.tiles[tileIndex[0]][0] = this;
+		MainThread.gridMap.tiles[tileIndex[1]][0] = this;
+		MainThread.gridMap.tiles[tileIndex[2]][0] = this;
+		MainThread.gridMap.tiles[tileIndex[3]][0] = this;
 		
-		mainThread.gridMap.tiles[tileIndex[0]][1] = this;  
-		mainThread.gridMap.tiles[tileIndex[1]][1] = this; 
-		mainThread.gridMap.tiles[tileIndex[2]][1] = this; 
-		mainThread.gridMap.tiles[tileIndex[3]][1] = this; 
+		MainThread.gridMap.tiles[tileIndex[0]][1] = this;
+		MainThread.gridMap.tiles[tileIndex[1]][1] = this;
+		MainThread.gridMap.tiles[tileIndex[2]][1] = this;
+		MainThread.gridMap.tiles[tileIndex[3]][1] = this;
 		
-		mainThread.gridMap.tiles[tileIndex[0]][2] = this;  
-		mainThread.gridMap.tiles[tileIndex[1]][2] = this; 
-		mainThread.gridMap.tiles[tileIndex[2]][2] = this; 
-		mainThread.gridMap.tiles[tileIndex[3]][2] = this; 
+		MainThread.gridMap.tiles[tileIndex[0]][2] = this;
+		MainThread.gridMap.tiles[tileIndex[1]][2] = this;
+		MainThread.gridMap.tiles[tileIndex[2]][2] = this;
+		MainThread.gridMap.tiles[tileIndex[3]][2] = this;
 		
-		mainThread.gridMap.tiles[tileIndex[0]][3] = this;  
-		mainThread.gridMap.tiles[tileIndex[1]][3] = this; 
-		mainThread.gridMap.tiles[tileIndex[2]][3] = this; 
-		mainThread.gridMap.tiles[tileIndex[3]][3] = this; 
+		MainThread.gridMap.tiles[tileIndex[0]][3] = this;
+		MainThread.gridMap.tiles[tileIndex[1]][3] = this;
+		MainThread.gridMap.tiles[tileIndex[2]][3] = this;
+		MainThread.gridMap.tiles[tileIndex[3]][3] = this;
 
-		mainThread.gridMap.tiles[tileIndex[0]][4] = this;  
-		mainThread.gridMap.tiles[tileIndex[1]][4] = this; 
-		mainThread.gridMap.tiles[tileIndex[2]][4] = this; 
-		mainThread.gridMap.tiles[tileIndex[3]][4] = this; 
+		MainThread.gridMap.tiles[tileIndex[0]][4] = this;
+		MainThread.gridMap.tiles[tileIndex[1]][4] = this;
+		MainThread.gridMap.tiles[tileIndex[2]][4] = this;
+		MainThread.gridMap.tiles[tileIndex[3]][4] = this;
 		
 		//the size of the building is larger for AI, to prevent it from building everything close together
 		if(teamNo != 0){
@@ -123,11 +123,11 @@ public class powerPlant extends solidObject{
 			tileIndex[7] = tileIndex[1] + 254;
 			tileIndex[8] = tileIndex[1] + 126;
 			
-			mainThread.gridMap.tiles[tileIndex[4]][4] = this;  
-			mainThread.gridMap.tiles[tileIndex[5]][4] = this; 
-			mainThread.gridMap.tiles[tileIndex[6]][4] = this; 
-			mainThread.gridMap.tiles[tileIndex[7]][4] = this; 
-			mainThread.gridMap.tiles[tileIndex[8]][4] = this; 
+			MainThread.gridMap.tiles[tileIndex[4]][4] = this;
+			MainThread.gridMap.tiles[tileIndex[5]][4] = this;
+			MainThread.gridMap.tiles[tileIndex[6]][4] = this;
+			MainThread.gridMap.tiles[tileIndex[7]][4] = this;
+			MainThread.gridMap.tiles[tileIndex[8]][4] = this;
 		}
 		
 		
@@ -181,10 +181,10 @@ public class powerPlant extends solidObject{
 		double r = 0.12;
 		
 		for(int i = 0; i < 18; i++){
-			v = new vector[]{put(r*Math.cos((i+1)*theta), 0.18, r*Math.sin((i+1)*theta)),
-							 put(r*Math.cos(i*theta), 0.18, r*Math.sin(i*theta)),
-							 put(r*Math.cos(i*theta), 0, r*Math.sin(i*theta)),
-							 put(r*Math.cos((i+1)*theta), 0,  r*Math.sin((i+1)*theta))
+			v = new vector[]{createArbitraryVertex(r*Math.cos((i+1)*theta), 0.18, r*Math.sin((i+1)*theta)),
+							 createArbitraryVertex(r*Math.cos(i*theta), 0.18, r*Math.sin(i*theta)),
+							 createArbitraryVertex(r*Math.cos(i*theta), 0, r*Math.sin(i*theta)),
+							 createArbitraryVertex(r*Math.cos((i+1)*theta), 0,  r*Math.sin((i+1)*theta))
 							
 							};
 			
@@ -203,28 +203,28 @@ public class powerPlant extends solidObject{
 		    	tempVector3.subtract(tempVector);
 		    }
 			
-			polygons[i + index] = new polygon3D(v, tempVector0.myClone(),tempVector1.myClone(), tempVector3.myClone(),  mainThread.textures[13], 0.5f,1, 1);
+			polygons[i + index] = new polygon3D(v, tempVector0.myClone(),tempVector1.myClone(), tempVector3.myClone(),  MainThread.textures[13], 0.5f,1, 1);
 		}
 		
 		index+=18;
 		
-		v = new vector[]{put(0.12*Math.cos(0*theta), 0.18, 0.12*Math.sin(0*theta)), 
-				 put(0.17*Math.cos(0*theta), 0.16, 0.17*Math.sin(0*theta)), 
-				 put(0.2*Math.cos(0*theta), 0.13, 0.2*Math.sin(0*theta)), 
-				 put(0.2*Math.cos(0*theta), 0, 0.2*Math.sin(0*theta)), 
-				 put(0.12*Math.cos(0*theta), 0, 0.12*Math.sin(0*theta)), 
+		v = new vector[]{createArbitraryVertex(0.12*Math.cos(0*theta), 0.18, 0.12*Math.sin(0*theta)),
+				 createArbitraryVertex(0.17*Math.cos(0*theta), 0.16, 0.17*Math.sin(0*theta)),
+				 createArbitraryVertex(0.2*Math.cos(0*theta), 0.13, 0.2*Math.sin(0*theta)),
+				 createArbitraryVertex(0.2*Math.cos(0*theta), 0, 0.2*Math.sin(0*theta)),
+				 createArbitraryVertex(0.12*Math.cos(0*theta), 0, 0.12*Math.sin(0*theta)),
 				};
-		polygons[index] = new polygon3D(v, v[0].myClone(), put(0.2*Math.cos(0*theta), 0.18, 0.2*Math.sin(0*theta)), v[4].myClone(), mainThread.textures[13], 0.5f, 1, 1);
+		polygons[index] = new polygon3D(v, v[0].myClone(), createArbitraryVertex(0.2*Math.cos(0*theta), 0.18, 0.2*Math.sin(0*theta)), v[4].myClone(), MainThread.textures[13], 0.5f, 1, 1);
 
 		index+=1;
 
-		v = new vector[]{ put(0.12*Math.cos(18*theta), 0, 0.12*Math.sin(18*theta)), 
-				  put(0.2*Math.cos(18*theta), 0, 0.2*Math.sin(18*theta)), 
-				  put(0.2*Math.cos(18*theta), 0.13, 0.2*Math.sin(18*theta)), 
-				  put(0.17*Math.cos(18*theta), 0.16, 0.17*Math.sin(18*theta)), 
-				  put(0.12*Math.cos(18*theta), 0.18, 0.12*Math.sin(18*theta))
+		v = new vector[]{ createArbitraryVertex(0.12*Math.cos(18*theta), 0, 0.12*Math.sin(18*theta)),
+				  createArbitraryVertex(0.2*Math.cos(18*theta), 0, 0.2*Math.sin(18*theta)),
+				  createArbitraryVertex(0.2*Math.cos(18*theta), 0.13, 0.2*Math.sin(18*theta)),
+				  createArbitraryVertex(0.17*Math.cos(18*theta), 0.16, 0.17*Math.sin(18*theta)),
+				  createArbitraryVertex(0.12*Math.cos(18*theta), 0.18, 0.12*Math.sin(18*theta))
 		};
-		polygons[index] = new polygon3D(v, put(0.2*Math.cos(18*theta), 0.18, 0.2*Math.sin(18*theta)), v[4].myClone(), v[1].myClone(), mainThread.textures[13], 0.5f, 1, 1);
+		polygons[index] = new polygon3D(v, createArbitraryVertex(0.2*Math.cos(18*theta), 0.18, 0.2*Math.sin(18*theta)), v[4].myClone(), v[1].myClone(), MainThread.textures[13], 0.5f, 1, 1);
 		index+=1;
 		
 		
@@ -234,10 +234,10 @@ public class powerPlant extends solidObject{
 		r = 0.085;
 		double r2 = 0.06;
 		for(int i = 0; i < 16; i++){
-			v = new vector[]{put(r2*Math.cos(i*delta), 0.18, r2*Math.sin(i*delta)),
-							 put(r2*Math.cos((i+1)*delta), 0.18, r2*Math.sin((i+1)*delta)),
-							 put(r*Math.cos((i+1)*delta), 0,  r*Math.sin((i+1)*delta)),
-							 put(r*Math.cos(i*delta), 0, r*Math.sin(i*delta))
+			v = new vector[]{createArbitraryVertex(r2*Math.cos(i*delta), 0.18, r2*Math.sin(i*delta)),
+							 createArbitraryVertex(r2*Math.cos((i+1)*delta), 0.18, r2*Math.sin((i+1)*delta)),
+							 createArbitraryVertex(r*Math.cos((i+1)*delta), 0,  r*Math.sin((i+1)*delta)),
+							 createArbitraryVertex(r*Math.cos(i*delta), 0, r*Math.sin(i*delta))
 							};
 			
 			tempVector.set(v[1]);
@@ -254,8 +254,8 @@ public class powerPlant extends solidObject{
 		    	tempVector3.subtract(tempVector);
 		    }
 			
-		    change(0,0.18f,0, tempVector);
-			polygons[i + index] = new polygon3D(v, tempVector0.myClone(),tempVector1.myClone(), tempVector3.myClone(),  mainThread.textures[12], 1f,0.25f,1);
+		    changeVertex3DGeometry(0,0.18f,0, tempVector);
+			polygons[i + index] = new polygon3D(v, tempVector0.myClone(),tempVector1.myClone(), tempVector3.myClone(),  MainThread.textures[12], 1f,0.25f,1);
 			polygons[i + index].textureScaledWidth = (int)(polygons[i + index].myTexture.width*0.5);
 			polygons[i + index].createShadeSpan(tempVector, v[0], v[1]);
 		}
@@ -267,10 +267,10 @@ public class powerPlant extends solidObject{
 		r = 0.2;
 		
 		for(int i = 0; i < 18; i++){
-			v = new vector[]{put(r*Math.cos(i*theta), 0.13, r*Math.sin(i*theta)),
-							 put(r*Math.cos((i+1)*theta), 0.13, r*Math.sin((i+1)*theta)),
-							 put(r*Math.cos((i+1)*theta), 0,  r*Math.sin((i+1)*theta)),
-							 put(r*Math.cos(i*theta), 0, r*Math.sin(i*theta))
+			v = new vector[]{createArbitraryVertex(r*Math.cos(i*theta), 0.13, r*Math.sin(i*theta)),
+							 createArbitraryVertex(r*Math.cos((i+1)*theta), 0.13, r*Math.sin((i+1)*theta)),
+							 createArbitraryVertex(r*Math.cos((i+1)*theta), 0,  r*Math.sin((i+1)*theta)),
+							 createArbitraryVertex(r*Math.cos(i*theta), 0, r*Math.sin(i*theta))
 							};
 			
 			
@@ -288,7 +288,7 @@ public class powerPlant extends solidObject{
 		    	tempVector3.subtract(tempVector);
 		    }
 			
-			polygons[i + index] = new polygon3D(v, tempVector0.myClone(),tempVector1.myClone(), tempVector3.myClone(),  mainThread.textures[13], 0.5f,1,1);
+			polygons[i + index] = new polygon3D(v, tempVector0.myClone(),tempVector1.myClone(), tempVector3.myClone(),  MainThread.textures[13], 0.5f,1,1);
 		}
 		
 		index += 18;
@@ -296,10 +296,10 @@ public class powerPlant extends solidObject{
 		r2 = 0.17;
 		
 		for(int i = 0; i < 18; i++){
-			v = new vector[]{put(r2*Math.cos(i*theta), 0.16, r2*Math.sin(i*theta)),
-							 put(r2*Math.cos((i+1)*theta), 0.16, r2*Math.sin((i+1)*theta)),
-							 put(r*Math.cos((i+1)*theta), 0.13,  r*Math.sin((i+1)*theta)),
-							 put(r*Math.cos(i*theta), 0.13, r*Math.sin(i*theta))
+			v = new vector[]{createArbitraryVertex(r2*Math.cos(i*theta), 0.16, r2*Math.sin(i*theta)),
+							 createArbitraryVertex(r2*Math.cos((i+1)*theta), 0.16, r2*Math.sin((i+1)*theta)),
+							 createArbitraryVertex(r*Math.cos((i+1)*theta), 0.13,  r*Math.sin((i+1)*theta)),
+							 createArbitraryVertex(r*Math.cos(i*theta), 0.13, r*Math.sin(i*theta))
 							};
 			
 			tempVector.set(v[1]);
@@ -317,9 +317,9 @@ public class powerPlant extends solidObject{
 		    }
 			
 			if(teamNo == 0)
-				polygons[i + index] = new polygon3D(v, tempVector0.myClone(),tempVector1.myClone(), tempVector3.myClone(),  mainThread.textures[15], 0.5f,1,1);
+				polygons[i + index] = new polygon3D(v, tempVector0.myClone(),tempVector1.myClone(), tempVector3.myClone(),  MainThread.textures[15], 0.5f,1,1);
 			else
-				polygons[i + index] = new polygon3D(v, tempVector0.myClone(),tempVector1.myClone(), tempVector3.myClone(),  mainThread.textures[16], 0.5f,1,1);
+				polygons[i + index] = new polygon3D(v, tempVector0.myClone(),tempVector1.myClone(), tempVector3.myClone(),  MainThread.textures[16], 0.5f,1,1);
 		}
 		
 		index += 18;
@@ -327,10 +327,10 @@ public class powerPlant extends solidObject{
 		r = 0.12;
 		
 		for(int i = 0; i < 18; i++){
-			v = new vector[]{put(r*Math.cos(i*theta), 0.18, r*Math.sin(i*theta)),
-							 put(r*Math.cos((i+1)*theta), 0.18, r*Math.sin((i+1)*theta)),
-							 put(r2*Math.cos((i+1)*theta), 0.16,  r2*Math.sin((i+1)*theta)),
-							 put(r2*Math.cos(i*theta), 0.16, r2*Math.sin(i*theta))
+			v = new vector[]{createArbitraryVertex(r*Math.cos(i*theta), 0.18, r*Math.sin(i*theta)),
+							 createArbitraryVertex(r*Math.cos((i+1)*theta), 0.18, r*Math.sin((i+1)*theta)),
+							 createArbitraryVertex(r2*Math.cos((i+1)*theta), 0.16,  r2*Math.sin((i+1)*theta)),
+							 createArbitraryVertex(r2*Math.cos(i*theta), 0.16, r2*Math.sin(i*theta))
 							};
 			
 			tempVector.set(v[1]);
@@ -347,7 +347,7 @@ public class powerPlant extends solidObject{
 		    	tempVector3.subtract(tempVector);
 		    }
 			
-			polygons[i + index] = new polygon3D(v, tempVector0.myClone(),tempVector1.myClone(), tempVector3.myClone(),  mainThread.textures[14], 0.5f,0.4f,1);
+			polygons[i + index] = new polygon3D(v, tempVector0.myClone(),tempVector1.myClone(), tempVector3.myClone(),  MainThread.textures[14], 0.5f,0.4f,1);
 		}
 		
 		index +=18;
@@ -357,10 +357,10 @@ public class powerPlant extends solidObject{
 		r2 = 0.05;
 		for(int i = 0; i < 16; i++){
 			v = new vector[]{
-					 put(r*Math.cos(i*delta), 0.18, r*Math.sin(i*delta)),
-					 put(r*Math.cos((i+1)*delta), 0.18,  r*Math.sin((i+1)*delta)),
-					 put(r2*Math.cos((i+1)*delta), 0.38, r2*Math.sin((i+1)*delta)),
-					 put(r2*Math.cos(i*delta), 0.38, r2*Math.sin(i*delta))
+					 createArbitraryVertex(r*Math.cos(i*delta), 0.18, r*Math.sin(i*delta)),
+					 createArbitraryVertex(r*Math.cos((i+1)*delta), 0.18,  r*Math.sin((i+1)*delta)),
+					 createArbitraryVertex(r2*Math.cos((i+1)*delta), 0.38, r2*Math.sin((i+1)*delta)),
+					 createArbitraryVertex(r2*Math.cos(i*delta), 0.38, r2*Math.sin(i*delta))
 							
 							
 							
@@ -380,7 +380,7 @@ public class powerPlant extends solidObject{
 		    	tempVector3.subtract(tempVector);
 		    }
 			
-			polygons[i + index] = new polygon3D(v, tempVector0.myClone(),tempVector1.myClone(), tempVector3.myClone(),  mainThread.textures[12], 0.5f,1,1);
+			polygons[i + index] = new polygon3D(v, tempVector0.myClone(),tempVector1.myClone(), tempVector3.myClone(),  MainThread.textures[12], 0.5f,1,1);
 		}
 		
 		index+=16;
@@ -388,9 +388,9 @@ public class powerPlant extends solidObject{
 		double r3 = 0.056;
 		v = new vector[16];
 		for(int i = 0; i <16; i++){
-			v[15 - i] = put(r3*Math.cos(i*delta), h, r3*Math.sin(i*delta));
+			v[15 - i] = createArbitraryVertex(r3*Math.cos(i*delta), h, r3*Math.sin(i*delta));
 		}
-		polygons[index] = new polygon3D(v, put(-r3, h, r3), put(r3, h, r3), put(-r3, h, -r3), mainThread.textures[17], 1f,1,1);
+		polygons[index] = new polygon3D(v, createArbitraryVertex(-r3, h, r3), createArbitraryVertex(r3, h, r3), createArbitraryVertex(-r3, h, -r3), MainThread.textures[17], 1f,1,1);
 		polygons[index].shadowBias = 15000;
 		index++;
 		
@@ -400,10 +400,10 @@ public class powerPlant extends solidObject{
 		r = 0.06;
 		r2 = 0.058;
 		for(int i = 0; i < 16; i++){
-			v = new vector[]{put(r2*Math.cos(i*delta), 0.26, r2*Math.sin(i*delta)),
-							 put(r2*Math.cos((i+1)*delta), 0.26, r2*Math.sin((i+1)*delta)),
-							 put(r*Math.cos((i+1)*delta), 0.18,  r*Math.sin((i+1)*delta)),
-							 put(r*Math.cos(i*delta), 0.18, r*Math.sin(i*delta))
+			v = new vector[]{createArbitraryVertex(r2*Math.cos(i*delta), 0.26, r2*Math.sin(i*delta)),
+							 createArbitraryVertex(r2*Math.cos((i+1)*delta), 0.26, r2*Math.sin((i+1)*delta)),
+							 createArbitraryVertex(r*Math.cos((i+1)*delta), 0.18,  r*Math.sin((i+1)*delta)),
+							 createArbitraryVertex(r*Math.cos(i*delta), 0.18, r*Math.sin(i*delta))
 							};
 			
 			tempVector.set(v[1]);
@@ -420,8 +420,8 @@ public class powerPlant extends solidObject{
 		    	tempVector3.subtract(tempVector);
 		    }
 			
-		    change(0,0.26f,0, tempVector);
-			polygons[i + index] = new polygon3D(v, tempVector0.myClone(),tempVector1.myClone(), tempVector3.myClone(),  mainThread.textures[12], 1f,0.25f,1);
+		    changeVertex3DGeometry(0,0.26f,0, tempVector);
+			polygons[i + index] = new polygon3D(v, tempVector0.myClone(),tempVector1.myClone(), tempVector3.myClone(),  MainThread.textures[12], 1f,0.25f,1);
 			polygons[i + index].textureScaledWidth = (int)(polygons[i + index].myTexture.width*0.5);
 			polygons[i + index].createShadeSpan(tempVector, v[0], v[1]);
 		}
@@ -437,10 +437,10 @@ public class powerPlant extends solidObject{
 		r = 0.058;
 		r2 = 0.059;
 		for(int i = 0; i < 16; i++){
-			v = new vector[]{put(r2*Math.cos(i*delta), 0.32, r2*Math.sin(i*delta)),
-							 put(r2*Math.cos((i+1)*delta), 0.32, r2*Math.sin((i+1)*delta)),
-							 put(r*Math.cos((i+1)*delta), 0.26,  r*Math.sin((i+1)*delta)),
-							 put(r*Math.cos(i*delta), 0.26, r*Math.sin(i*delta))
+			v = new vector[]{createArbitraryVertex(r2*Math.cos(i*delta), 0.32, r2*Math.sin(i*delta)),
+							 createArbitraryVertex(r2*Math.cos((i+1)*delta), 0.32, r2*Math.sin((i+1)*delta)),
+							 createArbitraryVertex(r*Math.cos((i+1)*delta), 0.26,  r*Math.sin((i+1)*delta)),
+							 createArbitraryVertex(r*Math.cos(i*delta), 0.26, r*Math.sin(i*delta))
 							};
 			
 			tempVector.set(v[1]);
@@ -457,8 +457,8 @@ public class powerPlant extends solidObject{
 		    	tempVector3.subtract(tempVector);
 		    }
 			
-		    change(0,0.32f,0, tempVector);
-			polygons[i + index] = new polygon3D(v, tempVector0.myClone(),tempVector1.myClone(), tempVector3.myClone(),  mainThread.textures[12], 1f,0.25f,1);
+		    changeVertex3DGeometry(0,0.32f,0, tempVector);
+			polygons[i + index] = new polygon3D(v, tempVector0.myClone(),tempVector1.myClone(), tempVector3.myClone(),  MainThread.textures[12], 1f,0.25f,1);
 			polygons[i + index].textureScaledWidth = (int)(polygons[i + index].myTexture.width*0.5);
 			polygons[i + index].createShadeSpan(tempVector, v[0], v[1]);
 		}
@@ -472,10 +472,10 @@ public class powerPlant extends solidObject{
 		r = 0.059;
 		r2 = 0.06;
 		for(int i = 0; i < 16; i++){
-			v = new vector[]{put(r2*Math.cos(i*delta), 0.38, r2*Math.sin(i*delta)),
-							 put(r2*Math.cos((i+1)*delta), 0.38, r2*Math.sin((i+1)*delta)),
-							 put(r*Math.cos((i+1)*delta), 0.32,  r*Math.sin((i+1)*delta)),
-							 put(r*Math.cos(i*delta), 0.32, r*Math.sin(i*delta))
+			v = new vector[]{createArbitraryVertex(r2*Math.cos(i*delta), 0.38, r2*Math.sin(i*delta)),
+							 createArbitraryVertex(r2*Math.cos((i+1)*delta), 0.38, r2*Math.sin((i+1)*delta)),
+							 createArbitraryVertex(r*Math.cos((i+1)*delta), 0.32,  r*Math.sin((i+1)*delta)),
+							 createArbitraryVertex(r*Math.cos(i*delta), 0.32, r*Math.sin(i*delta))
 							};
 			
 			tempVector.set(v[1]);
@@ -492,8 +492,8 @@ public class powerPlant extends solidObject{
 		    	tempVector3.subtract(tempVector);
 		    }
 			
-		    change(0,0.38f,0, tempVector);
-			polygons[i + index] = new polygon3D(v, tempVector0.myClone(),tempVector1.myClone(), tempVector3.myClone(),  mainThread.textures[12], 1f,0.25f,1);
+		    changeVertex3DGeometry(0,0.38f,0, tempVector);
+			polygons[i + index] = new polygon3D(v, tempVector0.myClone(),tempVector1.myClone(), tempVector3.myClone(),  MainThread.textures[12], 1f,0.25f,1);
 			polygons[i + index].textureScaledWidth = (int)(polygons[i + index].myTexture.width*0.5);
 			polygons[i + index].createShadeSpan(tempVector, v[0], v[1]);
 			
@@ -506,10 +506,10 @@ public class powerPlant extends solidObject{
 		r2 = 0.06;
 		for(int i = 0; i < 16; i++){
 			v = new vector[]{
-					 put(r*Math.cos(i*delta), 0.38, r*Math.sin(i*delta)),
-					 put(r*Math.cos((i+1)*delta), 0.38,  r*Math.sin((i+1)*delta)),		
-					 put(r2*Math.cos((i+1)*delta), 0.38, r2*Math.sin((i+1)*delta)),
-					 put(r2*Math.cos(i*delta), 0.38, r2*Math.sin(i*delta))
+					 createArbitraryVertex(r*Math.cos(i*delta), 0.38, r*Math.sin(i*delta)),
+					 createArbitraryVertex(r*Math.cos((i+1)*delta), 0.38,  r*Math.sin((i+1)*delta)),
+					 createArbitraryVertex(r2*Math.cos((i+1)*delta), 0.38, r2*Math.sin((i+1)*delta)),
+					 createArbitraryVertex(r2*Math.cos(i*delta), 0.38, r2*Math.sin(i*delta))
 					};
 			
 			tempVector.set(v[1]);
@@ -526,7 +526,7 @@ public class powerPlant extends solidObject{
 		    	tempVector3.subtract(tempVector);
 		    }
 			
-			polygons[i + index] = new polygon3D(v, tempVector0.myClone(),tempVector1.myClone(), tempVector3.myClone(),  mainThread.textures[12], 0.5f,0.25f,1);
+			polygons[i + index] = new polygon3D(v, tempVector0.myClone(),tempVector1.myClone(), tempVector3.myClone(),  MainThread.textures[12], 0.5f,0.25f,1);
 		}
 		start.add(0.05f,0,-0);
 		index+=16;
@@ -597,7 +597,7 @@ public class powerPlant extends solidObject{
 			countDownToDeath--;
 	
 			if(countDownToDeath == 0){
-				//spawn an explosion when the tank is destroyed
+				//spawn an Explosion when the tank is destroyed
 				float[] tempFloat = theAssetManager.explosionInfo[theAssetManager.explosionCount];	
 				tempFloat[0] = centre.x;
 				tempFloat[1] = centre.y + 0.15f;
@@ -616,37 +616,37 @@ public class powerPlant extends solidObject{
 				
 				
 				//removeFromGridMap();
-				mainThread.gridMap.tiles[tileIndex[0]][0] = null;  
-				mainThread.gridMap.tiles[tileIndex[1]][0] = null; 
-				mainThread.gridMap.tiles[tileIndex[2]][0] = null; 
-				mainThread.gridMap.tiles[tileIndex[3]][0] = null; 
+				MainThread.gridMap.tiles[tileIndex[0]][0] = null;
+				MainThread.gridMap.tiles[tileIndex[1]][0] = null;
+				MainThread.gridMap.tiles[tileIndex[2]][0] = null;
+				MainThread.gridMap.tiles[tileIndex[3]][0] = null;
 				
-				mainThread.gridMap.tiles[tileIndex[0]][1] = null;  
-				mainThread.gridMap.tiles[tileIndex[1]][1] = null; 
-				mainThread.gridMap.tiles[tileIndex[2]][1] = null; 
-				mainThread.gridMap.tiles[tileIndex[3]][1] = null; 
+				MainThread.gridMap.tiles[tileIndex[0]][1] = null;
+				MainThread.gridMap.tiles[tileIndex[1]][1] = null;
+				MainThread.gridMap.tiles[tileIndex[2]][1] = null;
+				MainThread.gridMap.tiles[tileIndex[3]][1] = null;
 				
-				mainThread.gridMap.tiles[tileIndex[0]][2] = null;  
-				mainThread.gridMap.tiles[tileIndex[1]][2] = null; 
-				mainThread.gridMap.tiles[tileIndex[2]][2] = null; 
-				mainThread.gridMap.tiles[tileIndex[3]][2] = null; 
+				MainThread.gridMap.tiles[tileIndex[0]][2] = null;
+				MainThread.gridMap.tiles[tileIndex[1]][2] = null;
+				MainThread.gridMap.tiles[tileIndex[2]][2] = null;
+				MainThread.gridMap.tiles[tileIndex[3]][2] = null;
 				
-				mainThread.gridMap.tiles[tileIndex[0]][3] = null;  
-				mainThread.gridMap.tiles[tileIndex[1]][3] = null; 
-				mainThread.gridMap.tiles[tileIndex[2]][3] = null; 
-				mainThread.gridMap.tiles[tileIndex[3]][3] = null; 
+				MainThread.gridMap.tiles[tileIndex[0]][3] = null;
+				MainThread.gridMap.tiles[tileIndex[1]][3] = null;
+				MainThread.gridMap.tiles[tileIndex[2]][3] = null;
+				MainThread.gridMap.tiles[tileIndex[3]][3] = null;
 
-				mainThread.gridMap.tiles[tileIndex[0]][4] = null;  
-				mainThread.gridMap.tiles[tileIndex[1]][4] = null; 
-				mainThread.gridMap.tiles[tileIndex[2]][4] = null; 
-				mainThread.gridMap.tiles[tileIndex[3]][4] = null; 
+				MainThread.gridMap.tiles[tileIndex[0]][4] = null;
+				MainThread.gridMap.tiles[tileIndex[1]][4] = null;
+				MainThread.gridMap.tiles[tileIndex[2]][4] = null;
+				MainThread.gridMap.tiles[tileIndex[3]][4] = null;
 				
 				if(teamNo != 0){
-					mainThread.gridMap.tiles[tileIndex[4]][4] = null;  
-					mainThread.gridMap.tiles[tileIndex[5]][4] = null; 
-					mainThread.gridMap.tiles[tileIndex[6]][4] = null; 
-					mainThread.gridMap.tiles[tileIndex[7]][4] = null; 
-					mainThread.gridMap.tiles[tileIndex[8]][4] = null; 
+					MainThread.gridMap.tiles[tileIndex[4]][4] = null;
+					MainThread.gridMap.tiles[tileIndex[5]][4] = null;
+					MainThread.gridMap.tiles[tileIndex[6]][4] = null;
+					MainThread.gridMap.tiles[tileIndex[7]][4] = null;
+					MainThread.gridMap.tiles[tileIndex[8]][4] = null;
 				}
 				
 				if(attacker.teamNo != teamNo)
@@ -661,7 +661,7 @@ public class powerPlant extends solidObject{
 				tempFloat[3] = 1.5f;
 				tempFloat[4] = 1;
 				tempFloat[5] = 0;
-				tempFloat[6] = 6 + (gameData.getRandom()%4);
+				tempFloat[6] = 6 + (GameData.getRandom()%4);
 				tempFloat[7] = this.height;
 				theAssetManager.explosionCount++; 
 				
@@ -671,7 +671,7 @@ public class powerPlant extends solidObject{
 		
 		//processing repair event
 		if(isRepairing && currentHP >0){
-			if(mainThread.gameFrame%8==0 && theBaseInfo.currentCredit > 0 && currentHP <maxHP){
+			if(MainThread.gameFrame%8==0 && theBaseInfo.currentCredit > 0 && currentHP <maxHP){
 				currentHP+=2;
 				theBaseInfo.currentCredit--;
 				if(currentHP > maxHP)
@@ -680,22 +680,22 @@ public class powerPlant extends solidObject{
 		}
 		
 		//mark itself on obstacle map
-		mainThread.gridMap.currentObstacleMap[tileIndex[0]] = false;
-		mainThread.gridMap.currentObstacleMap[tileIndex[1]] = false;
-		mainThread.gridMap.currentObstacleMap[tileIndex[2]] = false;
-		mainThread.gridMap.currentObstacleMap[tileIndex[3]] = false;
+		MainThread.gridMap.currentObstacleMap[tileIndex[0]] = false;
+		MainThread.gridMap.currentObstacleMap[tileIndex[1]] = false;
+		MainThread.gridMap.currentObstacleMap[tileIndex[2]] = false;
+		MainThread.gridMap.currentObstacleMap[tileIndex[3]] = false;
 		
 		
-		//update center in camera coordinate
+		//update center in Camera coordinate
 		tempCentre.set(centre);
-		tempCentre.subtract(camera.position);
-		tempCentre.rotate_XZ(camera.XZ_angle);
-		tempCentre.rotate_YZ(camera.YZ_angle); 
+		tempCentre.subtract(Camera.position);
+		tempCentre.rotate_XZ(Camera.XZ_angle);
+		tempCentre.rotate_YZ(Camera.YZ_angle);
 		tempCentre.updateLocation();
 			
-		theAssetManager = mainThread.theAssetManager;
+		theAssetManager = MainThread.theAssetManager;
 		
-		//test if the palm tree is visible in camera point of view
+		//test if the palm tree is visible in Camera point of view
 		if(visibleBoundary.contains(tempCentre.screenX, tempCentre.screenY) && isRevealed){
 			visible = true;
 			
@@ -705,27 +705,27 @@ public class powerPlant extends solidObject{
 				withinViewScreen = false;
 			
 			tempshadowvertex0.set(shadowvertex0);
-			tempshadowvertex0.subtract(camera.position);
-			tempshadowvertex0.rotate_XZ(camera.XZ_angle);
-			tempshadowvertex0.rotate_YZ(camera.YZ_angle); 
+			tempshadowvertex0.subtract(Camera.position);
+			tempshadowvertex0.rotate_XZ(Camera.XZ_angle);
+			tempshadowvertex0.rotate_YZ(Camera.YZ_angle);
 			tempshadowvertex0.updateLocation();
 			
 			tempshadowvertex1.set(shadowvertex1);
-			tempshadowvertex1.subtract(camera.position);
-			tempshadowvertex1.rotate_XZ(camera.XZ_angle);
-			tempshadowvertex1.rotate_YZ(camera.YZ_angle); 
+			tempshadowvertex1.subtract(Camera.position);
+			tempshadowvertex1.rotate_XZ(Camera.XZ_angle);
+			tempshadowvertex1.rotate_YZ(Camera.YZ_angle);
 			tempshadowvertex1.updateLocation();
 			
 			tempshadowvertex2.set(shadowvertex2);
-			tempshadowvertex2.subtract(camera.position);
-			tempshadowvertex2.rotate_XZ(camera.XZ_angle);
-			tempshadowvertex2.rotate_YZ(camera.YZ_angle); 
+			tempshadowvertex2.subtract(Camera.position);
+			tempshadowvertex2.rotate_XZ(Camera.XZ_angle);
+			tempshadowvertex2.rotate_YZ(Camera.YZ_angle);
 			tempshadowvertex2.updateLocation();
 			
 			tempshadowvertex3.set(shadowvertex3);
-			tempshadowvertex3.subtract(camera.position);
-			tempshadowvertex3.rotate_XZ(camera.XZ_angle);
-			tempshadowvertex3.rotate_YZ(camera.YZ_angle); 
+			tempshadowvertex3.subtract(Camera.position);
+			tempshadowvertex3.rotate_XZ(Camera.XZ_angle);
+			tempshadowvertex3.rotate_YZ(Camera.YZ_angle);
 			tempshadowvertex3.updateLocation();
 
 			
@@ -762,14 +762,14 @@ public class powerPlant extends solidObject{
 			for(int y = 0; y < 17; y++){
 				for(int x = 0; x < 17; x++){
 					if(bitmapVisionForEnemy[x+ y*17])
-						enemyCommander.tempBitmap[xPos + x + (yPos+y)*148] =true;
+						EnemyCommander.tempBitmap[xPos + x + (yPos+y)*148] =true;
 				}
 			}
 		}
 		
 		visionBoundary.x = (int)(tempCentre.screenX - 800);
 		visionBoundary.y = (int)(tempCentre.screenY - 1200);
-		visionInsideScreen = camera.screen.intersects(visionBoundary);
+		visionInsideScreen = Camera.screen.intersects(visionBoundary);
 		
 		
 		if(visionInsideScreen){
@@ -805,7 +805,7 @@ public class powerPlant extends solidObject{
 			
 			
 			//spawn smoke particle
-			if((mainThread.gameFrame + ID) % 5 ==0 && centre.y >= -0.5f){
+			if((MainThread.gameFrame + ID) % 5 ==0 && centre.y >= -0.5f){
 				float[] tempFloat = theAssetManager.smokeEmmiterList[theAssetManager.smokeEmmiterCount];
 				tempFloat[0] = centre.x - 0.053f + (float)(Math.random()/20) - 0.025f;
 				tempFloat[1] = centre.y + 0.45f;
@@ -835,4 +835,36 @@ public class powerPlant extends solidObject{
 	public vector getMovement(){
 		return movenment;
 	}
+
+    //clone a group of polygons (doesn't work on smooth shaded polygons)
+    public polygon3D[] clonePolygons(polygon3D[] polys, boolean createNewOUV){
+        int l = polys.length;
+
+        polygon3D[] clone = new polygon3D[l];
+
+        for(int i = 0; i < l; i++){
+            if(polys[i] == null)
+                continue;
+            int length = polys[i].vertex3D.length;
+            v = new vector[length];
+            for(int j = 0; j < length; j++){
+                v[j] = polys[i].vertex3D[j].myClone();
+            }
+
+            int myType = polys[i].type;
+            float scaleX = polys[i].scaleX;
+            float scaleY = polys[i].scaleY;
+            texture myTexture = polys[i].myTexture;
+            if(createNewOUV)
+                clone[i] = new polygon3D(v, polys[i].origin.myClone(), polys[i].rightEnd.myClone(), polys[i].bottomEnd.myClone(), myTexture, scaleX, scaleY, myType);
+            else
+                clone[i] = new polygon3D(v, v[0], v[1], v[3], myTexture, scaleX, scaleY, myType);
+            clone[i].shadowBias = polys[i].shadowBias;
+            clone[i].diffuse_I = polys[i].diffuse_I;
+            clone[i].Ambient_I = polys[i].Ambient_I;
+        }
+
+
+        return clone;
+    }
 }

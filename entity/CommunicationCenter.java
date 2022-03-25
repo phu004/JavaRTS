@@ -3,11 +3,11 @@ package entity;
 import java.awt.Rectangle;
 
 import core.*;
-import enemyAI.enemyCommander;
+import enemyAI.EnemyCommander;
 
 //the communication center model
 
-public class communicationCenter extends solidObject{
+public class CommunicationCenter extends SolidObject {
 
 	//the polygons of the model
 	private polygon3D[] polygons; 
@@ -32,7 +32,7 @@ public class communicationCenter extends solidObject{
 	
 	public vector shadowvertex0, tempshadowvertex0,shadowvertex1, tempshadowvertex1,shadowvertex2, tempshadowvertex2,shadowvertex3, tempshadowvertex3;
 	
-	//a screen space boundary which is used to test if the  object is visible from camera point of view
+	//a screen space boundary which is used to test if the  object is visible from Camera point of view
 	public final static Rectangle visibleBoundary = new Rectangle(-85,-85,screen_width+192, screen_height+250);  
 		
 	//a screen space boundary which is used to test if the entire  object is within the screen
@@ -54,7 +54,7 @@ public class communicationCenter extends solidObject{
 	//index of the tiles to scan for cloaked unitsl
 	public static int[] tileCheckList;
 	
-	public baseInfo theBaseInfo;
+	public BaseInfo theBaseInfo;
 	
 	public static boolean harvesterSpeedResearched_player, harvesterSpeedResearched_enemy;
 	public static boolean rapidfireResearched_player,  rapidfireResearched_enemy;
@@ -78,7 +78,7 @@ public class communicationCenter extends solidObject{
 		intendedDeployLocation = -1;
 	}
 	
-	public communicationCenter(float x, float y, float z,  int teamNo){	
+	public CommunicationCenter(float x, float y, float z, int teamNo){
 		//uncontrollable unit, but act as a big sized static collidable agent
 		type = 106;
 		
@@ -87,9 +87,9 @@ public class communicationCenter extends solidObject{
 
 		if(teamNo == 0){
 			isRevealed = true;
-			theBaseInfo = mainThread.pc.theBaseInfo;
+			theBaseInfo = MainThread.playerCommander.theBaseInfo;
 		}else{
-			theBaseInfo = mainThread.ec.theBaseInfo;
+			theBaseInfo = MainThread.enemyCommander.theBaseInfo;
 		}
 		
 		theBaseInfo.numberOfCommunicationCenter++;
@@ -119,30 +119,30 @@ public class communicationCenter extends solidObject{
 		tileIndex[2] = (centerX + 8)/16 + (127 - (centerY - 8)/16)*128;
 		tileIndex[3] = (centerX - 8)/16 + (127 - (centerY - 8)/16)*128;
 		
-		mainThread.gridMap.tiles[tileIndex[0]][0] = this;  
-		mainThread.gridMap.tiles[tileIndex[1]][0] = this; 
-		mainThread.gridMap.tiles[tileIndex[2]][0] = this; 
-		mainThread.gridMap.tiles[tileIndex[3]][0] = this; 
+		MainThread.gridMap.tiles[tileIndex[0]][0] = this;
+		MainThread.gridMap.tiles[tileIndex[1]][0] = this;
+		MainThread.gridMap.tiles[tileIndex[2]][0] = this;
+		MainThread.gridMap.tiles[tileIndex[3]][0] = this;
 		
-		mainThread.gridMap.tiles[tileIndex[0]][1] = this;  
-		mainThread.gridMap.tiles[tileIndex[1]][1] = this; 
-		mainThread.gridMap.tiles[tileIndex[2]][1] = this; 
-		mainThread.gridMap.tiles[tileIndex[3]][1] = this; 
+		MainThread.gridMap.tiles[tileIndex[0]][1] = this;
+		MainThread.gridMap.tiles[tileIndex[1]][1] = this;
+		MainThread.gridMap.tiles[tileIndex[2]][1] = this;
+		MainThread.gridMap.tiles[tileIndex[3]][1] = this;
 		
-		mainThread.gridMap.tiles[tileIndex[0]][2] = this;  
-		mainThread.gridMap.tiles[tileIndex[1]][2] = this; 
-		mainThread.gridMap.tiles[tileIndex[2]][2] = this; 
-		mainThread.gridMap.tiles[tileIndex[3]][2] = this; 
+		MainThread.gridMap.tiles[tileIndex[0]][2] = this;
+		MainThread.gridMap.tiles[tileIndex[1]][2] = this;
+		MainThread.gridMap.tiles[tileIndex[2]][2] = this;
+		MainThread.gridMap.tiles[tileIndex[3]][2] = this;
 		
-		mainThread.gridMap.tiles[tileIndex[0]][3] = this;  
-		mainThread.gridMap.tiles[tileIndex[1]][3] = this; 
-		mainThread.gridMap.tiles[tileIndex[2]][3] = this; 
-		mainThread.gridMap.tiles[tileIndex[3]][3] = this; 
+		MainThread.gridMap.tiles[tileIndex[0]][3] = this;
+		MainThread.gridMap.tiles[tileIndex[1]][3] = this;
+		MainThread.gridMap.tiles[tileIndex[2]][3] = this;
+		MainThread.gridMap.tiles[tileIndex[3]][3] = this;
 
-		mainThread.gridMap.tiles[tileIndex[0]][4] = this;  
-		mainThread.gridMap.tiles[tileIndex[1]][4] = this; 
-		mainThread.gridMap.tiles[tileIndex[2]][4] = this; 
-		mainThread.gridMap.tiles[tileIndex[3]][4] = this; 
+		MainThread.gridMap.tiles[tileIndex[0]][4] = this;
+		MainThread.gridMap.tiles[tileIndex[1]][4] = this;
+		MainThread.gridMap.tiles[tileIndex[2]][4] = this;
+		MainThread.gridMap.tiles[tileIndex[3]][4] = this;
 		
 		if(teamNo != 0){
 			tileIndex[4] = tileIndex[1] - 128; 
@@ -151,11 +151,11 @@ public class communicationCenter extends solidObject{
 			tileIndex[7] = tileIndex[1] + 254;
 			tileIndex[8] = tileIndex[1] + 126;
 			
-			mainThread.gridMap.tiles[tileIndex[4]][4] = this;  
-			mainThread.gridMap.tiles[tileIndex[5]][4] = this; 
-			mainThread.gridMap.tiles[tileIndex[6]][4] = this; 
-			mainThread.gridMap.tiles[tileIndex[7]][4] = this; 
-			mainThread.gridMap.tiles[tileIndex[8]][4] = this; 
+			MainThread.gridMap.tiles[tileIndex[4]][4] = this;
+			MainThread.gridMap.tiles[tileIndex[5]][4] = this;
+			MainThread.gridMap.tiles[tileIndex[6]][4] = this;
+			MainThread.gridMap.tiles[tileIndex[7]][4] = this;
+			MainThread.gridMap.tiles[tileIndex[8]][4] = this;
 		}
 
 		//init model
@@ -222,67 +222,67 @@ public class communicationCenter extends solidObject{
 		tempVector4.rotate_XZ(15);
 		
 		for(int i = 0; i < 12; i++){
-			v = new vector[]{put(r2*Math.cos(i*delta), -0.04, r2*Math.sin(i*delta)),
-							 put(r2*Math.cos((i+1)*delta), -0.04, r2*Math.sin((i+1)*delta)),
-							 put(r1*Math.cos((i+1)*delta), -0.2,  r1*Math.sin((i+1)*delta)),
-							 put(r1*Math.cos(i*delta), -0.2, r1*Math.sin(i*delta))
+			v = new vector[]{createArbitraryVertex(r2*Math.cos(i*delta), -0.04, r2*Math.sin(i*delta)),
+							 createArbitraryVertex(r2*Math.cos((i+1)*delta), -0.04, r2*Math.sin((i+1)*delta)),
+							 createArbitraryVertex(r1*Math.cos((i+1)*delta), -0.2,  r1*Math.sin((i+1)*delta)),
+							 createArbitraryVertex(r1*Math.cos(i*delta), -0.2, r1*Math.sin(i*delta))
 							};
 			
-			polygonIndex = addPolygon(polygons, new polygon3D(v, v[0], v[1], v[3], mainThread.textures[13], 1f,1f,1));
+			polygonIndex = addPolygon(polygons, new polygon3D(v, v[0], v[1], v[3], MainThread.textures[13], 1f,1f,1));
 			
 			
 			polygons[polygonIndex].shadowBias = 20000;
 			
 			
-			v = new vector[]{put(r3*Math.cos(i*delta), 0.02, r3*Math.sin(i*delta)),
-					 put(r3*Math.cos((i+1)*delta), 0.02, r3*Math.sin((i+1)*delta)),
-					 put(r2*Math.cos((i+1)*delta), -0.04,  r2*Math.sin((i+1)*delta)),
-					 put(r2*Math.cos(i*delta), -0.04, r2*Math.sin(i*delta))
+			v = new vector[]{createArbitraryVertex(r3*Math.cos(i*delta), 0.02, r3*Math.sin(i*delta)),
+					 createArbitraryVertex(r3*Math.cos((i+1)*delta), 0.02, r3*Math.sin((i+1)*delta)),
+					 createArbitraryVertex(r2*Math.cos((i+1)*delta), -0.04,  r2*Math.sin((i+1)*delta)),
+					 createArbitraryVertex(r2*Math.cos(i*delta), -0.04, r2*Math.sin(i*delta))
 					};
 	
-			polygonIndex = addPolygon(polygons, new polygon3D(v, v[0], v[1], v[3], mainThread.textures[14], 1f,1f,1));
+			polygonIndex = addPolygon(polygons, new polygon3D(v, v[0], v[1], v[3], MainThread.textures[14], 1f,1f,1));
 		
 			polygons[polygonIndex].shadowBias = 10000;
 			
 			v = new vector[]{
-					put(r5*Math.cos(i*delta), 0.03, r5*Math.sin(i*delta)),
-				 put(r5*Math.cos((i+1)*delta), 0.03, r5*Math.sin((i+1)*delta)),
-				 put(r4*Math.cos((i+1)*delta), 0.03,  r4*Math.sin((i+1)*delta)),
-				 put(r4*Math.cos(i*delta), 0.03, r4*Math.sin(i*delta))
+					createArbitraryVertex(r5*Math.cos(i*delta), 0.03, r5*Math.sin(i*delta)),
+				 createArbitraryVertex(r5*Math.cos((i+1)*delta), 0.03, r5*Math.sin((i+1)*delta)),
+				 createArbitraryVertex(r4*Math.cos((i+1)*delta), 0.03,  r4*Math.sin((i+1)*delta)),
+				 createArbitraryVertex(r4*Math.cos(i*delta), 0.03, r4*Math.sin(i*delta))
 				
 			};
-			polygonIndex = addPolygon(polygons, new polygon3D(v, v[0], v[1], v[3], mainThread.textures[beamTexture], 5f,5f,1));
+			polygonIndex = addPolygon(polygons, new polygon3D(v, v[0], v[1], v[3], MainThread.textures[beamTexture], 5f,5f,1));
 			
 			v = new vector[]{
-					 put(r4*Math.cos(i*delta), 0.03, r4*Math.sin(i*delta)),
-					 put(r4*Math.cos((i+1)*delta), 0.03,  r4*Math.sin((i+1)*delta)),
-					 put(r4*Math.cos((i+1)*delta), 0.01,  r4*Math.sin((i+1)*delta)),
-					 put(r4*Math.cos(i*delta), 0.01, r4*Math.sin(i*delta)),		
+					 createArbitraryVertex(r4*Math.cos(i*delta), 0.03, r4*Math.sin(i*delta)),
+					 createArbitraryVertex(r4*Math.cos((i+1)*delta), 0.03,  r4*Math.sin((i+1)*delta)),
+					 createArbitraryVertex(r4*Math.cos((i+1)*delta), 0.01,  r4*Math.sin((i+1)*delta)),
+					 createArbitraryVertex(r4*Math.cos(i*delta), 0.01, r4*Math.sin(i*delta)),
 			};
-			polygonIndex = addPolygon(polygons, new polygon3D(v, v[0], v[1], v[3], mainThread.textures[beamTexture], 5f,5f,1));
+			polygonIndex = addPolygon(polygons, new polygon3D(v, v[0], v[1], v[3], MainThread.textures[beamTexture], 5f,5f,1));
 			
 			
 			v = new vector[]{
 					
-				 put(r5*Math.cos((i+1)*delta), 0.03, r5*Math.sin((i+1)*delta)),
-				 put(r5*Math.cos(i*delta), 0.03, r5*Math.sin(i*delta)),
-				 put(r5*Math.cos(i*delta), 0.02, r5*Math.sin(i*delta)),
-				 put(r5*Math.cos((i+1)*delta), 0.02, r5*Math.sin((i+1)*delta)),
+				 createArbitraryVertex(r5*Math.cos((i+1)*delta), 0.03, r5*Math.sin((i+1)*delta)),
+				 createArbitraryVertex(r5*Math.cos(i*delta), 0.03, r5*Math.sin(i*delta)),
+				 createArbitraryVertex(r5*Math.cos(i*delta), 0.02, r5*Math.sin(i*delta)),
+				 createArbitraryVertex(r5*Math.cos((i+1)*delta), 0.02, r5*Math.sin((i+1)*delta)),
 			};
-			polygonIndex = addPolygon(polygons, new polygon3D(v, v[0], v[1], v[3], mainThread.textures[beamTexture], 5f,5f,1));
+			polygonIndex = addPolygon(polygons, new polygon3D(v, v[0], v[1], v[3], MainThread.textures[beamTexture], 5f,5f,1));
 			
 			
-			change((float)(r3*Math.cos(i*delta)), 0.03f, (float)(r3*Math.sin(i*delta)), tempVector0);
+			changeVertex3DGeometry((float)(r3*Math.cos(i*delta)), 0.03f, (float)(r3*Math.sin(i*delta)), tempVector0);
 			tempVector0.subtract(tempVector);
-			change((float)(r3*Math.cos(i*delta)), 0.03f, (float)(r3*Math.sin(i*delta)), tempVector1);
+			changeVertex3DGeometry((float)(r3*Math.cos(i*delta)), 0.03f, (float)(r3*Math.sin(i*delta)), tempVector1);
 			tempVector1.add(tempVector);
-			change((float)(r6*Math.cos(i*delta)), -0.03f, (float)(r6*Math.sin(i*delta)), tempVector2);
+			changeVertex3DGeometry((float)(r6*Math.cos(i*delta)), -0.03f, (float)(r6*Math.sin(i*delta)), tempVector2);
 			tempVector2.add(tempVector);
-			change((float)(r6*Math.cos(i*delta)), -0.03f, (float)(r6*Math.sin(i*delta)), tempVector3);
+			changeVertex3DGeometry((float)(r6*Math.cos(i*delta)), -0.03f, (float)(r6*Math.sin(i*delta)), tempVector3);
 			tempVector3.subtract(tempVector);
 			
 			v = new vector[]{tempVector0.myClone(), tempVector1.myClone(), tempVector2.myClone(), tempVector3.myClone()};
-			polygonIndex = addPolygon(polygons, new polygon3D(v, v[0], v[1], v[3], mainThread.textures[beamTexture], 5f,5f,1));
+			polygonIndex = addPolygon(polygons, new polygon3D(v, v[0], v[1], v[3], MainThread.textures[beamTexture], 5f,5f,1));
 			
 			v = new vector[4];
 			v[0] = tempVector2.myClone();
@@ -291,7 +291,7 @@ public class communicationCenter extends solidObject{
 			v[2].y-=0.01f;
 			v[3] = tempVector2.myClone();
 			v[3].y-=0.01f;
-			polygonIndex = addPolygon(polygons, new polygon3D(v, v[0], v[1], v[3], mainThread.textures[beamTexture], 5f,5f,1));
+			polygonIndex = addPolygon(polygons, new polygon3D(v, v[0], v[1], v[3], MainThread.textures[beamTexture], 5f,5f,1));
 			
 			v = new vector[4];
 			v[0] = tempVector0.myClone();
@@ -300,7 +300,7 @@ public class communicationCenter extends solidObject{
 			v[2].y-=0.01f;
 			v[3] = tempVector0.myClone();
 			v[3].y-=0.01f;
-			polygonIndex = addPolygon(polygons, new polygon3D(v, v[0], v[1], v[3], mainThread.textures[beamTexture], 5f,5f,1));
+			polygonIndex = addPolygon(polygons, new polygon3D(v, v[0], v[1], v[3], MainThread.textures[beamTexture], 5f,5f,1));
 			
 			v = new vector[4];
 			v[0] = tempVector2.myClone();
@@ -311,7 +311,7 @@ public class communicationCenter extends solidObject{
 			v[3].add(tempVector4, -3);
 			v[2]=v[3].myClone();
 			v[2].add(tempVector4,2);
-			polygonIndex = addPolygon(polygons, new polygon3D(v, v[0], v[1], v[3], mainThread.textures[beamTexture], 5f,5f,1));
+			polygonIndex = addPolygon(polygons, new polygon3D(v, v[0], v[1], v[3], MainThread.textures[beamTexture], 5f,5f,1));
 			
 			v2 = new vector[4];
 			v2[0] = v[3].myClone();
@@ -322,14 +322,14 @@ public class communicationCenter extends solidObject{
 			v2[1].add(tempVector, -2);
 			v2[2].add(tempVector, -2);
 			v2[3].add(tempVector, -2);
-			polygonIndex = addPolygon(polygons, new polygon3D(v2, v2[0], v2[1], v2[3], mainThread.textures[beamTexture], 5f,5f,1));
+			polygonIndex = addPolygon(polygons, new polygon3D(v2, v2[0], v2[1], v2[3], MainThread.textures[beamTexture], 5f,5f,1));
 			
 			v3 = new vector[4];
 			v3[0] = v2[3].myClone();
 			v3[1] = v[0].myClone();
 			v3[2] = v[3].myClone();
 			v3[3] = v2[0].myClone();
-			polygonIndex = addPolygon(polygons, new polygon3D(v3, v3[0], v3[1], v3[3], mainThread.textures[beamTexture], 5f,5f,1));
+			polygonIndex = addPolygon(polygons, new polygon3D(v3, v3[0], v3[1], v3[3], MainThread.textures[beamTexture], 5f,5f,1));
 			
 			tempVector.rotate_XZ(30);
 			tempVector4.rotate_XZ(30);
@@ -340,144 +340,144 @@ public class communicationCenter extends solidObject{
 		
 		v = new vector[12];
 		for(int i = 0; i < 12; i++){
-			v[11 - i] = put(r3*Math.cos(i*delta), 0.02, r3*Math.sin(i*delta));
+			v[11 - i] = createArbitraryVertex(r3*Math.cos(i*delta), 0.02, r3*Math.sin(i*delta));
 		}
 		
 		start.x-=0.005;
 		
-		polygonIndex = addPolygon(polygons, new polygon3D(v, v[0], v[1], v[3], mainThread.textures[26], 10f,10f,1));
+		polygonIndex = addPolygon(polygons, new polygon3D(v, v[0], v[1], v[3], MainThread.textures[26], 10f,10f,1));
 		polygons[polygonIndex].diffuse_I+=10;
 		
 		//radar disk support structure
 		rotationPartIndexStart = polygonIndex+1;
-		v = new vector[]{put(-0.045,0.1, -0.03), put(-0.02,0.1, -0.03), put(-0.02,0.02, -0.05), put(-0.045,0.02, -0.05)};
-		polygonIndex = addPolygon(polygons, new polygon3D(v, v[0], v[1], v[3], mainThread.textures[beamTexture], 1f,2f,1));
+		v = new vector[]{createArbitraryVertex(-0.045,0.1, -0.03), createArbitraryVertex(-0.02,0.1, -0.03), createArbitraryVertex(-0.02,0.02, -0.05), createArbitraryVertex(-0.045,0.02, -0.05)};
+		polygonIndex = addPolygon(polygons, new polygon3D(v, v[0], v[1], v[3], MainThread.textures[beamTexture], 1f,2f,1));
 		
-		v = new vector[]{put(-0.045,0.02, 0.05), put(-0.02,0.02, 0.05), put(-0.02,0.1, 0.03), put(-0.045,0.1, 0.03)};
-		polygonIndex = addPolygon(polygons, new polygon3D(v, v[0], v[1], v[3], mainThread.textures[beamTexture], 1f,2f,1));
+		v = new vector[]{createArbitraryVertex(-0.045,0.02, 0.05), createArbitraryVertex(-0.02,0.02, 0.05), createArbitraryVertex(-0.02,0.1, 0.03), createArbitraryVertex(-0.045,0.1, 0.03)};
+		polygonIndex = addPolygon(polygons, new polygon3D(v, v[0], v[1], v[3], MainThread.textures[beamTexture], 1f,2f,1));
 		
-		v = new vector[]{put(-0.045, 0.1, 0.03), put(-0.045,0.1, -0.03), put(-0.045,0.02, -0.05), put(-0.045,0.02, 0.05)};
-		polygonIndex = addPolygon(polygons, new polygon3D(v, v[0], v[1], v[3], mainThread.textures[beamTexture], 1f,2f,1));
+		v = new vector[]{createArbitraryVertex(-0.045, 0.1, 0.03), createArbitraryVertex(-0.045,0.1, -0.03), createArbitraryVertex(-0.045,0.02, -0.05), createArbitraryVertex(-0.045,0.02, 0.05)};
+		polygonIndex = addPolygon(polygons, new polygon3D(v, v[0], v[1], v[3], MainThread.textures[beamTexture], 1f,2f,1));
 		
-		v = new vector[]{put(-0.02,0.02, 0.05), put(-0.02,0.02, -0.05), put(-0.02,0.1, -0.03), put(-0.02, 0.1, 0.03)};
-		polygonIndex = addPolygon(polygons, new polygon3D(v, v[0], v[1], v[3], mainThread.textures[beamTexture], 1f,2f,1));
+		v = new vector[]{createArbitraryVertex(-0.02,0.02, 0.05), createArbitraryVertex(-0.02,0.02, -0.05), createArbitraryVertex(-0.02,0.1, -0.03), createArbitraryVertex(-0.02, 0.1, 0.03)};
+		polygonIndex = addPolygon(polygons, new polygon3D(v, v[0], v[1], v[3], MainThread.textures[beamTexture], 1f,2f,1));
 		
 		
 		float r = 0.03f;
 		delta = (float)Math.PI/16;
 		for(int i = 0; i < 16; i++){
 			v = new vector[]{
-					put(-0.02, r*Math.cos((i+25)*delta)+0.1,r*Math.sin((i+25)*delta)),
-					put(-0.02, r*Math.cos((i+24)*delta)+0.1, r*Math.sin((i+24)*delta)),
-					 put(-0.045, r*Math.cos((i+24)*delta)+0.1, r*Math.sin((i+24)*delta)),
-					 put(-0.045, r*Math.cos((i+25)*delta)+0.1, r*Math.sin((i+25)*delta)),
+					createArbitraryVertex(-0.02, r*Math.cos((i+25)*delta)+0.1,r*Math.sin((i+25)*delta)),
+					createArbitraryVertex(-0.02, r*Math.cos((i+24)*delta)+0.1, r*Math.sin((i+24)*delta)),
+					 createArbitraryVertex(-0.045, r*Math.cos((i+24)*delta)+0.1, r*Math.sin((i+24)*delta)),
+					 createArbitraryVertex(-0.045, r*Math.cos((i+25)*delta)+0.1, r*Math.sin((i+25)*delta)),
 			};
-			polygonIndex = addPolygon(polygons, new polygon3D(v, v[0], v[1], v[3], mainThread.textures[beamTexture], 1f,2f,1));
+			polygonIndex = addPolygon(polygons, new polygon3D(v, v[0], v[1], v[3], MainThread.textures[beamTexture], 1f,2f,1));
 		}
 		
 		v = new vector[17];
 		for(int i = 0; i < 17; i++){
-			v[16-i] = put(-0.045, r*Math.cos((i+24)*delta)+0.1, r*Math.sin((i+24)*delta));
+			v[16-i] = createArbitraryVertex(-0.045, r*Math.cos((i+24)*delta)+0.1, r*Math.sin((i+24)*delta));
 		}
-		polygonIndex = addPolygon(polygons, new polygon3D(v, v[0], v[1], v[3], mainThread.textures[beamTexture], 1f,2f,1));
+		polygonIndex = addPolygon(polygons, new polygon3D(v, v[0], v[1], v[3], MainThread.textures[beamTexture], 1f,2f,1));
 		
 		v = new vector[17];
 		for(int i = 0; i < 17; i++){
-			v[i] = put(-0.02, r*Math.cos((i+24)*delta)+0.1, r*Math.sin((i+24)*delta));
+			v[i] = createArbitraryVertex(-0.02, r*Math.cos((i+24)*delta)+0.1, r*Math.sin((i+24)*delta));
 		}
-		polygonIndex = addPolygon(polygons, new polygon3D(v, v[0], v[1], v[3], mainThread.textures[beamTexture], 1f,2f,1));
+		polygonIndex = addPolygon(polygons, new polygon3D(v, v[0], v[1], v[3], MainThread.textures[beamTexture], 1f,2f,1));
 		
 		start.x+=0.075;
 	
 		
-		v = new vector[]{put(-0.045,0.1, -0.03), put(-0.02,0.1, -0.03), put(-0.02,0.02, -0.05), put(-0.045,0.02, -0.05)};
-		polygonIndex = addPolygon(polygons, new polygon3D(v, v[0], v[1], v[3], mainThread.textures[beamTexture], 1f,2f,1));
+		v = new vector[]{createArbitraryVertex(-0.045,0.1, -0.03), createArbitraryVertex(-0.02,0.1, -0.03), createArbitraryVertex(-0.02,0.02, -0.05), createArbitraryVertex(-0.045,0.02, -0.05)};
+		polygonIndex = addPolygon(polygons, new polygon3D(v, v[0], v[1], v[3], MainThread.textures[beamTexture], 1f,2f,1));
 		
-		v = new vector[]{put(-0.045,0.02, 0.05), put(-0.02,0.02, 0.05), put(-0.02,0.1, 0.03), put(-0.045,0.1, 0.03)};
-		polygonIndex = addPolygon(polygons, new polygon3D(v, v[0], v[1], v[3], mainThread.textures[beamTexture], 1f,2f,1));
+		v = new vector[]{createArbitraryVertex(-0.045,0.02, 0.05), createArbitraryVertex(-0.02,0.02, 0.05), createArbitraryVertex(-0.02,0.1, 0.03), createArbitraryVertex(-0.045,0.1, 0.03)};
+		polygonIndex = addPolygon(polygons, new polygon3D(v, v[0], v[1], v[3], MainThread.textures[beamTexture], 1f,2f,1));
 		
-		v = new vector[]{put(-0.045, 0.1, 0.03), put(-0.045,0.1, -0.03), put(-0.045,0.02, -0.05), put(-0.045,0.02, 0.05)};
-		polygonIndex = addPolygon(polygons, new polygon3D(v, v[0], v[1], v[3], mainThread.textures[beamTexture], 1f,2f,1));
+		v = new vector[]{createArbitraryVertex(-0.045, 0.1, 0.03), createArbitraryVertex(-0.045,0.1, -0.03), createArbitraryVertex(-0.045,0.02, -0.05), createArbitraryVertex(-0.045,0.02, 0.05)};
+		polygonIndex = addPolygon(polygons, new polygon3D(v, v[0], v[1], v[3], MainThread.textures[beamTexture], 1f,2f,1));
 		
-		v = new vector[]{put(-0.02,0.02, 0.05), put(-0.02,0.02, -0.05), put(-0.02,0.1, -0.03), put(-0.02, 0.1, 0.03)};
-		polygonIndex = addPolygon(polygons, new polygon3D(v, v[0], v[1], v[3], mainThread.textures[beamTexture], 1f,2f,1));
+		v = new vector[]{createArbitraryVertex(-0.02,0.02, 0.05), createArbitraryVertex(-0.02,0.02, -0.05), createArbitraryVertex(-0.02,0.1, -0.03), createArbitraryVertex(-0.02, 0.1, 0.03)};
+		polygonIndex = addPolygon(polygons, new polygon3D(v, v[0], v[1], v[3], MainThread.textures[beamTexture], 1f,2f,1));
 		
 		for(int i = 0; i < 16; i++){
 			v = new vector[]{
-					put(-0.02, r*Math.cos((i+25)*delta)+0.1,r*Math.sin((i+25)*delta)),
-					put(-0.02, r*Math.cos((i+24)*delta)+0.1, r*Math.sin((i+24)*delta)),
-					 put(-0.045, r*Math.cos((i+24)*delta)+0.1, r*Math.sin((i+24)*delta)),
-					 put(-0.045, r*Math.cos((i+25)*delta)+0.1, r*Math.sin((i+25)*delta)),
+					createArbitraryVertex(-0.02, r*Math.cos((i+25)*delta)+0.1,r*Math.sin((i+25)*delta)),
+					createArbitraryVertex(-0.02, r*Math.cos((i+24)*delta)+0.1, r*Math.sin((i+24)*delta)),
+					 createArbitraryVertex(-0.045, r*Math.cos((i+24)*delta)+0.1, r*Math.sin((i+24)*delta)),
+					 createArbitraryVertex(-0.045, r*Math.cos((i+25)*delta)+0.1, r*Math.sin((i+25)*delta)),
 			};
-			polygonIndex = addPolygon(polygons, new polygon3D(v, v[0], v[1], v[3], mainThread.textures[beamTexture], 1f,2f,1));
+			polygonIndex = addPolygon(polygons, new polygon3D(v, v[0], v[1], v[3], MainThread.textures[beamTexture], 1f,2f,1));
 		}
 		
 		v = new vector[17];
 		for(int i = 0; i < 17; i++){
-			v[16-i] = put(-0.045, r*Math.cos((i+24)*delta)+0.1, r*Math.sin((i+24)*delta));
+			v[16-i] = createArbitraryVertex(-0.045, r*Math.cos((i+24)*delta)+0.1, r*Math.sin((i+24)*delta));
 		}
-		polygonIndex = addPolygon(polygons, new polygon3D(v, v[0], v[1], v[3], mainThread.textures[beamTexture], 1f,2f,1));
+		polygonIndex = addPolygon(polygons, new polygon3D(v, v[0], v[1], v[3], MainThread.textures[beamTexture], 1f,2f,1));
 		
 		v = new vector[17];
 		for(int i = 0; i < 17; i++){
-			v[i] = put(-0.02, r*Math.cos((i+24)*delta)+0.1, r*Math.sin((i+24)*delta));
+			v[i] = createArbitraryVertex(-0.02, r*Math.cos((i+24)*delta)+0.1, r*Math.sin((i+24)*delta));
 		}
-		polygonIndex = addPolygon(polygons, new polygon3D(v, v[0], v[1], v[3], mainThread.textures[beamTexture], 1f,2f,1));
+		polygonIndex = addPolygon(polygons, new polygon3D(v, v[0], v[1], v[3], MainThread.textures[beamTexture], 1f,2f,1));
 		
 		start.x-=0.07;
 		
-		v = new vector[]{put(-0.025,0.06, -0.04), put(0.025,0.06, -0.04), put(0.025,0.02, -0.05),put(-0.025,0.02, -0.05)};
-		polygonIndex = addPolygon(polygons, new polygon3D(v, v[0], v[1], v[3], mainThread.textures[beamTexture], 2f,1f,1));
+		v = new vector[]{createArbitraryVertex(-0.025,0.06, -0.04), createArbitraryVertex(0.025,0.06, -0.04), createArbitraryVertex(0.025,0.02, -0.05), createArbitraryVertex(-0.025,0.02, -0.05)};
+		polygonIndex = addPolygon(polygons, new polygon3D(v, v[0], v[1], v[3], MainThread.textures[beamTexture], 2f,1f,1));
 		
-		v = new vector[]{put(-0.025,0.02, 0.05), put(0.025,0.02, 0.05), put(0.025,0.06, 0.04),put(-0.025,0.06, 0.04)};
-		polygonIndex = addPolygon(polygons, new polygon3D(v, v[0], v[1], v[3], mainThread.textures[beamTexture], 2f,1f,1));
+		v = new vector[]{createArbitraryVertex(-0.025,0.02, 0.05), createArbitraryVertex(0.025,0.02, 0.05), createArbitraryVertex(0.025,0.06, 0.04), createArbitraryVertex(-0.025,0.06, 0.04)};
+		polygonIndex = addPolygon(polygons, new polygon3D(v, v[0], v[1], v[3], MainThread.textures[beamTexture], 2f,1f,1));
 		
-		v = new vector[]{put(0.025,0.06, -0.05), put(-0.025,0.06, -0.05), put(-0.025,0.06, 0.05), put(0.025,0.06, 0.05)};
-		polygonIndex = addPolygon(polygons, new polygon3D(v, v[0], v[1], v[3], mainThread.textures[beamTexture], 2f,1f,1));
+		v = new vector[]{createArbitraryVertex(0.025,0.06, -0.05), createArbitraryVertex(-0.025,0.06, -0.05), createArbitraryVertex(-0.025,0.06, 0.05), createArbitraryVertex(0.025,0.06, 0.05)};
+		polygonIndex = addPolygon(polygons, new polygon3D(v, v[0], v[1], v[3], MainThread.textures[beamTexture], 2f,1f,1));
 		
 		
 		start.z-=0.03;
 		
-		v = new vector[]{put(-0.025, 0.27, -0.02), put(0.025, 0.27, -0.02), put(0.025, 0.08, -0.02), put(-0.025, 0.08, -0.02) };
-		polygonIndex = addPolygon(polygons, new polygon3D(v, v[0], v[1], v[3], mainThread.textures[25], 1f,1f,1));
+		v = new vector[]{createArbitraryVertex(-0.025, 0.27, -0.02), createArbitraryVertex(0.025, 0.27, -0.02), createArbitraryVertex(0.025, 0.08, -0.02), createArbitraryVertex(-0.025, 0.08, -0.02) };
+		polygonIndex = addPolygon(polygons, new polygon3D(v, v[0], v[1], v[3], MainThread.textures[25], 1f,1f,1));
 		polygons[polygonIndex].shadowBias = 15000;
 		
-		v = new vector[]{put(-0.025, 0.08, 0.02), put(0.025, 0.08, 0.02), put(0.025, 0.27, 0.02),  put(-0.025, 0.27, 0.02)};
-		polygonIndex = addPolygon(polygons, new polygon3D(v, v[0], v[1], v[3], mainThread.textures[25], 1f,1f,1));
+		v = new vector[]{createArbitraryVertex(-0.025, 0.08, 0.02), createArbitraryVertex(0.025, 0.08, 0.02), createArbitraryVertex(0.025, 0.27, 0.02),  createArbitraryVertex(-0.025, 0.27, 0.02)};
+		polygonIndex = addPolygon(polygons, new polygon3D(v, v[0], v[1], v[3], MainThread.textures[25], 1f,1f,1));
 		polygons[polygonIndex].shadowBias = 15000;
 		
-		v = new vector[]{put(0.025, 0.27, -0.02), put(0.025, 0.27, 0.02), put(0.025, 0.08, 0.02), put(0.025, 0.08, -0.02)};
-		polygonIndex = addPolygon(polygons, new polygon3D(v, v[0], v[1], v[3], mainThread.textures[25], 1f,1f,1));
+		v = new vector[]{createArbitraryVertex(0.025, 0.27, -0.02), createArbitraryVertex(0.025, 0.27, 0.02), createArbitraryVertex(0.025, 0.08, 0.02), createArbitraryVertex(0.025, 0.08, -0.02)};
+		polygonIndex = addPolygon(polygons, new polygon3D(v, v[0], v[1], v[3], MainThread.textures[25], 1f,1f,1));
 		polygons[polygonIndex].shadowBias = 15000;
 		
-		v = new vector[]{put(-0.025, 0.08, -0.02), put(-0.025, 0.08, 0.02), put(-0.025, 0.27, 0.02), put(-0.025, 0.27, -0.02)};
-		polygonIndex = addPolygon(polygons, new polygon3D(v, v[0], v[1], v[3], mainThread.textures[25], 1f,1f,1));
+		v = new vector[]{createArbitraryVertex(-0.025, 0.08, -0.02), createArbitraryVertex(-0.025, 0.08, 0.02), createArbitraryVertex(-0.025, 0.27, 0.02), createArbitraryVertex(-0.025, 0.27, -0.02)};
+		polygonIndex = addPolygon(polygons, new polygon3D(v, v[0], v[1], v[3], MainThread.textures[25], 1f,1f,1));
 		polygons[polygonIndex].shadowBias = 15000;
 		
 		r = 0.02f;
 		
 		for(int i = 0; i < 16; i++){
 			v = new vector[]{
-					put(0.025, r*Math.cos((i+25)*delta)+0.27,r*Math.sin((i+25)*delta)),
-					put(0.025, r*Math.cos((i+24)*delta)+0.27, r*Math.sin((i+24)*delta)),
-					 put(-0.025, r*Math.cos((i+24)*delta)+0.27, r*Math.sin((i+24)*delta)),
-					 put(-0.025, r*Math.cos((i+25)*delta)+0.27, r*Math.sin((i+25)*delta)),
+					createArbitraryVertex(0.025, r*Math.cos((i+25)*delta)+0.27,r*Math.sin((i+25)*delta)),
+					createArbitraryVertex(0.025, r*Math.cos((i+24)*delta)+0.27, r*Math.sin((i+24)*delta)),
+					 createArbitraryVertex(-0.025, r*Math.cos((i+24)*delta)+0.27, r*Math.sin((i+24)*delta)),
+					 createArbitraryVertex(-0.025, r*Math.cos((i+25)*delta)+0.27, r*Math.sin((i+25)*delta)),
 			};
-			polygonIndex = addPolygon(polygons, new polygon3D(v, v[0], v[1], v[3], mainThread.textures[25], 1f,2f,1));
+			polygonIndex = addPolygon(polygons, new polygon3D(v, v[0], v[1], v[3], MainThread.textures[25], 1f,2f,1));
 			polygons[polygonIndex].shadowBias = 15000;
 		}
 		
 		v = new vector[17];
 		for(int i = 0; i < 17; i++){
-			v[16-i] = put(-0.025, r*Math.cos((i+24)*delta)+0.27, r*Math.sin((i+24)*delta));
+			v[16-i] = createArbitraryVertex(-0.025, r*Math.cos((i+24)*delta)+0.27, r*Math.sin((i+24)*delta));
 		}
-		polygonIndex = addPolygon(polygons, new polygon3D(v, v[0], v[1], v[3], mainThread.textures[25], 1f,2f,1));
+		polygonIndex = addPolygon(polygons, new polygon3D(v, v[0], v[1], v[3], MainThread.textures[25], 1f,2f,1));
 		
 		v = new vector[17];
 		for(int i = 0; i < 17; i++){
-			v[i] = put(0.025, r*Math.cos((i+24)*delta)+0.27, r*Math.sin((i+24)*delta));
+			v[i] = createArbitraryVertex(0.025, r*Math.cos((i+24)*delta)+0.27, r*Math.sin((i+24)*delta));
 		}
-		polygonIndex = addPolygon(polygons, new polygon3D(v, v[0], v[1], v[3], mainThread.textures[25], 1f,2f,1));
+		polygonIndex = addPolygon(polygons, new polygon3D(v, v[0], v[1], v[3], MainThread.textures[25], 1f,2f,1));
 	
 		//radar antenna 
 		start.z-=0.27f;
@@ -487,20 +487,20 @@ public class communicationCenter extends solidObject{
 		
 		for(int i = 0; i < 16; i++){
 			v = new vector[]{
-					put(r*Math.sin(i*delta), r*Math.cos(i*delta), -0.005f),
-					put(r*Math.sin(i*delta), r*Math.cos(i*delta), 0.03f),
-					put(r*Math.sin((i+1)*delta), r*Math.cos((i+1)*delta), 0.03f),
-					put(r*Math.sin((i+1)*delta), r*Math.cos((i+1)*delta), -0.005f),
+					createArbitraryVertex(r*Math.sin(i*delta), r*Math.cos(i*delta), -0.005f),
+					createArbitraryVertex(r*Math.sin(i*delta), r*Math.cos(i*delta), 0.03f),
+					createArbitraryVertex(r*Math.sin((i+1)*delta), r*Math.cos((i+1)*delta), 0.03f),
+					createArbitraryVertex(r*Math.sin((i+1)*delta), r*Math.cos((i+1)*delta), -0.005f),
 				};
 			
-			polygonIndex = addPolygon(polygons, new polygon3D(v, v[0], v[1], v[3], mainThread.textures[26], 10f,10f,1));
+			polygonIndex = addPolygon(polygons, new polygon3D(v, v[0], v[1], v[3], MainThread.textures[26], 10f,10f,1));
 		}
 		
 		v = new vector[16];
 		for(int i = 0; i < 16; i++){
-			v[i] = put(r*Math.sin(i*delta), r*Math.cos(i*delta), -0.005f);
+			v[i] = createArbitraryVertex(r*Math.sin(i*delta), r*Math.cos(i*delta), -0.005f);
 		}
-		polygonIndex = addPolygon(polygons, new polygon3D(v, v[0], v[1], v[3], mainThread.textures[26], 10f,10f,1));
+		polygonIndex = addPolygon(polygons, new polygon3D(v, v[0], v[1], v[3], MainThread.textures[26], 10f,10f,1));
 		
 		r = 0.004f;
 		int angle1 = 50;
@@ -515,13 +515,13 @@ public class communicationCenter extends solidObject{
 		
 		for(int i = 0; i < 16; i++){
 			v = new vector[]{
-					put(r*Math.sin(i*delta), r*Math.cos(i*delta), 0f),
-					put(r*Math.sin(i*delta), r*Math.cos(i*delta), length),
-					put(r*Math.sin((i+1)*delta), r*Math.cos((i+1)*delta), length),
-					put(r*Math.sin((i+1)*delta), r*Math.cos((i+1)*delta), 0f),
+					createArbitraryVertex(r*Math.sin(i*delta), r*Math.cos(i*delta), 0f),
+					createArbitraryVertex(r*Math.sin(i*delta), r*Math.cos(i*delta), length),
+					createArbitraryVertex(r*Math.sin((i+1)*delta), r*Math.cos((i+1)*delta), length),
+					createArbitraryVertex(r*Math.sin((i+1)*delta), r*Math.cos((i+1)*delta), 0f),
 				};
 			
-			polygonIndex = addPolygon(polygons, new polygon3D(v, v[0], v[1], v[3], mainThread.textures[25], 10f,10f,1));
+			polygonIndex = addPolygon(polygons, new polygon3D(v, v[0], v[1], v[3], MainThread.textures[25], 10f,10f,1));
 		}
 		
 		iDirection.rotate_XZ(angle2);
@@ -535,13 +535,13 @@ public class communicationCenter extends solidObject{
 		
 		for(int i = 0; i < 16; i++){
 			v = new vector[]{
-					put(r*Math.sin(i*delta), r*Math.cos(i*delta), 0f),
-					put(r*Math.sin(i*delta), r*Math.cos(i*delta), length),
-					put(r*Math.sin((i+1)*delta), r*Math.cos((i+1)*delta), length),
-					put(r*Math.sin((i+1)*delta), r*Math.cos((i+1)*delta), 0f),
+					createArbitraryVertex(r*Math.sin(i*delta), r*Math.cos(i*delta), 0f),
+					createArbitraryVertex(r*Math.sin(i*delta), r*Math.cos(i*delta), length),
+					createArbitraryVertex(r*Math.sin((i+1)*delta), r*Math.cos((i+1)*delta), length),
+					createArbitraryVertex(r*Math.sin((i+1)*delta), r*Math.cos((i+1)*delta), 0f),
 				};
 			
-			polygonIndex = addPolygon(polygons, new polygon3D(v, v[0], v[1], v[3], mainThread.textures[25], 10f,10f,1));
+			polygonIndex = addPolygon(polygons, new polygon3D(v, v[0], v[1], v[3], MainThread.textures[25], 10f,10f,1));
 		}
 		
 		iDirection.rotate_XZ(angle1);
@@ -554,13 +554,13 @@ public class communicationCenter extends solidObject{
 		
 		for(int i = 0; i < 16; i++){
 			v = new vector[]{
-					put(r*Math.sin(i*delta), r*Math.cos(i*delta), 0f),
-					put(r*Math.sin(i*delta), r*Math.cos(i*delta),length),
-					put(r*Math.sin((i+1)*delta), r*Math.cos((i+1)*delta), length),
-					put(r*Math.sin((i+1)*delta), r*Math.cos((i+1)*delta), 0f),
+					createArbitraryVertex(r*Math.sin(i*delta), r*Math.cos(i*delta), 0f),
+					createArbitraryVertex(r*Math.sin(i*delta), r*Math.cos(i*delta),length),
+					createArbitraryVertex(r*Math.sin((i+1)*delta), r*Math.cos((i+1)*delta), length),
+					createArbitraryVertex(r*Math.sin((i+1)*delta), r*Math.cos((i+1)*delta), 0f),
 				};
 			
-			polygonIndex = addPolygon(polygons, new polygon3D(v, v[0], v[1], v[3], mainThread.textures[25], 10f,10f,1));
+			polygonIndex = addPolygon(polygons, new polygon3D(v, v[0], v[1], v[3], MainThread.textures[25], 10f,10f,1));
 		}
 		
 		iDirection.rotate_YZ(angle1);
@@ -573,13 +573,13 @@ public class communicationCenter extends solidObject{
 		
 		for(int i = 0; i < 16; i++){
 			v = new vector[]{
-					put(r*Math.sin(i*delta), r*Math.cos(i*delta), 0f),
-					put(r*Math.sin(i*delta), r*Math.cos(i*delta), length),
-					put(r*Math.sin((i+1)*delta), r*Math.cos((i+1)*delta), length),
-					put(r*Math.sin((i+1)*delta), r*Math.cos((i+1)*delta), 0f),
+					createArbitraryVertex(r*Math.sin(i*delta), r*Math.cos(i*delta), 0f),
+					createArbitraryVertex(r*Math.sin(i*delta), r*Math.cos(i*delta), length),
+					createArbitraryVertex(r*Math.sin((i+1)*delta), r*Math.cos((i+1)*delta), length),
+					createArbitraryVertex(r*Math.sin((i+1)*delta), r*Math.cos((i+1)*delta), 0f),
 				};
 			
-			polygonIndex = addPolygon(polygons, new polygon3D(v, v[0], v[1], v[3], mainThread.textures[25], 10f,10f,1));
+			polygonIndex = addPolygon(polygons, new polygon3D(v, v[0], v[1], v[3], MainThread.textures[25], 10f,10f,1));
 		}
 		
 		iDirection.rotate_YZ(angle2);
@@ -624,23 +624,23 @@ public class communicationCenter extends solidObject{
 				dl = (float)Math.sin(delta*(j+1))/36;
 				if(j==0){
 					v = new vector[]{
-							put(0, 0 + h, l),
-							put(0.038*Math.sin(i*delta), 0.038*Math.cos(i*delta) + h, l - dl),
-							put(0.038*Math.sin((i+1)*delta), 0.038*Math.cos((i+1)*delta) + h, l-dl),
+							createArbitraryVertex(0, 0 + h, l),
+							createArbitraryVertex(0.038*Math.sin(i*delta), 0.038*Math.cos(i*delta) + h, l - dl),
+							createArbitraryVertex(0.038*Math.sin((i+1)*delta), 0.038*Math.cos((i+1)*delta) + h, l-dl),
 					};
-					polygonIndex = createRadarDiskPolygon(v, mainThread.textures[65], 1f,1f,1);
+					polygonIndex = createRadarDiskPolygon(v, MainThread.textures[65], 1f,1f,1);
 					polygons[polygonIndex].Ambient_I+=5;
 					polygons[polygonIndex].reflectance -=45;
 					polygons[polygonIndex].findDiffuse();
 				
 				}else{
 					v = new vector[]{
-						put(r*Math.sin(i*delta), r*Math.cos(i*delta) + h, l),
-						put((r+0.038)*Math.sin(i*delta), (r+0.038)*Math.cos(i*delta) + h, l-dl),
-						put((r+0.038)*Math.sin((i+1)*delta), (r+0.038)*Math.cos((i+1)*delta) + h, l-dl),
-						put(r*Math.sin((i+1)*delta), r*Math.cos((i+1)*delta) + h, l),
+						createArbitraryVertex(r*Math.sin(i*delta), r*Math.cos(i*delta) + h, l),
+						createArbitraryVertex((r+0.038)*Math.sin(i*delta), (r+0.038)*Math.cos(i*delta) + h, l-dl),
+						createArbitraryVertex((r+0.038)*Math.sin((i+1)*delta), (r+0.038)*Math.cos((i+1)*delta) + h, l-dl),
+						createArbitraryVertex(r*Math.sin((i+1)*delta), r*Math.cos((i+1)*delta) + h, l),
 					};
-					polygonIndex = createRadarDiskPolygon(v, mainThread.textures[65], 1f,1f,1);
+					polygonIndex = createRadarDiskPolygon(v, MainThread.textures[65], 1f,1f,1);
 					polygons[polygonIndex].Ambient_I+=5;
 					polygons[polygonIndex].reflectance -=45;
 					polygons[polygonIndex].findDiffuse();
@@ -668,14 +668,14 @@ public class communicationCenter extends solidObject{
 				dl = (float)Math.sin(delta*(j+1))/36;
 				if(j==0){
 					v = new vector[]{
-							put(0.038*Math.sin((i+1)*delta), 0.038*Math.cos((i+1)*delta) + h, l-dl),
-							put(0.038*Math.sin(i*delta), 0.038*Math.cos(i*delta) + h, l - dl),
-							put(0, 0 + h, l),
+							createArbitraryVertex(0.038*Math.sin((i+1)*delta), 0.038*Math.cos((i+1)*delta) + h, l-dl),
+							createArbitraryVertex(0.038*Math.sin(i*delta), 0.038*Math.cos(i*delta) + h, l - dl),
+							createArbitraryVertex(0, 0 + h, l),
 							
 							
 					};
 					
-					polygonIndex = createRadarDiskPolygon(v, mainThread.textures[65], 1f,1f,1);
+					polygonIndex = createRadarDiskPolygon(v, MainThread.textures[65], 1f,1f,1);
 					polygons[polygonIndex].Ambient_I+=5;
 					polygons[polygonIndex].reflectance -=45;
 					polygons[polygonIndex].findDiffuse();
@@ -683,15 +683,15 @@ public class communicationCenter extends solidObject{
 					
 				}else{
 					v = new vector[]{
-							put(r*Math.sin((i+1)*delta), r*Math.cos((i+1)*delta) + h, l),
-							put((r+0.038)*Math.sin((i+1)*delta), (r+0.038)*Math.cos((i+1)*delta) + h, l-dl),
-							put((r+0.038)*Math.sin(i*delta), (r+0.038)*Math.cos(i*delta) + h, l-dl),
-						put(r*Math.sin(i*delta), r*Math.cos(i*delta) + h, l),
+							createArbitraryVertex(r*Math.sin((i+1)*delta), r*Math.cos((i+1)*delta) + h, l),
+							createArbitraryVertex((r+0.038)*Math.sin((i+1)*delta), (r+0.038)*Math.cos((i+1)*delta) + h, l-dl),
+							createArbitraryVertex((r+0.038)*Math.sin(i*delta), (r+0.038)*Math.cos(i*delta) + h, l-dl),
+						createArbitraryVertex(r*Math.sin(i*delta), r*Math.cos(i*delta) + h, l),
 						
 						
 						
 					};
-					polygonIndex = createRadarDiskPolygon(v, mainThread.textures[65], 1f,1f,1);
+					polygonIndex = createRadarDiskPolygon(v, MainThread.textures[65], 1f,1f,1);
 					polygons[polygonIndex].Ambient_I+=5;
 					polygons[polygonIndex].reflectance -=45;
 					polygons[polygonIndex].findDiffuse();
@@ -706,14 +706,14 @@ public class communicationCenter extends solidObject{
 		//radar disk side
 		for(int i = 0; i < 24; i++){
 			v = new vector[]{
-					put(r*Math.sin((i+1)*delta), r*Math.cos((i+1)*delta) + h, l),
-					put((r)*Math.sin((i+1)*delta), (r)*Math.cos((i+1)*delta) + h, l-0.01f),
-					put((r)*Math.sin(i*delta), (r)*Math.cos(i*delta) + h, l-0.01f),
-					put(r*Math.sin(i*delta), r*Math.cos(i*delta) + h, l),
+					createArbitraryVertex(r*Math.sin((i+1)*delta), r*Math.cos((i+1)*delta) + h, l),
+					createArbitraryVertex((r)*Math.sin((i+1)*delta), (r)*Math.cos((i+1)*delta) + h, l-0.01f),
+					createArbitraryVertex((r)*Math.sin(i*delta), (r)*Math.cos(i*delta) + h, l-0.01f),
+					createArbitraryVertex(r*Math.sin(i*delta), r*Math.cos(i*delta) + h, l),
 				
 
 			};
-			polygonIndex = addPolygon(polygons, new polygon3D(v, v[0].myClone(), v[1].myClone(), v[3].myClone(), mainThread.textures[25], 1f,2f,1));
+			polygonIndex = addPolygon(polygons, new polygon3D(v, v[0].myClone(), v[1].myClone(), v[3].myClone(), MainThread.textures[25], 1f,2f,1));
 			polygons[polygonIndex].Ambient_I+=20;
 			polygons[polygonIndex].reflectance = 64;
 			polygons[polygonIndex].findDiffuse();
@@ -775,17 +775,17 @@ public class communicationCenter extends solidObject{
 		tempVector2.cross(tempVector0, tempVector1);
 		tempVector3.cross(tempVector2, tempVector0);
 		
-		geometry.solveLinerEquation2D(tempVector0.x, tempVector0.y, tempVector3.x, tempVector3.y, radarDiskCorner0.x - v[1].x , radarDiskCorner0.y - v[1].y);
-		float X0 = geometry.X;
-		float Y0 = geometry.Y;
+		Geometry.solveLinerEquation2D(tempVector0.x, tempVector0.y, tempVector3.x, tempVector3.y, radarDiskCorner0.x - v[1].x , radarDiskCorner0.y - v[1].y);
+		float X0 = Geometry.X;
+		float Y0 = Geometry.Y;
 		
-		geometry.solveLinerEquation2D(tempVector0.x, tempVector0.y, tempVector3.x, tempVector3.y, radarDiskCorner1.x - v[1].x , radarDiskCorner1.y - v[1].y);
-		float X1 = geometry.X;
-		float Y1 = geometry.Y;
+		Geometry.solveLinerEquation2D(tempVector0.x, tempVector0.y, tempVector3.x, tempVector3.y, radarDiskCorner1.x - v[1].x , radarDiskCorner1.y - v[1].y);
+		float X1 = Geometry.X;
+		float Y1 = Geometry.Y;
 		
-		geometry.solveLinerEquation2D(tempVector0.x, tempVector0.y, tempVector3.x, tempVector3.y, radarDiskCorner3.x - v[1].x , radarDiskCorner3.y - v[1].y);
-		float X3 = geometry.X;
-		float Y3 = geometry.Y;
+		Geometry.solveLinerEquation2D(tempVector0.x, tempVector0.y, tempVector3.x, tempVector3.y, radarDiskCorner3.x - v[1].x , radarDiskCorner3.y - v[1].y);
+		float X3 = Geometry.X;
+		float Y3 = Geometry.Y;
 		
 		//apply the combination in 3d space to find out OUV coordinates
 		tempVector0.set(v[0]);
@@ -861,7 +861,7 @@ public class communicationCenter extends solidObject{
 			countDownToDeath--;
 	
 			if(countDownToDeath == 0){
-				//spawn an explosion when the building is destroyed
+				//spawn an Explosion when the building is destroyed
 				float[] tempFloat = theAssetManager.explosionInfo[theAssetManager.explosionCount];	
 				tempFloat[0] = centre.x;
 				tempFloat[1] = centre.y + 0.15f;
@@ -877,43 +877,43 @@ public class communicationCenter extends solidObject{
 					cancelResearch(teamNo);
 				
 				if(teamNo == 0)
-					mainThread.pc.theBaseInfo.numberOfCommunicationCenter--;
+					MainThread.playerCommander.theBaseInfo.numberOfCommunicationCenter--;
 				else
-					mainThread.ec.theBaseInfo.numberOfCommunicationCenter--;
+					MainThread.enemyCommander.theBaseInfo.numberOfCommunicationCenter--;
 				
 				
 				//removeFromGridMap();
-				mainThread.gridMap.tiles[tileIndex[0]][0] = null;  
-				mainThread.gridMap.tiles[tileIndex[1]][0] = null; 
-				mainThread.gridMap.tiles[tileIndex[2]][0] = null; 
-				mainThread.gridMap.tiles[tileIndex[3]][0] = null; 
+				MainThread.gridMap.tiles[tileIndex[0]][0] = null;
+				MainThread.gridMap.tiles[tileIndex[1]][0] = null;
+				MainThread.gridMap.tiles[tileIndex[2]][0] = null;
+				MainThread.gridMap.tiles[tileIndex[3]][0] = null;
 				
-				mainThread.gridMap.tiles[tileIndex[0]][1] = null;  
-				mainThread.gridMap.tiles[tileIndex[1]][1] = null; 
-				mainThread.gridMap.tiles[tileIndex[2]][1] = null; 
-				mainThread.gridMap.tiles[tileIndex[3]][1] = null; 
+				MainThread.gridMap.tiles[tileIndex[0]][1] = null;
+				MainThread.gridMap.tiles[tileIndex[1]][1] = null;
+				MainThread.gridMap.tiles[tileIndex[2]][1] = null;
+				MainThread.gridMap.tiles[tileIndex[3]][1] = null;
 				
-				mainThread.gridMap.tiles[tileIndex[0]][2] = null;  
-				mainThread.gridMap.tiles[tileIndex[1]][2] = null; 
-				mainThread.gridMap.tiles[tileIndex[2]][2] = null; 
-				mainThread.gridMap.tiles[tileIndex[3]][2] = null; 
+				MainThread.gridMap.tiles[tileIndex[0]][2] = null;
+				MainThread.gridMap.tiles[tileIndex[1]][2] = null;
+				MainThread.gridMap.tiles[tileIndex[2]][2] = null;
+				MainThread.gridMap.tiles[tileIndex[3]][2] = null;
 				
-				mainThread.gridMap.tiles[tileIndex[0]][3] = null;  
-				mainThread.gridMap.tiles[tileIndex[1]][3] = null; 
-				mainThread.gridMap.tiles[tileIndex[2]][3] = null; 
-				mainThread.gridMap.tiles[tileIndex[3]][3] = null; 
+				MainThread.gridMap.tiles[tileIndex[0]][3] = null;
+				MainThread.gridMap.tiles[tileIndex[1]][3] = null;
+				MainThread.gridMap.tiles[tileIndex[2]][3] = null;
+				MainThread.gridMap.tiles[tileIndex[3]][3] = null;
 
-				mainThread.gridMap.tiles[tileIndex[0]][4] = null;  
-				mainThread.gridMap.tiles[tileIndex[1]][4] = null; 
-				mainThread.gridMap.tiles[tileIndex[2]][4] = null; 
-				mainThread.gridMap.tiles[tileIndex[3]][4] = null; 
+				MainThread.gridMap.tiles[tileIndex[0]][4] = null;
+				MainThread.gridMap.tiles[tileIndex[1]][4] = null;
+				MainThread.gridMap.tiles[tileIndex[2]][4] = null;
+				MainThread.gridMap.tiles[tileIndex[3]][4] = null;
 				
 				if(teamNo != 0){
-					mainThread.gridMap.tiles[tileIndex[4]][4] = null;  
-					mainThread.gridMap.tiles[tileIndex[5]][4] = null; 
-					mainThread.gridMap.tiles[tileIndex[6]][4] = null; 
-					mainThread.gridMap.tiles[tileIndex[7]][4] = null; 
-					mainThread.gridMap.tiles[tileIndex[8]][4] = null; 
+					MainThread.gridMap.tiles[tileIndex[4]][4] = null;
+					MainThread.gridMap.tiles[tileIndex[5]][4] = null;
+					MainThread.gridMap.tiles[tileIndex[6]][4] = null;
+					MainThread.gridMap.tiles[tileIndex[7]][4] = null;
+					MainThread.gridMap.tiles[tileIndex[8]][4] = null;
 				}
 				
 				
@@ -929,7 +929,7 @@ public class communicationCenter extends solidObject{
 				tempFloat[3] = 1.5f;
 				tempFloat[4] = 1;
 				tempFloat[5] = 0;
-				tempFloat[6] = 6 + (gameData.getRandom()%4);
+				tempFloat[6] = 6 + (GameData.getRandom()%4);
 				tempFloat[7] = this.height;
 				theAssetManager.explosionCount++; 
 				
@@ -938,7 +938,7 @@ public class communicationCenter extends solidObject{
 		}
 		
 		if(isRepairing && currentHP >0){
-			if(mainThread.gameFrame%8==0 && theBaseInfo.currentCredit > 0 && currentHP <maxHP){
+			if(MainThread.gameFrame%8==0 && theBaseInfo.currentCredit > 0 && currentHP <maxHP){
 				currentHP+=2;
 				theBaseInfo.currentCredit--;
 				if(currentHP > maxHP)
@@ -947,12 +947,12 @@ public class communicationCenter extends solidObject{
 		}
 		
 		//process researching
-		if(mainThread.gameFrame%2==0 && (!(theBaseInfo.lowPower && mainThread.gameFrame%4==0))){
+		if(MainThread.gameFrame%2==0 && (!(theBaseInfo.lowPower && MainThread.gameFrame%4==0))){
 			
 			if(teamNo == 0){
 				if(harvesterSpeedResearchProgress_player < 240){
-					if(mainThread.pc.theBaseInfo.currentCredit >0){
-						mainThread.pc.theBaseInfo.currentCredit--;
+					if(MainThread.playerCommander.theBaseInfo.currentCredit >0){
+						MainThread.playerCommander.theBaseInfo.currentCredit--;
 						creditSpentOnResearching_player++;
 						harvesterSpeedResearchProgress_player = 240 * creditSpentOnResearching_player/1200;
 					}
@@ -966,8 +966,8 @@ public class communicationCenter extends solidObject{
 				}
 				
 				if(rapidfireResearchProgress_player < 240){
-					if(mainThread.pc.theBaseInfo.currentCredit >0){
-						mainThread.pc.theBaseInfo.currentCredit--;
+					if(MainThread.playerCommander.theBaseInfo.currentCredit >0){
+						MainThread.playerCommander.theBaseInfo.currentCredit--;
 						creditSpentOnResearching_player++;
 						rapidfireResearchProgress_player = 240 * creditSpentOnResearching_player/1200;
 					}
@@ -981,8 +981,8 @@ public class communicationCenter extends solidObject{
 				
 			}else{
 				if(harvesterSpeedResearchProgress_enemy < 240){
-					if(mainThread.ec.theBaseInfo.currentCredit >0){
-						mainThread.ec.theBaseInfo.currentCredit--;
+					if(MainThread.enemyCommander.theBaseInfo.currentCredit >0){
+						MainThread.enemyCommander.theBaseInfo.currentCredit--;
 						creditSpentOnResearching_enemy++;
 						harvesterSpeedResearchProgress_enemy = 240 * creditSpentOnResearching_enemy/1500;
 					}
@@ -996,8 +996,8 @@ public class communicationCenter extends solidObject{
 				}
 				
 				if(rapidfireResearchProgress_enemy < 240){
-					if(mainThread.ec.theBaseInfo.currentCredit >0){
-						mainThread.ec.theBaseInfo.currentCredit--;
+					if(MainThread.enemyCommander.theBaseInfo.currentCredit >0){
+						MainThread.enemyCommander.theBaseInfo.currentCredit--;
 						creditSpentOnResearching_enemy++;
 						rapidfireResearchProgress_enemy = 240 * creditSpentOnResearching_enemy/1500;
 					}
@@ -1019,21 +1019,21 @@ public class communicationCenter extends solidObject{
 			underAttackCountDown--;
 		
 		//mark itself on obstacle map
-		mainThread.gridMap.currentObstacleMap[tileIndex[0]] = false;
-		mainThread.gridMap.currentObstacleMap[tileIndex[1]] = false;
-		mainThread.gridMap.currentObstacleMap[tileIndex[2]] = false;
-		mainThread.gridMap.currentObstacleMap[tileIndex[3]] = false;
+		MainThread.gridMap.currentObstacleMap[tileIndex[0]] = false;
+		MainThread.gridMap.currentObstacleMap[tileIndex[1]] = false;
+		MainThread.gridMap.currentObstacleMap[tileIndex[2]] = false;
+		MainThread.gridMap.currentObstacleMap[tileIndex[3]] = false;
 		
-		//update center in camera coordinate
+		//update center in Camera coordinate
 		tempCentre.set(centre);
-		tempCentre.subtract(camera.position);
-		tempCentre.rotate_XZ(camera.XZ_angle);
-		tempCentre.rotate_YZ(camera.YZ_angle); 
+		tempCentre.subtract(Camera.position);
+		tempCentre.rotate_XZ(Camera.XZ_angle);
+		tempCentre.rotate_YZ(Camera.YZ_angle);
 		tempCentre.updateLocation();
 			
-		theAssetManager = mainThread.theAssetManager;
+		theAssetManager = MainThread.theAssetManager;
 		
-		//test if the building is visible in camera point of view
+		//test if the building is visible in Camera point of view
 		if(visibleBoundary.contains(tempCentre.screenX, tempCentre.screenY) && isRevealed){
 			visible = true;
 			
@@ -1043,27 +1043,27 @@ public class communicationCenter extends solidObject{
 				withinViewScreen = false;
 			
 			tempshadowvertex0.set(shadowvertex0);
-			tempshadowvertex0.subtract(camera.position);
-			tempshadowvertex0.rotate_XZ(camera.XZ_angle);
-			tempshadowvertex0.rotate_YZ(camera.YZ_angle); 
+			tempshadowvertex0.subtract(Camera.position);
+			tempshadowvertex0.rotate_XZ(Camera.XZ_angle);
+			tempshadowvertex0.rotate_YZ(Camera.YZ_angle);
 			tempshadowvertex0.updateLocation();
 			
 			tempshadowvertex1.set(shadowvertex1);
-			tempshadowvertex1.subtract(camera.position);
-			tempshadowvertex1.rotate_XZ(camera.XZ_angle);
-			tempshadowvertex1.rotate_YZ(camera.YZ_angle); 
+			tempshadowvertex1.subtract(Camera.position);
+			tempshadowvertex1.rotate_XZ(Camera.XZ_angle);
+			tempshadowvertex1.rotate_YZ(Camera.YZ_angle);
 			tempshadowvertex1.updateLocation();
 			
 			tempshadowvertex2.set(shadowvertex2);
-			tempshadowvertex2.subtract(camera.position);
-			tempshadowvertex2.rotate_XZ(camera.XZ_angle);
-			tempshadowvertex2.rotate_YZ(camera.YZ_angle); 
+			tempshadowvertex2.subtract(Camera.position);
+			tempshadowvertex2.rotate_XZ(Camera.XZ_angle);
+			tempshadowvertex2.rotate_YZ(Camera.YZ_angle);
 			tempshadowvertex2.updateLocation();
 			
 			tempshadowvertex3.set(shadowvertex3);
-			tempshadowvertex3.subtract(camera.position);
-			tempshadowvertex3.rotate_XZ(camera.XZ_angle);
-			tempshadowvertex3.rotate_YZ(camera.YZ_angle); 
+			tempshadowvertex3.subtract(Camera.position);
+			tempshadowvertex3.rotate_XZ(Camera.XZ_angle);
+			tempshadowvertex3.rotate_YZ(Camera.YZ_angle);
 			tempshadowvertex3.updateLocation();
 
 			updateGeometry();
@@ -1101,7 +1101,7 @@ public class communicationCenter extends solidObject{
 			for(int y = 0; y < 25; y++){
 				for(int x = 0; x < 25; x++){
 					if(bitmapVisionForEnemy[x+ y*25])
-						enemyCommander.tempBitmap[xPos + x + (yPos+y)*148] =true;
+						EnemyCommander.tempBitmap[xPos + x + (yPos+y)*148] =true;
 				}
 			}
 		}
@@ -1146,7 +1146,7 @@ public class communicationCenter extends solidObject{
 		}
 		
 		//scan for clocked unit
-		if((ID + mainThread.gameFrame)%10 == 0 && !theBaseInfo.lowPower){
+		if((ID + MainThread.gameFrame)%10 == 0 && !theBaseInfo.lowPower){
 			currentOccupiedTile = (int)(centre.x*64)/16 + (127 - (int)(centre.z*64)/16)*128;
 			
 			for(int i = 0; i < tileCheckList.length; i++){
@@ -1154,7 +1154,7 @@ public class communicationCenter extends solidObject{
 					int index = currentOccupiedTile + tileCheckList[i];
 					if(index < 0 || index >= 16384 || Math.abs(index%128 - currentOccupiedTile%128) > 20)
 						continue;
-					tile = mainThread.gridMap.tiles[index];
+					tile = MainThread.gridMap.tiles[index];
 					
 					for(int j = 0; j < 4; j++){
 						if(tile[j] != null){
@@ -1264,22 +1264,22 @@ public class communicationCenter extends solidObject{
 		if(teamNo == 0){
 			harvesterSpeedResearchProgress_player = 255;
 			rapidfireResearchProgress_player = 255;
-			mainThread.pc.theBaseInfo.currentCredit+=creditSpentOnResearching_player;
+			MainThread.playerCommander.theBaseInfo.currentCredit+=creditSpentOnResearching_player;
 			creditSpentOnResearching_player = 0;
 		}else{
 			harvesterSpeedResearchProgress_enemy = 255;
 			rapidfireResearchProgress_enemy = 255;
-			mainThread.ec.theBaseInfo.currentCredit+=creditSpentOnResearching_enemy;
+			MainThread.enemyCommander.theBaseInfo.currentCredit+=creditSpentOnResearching_enemy;
 			creditSpentOnResearching_enemy = 0;
 		}
 	}
 	
 	
 	public void upgradeHarvester(int teamNo){
-		for(int i = 0; i < mainThread.theAssetManager.harvesters.length; i++){
-			if(mainThread.theAssetManager.harvesters[i] != null &&  mainThread.theAssetManager.harvesters[i].teamNo == teamNo){
-				mainThread.theAssetManager.harvesters[i].speed =  0.014f;
-				mainThread.theAssetManager.harvesters[i].bodyTurnRate = 8;
+		for(int i = 0; i < MainThread.theAssetManager.Harvesters.length; i++){
+			if(MainThread.theAssetManager.Harvesters[i] != null &&  MainThread.theAssetManager.Harvesters[i].teamNo == teamNo){
+				MainThread.theAssetManager.Harvesters[i].speed =  0.014f;
+				MainThread.theAssetManager.Harvesters[i].bodyTurnRate = 8;
 			}
 		}		
 	}
@@ -1289,4 +1289,36 @@ public class communicationCenter extends solidObject{
 	public vector getMovement(){
 		return movenment;
 	}
+
+    //clone a group of polygons (doesn't work on smooth shaded polygons)
+    public polygon3D[] clonePolygons(polygon3D[] polys, boolean createNewOUV){
+        int l = polys.length;
+
+        polygon3D[] clone = new polygon3D[l];
+
+        for(int i = 0; i < l; i++){
+            if(polys[i] == null)
+                continue;
+            int length = polys[i].vertex3D.length;
+            v = new vector[length];
+            for(int j = 0; j < length; j++){
+                v[j] = polys[i].vertex3D[j].myClone();
+            }
+
+            int myType = polys[i].type;
+            float scaleX = polys[i].scaleX;
+            float scaleY = polys[i].scaleY;
+            texture myTexture = polys[i].myTexture;
+            if(createNewOUV)
+                clone[i] = new polygon3D(v, polys[i].origin.myClone(), polys[i].rightEnd.myClone(), polys[i].bottomEnd.myClone(), myTexture, scaleX, scaleY, myType);
+            else
+                clone[i] = new polygon3D(v, v[0], v[1], v[3], myTexture, scaleX, scaleY, myType);
+            clone[i].shadowBias = polys[i].shadowBias;
+            clone[i].diffuse_I = polys[i].diffuse_I;
+            clone[i].Ambient_I = polys[i].Ambient_I;
+        }
+
+
+        return clone;
+    }
 }

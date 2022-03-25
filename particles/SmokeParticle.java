@@ -1,10 +1,10 @@
 package particles;
 
-import core.mainThread;
+import core.MainThread;
 import core.postProcessingThread;
 import core.vector;
 
-public class smokeParticle {
+public class SmokeParticle {
 	//size of the smoke particle 
 		public float size;
 		
@@ -28,11 +28,11 @@ public class smokeParticle {
 		public static int[] screen;
 		public static int[] zbuffer;
 		
-		public static int screen_width = mainThread.screen_width;
-		public static int screen_height = mainThread.screen_height;
+		public static int screen_width = MainThread.screen_width;
+		public static int screen_height = MainThread.screen_height;
 		
 		
-		public smokeParticle(){
+		public SmokeParticle(){
 			centre = new vector(0,0,0);
 			tempCentre = new vector(0,0,0);
 		}
@@ -59,8 +59,8 @@ public class smokeParticle {
 			if(!isInAction)
 				return;
 			
-			smokeParticle.screen = postProcessingThread.currentScreen;
-			smokeParticle.zbuffer = postProcessingThread.currentZbuffer;
+			SmokeParticle.screen = postProcessingThread.currentScreen;
+			SmokeParticle.zbuffer = postProcessingThread.currentZbuffer;
 			
 			if(size ==1.5){
 				centre.y += 0.0035f;
@@ -72,7 +72,7 @@ public class smokeParticle {
 				centre.y -= 0.006f;
 			}
 			
-			//update centre in camera coordinate 
+			//update centre in Camera coordinate
 			vector cameraPosition = postProcessingThread.cameraPosition;
 			float X = 0,Y = 0, Z = 0, 
 			camX = cameraPosition.x, camY = cameraPosition.y, camZ = cameraPosition.z,
@@ -108,7 +108,7 @@ public class smokeParticle {
 				return;
 			}
 			
-			int[] sprite = mainThread.textures[spriteIndex].smoke[frameIndex/2];
+			int[] sprite = MainThread.textures[spriteIndex].smoke[frameIndex/2];
 			
 			
 			float ratio = size*2/tempCentre.z;
@@ -206,7 +206,7 @@ public class smokeParticle {
 				}
 			}else
 			
-			//rocket tail particle
+			//Rocket tail particle
 			if(size == 1f){
 				if(yTop >= 0 && yBot < screen_height && xTop >=  0 && xBot < screen_width){
 					for(int i = yTop, y = 0; i < yBot; i++, y++){
@@ -242,7 +242,7 @@ public class smokeParticle {
 				}
 			}else
 				
-			//refinery smoke particle	
+			//Refinery smoke particle
 			if(size == 0.9f){
 				for(int i = yTop, y = 0; i < yBot; i++, y++){
 					if(i < 0 || i >=screen_height)

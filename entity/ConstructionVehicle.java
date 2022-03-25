@@ -3,10 +3,10 @@ package entity;
 import java.awt.Rectangle;
 
 import core.*;
-import enemyAI.enemyCommander;
+import enemyAI.EnemyCommander;
 
 
-public class constructionVehicle extends solidObject {
+public class ConstructionVehicle extends SolidInfrastructure {
 
 	public vector iDirectionBody, jDirectionBody, kDirectionBody;
 	public vector bodyCenter;
@@ -29,11 +29,11 @@ public class constructionVehicle extends solidObject {
 
 	public static int maxHP = 300;
 
-	// a screen space boundary which is used to test if the harvester object is
-	// visible from camera point of view
+	// a screen space boundary which is used to test if the Harvester object is
+	// visible from Camera point of view
 	public final static Rectangle visibleBoundary = new Rectangle(-70, -25,screen_width+140, screen_height+85);
 
-	// a screen space boundary which is used to test if the entire harvester
+	// a screen space boundary which is used to test if the entire Harvester
 	// object is within the screen
 	public final static Rectangle screenBoundary = new Rectangle(40, 40, screen_width-90,screen_height-80);
 
@@ -44,7 +44,7 @@ public class constructionVehicle extends solidObject {
 	public final static int visionW = 500 + (screen_width-768);
 	public final static int visionH = 650 + (screen_height-512);
 
-	// a bitmap representation of the vision of the harvester for enemy
+	// a bitmap representation of the vision of the Harvester for enemy
 	// commander
 	public static boolean[] bitmapVisionForEnemy;
 
@@ -73,9 +73,9 @@ public class constructionVehicle extends solidObject {
 
 	public static int[] surrounding = new int[9];
 
-	public constructionYard myConstructionYard;
+	public ConstructionYard myConstructionYard;
 
-	public constructionVehicle(vector origin, int bodyAngle, int teamNo) {
+	public ConstructionVehicle(vector origin, int bodyAngle, int teamNo) {
 		speed = 0.009f;
 		start = new vector(0, 0, 0);
 		centre = origin.myClone();
@@ -94,9 +94,9 @@ public class constructionVehicle extends solidObject {
 		}
 
 		ID = globalUniqID++;
-		randomNumber = gameData.getRandom();
+		randomNumber = GameData.getRandom();
 		height = centre.y + 0.5f; // ?
-		theAssetManager = mainThread.theAssetManager;
+		theAssetManager = MainThread.theAssetManager;
 		boundary2D = new Rect((int) (origin.x * 64) - 8,
 				(int) (origin.z * 64) + 8, 16, 16);
 		border = new Rect(0, 0, 16, 16);
@@ -135,112 +135,112 @@ public class constructionVehicle extends solidObject {
 		if (body == null) {
 			start.y -= 0.18f;
 			body = new polygon3D[87];
-			v = new vector[] { put(-0.071, 0.025, 0.11),
-					put(-0.071, 0.025, -0.15), put(-0.071, 0.005, -0.15),
-					put(-0.071, -0.025, -0.08), put(-0.071, -0.025, 0.07),
-					put(-0.071, 0.005, 0.11) };
-			body[0] = new polygon3D(v, put(-0.071, 0.027, 0.11), put(-0.071,
-					0.027, -0.15), put(-0.071, -0.025, 0.11), mainThread.textures[3],
+			v = new vector[] { createArbitraryVertex(-0.071, 0.025, 0.11),
+					createArbitraryVertex(-0.071, 0.025, -0.15), createArbitraryVertex(-0.071, 0.005, -0.15),
+					createArbitraryVertex(-0.071, -0.025, -0.08), createArbitraryVertex(-0.071, -0.025, 0.07),
+					createArbitraryVertex(-0.071, 0.005, 0.11) };
+			body[0] = new polygon3D(v, createArbitraryVertex(-0.071, 0.027, 0.11), createArbitraryVertex(-0.071,
+					0.027, -0.15), createArbitraryVertex(-0.071, -0.025, 0.11), MainThread.textures[3],
 					1, 1, 1);
 
-			v = new vector[] { put(0.071, 0.005, 0.11),
-					put(0.071, -0.025, 0.07), put(0.071, -0.025, -0.08),
-					put(0.071, 0.005, -0.15), put(0.071, 0.025, -0.15),
-					put(0.071, 0.025, 0.11) };
-			body[1] = new polygon3D(v, put(0.071, 0.027, -0.15), put(0.071,
-					0.027, 0.11), put(0.071, -0.025, -0.15), mainThread.textures[3],
+			v = new vector[] { createArbitraryVertex(0.071, 0.005, 0.11),
+					createArbitraryVertex(0.071, -0.025, 0.07), createArbitraryVertex(0.071, -0.025, -0.08),
+					createArbitraryVertex(0.071, 0.005, -0.15), createArbitraryVertex(0.071, 0.025, -0.15),
+					createArbitraryVertex(0.071, 0.025, 0.11) };
+			body[1] = new polygon3D(v, createArbitraryVertex(0.071, 0.027, -0.15), createArbitraryVertex(0.071,
+					0.027, 0.11), createArbitraryVertex(0.071, -0.025, -0.15), MainThread.textures[3],
 					1, 1, 1);
 
-			v = new vector[] { put(-0.07, 0.05, -0.15), put(0.07, 0.05, -0.15),
-					put(0.07, 0.015, -0.15), put(-0.07, 0.015, -0.15) };
+			v = new vector[] { createArbitraryVertex(-0.07, 0.05, -0.15), createArbitraryVertex(0.07, 0.05, -0.15),
+					createArbitraryVertex(0.07, 0.015, -0.15), createArbitraryVertex(-0.07, 0.015, -0.15) };
 			body[2] = new polygon3D(v, v[0], v[1], v[3],
-					mainThread.textures[skinTextureIndex], 1, 0.3f, 1);
+					MainThread.textures[skinTextureIndex], 1, 0.3f, 1);
 
-			v = new vector[] { put(-0.07, 0.005, -0.15),
-					put(-0.05, 0.005, -0.15), put(-0.05, -0.025, -0.08),
-					put(-0.07, -0.025, -0.08) };
-			body[3] = new polygon3D(v, v[0], v[1], v[3], mainThread.textures[3], 1,
+			v = new vector[] { createArbitraryVertex(-0.07, 0.005, -0.15),
+					createArbitraryVertex(-0.05, 0.005, -0.15), createArbitraryVertex(-0.05, -0.025, -0.08),
+					createArbitraryVertex(-0.07, -0.025, -0.08) };
+			body[3] = new polygon3D(v, v[0], v[1], v[3], MainThread.textures[3], 1,
 					1, 1);
 
-			v = new vector[] { put(-0.07, 0.015, -0.15),
-					put(-0.05, 0.015, -0.15), put(-0.05, 0.005, -0.15),
-					put(-0.07, 0.005, -0.15) };
-			body[4] = new polygon3D(v, v[0], v[1], v[3], mainThread.textures[3], 1,
+			v = new vector[] { createArbitraryVertex(-0.07, 0.015, -0.15),
+					createArbitraryVertex(-0.05, 0.015, -0.15), createArbitraryVertex(-0.05, 0.005, -0.15),
+					createArbitraryVertex(-0.07, 0.005, -0.15) };
+			body[4] = new polygon3D(v, v[0], v[1], v[3], MainThread.textures[3], 1,
 					1, 1);
 
-			v = new vector[] { put(0.05, 0.015, -0.15),
-					put(0.07, 0.015, -0.15), put(0.07, 0.005, -0.15),
-					put(0.05, 0.005, -0.15) };
-			body[5] = new polygon3D(v, v[0], v[1], v[3], mainThread.textures[3], 1,
+			v = new vector[] { createArbitraryVertex(0.05, 0.015, -0.15),
+					createArbitraryVertex(0.07, 0.015, -0.15), createArbitraryVertex(0.07, 0.005, -0.15),
+					createArbitraryVertex(0.05, 0.005, -0.15) };
+			body[5] = new polygon3D(v, v[0], v[1], v[3], MainThread.textures[3], 1,
 					1, 1);
 
-			v = new vector[] { put(0.05, 0.005, -0.15),
-					put(0.07, 0.005, -0.15), put(0.07, -0.025, -0.08),
-					put(0.05, -0.025, -0.08) };
-			body[6] = new polygon3D(v, v[0], v[1], v[3], mainThread.textures[3], 1,
+			v = new vector[] { createArbitraryVertex(0.05, 0.005, -0.15),
+					createArbitraryVertex(0.07, 0.005, -0.15), createArbitraryVertex(0.07, -0.025, -0.08),
+					createArbitraryVertex(0.05, -0.025, -0.08) };
+			body[6] = new polygon3D(v, v[0], v[1], v[3], MainThread.textures[3], 1,
 					1, 1);
 
-			v = new vector[] { put(0.07, 0.05, -0.15), put(0.07, 0.05, 0.11),
-					put(0.07, 0.015, 0.11), put(0.07, 0.015, -0.15) };
-			body[7] = new polygon3D(v, put(0.07, 0.05, -0.15), put(0.07, 0.05,
-					0.11), put(0.07, 0.015, -0.15),
-					mainThread.textures[skinTextureIndex], 1, 0.3f, 1);
+			v = new vector[] { createArbitraryVertex(0.07, 0.05, -0.15), createArbitraryVertex(0.07, 0.05, 0.11),
+					createArbitraryVertex(0.07, 0.015, 0.11), createArbitraryVertex(0.07, 0.015, -0.15) };
+			body[7] = new polygon3D(v, createArbitraryVertex(0.07, 0.05, -0.15), createArbitraryVertex(0.07, 0.05,
+					0.11), createArbitraryVertex(0.07, 0.015, -0.15),
+					MainThread.textures[skinTextureIndex], 1, 0.3f, 1);
 
-			v = new vector[] { put(-0.07, 0.05, 0.11), put(-0.07, 0.05, -0.15),
-					put(-0.07, 0.015, -0.15), put(-0.07, 0.015, 0.11) };
-			body[8] = new polygon3D(v, put(-0.07, 0.05, 0.11), put(-0.07, 0.05,
-					-0.15), put(-0.07, 0.015, 0.11),
-					mainThread.textures[skinTextureIndex], 1, 0.3f, 1);
+			v = new vector[] { createArbitraryVertex(-0.07, 0.05, 0.11), createArbitraryVertex(-0.07, 0.05, -0.15),
+					createArbitraryVertex(-0.07, 0.015, -0.15), createArbitraryVertex(-0.07, 0.015, 0.11) };
+			body[8] = new polygon3D(v, createArbitraryVertex(-0.07, 0.05, 0.11), createArbitraryVertex(-0.07, 0.05,
+					-0.15), createArbitraryVertex(-0.07, 0.015, 0.11),
+					MainThread.textures[skinTextureIndex], 1, 0.3f, 1);
 
-			v = new vector[] { put(0.07, 0.05, 0.11), put(-0.07, 0.05, 0.11),
-					put(-0.07, 0.01, 0.11), put(0.07, 0.01, 0.11) };
+			v = new vector[] { createArbitraryVertex(0.07, 0.05, 0.11), createArbitraryVertex(-0.07, 0.05, 0.11),
+					createArbitraryVertex(-0.07, 0.01, 0.11), createArbitraryVertex(0.07, 0.01, 0.11) };
 			body[9] = new polygon3D(v, v[2], v[3], v[1],
-					mainThread.textures[skinTextureIndex], 1, 0.3f, 1);
+					MainThread.textures[skinTextureIndex], 1, 0.3f, 1);
 
-			v = new vector[] { put(0.07, 0.05, 0.11), put(-0.07, 0.05, 0.11),
-					put(-0.07, 0.01, 0.11), put(0.07, 0.01, 0.11) };
+			v = new vector[] { createArbitraryVertex(0.07, 0.05, 0.11), createArbitraryVertex(-0.07, 0.05, 0.11),
+					createArbitraryVertex(-0.07, 0.01, 0.11), createArbitraryVertex(0.07, 0.01, 0.11) };
 			body[10] = new polygon3D(v, v[2], v[3], v[1],
-					mainThread.textures[skinTextureIndex], 1, 0.3f, 1);
+					MainThread.textures[skinTextureIndex], 1, 0.3f, 1);
 
-			v = new vector[] { put(0.07, 0.05, 0.11), put(0.07, 0.05, -0.15),
-					put(-0.07, 0.05, -0.15), put(-0.07, 0.05, 0.11) };
+			v = new vector[] { createArbitraryVertex(0.07, 0.05, 0.11), createArbitraryVertex(0.07, 0.05, -0.15),
+					createArbitraryVertex(-0.07, 0.05, -0.15), createArbitraryVertex(-0.07, 0.05, 0.11) };
 			body[11] = new polygon3D(v, v[1], v[2], v[0],
-					mainThread.textures[skinTextureIndex], 1, 2f, 1);
+					MainThread.textures[skinTextureIndex], 1, 2f, 1);
 			body[11].shadowBias = 1000;
 
-			v = new vector[] { put(0.07, 0.08, 0.05), put(0.07, 0.08, 0.13),
-					put(0.07, 0.04, 0.15), put(0.07, 0.01, 0.15),
-					put(0.07, 0.01, 0.02) };
-			body[12] = new polygon3D(v, put(0.07, 0.05, -0.15), put(0.07, 0.05,
-					0.11), put(0.07, 0.015, -0.15),
-					mainThread.textures[skinTextureIndex], 1, 0.3f, 1);
+			v = new vector[] { createArbitraryVertex(0.07, 0.08, 0.05), createArbitraryVertex(0.07, 0.08, 0.13),
+					createArbitraryVertex(0.07, 0.04, 0.15), createArbitraryVertex(0.07, 0.01, 0.15),
+					createArbitraryVertex(0.07, 0.01, 0.02) };
+			body[12] = new polygon3D(v, createArbitraryVertex(0.07, 0.05, -0.15), createArbitraryVertex(0.07, 0.05,
+					0.11), createArbitraryVertex(0.07, 0.015, -0.15),
+					MainThread.textures[skinTextureIndex], 1, 0.3f, 1);
 
-			v = new vector[] { put(-0.07, 0.01, 0.02), put(-0.07, 0.01, 0.15),
-					put(-0.07, 0.04, 0.15), put(-0.07, 0.08, 0.13),
-					put(-0.07, 0.08, 0.05) };
-			body[13] = new polygon3D(v, put(-0.07, 0.05, 0.11), put(-0.07,
-					0.05, -0.15), put(-0.07, 0.015, 0.11),
-					mainThread.textures[skinTextureIndex], 1, 0.3f, 1);
+			v = new vector[] { createArbitraryVertex(-0.07, 0.01, 0.02), createArbitraryVertex(-0.07, 0.01, 0.15),
+					createArbitraryVertex(-0.07, 0.04, 0.15), createArbitraryVertex(-0.07, 0.08, 0.13),
+					createArbitraryVertex(-0.07, 0.08, 0.05) };
+			body[13] = new polygon3D(v, createArbitraryVertex(-0.07, 0.05, 0.11), createArbitraryVertex(-0.07,
+					0.05, -0.15), createArbitraryVertex(-0.07, 0.015, 0.11),
+					MainThread.textures[skinTextureIndex], 1, 0.3f, 1);
 
-			v = new vector[] { put(-0.07, 0.08, 0.05), put(0.07, 0.08, 0.05),
-					put(0.07, 0.01, 0.02), put(-0.07, 0.01, 0.02) };
+			v = new vector[] { createArbitraryVertex(-0.07, 0.08, 0.05), createArbitraryVertex(0.07, 0.08, 0.05),
+					createArbitraryVertex(0.07, 0.01, 0.02), createArbitraryVertex(-0.07, 0.01, 0.02) };
 			body[14] = new polygon3D(v, v[2], v[3], v[1],
-					mainThread.textures[skinTextureIndex], 1, 0.3f, 1);
+					MainThread.textures[skinTextureIndex], 1, 0.3f, 1);
 
-			v = new vector[] { put(-0.07, 0.08, 0.13), put(0.07, 0.08, 0.13),
-					put(0.07, 0.08, 0.05), put(-0.07, 0.08, 0.05) };
+			v = new vector[] { createArbitraryVertex(-0.07, 0.08, 0.13), createArbitraryVertex(0.07, 0.08, 0.13),
+					createArbitraryVertex(0.07, 0.08, 0.05), createArbitraryVertex(-0.07, 0.08, 0.05) };
 			body[15] = new polygon3D(v, v[0], v[1], v[3],
-					mainThread.textures[skinTextureIndex], 1, 0.5f, 1);
+					MainThread.textures[skinTextureIndex], 1, 0.5f, 1);
 
-			v = new vector[] { put(0.07, 0.04, 0.15), put(-0.07, 0.04, 0.15),
-					put(-0.07, 0.01, 0.15), put(0.07, 0.01, 0.15) };
+			v = new vector[] { createArbitraryVertex(0.07, 0.04, 0.15), createArbitraryVertex(-0.07, 0.04, 0.15),
+					createArbitraryVertex(-0.07, 0.01, 0.15), createArbitraryVertex(0.07, 0.01, 0.15) };
 			body[16] = new polygon3D(v, v[0], v[1], v[3],
-					mainThread.textures[skinTextureIndex], 1, 0.3f, 1);
+					MainThread.textures[skinTextureIndex], 1, 0.3f, 1);
 
-			v = new vector[] { put(0.07, 0.08, 0.13), put(-0.07, 0.08, 0.13),
-					put(-0.07, 0.04, 0.15), put(0.07, 0.04, 0.15) };
+			v = new vector[] { createArbitraryVertex(0.07, 0.08, 0.13), createArbitraryVertex(-0.07, 0.08, 0.13),
+					createArbitraryVertex(-0.07, 0.04, 0.15), createArbitraryVertex(0.07, 0.04, 0.15) };
 			body[17] = new polygon3D(v, v[0], v[1], v[3],
-					mainThread.textures[windowTexture], 1, 0.6f, 1);
+					MainThread.textures[windowTexture], 1, 0.6f, 1);
 
 			double theta = Math.PI / 32;
 			double r = 0.08;
@@ -255,13 +255,13 @@ public class constructionVehicle extends solidObject {
 
 			for (int i = 0; i < 18; i++) {
 				v = new vector[] {
-						put(r * Math.cos((i + 1) * theta + angleOffset), 0.04,
+						createArbitraryVertex(r * Math.cos((i + 1) * theta + angleOffset), 0.04,
 								r * Math.sin((i + 1) * theta + angleOffset)),
-						put(r * Math.cos(i * theta + angleOffset), 0.04, r
+						createArbitraryVertex(r * Math.cos(i * theta + angleOffset), 0.04, r
 								* Math.sin(i * theta + angleOffset)),
-						put(r * Math.cos(i * theta + angleOffset), 0.09, r
+						createArbitraryVertex(r * Math.cos(i * theta + angleOffset), 0.09, r
 								* Math.sin(i * theta + angleOffset)),
-						put(r * Math.cos((i + 1) * theta + angleOffset), 0.09,
+						createArbitraryVertex(r * Math.cos((i + 1) * theta + angleOffset), 0.09,
 								r * Math.sin((i + 1) * theta + angleOffset)) };
 
 				if (i == 0) {
@@ -274,7 +274,7 @@ public class constructionVehicle extends solidObject {
 					tempVector3 = v[3].myClone();
 				}
 				body[18 + i] = new polygon3D(v, v[0], v[1], v[3],
-						mainThread.textures[upperBodyTExture], 1, 1, 1);
+						MainThread.textures[upperBodyTExture], 1, 1, 1);
 
 			}
 			start.z += 0.08f;
@@ -288,7 +288,7 @@ public class constructionVehicle extends solidObject {
 					new vector(the_x, the_y - 0.08f, the_z),
 					new vector(the_x, the_y - 0.08f, the_z + 0.1f) };
 			body[36] = new polygon3D(v, v[0], v[1], v[3],
-					mainThread.textures[upperBodyTExture], 1, 1, 1);
+					MainThread.textures[upperBodyTExture], 1, 1, 1);
 			tempVector0 = new vector(the_x, the_y, the_z + 0.1f);
 
 			float the_x1 = tempVector3.x;
@@ -300,20 +300,20 @@ public class constructionVehicle extends solidObject {
 					new vector(the_x1, the_y1 - 0.08f, the_z + 0.1f),
 					new vector(the_x1, the_y1 - 0.08f, the_z1) };
 			body[37] = new polygon3D(v, v[0], v[1], v[3],
-					mainThread.textures[upperBodyTExture], 1, 1, 1);
+					MainThread.textures[upperBodyTExture], 1, 1, 1);
 			tempVector2 = new vector(the_x1, the_y1, the_z + 0.1f);
 
 			start.z -= 0.08f;
 			v = new vector[21];
 			for (int i = 0; i < 19; i++) {
-				v[i] = put(r * Math.cos((18 - i) * theta + angleOffset), 0.09,
+				v[i] = createArbitraryVertex(r * Math.cos((18 - i) * theta + angleOffset), 0.09,
 						r * Math.sin((18 - i) * theta + angleOffset));
 			}
 			v[19] = tempVector0.myClone();
 			v[20] = tempVector2.myClone();
 
 			body[38] = new polygon3D(v, v[0], v[1], v[3],
-					mainThread.textures[upperBodyTExture], 2, 2, 1);
+					MainThread.textures[upperBodyTExture], 2, 2, 1);
 			body[38].Ambient_I -= 11;
 			body[38].shadowBias = 10000;
 
@@ -327,7 +327,7 @@ public class constructionVehicle extends solidObject {
 					new vector(tempVector2.x, tempVector2.y - 0.08f,
 							tempVector2.z) };
 			body[39] = new polygon3D(v, v[0], v[1], v[3],
-					mainThread.textures[upperBodyTExture], 2, 2, 1);
+					MainThread.textures[upperBodyTExture], 2, 2, 1);
 
 			v = new vector[] {
 					new vector(the_x1, -0.04f, tempVector0.z - 0.07f),
@@ -335,7 +335,7 @@ public class constructionVehicle extends solidObject {
 					new vector(the_x1, the_y1, tempVector0.z),
 					new vector(the_x1, the_y1, tempVector0.z - 0.08f) };
 			body[40] = new polygon3D(v, v[0], v[1], v[3],
-					mainThread.textures[upperBodyTExture], 2, 2, 1);
+					MainThread.textures[upperBodyTExture], 2, 2, 1);
 
 			v = new vector[] {
 					new vector(the_x1 - 0.05f, the_y1, tempVector0.z - 0.08f),
@@ -343,7 +343,7 @@ public class constructionVehicle extends solidObject {
 					new vector(the_x1 - 0.05f, -0.04f, tempVector0.z - 0.015f),
 					new vector(the_x1 - 0.05f, -0.04f, tempVector0.z - 0.07f) };
 			body[41] = new polygon3D(v, v[0], v[1], v[3],
-					mainThread.textures[upperBodyTExture], 2, 2, 1);
+					MainThread.textures[upperBodyTExture], 2, 2, 1);
 
 			v = new vector[] {
 					new vector(the_x1 - 0.05f, -0.04f, tempVector0.z - 0.07f),
@@ -351,7 +351,7 @@ public class constructionVehicle extends solidObject {
 					new vector(the_x1, the_y1, tempVector0.z - 0.08f),
 					new vector(the_x1 - 0.05f, the_y1, tempVector0.z - 0.08f) };
 			body[42] = new polygon3D(v, v[0], v[1], v[3],
-					mainThread.textures[upperBodyTExture], 2, 2, 1);
+					MainThread.textures[upperBodyTExture], 2, 2, 1);
 
 			v = new vector[] {
 					new vector(the_x1 - 0.05f, -0.04f, tempVector0.z - 0.015f),
@@ -359,7 +359,7 @@ public class constructionVehicle extends solidObject {
 					new vector(the_x1, -0.04f, tempVector0.z - 0.07f),
 					new vector(the_x1 - 0.05f, -0.04f, tempVector0.z - 0.07f) };
 			body[43] = new polygon3D(v, v[0], v[1], v[3],
-					mainThread.textures[upperBodyTExture], 2, 2, 1);
+					MainThread.textures[upperBodyTExture], 2, 2, 1);
 
 			v = new vector[] {
 					new vector(the_x1 + 0.001f, -0.045f, tempVector0.z - 0.05f),
@@ -367,7 +367,7 @@ public class constructionVehicle extends solidObject {
 					new vector(the_x1 + 0.001f, the_y1, tempVector0.z - 0.005f),
 					new vector(the_x1 + 0.001f, the_y1 + 0.01f,
 							tempVector0.z - 0.05f) };
-			body[44] = new polygon3D(v, v[0], v[1], v[3], mainThread.textures[45], 2,
+			body[44] = new polygon3D(v, v[0], v[1], v[3], MainThread.textures[45], 2,
 					2, 1);
 
 			v = new vector[] {
@@ -375,7 +375,7 @@ public class constructionVehicle extends solidObject {
 					new vector(the_x1 - 0.05f, -0.04f, tempVector0.z - 0.015f),
 					new vector(the_x1 - 0.05f, the_y1, tempVector0.z),
 					new vector(the_x1, the_y1, tempVector0.z) };
-			body[45] = new polygon3D(v, v[0], v[1], v[3], mainThread.textures[46], 1,
+			body[45] = new polygon3D(v, v[0], v[1], v[3], MainThread.textures[46], 1,
 					1, 1);
 
 			v = new vector[] {
@@ -384,7 +384,7 @@ public class constructionVehicle extends solidObject {
 					new vector(the_x1 - 0.051f, the_y1, tempVector0.z - 0.005f),
 					new vector(the_x1 - 0.051f, -0.045f, tempVector0.z - 0.02f),
 					new vector(the_x1 - 0.051f, -0.045f, tempVector0.z - 0.05f) };
-			body[46] = new polygon3D(v, v[0], v[1], v[3], mainThread.textures[45], 2,
+			body[46] = new polygon3D(v, v[0], v[1], v[3], MainThread.textures[45], 2,
 					2, 1);
 
 			angleOffset = Math.PI * 1.65;
@@ -396,14 +396,14 @@ public class constructionVehicle extends solidObject {
 
 			for (int i = 0; i < 16; i++) {
 				v = new vector[] {
-						put(0.005f, r * Math.cos((i + 1) * theta + angleOffset)
+						createArbitraryVertex(0.005f, r * Math.cos((i + 1) * theta + angleOffset)
 								+ h,
 								r * Math.sin((i + 1) * theta + angleOffset) + l),
-						put(0.005f, r * Math.cos(i * theta + angleOffset) + h,
+						createArbitraryVertex(0.005f, r * Math.cos(i * theta + angleOffset) + h,
 								r * Math.sin(i * theta + angleOffset) + l),
-						put(-0.005, r * Math.cos(i * theta + angleOffset) + h,
+						createArbitraryVertex(-0.005, r * Math.cos(i * theta + angleOffset) + h,
 								r * Math.sin(i * theta + angleOffset) + l),
-						put(-0.005f,
+						createArbitraryVertex(-0.005f,
 								r * Math.cos((i + 1) * theta + angleOffset) + h,
 								r * Math.sin((i + 1) * theta + angleOffset) + l) };
 
@@ -419,32 +419,32 @@ public class constructionVehicle extends solidObject {
 				}
 
 				body[47 + i] = new polygon3D(v, v[0], v[1], v[3],
-						mainThread.textures[25], 1, 1, 1);
+						MainThread.textures[25], 1, 1, 1);
 			}
 
 			v = new vector[] { new vector(the_x, the_y, the_z),
 					new vector(the_x + 0.01f, the_y, the_z),
 					new vector(the_x + 0.01f, the_y - 0.08f, the_z),
 					new vector(the_x, the_y - 0.08f, the_z) };
-			body[63] = new polygon3D(v, v[0], v[1], v[3], mainThread.textures[25], 1,
+			body[63] = new polygon3D(v, v[0], v[1], v[3], MainThread.textures[25], 1,
 					10, 1);
 
 			v = new vector[] { new vector(the_x1, the_y1, the_z1),
 					new vector(the_x1 - 0.01f, the_y1, the_z1),
 					new vector(the_x1 - 0.01f, the_y1 - 0.08f, the_z1 + 0.01f),
 					new vector(the_x1, the_y1 - 0.08f, the_z1 + 0.01f) };
-			body[64] = new polygon3D(v, v[0], v[1], v[3], mainThread.textures[25], 1,
+			body[64] = new polygon3D(v, v[0], v[1], v[3], MainThread.textures[25], 1,
 					10, 1);
 
 			v = new vector[19];
 			for (int i = 0; i < 17; i++) {
-				v[i] = put(-0.005f,
+				v[i] = createArbitraryVertex(-0.005f,
 						r * Math.cos((16 - i) * theta + angleOffset) + h, r
 								* Math.sin((16 - i) * theta + angleOffset) + l);
 			}
 			v[17] = new vector(-0.005f, the_y - 0.08f, the_z);
 			v[18] = new vector(-0.005f, the_y1 - 0.08f, the_z1 + 0.01f);
-			body[65] = new polygon3D(v, v[0], v[1], v[3], mainThread.textures[25], 1,
+			body[65] = new polygon3D(v, v[0], v[1], v[3], MainThread.textures[25], 1,
 					1, 1);
 
 			v = new vector[19];
@@ -452,21 +452,21 @@ public class constructionVehicle extends solidObject {
 				v[i] = body[65].vertex3D[18 - i].myClone();
 				v[i].x += 0.01f;
 			}
-			body[66] = new polygon3D(v, v[0], v[1], v[3], mainThread.textures[25], 1,
+			body[66] = new polygon3D(v, v[0], v[1], v[3], MainThread.textures[25], 1,
 					1, 1);
 
 			start.x -= 0.05;
 
 			for (int i = 0; i < 16; i++) {
 				v = new vector[] {
-						put(0.005f, r * Math.cos((i + 1) * theta + angleOffset)
+						createArbitraryVertex(0.005f, r * Math.cos((i + 1) * theta + angleOffset)
 								+ h,
 								r * Math.sin((i + 1) * theta + angleOffset) + l),
-						put(0.005f, r * Math.cos(i * theta + angleOffset) + h,
+						createArbitraryVertex(0.005f, r * Math.cos(i * theta + angleOffset) + h,
 								r * Math.sin(i * theta + angleOffset) + l),
-						put(-0.005, r * Math.cos(i * theta + angleOffset) + h,
+						createArbitraryVertex(-0.005, r * Math.cos(i * theta + angleOffset) + h,
 								r * Math.sin(i * theta + angleOffset) + l),
-						put(-0.005f,
+						createArbitraryVertex(-0.005f,
 								r * Math.cos((i + 1) * theta + angleOffset) + h,
 								r * Math.sin((i + 1) * theta + angleOffset) + l) };
 
@@ -482,32 +482,32 @@ public class constructionVehicle extends solidObject {
 				}
 
 				body[67 + i] = new polygon3D(v, v[0], v[1], v[3],
-						mainThread.textures[25], 1, 1, 1);
+						MainThread.textures[25], 1, 1, 1);
 			}
 
 			v = new vector[] { new vector(the_x, the_y, the_z),
 					new vector(the_x + 0.01f, the_y, the_z),
 					new vector(the_x + 0.01f, the_y - 0.08f, the_z),
 					new vector(the_x, the_y - 0.08f, the_z) };
-			body[83] = new polygon3D(v, v[0], v[1], v[3], mainThread.textures[25], 1,
+			body[83] = new polygon3D(v, v[0], v[1], v[3], MainThread.textures[25], 1,
 					10, 1);
 
 			v = new vector[] { new vector(the_x1, the_y1, the_z1),
 					new vector(the_x1 - 0.01f, the_y1, the_z1),
 					new vector(the_x1 - 0.01f, the_y1 - 0.08f, the_z1 + 0.01f),
 					new vector(the_x1, the_y1 - 0.08f, the_z1 + 0.01f) };
-			body[84] = new polygon3D(v, v[0], v[1], v[3], mainThread.textures[25], 1,
+			body[84] = new polygon3D(v, v[0], v[1], v[3], MainThread.textures[25], 1,
 					10, 1);
 
 			v = new vector[19];
 			for (int i = 0; i < 17; i++) {
-				v[i] = put(-0.005f,
+				v[i] = createArbitraryVertex(-0.005f,
 						r * Math.cos((16 - i) * theta + angleOffset) + h, r
 								* Math.sin((16 - i) * theta + angleOffset) + l);
 			}
 			v[17] = new vector(-0.055f, the_y - 0.08f, the_z);
 			v[18] = new vector(-0.055f, the_y1 - 0.08f, the_z1 + 0.01f);
-			body[85] = new polygon3D(v, v[0], v[1], v[3], mainThread.textures[25], 1,
+			body[85] = new polygon3D(v, v[0], v[1], v[3], MainThread.textures[25], 1,
 					1, 1);
 
 			v = new vector[19];
@@ -515,39 +515,39 @@ public class constructionVehicle extends solidObject {
 				v[i] = body[85].vertex3D[18 - i].myClone();
 				v[i].x += 0.01f;
 			}
-			body[86] = new polygon3D(v, v[0], v[1], v[3], mainThread.textures[25], 1,
+			body[86] = new polygon3D(v, v[0], v[1], v[3], MainThread.textures[25], 1,
 					1, 1);
 
 			start.set(0, 0, 0);
 			armCenter = new vector(-0.025f, -0.06000001f, -0.12f);
 
 			arm = new polygon3D[33];
-			v = new vector[] { put(-0.02f, 0.025f, 0.23),
-					put(0.02f, 0.025f, 0.23), put(0.02f, 0.025f, -0.02),
-					put(-0.02f, 0.025f, -0.02) };
+			v = new vector[] { createArbitraryVertex(-0.02f, 0.025f, 0.23),
+					createArbitraryVertex(0.02f, 0.025f, 0.23), createArbitraryVertex(0.02f, 0.025f, -0.02),
+					createArbitraryVertex(-0.02f, 0.025f, -0.02) };
 			arm[0] = new polygon3D(v, v[0], v[1], v[3],
-					mainThread.textures[upperBodyTExture], 10, 10, 1);
+					MainThread.textures[upperBodyTExture], 10, 10, 1);
 			arm[0].shadowBias = 100000;
 
-			v = new vector[] { put(-0.02f, -0.015f, -0.02),
-					put(0.02f, -0.015f, -0.02), put(0.02f, -0.015f, 0.23),
-					put(-0.02f, -0.015f, 0.23) };
+			v = new vector[] { createArbitraryVertex(-0.02f, -0.015f, -0.02),
+					createArbitraryVertex(0.02f, -0.015f, -0.02), createArbitraryVertex(0.02f, -0.015f, 0.23),
+					createArbitraryVertex(-0.02f, -0.015f, 0.23) };
 			arm[1] = new polygon3D(v, v[0], v[1], v[3],
-					mainThread.textures[upperBodyTExture], 10, 10, 1);
+					MainThread.textures[upperBodyTExture], 10, 10, 1);
 			arm[1].shadowBias = 100000;
 
-			v = new vector[] { put(0.02f, 0.025f, -0.02),
-					put(0.02f, 0.025f, 0.23), put(0.02f, -0.015f, 0.23),
-					put(0.02f, -0.015f, -0.02) };
+			v = new vector[] { createArbitraryVertex(0.02f, 0.025f, -0.02),
+					createArbitraryVertex(0.02f, 0.025f, 0.23), createArbitraryVertex(0.02f, -0.015f, 0.23),
+					createArbitraryVertex(0.02f, -0.015f, -0.02) };
 			arm[2] = new polygon3D(v, v[0], v[1], v[3],
-					mainThread.textures[upperBodyTExture], 10, 10, 1);
+					MainThread.textures[upperBodyTExture], 10, 10, 1);
 			arm[2].shadowBias = 100000;
 
-			v = new vector[] { put(-0.02f, -0.015f, -0.02),
-					put(-0.02f, -0.015f, 0.23), put(-0.02f, 0.025f, 0.23),
-					put(-0.02f, 0.025f, -0.02) };
+			v = new vector[] { createArbitraryVertex(-0.02f, -0.015f, -0.02),
+					createArbitraryVertex(-0.02f, -0.015f, 0.23), createArbitraryVertex(-0.02f, 0.025f, 0.23),
+					createArbitraryVertex(-0.02f, 0.025f, -0.02) };
 			arm[3] = new polygon3D(v, v[0], v[1], v[3],
-					mainThread.textures[upperBodyTExture], 10, 10, 1);
+					MainThread.textures[upperBodyTExture], 10, 10, 1);
 			arm[3].shadowBias = 100000;
 
 			r = 0.02f;
@@ -558,28 +558,28 @@ public class constructionVehicle extends solidObject {
 
 			for (int i = 0; i < 16; i++) {
 				v = new vector[] {
-						put(0.02f, r * Math.cos((i + 1) * theta + angleOffset)
+						createArbitraryVertex(0.02f, r * Math.cos((i + 1) * theta + angleOffset)
 								+ h,
 								r * Math.sin((i + 1) * theta + angleOffset) + l),
-						put(0.02f, r * Math.cos(i * theta + angleOffset) + h, r
+						createArbitraryVertex(0.02f, r * Math.cos(i * theta + angleOffset) + h, r
 								* Math.sin(i * theta + angleOffset) + l),
-						put(-0.02f, r * Math.cos(i * theta + angleOffset) + h,
+						createArbitraryVertex(-0.02f, r * Math.cos(i * theta + angleOffset) + h,
 								r * Math.sin(i * theta + angleOffset) + l),
-						put(-0.02f, r * Math.cos((i + 1) * theta + angleOffset)
+						createArbitraryVertex(-0.02f, r * Math.cos((i + 1) * theta + angleOffset)
 								+ h,
 								r * Math.sin((i + 1) * theta + angleOffset) + l) };
 
 				arm[4 + i] = new polygon3D(v, v[0], v[1], v[3],
-						mainThread.textures[upperBodyTExture], 10, 10, 1);
+						MainThread.textures[upperBodyTExture], 10, 10, 1);
 			}
 
 			v = new vector[17];
 			for (int i = 0; i < 17; i++) {
-				v[i] = put(-0.02f, r * Math.cos((16 - i) * theta + angleOffset)
+				v[i] = createArbitraryVertex(-0.02f, r * Math.cos((16 - i) * theta + angleOffset)
 						+ h, r * Math.sin((16 - i) * theta + angleOffset) + l);
 			}
 			arm[20] = new polygon3D(v, v[0], v[1], v[3],
-					mainThread.textures[upperBodyTExture], 10, 10, 1);
+					MainThread.textures[upperBodyTExture], 10, 10, 1);
 
 			v = new vector[17];
 			for (int i = 0; i < 17; i++) {
@@ -587,71 +587,71 @@ public class constructionVehicle extends solidObject {
 				v[i].x += 0.03f;
 			}
 			arm[21] = new polygon3D(v, v[0], v[1], v[3],
-					mainThread.textures[upperBodyTExture], 10, 10, 1);
+					MainThread.textures[upperBodyTExture], 10, 10, 1);
 
-			v = new vector[] { put(0.02f, 0.025f, 0.23),
-					put(-0.02f, 0.025f, 0.23), put(-0.02f, -0.015f, 0.23),
-					put(0.02f, -0.015f, 0.23) };
+			v = new vector[] { createArbitraryVertex(0.02f, 0.025f, 0.23),
+					createArbitraryVertex(-0.02f, 0.025f, 0.23), createArbitraryVertex(-0.02f, -0.015f, 0.23),
+					createArbitraryVertex(0.02f, -0.015f, 0.23) };
 			arm[22] = new polygon3D(v, v[0], v[1], v[3],
-					mainThread.textures[upperBodyTExture], 10, 10, 1);
+					MainThread.textures[upperBodyTExture], 10, 10, 1);
 
-			v = new vector[] { put(-0.015f, 0.02f, 0.27),
-					put(0.015f, 0.02f, 0.27), put(0.015f, 0.02f, 0.03),
-					put(-0.015f, 0.02f, 0.03) };
-			arm[23] = new polygon3D(v, v[0], v[1], v[3], mainThread.textures[47], 10,
+			v = new vector[] { createArbitraryVertex(-0.015f, 0.02f, 0.27),
+					createArbitraryVertex(0.015f, 0.02f, 0.27), createArbitraryVertex(0.015f, 0.02f, 0.03),
+					createArbitraryVertex(-0.015f, 0.02f, 0.03) };
+			arm[23] = new polygon3D(v, v[0], v[1], v[3], MainThread.textures[47], 10,
 					10, 1);
 
-			v = new vector[] { put(-0.015f, -0.01f, 0.03),
-					put(0.015f, -0.01f, 0.03), put(0.015f, -0.01f, 0.27),
-					put(-0.015f, -0.01f, 0.27) };
-			arm[24] = new polygon3D(v, v[0], v[1], v[3], mainThread.textures[47], 10,
+			v = new vector[] { createArbitraryVertex(-0.015f, -0.01f, 0.03),
+					createArbitraryVertex(0.015f, -0.01f, 0.03), createArbitraryVertex(0.015f, -0.01f, 0.27),
+					createArbitraryVertex(-0.015f, -0.01f, 0.27) };
+			arm[24] = new polygon3D(v, v[0], v[1], v[3], MainThread.textures[47], 10,
 					10, 1);
 
-			v = new vector[] { put(0.015f, 0.02f, 0.03),
-					put(0.015f, 0.02f, 0.27), put(0.015f, -0.01f, 0.27),
-					put(0.015f, -0.01f, 0.03) };
-			arm[25] = new polygon3D(v, v[0], v[1], v[3], mainThread.textures[47], 10,
+			v = new vector[] { createArbitraryVertex(0.015f, 0.02f, 0.03),
+					createArbitraryVertex(0.015f, 0.02f, 0.27), createArbitraryVertex(0.015f, -0.01f, 0.27),
+					createArbitraryVertex(0.015f, -0.01f, 0.03) };
+			arm[25] = new polygon3D(v, v[0], v[1], v[3], MainThread.textures[47], 10,
 					10, 1);
 
-			v = new vector[] { put(-0.015f, -0.01f, 0.03),
-					put(-0.015f, -0.01f, 0.27), put(-0.015f, 0.02f, 0.27),
-					put(-0.015f, 0.02f, 0.03) };
-			arm[26] = new polygon3D(v, v[0], v[1], v[3], mainThread.textures[47], 10,
+			v = new vector[] { createArbitraryVertex(-0.015f, -0.01f, 0.03),
+					createArbitraryVertex(-0.015f, -0.01f, 0.27), createArbitraryVertex(-0.015f, 0.02f, 0.27),
+					createArbitraryVertex(-0.015f, 0.02f, 0.03) };
+			arm[26] = new polygon3D(v, v[0], v[1], v[3], MainThread.textures[47], 10,
 					10, 1);
 
-			v = new vector[] { put(-0.02f, 0.025f, 0.29),
-					put(0.02f, 0.025f, 0.29), put(0.02f, 0.025f, 0.27),
-					put(-0.02f, 0.025f, 0.27) };
-			arm[27] = new polygon3D(v, v[0], v[1], v[3], mainThread.textures[armTop],
+			v = new vector[] { createArbitraryVertex(-0.02f, 0.025f, 0.29),
+					createArbitraryVertex(0.02f, 0.025f, 0.29), createArbitraryVertex(0.02f, 0.025f, 0.27),
+					createArbitraryVertex(-0.02f, 0.025f, 0.27) };
+			arm[27] = new polygon3D(v, v[0], v[1], v[3], MainThread.textures[armTop],
 					1.2f, 1f, 1);
 
-			v = new vector[] { put(0.02f, 0.025f, 0.27),
-					put(0.02f, 0.025f, 0.29), put(0.02f, 0f, 0.29),
-					put(0.02f, -0.015f, 0.27) };
-			arm[28] = new polygon3D(v, v[0], v[1], v[3], mainThread.textures[armTop],
+			v = new vector[] { createArbitraryVertex(0.02f, 0.025f, 0.27),
+					createArbitraryVertex(0.02f, 0.025f, 0.29), createArbitraryVertex(0.02f, 0f, 0.29),
+					createArbitraryVertex(0.02f, -0.015f, 0.27) };
+			arm[28] = new polygon3D(v, v[0], v[1], v[3], MainThread.textures[armTop],
 					1f, 1f, 1);
 
-			v = new vector[] { put(-0.02f, -0.015f, 0.27),
-					put(-0.02f, 0f, 0.29), put(-0.02f, 0.025f, 0.29),
-					put(-0.02f, 0.025f, 0.27) };
-			arm[29] = new polygon3D(v, v[0], v[1], v[3], mainThread.textures[armTop],
+			v = new vector[] { createArbitraryVertex(-0.02f, -0.015f, 0.27),
+					createArbitraryVertex(-0.02f, 0f, 0.29), createArbitraryVertex(-0.02f, 0.025f, 0.29),
+					createArbitraryVertex(-0.02f, 0.025f, 0.27) };
+			arm[29] = new polygon3D(v, v[0], v[1], v[3], MainThread.textures[armTop],
 					1f, 1f, 1);
 
-			v = new vector[] { put(0.02f, 0.025f, 0.29),
-					put(-0.02f, 0.025f, 0.29), put(-0.02f, 0, 0.29),
-					put(0.02f, 0, 0.29) };
-			arm[30] = new polygon3D(v, v[0], v[1], v[3], mainThread.textures[armTop],
+			v = new vector[] { createArbitraryVertex(0.02f, 0.025f, 0.29),
+					createArbitraryVertex(-0.02f, 0.025f, 0.29), createArbitraryVertex(-0.02f, 0, 0.29),
+					createArbitraryVertex(0.02f, 0, 0.29) };
+			arm[30] = new polygon3D(v, v[0], v[1], v[3], MainThread.textures[armTop],
 					1.2f, 1f, 1);
 
-			v = new vector[] { put(-0.02f, 0.025f, 0.27),
-					put(0.02f, 0.025f, 0.27), put(0.02f, -0.015f, 0.27),
-					put(-0.02f, -0.015f, 0.27) };
-			arm[31] = new polygon3D(v, v[0], v[1], v[3], mainThread.textures[armTop],
+			v = new vector[] { createArbitraryVertex(-0.02f, 0.025f, 0.27),
+					createArbitraryVertex(0.02f, 0.025f, 0.27), createArbitraryVertex(0.02f, -0.015f, 0.27),
+					createArbitraryVertex(-0.02f, -0.015f, 0.27) };
+			arm[31] = new polygon3D(v, v[0], v[1], v[3], MainThread.textures[armTop],
 					1.2f, 1f, 1);
 
-			v = new vector[] { put(0.02f, 0, 0.29), put(-0.02f, 0, 0.29),
-					put(-0.02f, -0.015f, 0.27), put(0.02f, -0.015f, 0.27) };
-			arm[32] = new polygon3D(v, v[0], v[1], v[3], mainThread.textures[armTop],
+			v = new vector[] { createArbitraryVertex(0.02f, 0, 0.29), createArbitraryVertex(-0.02f, 0, 0.29),
+					createArbitraryVertex(-0.02f, -0.015f, 0.27), createArbitraryVertex(0.02f, -0.015f, 0.27) };
+			arm[32] = new polygon3D(v, v[0], v[1], v[3], MainThread.textures[armTop],
 					1.2f, 1f, 1);
 
 			start.set(0, 0, 0);
@@ -663,43 +663,43 @@ public class constructionVehicle extends solidObject {
 
 			for (int i = 0; i < 24; i++) {
 				v = new vector[] {
-						put(r * Math.cos((i + 1) * theta),
+						createArbitraryVertex(r * Math.cos((i + 1) * theta),
 								r * Math.sin((i + 1) * theta), 0.08),
-						put(r * Math.cos(i * theta), r * Math.sin(i * theta),
+						createArbitraryVertex(r * Math.cos(i * theta), r * Math.sin(i * theta),
 								0.08),
-						put(r * Math.cos(i * theta), r * Math.sin(i * theta), 0),
-						put(r * Math.cos((i + 1) * theta),
+						createArbitraryVertex(r * Math.cos(i * theta), r * Math.sin(i * theta), 0),
+						createArbitraryVertex(r * Math.cos((i + 1) * theta),
 								r * Math.sin((i + 1) * theta), 0),
 
 				};
 				pillar[i] = new polygon3D(v, v[0].myClone(), v[1].myClone(),
-						v[3].myClone(), mainThread.textures[upperBodyTExture], 4f,
+						v[3].myClone(), MainThread.textures[upperBodyTExture], 4f,
 						4f, 1);
 			}
 
 			v = new vector[24];
 			for (int i = 0; i < 24; i++) {
-				v[i] = put(r * Math.cos(i * theta), r * Math.sin(i * theta),
+				v[i] = createArbitraryVertex(r * Math.cos(i * theta), r * Math.sin(i * theta),
 						0.08);
 			}
 			pillar[24] = new polygon3D(v, v[0], v[1], v[3],
-					mainThread.textures[upperBodyTExture], 4f, 4f, 1);
+					MainThread.textures[upperBodyTExture], 4f, 4f, 1);
 
 			r = 0.005;
 			for (int i = 0; i < 24; i++) {
 				v = new vector[] {
-						put(r * Math.cos((i + 1) * theta),
+						createArbitraryVertex(r * Math.cos((i + 1) * theta),
 								r * Math.sin((i + 1) * theta), 0.18),
-						put(r * Math.cos(i * theta), r * Math.sin(i * theta),
+						createArbitraryVertex(r * Math.cos(i * theta), r * Math.sin(i * theta),
 								0.18),
-						put(r * Math.cos(i * theta), r * Math.sin(i * theta),
+						createArbitraryVertex(r * Math.cos(i * theta), r * Math.sin(i * theta),
 								0.08),
-						put(r * Math.cos((i + 1) * theta),
+						createArbitraryVertex(r * Math.cos((i + 1) * theta),
 								r * Math.sin((i + 1) * theta), 0.08),
 
 				};
 				pillar[25 + i] = new polygon3D(v, v[0].myClone(),
-						v[1].myClone(), v[3].myClone(), mainThread.textures[29], 4f,
+						v[1].myClone(), v[3].myClone(), MainThread.textures[29], 4f,
 						4f, 1);
 			}
 
@@ -712,40 +712,40 @@ public class constructionVehicle extends solidObject {
 
 			for (int i = 0; i < 24; i++) {
 				v = new vector[] {
-						put(r * Math.cos((i + 1) * theta) + w, -0.16,
+						createArbitraryVertex(r * Math.cos((i + 1) * theta) + w, -0.16,
 								r * Math.sin((i + 1) * theta) + l),
-						put(r * Math.cos(i * theta) + w, -0.16,
+						createArbitraryVertex(r * Math.cos(i * theta) + w, -0.16,
 								r * Math.sin(i * theta) + l),
-						put(r * Math.cos(i * theta) + w, -0.13,
+						createArbitraryVertex(r * Math.cos(i * theta) + w, -0.13,
 								r * Math.sin(i * theta) + l),
-						put(r * Math.cos((i + 1) * theta) + w, -0.13,
+						createArbitraryVertex(r * Math.cos((i + 1) * theta) + w, -0.13,
 								r * Math.sin((i + 1) * theta) + l), };
 				foot1[i] = new polygon3D(v, v[0].myClone(), v[1].myClone(),
-						v[3].myClone(), mainThread.textures[upperBodyTExture], 4f,
+						v[3].myClone(), MainThread.textures[upperBodyTExture], 4f,
 						4f, 1);
 			}
 			v = new vector[24];
 			for (int i = 0; i < 24; i++) {
-				v[23 - i] = put(r * Math.cos(i * theta) + w, -0.13,
+				v[23 - i] = createArbitraryVertex(r * Math.cos(i * theta) + w, -0.13,
 						r * Math.sin(i * theta) + l);
 			}
 			foot1[24] = new polygon3D(v, v[0], v[1], v[3],
-					mainThread.textures[upperBodyTExture], 4f, 4f, 1);
+					MainThread.textures[upperBodyTExture], 4f, 4f, 1);
 
 			r = 0.006f;
 
 			for (int i = 0; i < 24; i++) {
 				v = new vector[] {
-						put(r * Math.cos((i + 1) * theta) + w, -0.17,
+						createArbitraryVertex(r * Math.cos((i + 1) * theta) + w, -0.17,
 								r * Math.sin((i + 1) * theta) + l),
-						put(r * Math.cos(i * theta) + w, -0.17,
+						createArbitraryVertex(r * Math.cos(i * theta) + w, -0.17,
 								r * Math.sin(i * theta) + l),
-						put(r * Math.cos(i * theta) + w, -0.131,
+						createArbitraryVertex(r * Math.cos(i * theta) + w, -0.131,
 								r * Math.sin(i * theta) + l),
-						put(r * Math.cos((i + 1) * theta) + w, -0.131,
+						createArbitraryVertex(r * Math.cos((i + 1) * theta) + w, -0.131,
 								r * Math.sin((i + 1) * theta) + l), };
 				foot1[i + 25] = new polygon3D(v, v[0].myClone(),
-						v[1].myClone(), v[3].myClone(), mainThread.textures[29], 4f,
+						v[1].myClone(), v[3].myClone(), MainThread.textures[29], 4f,
 						4f, 1);
 			}
 
@@ -754,29 +754,29 @@ public class constructionVehicle extends solidObject {
 
 			v = new vector[24];
 			for (int i = 0; i < 24; i++) {
-				v[23 - i] = put(r * Math.cos(i * theta) + w, -0.17,
+				v[23 - i] = createArbitraryVertex(r * Math.cos(i * theta) + w, -0.17,
 						r * Math.sin(i * theta) + l);
 			}
-			foot1[49] = new polygon3D(v, v[0], v[1], v[3], mainThread.textures[33],
+			foot1[49] = new polygon3D(v, v[0], v[1], v[3], MainThread.textures[33],
 					4f, 4f, 1);
 			foot1[49].shadowBias = 10000;
 
 			start.x -= 0.08;
 
-			v = new vector[] { put(0.0, -0.14, 0.065), put(0.15, -0.14, 0.065),
-					put(0.15, -0.14, 0.055), put(0.0, -0.14, 0.055) };
-			foot1[50] = new polygon3D(v, v[0], v[1], v[3], mainThread.textures[26],
+			v = new vector[] { createArbitraryVertex(0.0, -0.14, 0.065), createArbitraryVertex(0.15, -0.14, 0.065),
+					createArbitraryVertex(0.15, -0.14, 0.055), createArbitraryVertex(0.0, -0.14, 0.055) };
+			foot1[50] = new polygon3D(v, v[0], v[1], v[3], MainThread.textures[26],
 					4f, 1f, 1);
 
-			v = new vector[] { put(0.15, -0.14, 0.065), put(0.0, -0.14, 0.065),
-					put(0.0, -0.16, 0.065), put(0.15, -0.16, 0.065) };
+			v = new vector[] { createArbitraryVertex(0.15, -0.14, 0.065), createArbitraryVertex(0.0, -0.14, 0.065),
+					createArbitraryVertex(0.0, -0.16, 0.065), createArbitraryVertex(0.15, -0.16, 0.065) };
 			foot1[51] = new polygon3D(v, v[0], v[1], v[3],
-					mainThread.textures[armTop], 4f, 0.5f, 1);
+					MainThread.textures[armTop], 4f, 0.5f, 1);
 
-			v = new vector[] { put(0.15, -0.16, 0.055), put(0.0, -0.16, 0.055),
-					put(0.0, -0.14, 0.055), put(0.15, -0.14, 0.055) };
+			v = new vector[] { createArbitraryVertex(0.15, -0.16, 0.055), createArbitraryVertex(0.0, -0.16, 0.055),
+					createArbitraryVertex(0.0, -0.14, 0.055), createArbitraryVertex(0.15, -0.14, 0.055) };
 			foot1[52] = new polygon3D(v, v[0], v[1], v[3],
-					mainThread.textures[armTop], 4f, 0.5f, 1);
+					MainThread.textures[armTop], 4f, 0.5f, 1);
 
 			// foot 2
 			start.set(0, 0, 0);
@@ -788,40 +788,40 @@ public class constructionVehicle extends solidObject {
 
 			for (int i = 0; i < 24; i++) {
 				v = new vector[] {
-						put(r * Math.cos((i + 1) * theta) + w, -0.16,
+						createArbitraryVertex(r * Math.cos((i + 1) * theta) + w, -0.16,
 								r * Math.sin((i + 1) * theta) + l),
-						put(r * Math.cos(i * theta) + w, -0.16,
+						createArbitraryVertex(r * Math.cos(i * theta) + w, -0.16,
 								r * Math.sin(i * theta) + l),
-						put(r * Math.cos(i * theta) + w, -0.13,
+						createArbitraryVertex(r * Math.cos(i * theta) + w, -0.13,
 								r * Math.sin(i * theta) + l),
-						put(r * Math.cos((i + 1) * theta) + w, -0.13,
+						createArbitraryVertex(r * Math.cos((i + 1) * theta) + w, -0.13,
 								r * Math.sin((i + 1) * theta) + l), };
 				foot2[i] = new polygon3D(v, v[0].myClone(), v[1].myClone(),
-						v[3].myClone(), mainThread.textures[upperBodyTExture], 4f,
+						v[3].myClone(), MainThread.textures[upperBodyTExture], 4f,
 						4f, 1);
 			}
 			v = new vector[24];
 			for (int i = 0; i < 24; i++) {
-				v[23 - i] = put(r * Math.cos(i * theta) + w, -0.13,
+				v[23 - i] = createArbitraryVertex(r * Math.cos(i * theta) + w, -0.13,
 						r * Math.sin(i * theta) + l);
 			}
 			foot2[24] = new polygon3D(v, v[0], v[1], v[3],
-					mainThread.textures[upperBodyTExture], 4f, 4f, 1);
+					MainThread.textures[upperBodyTExture], 4f, 4f, 1);
 
 			r = 0.006f;
 
 			for (int i = 0; i < 24; i++) {
 				v = new vector[] {
-						put(r * Math.cos((i + 1) * theta) + w, -0.17,
+						createArbitraryVertex(r * Math.cos((i + 1) * theta) + w, -0.17,
 								r * Math.sin((i + 1) * theta) + l),
-						put(r * Math.cos(i * theta) + w, -0.17,
+						createArbitraryVertex(r * Math.cos(i * theta) + w, -0.17,
 								r * Math.sin(i * theta) + l),
-						put(r * Math.cos(i * theta) + w, -0.131,
+						createArbitraryVertex(r * Math.cos(i * theta) + w, -0.131,
 								r * Math.sin(i * theta) + l),
-						put(r * Math.cos((i + 1) * theta) + w, -0.131,
+						createArbitraryVertex(r * Math.cos((i + 1) * theta) + w, -0.131,
 								r * Math.sin((i + 1) * theta) + l), };
 				foot2[i + 25] = new polygon3D(v, v[0].myClone(),
-						v[1].myClone(), v[3].myClone(), mainThread.textures[29], 4f,
+						v[1].myClone(), v[3].myClone(), MainThread.textures[29], 4f,
 						4f, 1);
 			}
 
@@ -830,30 +830,30 @@ public class constructionVehicle extends solidObject {
 
 			v = new vector[24];
 			for (int i = 0; i < 24; i++) {
-				v[23 - i] = put(r * Math.cos(i * theta) + w, -0.17,
+				v[23 - i] = createArbitraryVertex(r * Math.cos(i * theta) + w, -0.17,
 						r * Math.sin(i * theta) + l);
 			}
-			foot2[49] = new polygon3D(v, v[0], v[1], v[3], mainThread.textures[33],
+			foot2[49] = new polygon3D(v, v[0], v[1], v[3], MainThread.textures[33],
 					4f, 4f, 1);
 			foot2[49].shadowBias = 10000;
 
 			start.x -= 0.08;
 			start.z -= 0.18;
 
-			v = new vector[] { put(0.0, -0.14, 0.065), put(0.15, -0.14, 0.065),
-					put(0.15, -0.14, 0.055), put(0.0, -0.14, 0.055) };
-			foot2[50] = new polygon3D(v, v[0], v[1], v[3], mainThread.textures[26],
+			v = new vector[] { createArbitraryVertex(0.0, -0.14, 0.065), createArbitraryVertex(0.15, -0.14, 0.065),
+					createArbitraryVertex(0.15, -0.14, 0.055), createArbitraryVertex(0.0, -0.14, 0.055) };
+			foot2[50] = new polygon3D(v, v[0], v[1], v[3], MainThread.textures[26],
 					4f, 1f, 1);
 
-			v = new vector[] { put(0.15, -0.14, 0.065), put(0.0, -0.14, 0.065),
-					put(0.0, -0.16, 0.065), put(0.15, -0.16, 0.065) };
+			v = new vector[] { createArbitraryVertex(0.15, -0.14, 0.065), createArbitraryVertex(0.0, -0.14, 0.065),
+					createArbitraryVertex(0.0, -0.16, 0.065), createArbitraryVertex(0.15, -0.16, 0.065) };
 			foot2[51] = new polygon3D(v, v[0], v[1], v[3],
-					mainThread.textures[armTop], 4f, 0.5f, 1);
+					MainThread.textures[armTop], 4f, 0.5f, 1);
 
-			v = new vector[] { put(0.15, -0.16, 0.055), put(0.0, -0.16, 0.055),
-					put(0.0, -0.14, 0.055), put(0.15, -0.14, 0.055) };
+			v = new vector[] { createArbitraryVertex(0.15, -0.16, 0.055), createArbitraryVertex(0.0, -0.16, 0.055),
+					createArbitraryVertex(0.0, -0.14, 0.055), createArbitraryVertex(0.15, -0.14, 0.055) };
 			foot2[52] = new polygon3D(v, v[0], v[1], v[3],
-					mainThread.textures[armTop], 4f, 0.5f, 1);
+					MainThread.textures[armTop], 4f, 0.5f, 1);
 
 			// foot 3
 			start.set(0, 0, 0);
@@ -865,40 +865,40 @@ public class constructionVehicle extends solidObject {
 
 			for (int i = 0; i < 24; i++) {
 				v = new vector[] {
-						put(r * Math.cos((i + 1) * theta) + w, -0.16,
+						createArbitraryVertex(r * Math.cos((i + 1) * theta) + w, -0.16,
 								r * Math.sin((i + 1) * theta) + l),
-						put(r * Math.cos(i * theta) + w, -0.16,
+						createArbitraryVertex(r * Math.cos(i * theta) + w, -0.16,
 								r * Math.sin(i * theta) + l),
-						put(r * Math.cos(i * theta) + w, -0.13,
+						createArbitraryVertex(r * Math.cos(i * theta) + w, -0.13,
 								r * Math.sin(i * theta) + l),
-						put(r * Math.cos((i + 1) * theta) + w, -0.13,
+						createArbitraryVertex(r * Math.cos((i + 1) * theta) + w, -0.13,
 								r * Math.sin((i + 1) * theta) + l), };
 				foot3[i] = new polygon3D(v, v[0].myClone(), v[1].myClone(),
-						v[3].myClone(), mainThread.textures[upperBodyTExture], 4f,
+						v[3].myClone(), MainThread.textures[upperBodyTExture], 4f,
 						4f, 1);
 			}
 			v = new vector[24];
 			for (int i = 0; i < 24; i++) {
-				v[23 - i] = put(r * Math.cos(i * theta) + w, -0.13,
+				v[23 - i] = createArbitraryVertex(r * Math.cos(i * theta) + w, -0.13,
 						r * Math.sin(i * theta) + l);
 			}
 			foot3[24] = new polygon3D(v, v[0], v[1], v[3],
-					mainThread.textures[upperBodyTExture], 4f, 4f, 1);
+					MainThread.textures[upperBodyTExture], 4f, 4f, 1);
 
 			r = 0.006f;
 
 			for (int i = 0; i < 24; i++) {
 				v = new vector[] {
-						put(r * Math.cos((i + 1) * theta) + w, -0.17,
+						createArbitraryVertex(r * Math.cos((i + 1) * theta) + w, -0.17,
 								r * Math.sin((i + 1) * theta) + l),
-						put(r * Math.cos(i * theta) + w, -0.17,
+						createArbitraryVertex(r * Math.cos(i * theta) + w, -0.17,
 								r * Math.sin(i * theta) + l),
-						put(r * Math.cos(i * theta) + w, -0.131,
+						createArbitraryVertex(r * Math.cos(i * theta) + w, -0.131,
 								r * Math.sin(i * theta) + l),
-						put(r * Math.cos((i + 1) * theta) + w, -0.131,
+						createArbitraryVertex(r * Math.cos((i + 1) * theta) + w, -0.131,
 								r * Math.sin((i + 1) * theta) + l), };
 				foot3[i + 25] = new polygon3D(v, v[0].myClone(),
-						v[1].myClone(), v[3].myClone(), mainThread.textures[29], 4f,
+						v[1].myClone(), v[3].myClone(), MainThread.textures[29], 4f,
 						4f, 1);
 			}
 
@@ -907,29 +907,29 @@ public class constructionVehicle extends solidObject {
 
 			v = new vector[24];
 			for (int i = 0; i < 24; i++) {
-				v[23 - i] = put(r * Math.cos(i * theta) + w, -0.17,
+				v[23 - i] = createArbitraryVertex(r * Math.cos(i * theta) + w, -0.17,
 						r * Math.sin(i * theta) + l);
 			}
-			foot3[49] = new polygon3D(v, v[0], v[1], v[3], mainThread.textures[33],
+			foot3[49] = new polygon3D(v, v[0], v[1], v[3], MainThread.textures[33],
 					4f, 4f, 1);
 			foot3[49].shadowBias = 10000;
 
 			start.x -= 0.08;
 
-			v = new vector[] { put(0.0, -0.14, 0.065), put(0.15, -0.14, 0.065),
-					put(0.15, -0.14, 0.055), put(0.0, -0.14, 0.055) };
-			foot3[50] = new polygon3D(v, v[0], v[1], v[3], mainThread.textures[26],
+			v = new vector[] { createArbitraryVertex(0.0, -0.14, 0.065), createArbitraryVertex(0.15, -0.14, 0.065),
+					createArbitraryVertex(0.15, -0.14, 0.055), createArbitraryVertex(0.0, -0.14, 0.055) };
+			foot3[50] = new polygon3D(v, v[0], v[1], v[3], MainThread.textures[26],
 					4f, 1f, 1);
 
-			v = new vector[] { put(0.15, -0.14, 0.065), put(0.0, -0.14, 0.065),
-					put(0.0, -0.16, 0.065), put(0.15, -0.16, 0.065) };
+			v = new vector[] { createArbitraryVertex(0.15, -0.14, 0.065), createArbitraryVertex(0.0, -0.14, 0.065),
+					createArbitraryVertex(0.0, -0.16, 0.065), createArbitraryVertex(0.15, -0.16, 0.065) };
 			foot3[51] = new polygon3D(v, v[0], v[1], v[3],
-					mainThread.textures[armTop], 4f, 0.5f, 1);
+					MainThread.textures[armTop], 4f, 0.5f, 1);
 
-			v = new vector[] { put(0.15, -0.16, 0.055), put(0.0, -0.16, 0.055),
-					put(0.0, -0.14, 0.055), put(0.15, -0.14, 0.055) };
+			v = new vector[] { createArbitraryVertex(0.15, -0.16, 0.055), createArbitraryVertex(0.0, -0.16, 0.055),
+					createArbitraryVertex(0.0, -0.14, 0.055), createArbitraryVertex(0.15, -0.14, 0.055) };
 			foot3[52] = new polygon3D(v, v[0], v[1], v[3],
-					mainThread.textures[armTop], 4f, 0.5f, 1);
+					MainThread.textures[armTop], 4f, 0.5f, 1);
 
 			// foot 4
 			start.set(0, 0, 0);
@@ -941,40 +941,40 @@ public class constructionVehicle extends solidObject {
 
 			for (int i = 0; i < 24; i++) {
 				v = new vector[] {
-						put(r * Math.cos((i + 1) * theta) + w, -0.16,
+						createArbitraryVertex(r * Math.cos((i + 1) * theta) + w, -0.16,
 								r * Math.sin((i + 1) * theta) + l),
-						put(r * Math.cos(i * theta) + w, -0.16,
+						createArbitraryVertex(r * Math.cos(i * theta) + w, -0.16,
 								r * Math.sin(i * theta) + l),
-						put(r * Math.cos(i * theta) + w, -0.13,
+						createArbitraryVertex(r * Math.cos(i * theta) + w, -0.13,
 								r * Math.sin(i * theta) + l),
-						put(r * Math.cos((i + 1) * theta) + w, -0.13,
+						createArbitraryVertex(r * Math.cos((i + 1) * theta) + w, -0.13,
 								r * Math.sin((i + 1) * theta) + l), };
 				foot4[i] = new polygon3D(v, v[0].myClone(), v[1].myClone(),
-						v[3].myClone(), mainThread.textures[upperBodyTExture], 4f,
+						v[3].myClone(), MainThread.textures[upperBodyTExture], 4f,
 						4f, 1);
 			}
 			v = new vector[24];
 			for (int i = 0; i < 24; i++) {
-				v[23 - i] = put(r * Math.cos(i * theta) + w, -0.13,
+				v[23 - i] = createArbitraryVertex(r * Math.cos(i * theta) + w, -0.13,
 						r * Math.sin(i * theta) + l);
 			}
 			foot4[24] = new polygon3D(v, v[0], v[1], v[3],
-					mainThread.textures[upperBodyTExture], 4f, 4f, 1);
+					MainThread.textures[upperBodyTExture], 4f, 4f, 1);
 
 			r = 0.006f;
 
 			for (int i = 0; i < 24; i++) {
 				v = new vector[] {
-						put(r * Math.cos((i + 1) * theta) + w, -0.17,
+						createArbitraryVertex(r * Math.cos((i + 1) * theta) + w, -0.17,
 								r * Math.sin((i + 1) * theta) + l),
-						put(r * Math.cos(i * theta) + w, -0.17,
+						createArbitraryVertex(r * Math.cos(i * theta) + w, -0.17,
 								r * Math.sin(i * theta) + l),
-						put(r * Math.cos(i * theta) + w, -0.131,
+						createArbitraryVertex(r * Math.cos(i * theta) + w, -0.131,
 								r * Math.sin(i * theta) + l),
-						put(r * Math.cos((i + 1) * theta) + w, -0.131,
+						createArbitraryVertex(r * Math.cos((i + 1) * theta) + w, -0.131,
 								r * Math.sin((i + 1) * theta) + l), };
 				foot4[i + 25] = new polygon3D(v, v[0].myClone(),
-						v[1].myClone(), v[3].myClone(), mainThread.textures[29], 4f,
+						v[1].myClone(), v[3].myClone(), MainThread.textures[29], 4f,
 						4f, 1);
 			}
 
@@ -983,30 +983,30 @@ public class constructionVehicle extends solidObject {
 
 			v = new vector[24];
 			for (int i = 0; i < 24; i++) {
-				v[23 - i] = put(r * Math.cos(i * theta) + w, -0.17,
+				v[23 - i] = createArbitraryVertex(r * Math.cos(i * theta) + w, -0.17,
 						r * Math.sin(i * theta) + l);
 			}
-			foot4[49] = new polygon3D(v, v[0], v[1], v[3], mainThread.textures[33],
+			foot4[49] = new polygon3D(v, v[0], v[1], v[3], MainThread.textures[33],
 					4f, 4f, 1);
 			foot4[49].shadowBias = 10000;
 
 			start.x -= 0.08;
 			start.z -= 0.18;
 
-			v = new vector[] { put(0.0, -0.14, 0.065), put(0.15, -0.14, 0.065),
-					put(0.15, -0.14, 0.055), put(0.0, -0.14, 0.055) };
-			foot4[50] = new polygon3D(v, v[0], v[1], v[3], mainThread.textures[26],
+			v = new vector[] { createArbitraryVertex(0.0, -0.14, 0.065), createArbitraryVertex(0.15, -0.14, 0.065),
+					createArbitraryVertex(0.15, -0.14, 0.055), createArbitraryVertex(0.0, -0.14, 0.055) };
+			foot4[50] = new polygon3D(v, v[0], v[1], v[3], MainThread.textures[26],
 					4f, 1f, 1);
 
-			v = new vector[] { put(0.15, -0.14, 0.065), put(0.0, -0.14, 0.065),
-					put(0.0, -0.16, 0.065), put(0.15, -0.16, 0.065) };
+			v = new vector[] { createArbitraryVertex(0.15, -0.14, 0.065), createArbitraryVertex(0.0, -0.14, 0.065),
+					createArbitraryVertex(0.0, -0.16, 0.065), createArbitraryVertex(0.15, -0.16, 0.065) };
 			foot4[51] = new polygon3D(v, v[0], v[1], v[3],
-					mainThread.textures[armTop], 4f, 0.5f, 1);
+					MainThread.textures[armTop], 4f, 0.5f, 1);
 
-			v = new vector[] { put(0.15, -0.16, 0.055), put(0.0, -0.16, 0.055),
-					put(0.0, -0.14, 0.055), put(0.15, -0.14, 0.055) };
+			v = new vector[] { createArbitraryVertex(0.15, -0.16, 0.055), createArbitraryVertex(0.0, -0.16, 0.055),
+					createArbitraryVertex(0.0, -0.14, 0.055), createArbitraryVertex(0.15, -0.14, 0.055) };
 			foot4[52] = new polygon3D(v, v[0], v[1], v[3],
-					mainThread.textures[armTop], 4f, 0.5f, 1);
+					MainThread.textures[armTop], 4f, 0.5f, 1);
 
 		}
 
@@ -1026,42 +1026,42 @@ public class constructionVehicle extends solidObject {
 		if (teamNo != 0) {
 			for (int i = 0; i < body.length; i++) {
 				if (body[i].myTexture.ID == 42)
-					bodyClone[i].myTexture = mainThread.textures[10];
+					bodyClone[i].myTexture = MainThread.textures[10];
 
 				if (body[i].myTexture.ID == upperBodyTExture)
-					bodyClone[i].myTexture = mainThread.textures[48];
+					bodyClone[i].myTexture = MainThread.textures[48];
 
 				if (body[i].myTexture.ID == 46)
-					bodyClone[i].myTexture = mainThread.textures[50];
+					bodyClone[i].myTexture = MainThread.textures[50];
 			}
 
 			for (int i = 0; i < foot1.length; i++) {
 				if (foot1[i].myTexture.ID == upperBodyTExture) {
-					foot1Clone[i].myTexture = mainThread.textures[48];
-					foot2Clone[i].myTexture = mainThread.textures[48];
-					foot3Clone[i].myTexture = mainThread.textures[48];
-					foot4Clone[i].myTexture = mainThread.textures[48];
+					foot1Clone[i].myTexture = MainThread.textures[48];
+					foot2Clone[i].myTexture = MainThread.textures[48];
+					foot3Clone[i].myTexture = MainThread.textures[48];
+					foot4Clone[i].myTexture = MainThread.textures[48];
 
 				}
 				if (foot1[i].myTexture.ID == armTop) {
-					foot1Clone[i].myTexture = mainThread.textures[49];
-					foot2Clone[i].myTexture = mainThread.textures[49];
-					foot3Clone[i].myTexture = mainThread.textures[49];
-					foot4Clone[i].myTexture = mainThread.textures[49];
+					foot1Clone[i].myTexture = MainThread.textures[49];
+					foot2Clone[i].myTexture = MainThread.textures[49];
+					foot3Clone[i].myTexture = MainThread.textures[49];
+					foot4Clone[i].myTexture = MainThread.textures[49];
 				}
 			}
 
 			for (int i = 0; i < arm.length; i++) {
 				if (arm[i].myTexture.ID == upperBodyTExture)
-					armClone[i].myTexture = mainThread.textures[48];
+					armClone[i].myTexture = MainThread.textures[48];
 
 				if (armClone[i].myTexture.ID == armTop)
-					armClone[i].myTexture = mainThread.textures[49];
+					armClone[i].myTexture = MainThread.textures[49];
 			}
 
 			for (int i = 0; i < pillar.length; i++) {
 				if (pillar[i].myTexture.ID == upperBodyTExture) {
-					pillarClone[i].myTexture = mainThread.textures[48];
+					pillarClone[i].myTexture = MainThread.textures[48];
 
 				}
 			}
@@ -1071,20 +1071,20 @@ public class constructionVehicle extends solidObject {
 
 	// update the model
 	public void update() {
-		// check if the harvester has finished deploying
+		// check if the Harvester has finished deploying
 		if (footExtendCount == 180) {
 			theAssetManager.removeObject(this);
 			removeFromGridMap();
 			currentHP = 0;
 			if (isSelected) {
-				mainThread.pc.addToSelection(myConstructionYard);
+				MainThread.playerCommander.addToSelection(myConstructionYard);
 			}
 			return;
 		}
 
-		// check if harvester has been destroyed
+		// check if Harvester has been destroyed
 		if (currentHP <= 0) {
-			// spawn an explosion when the tank is destroyed
+			// spawn an Explosion when the tank is destroyed
 			float[] tempFloat = theAssetManager.explosionInfo[theAssetManager.explosionCount];
 			tempFloat[0] = centre.x;
 			tempFloat[1] = centre.y - 0.05f;
@@ -1150,17 +1150,17 @@ public class constructionVehicle extends solidObject {
 			movement.reset();
 		}
 
-		// update center in camera coordinate
+		// update center in Camera coordinate
 		tempCentre.set(centre);
 		tempCentre.y -= 0.2f;
-		tempCentre.subtract(camera.position);
-		tempCentre.rotate_XZ(camera.XZ_angle);
-		tempCentre.rotate_YZ(camera.YZ_angle);
+		tempCentre.subtract(Camera.position);
+		tempCentre.rotate_XZ(Camera.XZ_angle);
+		tempCentre.rotate_YZ(Camera.YZ_angle);
 		tempCentre.updateLocation();
 
 		visionBoundary.x = (int) (tempCentre.screenX - visionW);
 		visionBoundary.y = (int) (tempCentre.screenY - visionH);
-		visionInsideScreen = camera.screen.intersects(visionBoundary);
+		visionInsideScreen = Camera.screen.intersects(visionBoundary);
 
 		// create vision for enemy commander
 		if (teamNo == 1) {
@@ -1169,7 +1169,7 @@ public class constructionVehicle extends solidObject {
 			for (int y = 0; y < 13; y++) {
 				for (int x = 0; x < 13; x++) {
 					if (bitmapVisionForEnemy[x + y * 13])
-						enemyCommander.tempBitmap[xPos + x + (yPos + y) * 148] = true;
+						EnemyCommander.tempBitmap[xPos + x + (yPos + y) * 148] = true;
 				}
 			}
 		}
@@ -1200,9 +1200,9 @@ public class constructionVehicle extends solidObject {
 			theAssetManager.unitsForMiniMapCount++;
 		}
 
-		// test if the tank object is visible in camera point of view
+		// test if the tank object is visible in Camera point of view
 		if (visible_minimap) {
-			if (currentHP <= maxHP / 2 && (mainThread.gameFrame + ID) % 3 == 0) {
+			if (currentHP <= maxHP / 2 && (MainThread.gameFrame + ID) % 3 == 0) {
 				// spawn smoke particle if the unit is badly damaged
 				float[] tempFloat = theAssetManager.smokeEmmiterList[theAssetManager.smokeEmmiterCount];
 				tempFloat[0] = centre.x + (float) (Math.random() / 20) - 0.025f;
@@ -1228,7 +1228,7 @@ public class constructionVehicle extends solidObject {
 
 			}
 		} else {
-			mainThread.pc.deSelect(this);
+			MainThread.playerCommander.deSelect(this);
 			visible = false;
 		}
 
@@ -1330,9 +1330,9 @@ public class constructionVehicle extends solidObject {
 
 			movement.reset();
 
-			// check if the harvester has reached next node in the path
+			// check if the Harvester has reached next node in the path
 			if (centre.x == nextNodeX && centre.z == nextNodeY) {
-				// check if the harvester has reached the destination
+				// check if the Harvester has reached the destination
 				int destX = (int) (destinationX * 64) / 16;
 				int destY = 127 - (int) (destinationY * 64) / 16;
 				int nodeX = (int) (centre.x * 64) / 16;
@@ -1354,21 +1354,21 @@ public class constructionVehicle extends solidObject {
 					* (nextNodeX - centre.x) + (nextNodeY - centre.z)
 					* (nextNodeY - centre.z));
 			calculateMovement();
-			destinationAngle = geometry.findAngle(centre.x, centre.z,
+			destinationAngle = Geometry.findAngle(centre.x, centre.z,
 					nextNodeX, nextNodeY);
 			immediateDestinationAngle = destinationAngle;
 
 			if (Math.abs(bodyAngle - immediateDestinationAngle) > 45
 					&& Math.abs(bodyAngle - immediateDestinationAngle) < 315) {
 
-				int bodyAngleDelta = 360 - (geometry.findAngleDelta(bodyAngle,
+				int bodyAngleDelta = 360 - (Geometry.findAngleDelta(bodyAngle,
 						immediateDestinationAngle, bodyTurnRate) + 360) % 360;
 				bodyAngle = (bodyAngle - bodyAngleDelta + 360) % 360;
 				movement.reset();
 
 			} else {
 				if (bodyAngle != immediateDestinationAngle) {
-					int bodyAngleDelta = 360 - (geometry.findAngleDelta(
+					int bodyAngleDelta = 360 - (Geometry.findAngleDelta(
 							bodyAngle, immediateDestinationAngle, bodyTurnRate) + 360) % 360;
 					bodyAngle = (bodyAngle - bodyAngleDelta + 360) % 360;
 				}
@@ -1402,7 +1402,7 @@ public class constructionVehicle extends solidObject {
 
 		if (!pathIsFound) {
 			if ((movement.x == 0 && movement.z == 0)
-					|| mainThread.gridMap.tiles[occupiedTile0][4] != null) {
+					|| MainThread.gridMap.tiles[occupiedTile0][4] != null) {
 				if ((Math.abs(destinationX - centre.x)
 						+ Math.abs(destinationY - centre.z) > 0.5)
 						|| (jobStatus == idle)) {
@@ -1420,7 +1420,7 @@ public class constructionVehicle extends solidObject {
 		int smallestHeurstic = 127;
 		int nextTile = currentTile;
 
-		boolean[] obstacleMap = mainThread.gridMap.previousObstacleMap;
+		boolean[] obstacleMap = MainThread.gridMap.previousObstacleMap;
 
 		// check north west tile
 		int northWestTile = currentTile - 128 - 1;
@@ -1520,7 +1520,7 @@ public class constructionVehicle extends solidObject {
 					* (destinationX - centre.x) + (destinationY - centre.z)
 					* (destinationY - centre.z));
 			calculateMovement();
-			destinationAngle = geometry.findAngle(centre.x, centre.z,
+			destinationAngle = Geometry.findAngle(centre.x, centre.z,
 					destinationX, destinationY);
 			immediateDestinationAngle = destinationAngle;
 		}
@@ -1528,14 +1528,14 @@ public class constructionVehicle extends solidObject {
 		if (Math.abs(bodyAngle - immediateDestinationAngle) > 45
 				&& Math.abs(bodyAngle - immediateDestinationAngle) < 315) {
 
-			int bodyAngleDelta = 360 - (geometry.findAngleDelta(bodyAngle,
+			int bodyAngleDelta = 360 - (Geometry.findAngleDelta(bodyAngle,
 					immediateDestinationAngle, bodyTurnRate) + 360) % 360;
 			bodyAngle = (bodyAngle - bodyAngleDelta + 360) % 360;
 			movement.reset();
 
 		} else {
 			if (bodyAngle != immediateDestinationAngle) {
-				int bodyAngleDelta = 360 - (geometry.findAngleDelta(bodyAngle,
+				int bodyAngleDelta = 360 - (Geometry.findAngleDelta(bodyAngle,
 						immediateDestinationAngle, bodyTurnRate) + 360) % 360;
 				bodyAngle = (bodyAngle - bodyAngleDelta + 360) % 360;
 			}
@@ -1591,12 +1591,12 @@ public class constructionVehicle extends solidObject {
 
 		if (obstacle != null) {
 			if ((unStableObstacle != null || !isStable(obstacle.owner))
-					&& (ID + randomNumber + mainThread.gameFrame) % 128 == 0) {
+					&& (ID + randomNumber + MainThread.gameFrame) % 128 == 0) {
 				newDestinationisGiven = true;
 				currentMovementStatus = freeToMove;
 				hugWallCoolDown = 0;
 				stuckCount = 0;
-				randomNumber = gameData.getRandom();
+				randomNumber = GameData.getRandom();
 			}
 		}
 
@@ -1955,7 +1955,7 @@ public class constructionVehicle extends solidObject {
 			position = surrounding[i];
 			if (position / 128 > 0 && position / 128 < 127
 					&& position % 128 > 0 && position % 128 < 127) {
-				tile = mainThread.gridMap.tiles[position];
+				tile = MainThread.gridMap.tiles[position];
 				for (int j = 0; j < 5; j++) {
 					if (tile[j] != null && tile[j] != this) {
 						return false;
@@ -1976,7 +1976,7 @@ public class constructionVehicle extends solidObject {
 		float theXPos = ((boundary2D.x1 + 8) / 16 * 0.25f) + 0.125f;
 		float theYPos = ((boundary2D.y1 - 8 - 1) / 16 * 0.25f) + 0.125f;
 
-		myConstructionYard = new constructionYard(theXPos, -2.89f, theYPos,
+		myConstructionYard = new ConstructionYard(theXPos, -2.89f, theYPos,
 				teamNo);
 		myConstructionYard.isSelectable = false;
 		theAssetManager.addContructionYard(myConstructionYard);

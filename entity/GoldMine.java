@@ -4,7 +4,7 @@ import java.awt.Rectangle;
 
 import core.*;
 
-public class goldMine extends solidObject{
+public class GoldMine extends SolidObject {
 	//the polygons of the model
 	private polygon3D[] polygons; 
 	
@@ -34,7 +34,7 @@ public class goldMine extends solidObject{
 	
 	public vector shadowvertex0, tempshadowvertex0,shadowvertex1, tempshadowvertex1,shadowvertex2, tempshadowvertex2,shadowvertex3, tempshadowvertex3;
 	
-	//a screen space boundary which is used to test if the  object is visible from camera point of view
+	//a screen space boundary which is used to test if the  object is visible from Camera point of view
 	public final static Rectangle visibleBoundary = new Rectangle(-85,-85,screen_width+152, screen_height+250);  
 		
 	//a screen space boundary which is used to test if the entire  object is within the screen
@@ -51,7 +51,7 @@ public class goldMine extends solidObject{
 	
 	public int polygonCount;
 	
-	public goldMine(float x, float y, float z, int amount){
+	public GoldMine(float x, float y, float z, int amount){
 		
 		goldDeposite =amount;
 		maxDeposite = amount;		
@@ -86,30 +86,30 @@ public class goldMine extends solidObject{
 		tileIndex[3] = (centerX - 8)/16 + (127 - (centerY - 8)/16)*128;
 		
 		
-		mainThread.gridMap.tiles[tileIndex[0]][0] = this;  
-		mainThread.gridMap.tiles[tileIndex[1]][0] = this; 
-		mainThread.gridMap.tiles[tileIndex[2]][0] = this; 
-		mainThread.gridMap.tiles[tileIndex[3]][0] = this; 
+		MainThread.gridMap.tiles[tileIndex[0]][0] = this;
+		MainThread.gridMap.tiles[tileIndex[1]][0] = this;
+		MainThread.gridMap.tiles[tileIndex[2]][0] = this;
+		MainThread.gridMap.tiles[tileIndex[3]][0] = this;
 		
-		mainThread.gridMap.tiles[tileIndex[0]][1] = this;  
-		mainThread.gridMap.tiles[tileIndex[1]][1] = this; 
-		mainThread.gridMap.tiles[tileIndex[2]][1] = this; 
-		mainThread.gridMap.tiles[tileIndex[3]][1] = this; 
+		MainThread.gridMap.tiles[tileIndex[0]][1] = this;
+		MainThread.gridMap.tiles[tileIndex[1]][1] = this;
+		MainThread.gridMap.tiles[tileIndex[2]][1] = this;
+		MainThread.gridMap.tiles[tileIndex[3]][1] = this;
 		
-		mainThread.gridMap.tiles[tileIndex[0]][2] = this;  
-		mainThread.gridMap.tiles[tileIndex[1]][2] = this; 
-		mainThread.gridMap.tiles[tileIndex[2]][2] = this; 
-		mainThread.gridMap.tiles[tileIndex[3]][2] = this; 
+		MainThread.gridMap.tiles[tileIndex[0]][2] = this;
+		MainThread.gridMap.tiles[tileIndex[1]][2] = this;
+		MainThread.gridMap.tiles[tileIndex[2]][2] = this;
+		MainThread.gridMap.tiles[tileIndex[3]][2] = this;
 		
-		mainThread.gridMap.tiles[tileIndex[0]][3] = this;  
-		mainThread.gridMap.tiles[tileIndex[1]][3] = this; 
-		mainThread.gridMap.tiles[tileIndex[2]][3] = this; 
-		mainThread.gridMap.tiles[tileIndex[3]][3] = this; 
+		MainThread.gridMap.tiles[tileIndex[0]][3] = this;
+		MainThread.gridMap.tiles[tileIndex[1]][3] = this;
+		MainThread.gridMap.tiles[tileIndex[2]][3] = this;
+		MainThread.gridMap.tiles[tileIndex[3]][3] = this;
 
-		mainThread.gridMap.tiles[tileIndex[0]][4] = this;  
-		mainThread.gridMap.tiles[tileIndex[1]][4] = this; 
-		mainThread.gridMap.tiles[tileIndex[2]][4] = this; 
-		mainThread.gridMap.tiles[tileIndex[3]][4] = this; 
+		MainThread.gridMap.tiles[tileIndex[0]][4] = this;
+		MainThread.gridMap.tiles[tileIndex[1]][4] = this;
+		MainThread.gridMap.tiles[tileIndex[2]][4] = this;
+		MainThread.gridMap.tiles[tileIndex[3]][4] = this;
 		}
 		
 		
@@ -164,7 +164,7 @@ public class goldMine extends solidObject{
 		//load height map
 		float[] heightmap = new float[(32+1)*(32+1)];
 		
-		int[] hm = mainThread.textures[38].heightmap;
+		int[] hm = MainThread.textures[38].heightmap;
 		
 		
 	
@@ -222,7 +222,7 @@ public class goldMine extends solidObject{
 				bot.set(origin);
 				bot.add(deltaZ, -32);
 				
-				polygons[index] = new polygon3D(v, origin.myClone(), top.myClone(), bot.myClone(), mainThread.textures[textureIndex], 1,1,1);
+				polygons[index] = new polygon3D(v, origin.myClone(), top.myClone(), bot.myClone(), MainThread.textures[textureIndex], 1,1,1);
 				deltaX.set(tempVector3);
 				deltaX.subtract(tempVector2);
 				
@@ -245,7 +245,7 @@ public class goldMine extends solidObject{
 				
 				
 				
-				polygons[index+1] = new polygon3D(v, origin.myClone(), top.myClone(), bot.myClone(), mainThread.textures[39], 1,1,1);
+				polygons[index+1] = new polygon3D(v, origin.myClone(), top.myClone(), bot.myClone(), MainThread.textures[39], 1,1,1);
 				
 				
 						
@@ -263,13 +263,13 @@ public class goldMine extends solidObject{
 	
 	//update the model 
 	public void update(){
-		if(!mainThread.gameStarted) {
+		if(!MainThread.gameStarted) {
 			isRevealed = true;
 		}else {
-			if(mainThread.theAssetManager.minimapBitmap[tileIndex[0]] ||
-			   mainThread.theAssetManager.minimapBitmap[tileIndex[1]] ||	 
-			   mainThread.theAssetManager.minimapBitmap[tileIndex[2]] ||		
-			   mainThread.theAssetManager.minimapBitmap[tileIndex[3]] )
+			if(MainThread.theAssetManager.minimapBitmap[tileIndex[0]] ||
+			   MainThread.theAssetManager.minimapBitmap[tileIndex[1]] ||
+			   MainThread.theAssetManager.minimapBitmap[tileIndex[2]] ||
+			   MainThread.theAssetManager.minimapBitmap[tileIndex[3]] )
 						isRevealed = true;
 			else
 				isRevealed = false;
@@ -282,42 +282,42 @@ public class goldMine extends solidObject{
 			if(progressStatus == 0 && textureIndex != 41){
 				textureIndex = 41;
 				for(int i = 0; i < polygons.length; i++)
-					polygons[i].myTexture = mainThread.textures[textureIndex];
+					polygons[i].myTexture = MainThread.textures[textureIndex];
 			}else if(progressStatus == 100 && textureIndex == 41) {
 				textureIndex = 39;
 				for(int i = 0; i < polygons.length; i++) {
-					polygons[i].myTexture = mainThread.textures[textureIndex];
+					polygons[i].myTexture = MainThread.textures[textureIndex];
 				}
 			}
 		}else {
 			if(textureIndex == 41 && goldDeposite == maxDeposite) {
 				textureIndex = 39;
 				for(int i = 0; i < polygons.length; i++) {
-					polygons[i].myTexture = mainThread.textures[textureIndex];
+					polygons[i].myTexture = MainThread.textures[textureIndex];
 				}
 			}
 		}
 			
 			
 		//mark itself on obstacle map
-		mainThread.gridMap.currentObstacleMap[tileIndex[0]] = false;
-		mainThread.gridMap.currentObstacleMap[tileIndex[1]] = false;
-		mainThread.gridMap.currentObstacleMap[tileIndex[2]] = false;
-		mainThread.gridMap.currentObstacleMap[tileIndex[3]] = false;
+		MainThread.gridMap.currentObstacleMap[tileIndex[0]] = false;
+		MainThread.gridMap.currentObstacleMap[tileIndex[1]] = false;
+		MainThread.gridMap.currentObstacleMap[tileIndex[2]] = false;
+		MainThread.gridMap.currentObstacleMap[tileIndex[3]] = false;
 		
 		
 		
 		
-		//update center in camera coordinate
+		//update center in Camera coordinate
 		tempCentre.set(centre);
-		tempCentre.subtract(camera.position);
-		tempCentre.rotate_XZ(camera.XZ_angle);
-		tempCentre.rotate_YZ(camera.YZ_angle); 
+		tempCentre.subtract(Camera.position);
+		tempCentre.rotate_XZ(Camera.XZ_angle);
+		tempCentre.rotate_YZ(Camera.YZ_angle);
 		tempCentre.updateLocation();
 			
-		theAssetManager = mainThread.theAssetManager;
+		theAssetManager = MainThread.theAssetManager;
 		
-		//test if the palm tree is visible in camera point of view
+		//test if the palm tree is visible in Camera point of view
 		if(visibleBoundary.contains(tempCentre.screenX, tempCentre.screenY)){
 			visible = true;
 			
@@ -329,29 +329,29 @@ public class goldMine extends solidObject{
 				withinViewScreen = false;
 			
 			tempshadowvertex0.set(shadowvertex0);
-			tempshadowvertex0.subtract(camera.position);
-			tempshadowvertex0.rotate_XZ(camera.XZ_angle);
-			tempshadowvertex0.rotate_YZ(camera.YZ_angle); 
+			tempshadowvertex0.subtract(Camera.position);
+			tempshadowvertex0.rotate_XZ(Camera.XZ_angle);
+			tempshadowvertex0.rotate_YZ(Camera.YZ_angle);
 			tempshadowvertex0.updateLocation();
 			
 			
 			
 			tempshadowvertex1.set(shadowvertex1);
-			tempshadowvertex1.subtract(camera.position);
-			tempshadowvertex1.rotate_XZ(camera.XZ_angle);
-			tempshadowvertex1.rotate_YZ(camera.YZ_angle); 
+			tempshadowvertex1.subtract(Camera.position);
+			tempshadowvertex1.rotate_XZ(Camera.XZ_angle);
+			tempshadowvertex1.rotate_YZ(Camera.YZ_angle);
 			tempshadowvertex1.updateLocation();
 			
 			tempshadowvertex2.set(shadowvertex2);
-			tempshadowvertex2.subtract(camera.position);
-			tempshadowvertex2.rotate_XZ(camera.XZ_angle);
-			tempshadowvertex2.rotate_YZ(camera.YZ_angle); 
+			tempshadowvertex2.subtract(Camera.position);
+			tempshadowvertex2.rotate_XZ(Camera.XZ_angle);
+			tempshadowvertex2.rotate_YZ(Camera.YZ_angle);
 			tempshadowvertex2.updateLocation();
 			
 			tempshadowvertex3.set(shadowvertex3);
-			tempshadowvertex3.subtract(camera.position);
-			tempshadowvertex3.rotate_XZ(camera.XZ_angle);
-			tempshadowvertex3.rotate_YZ(camera.YZ_angle); 
+			tempshadowvertex3.subtract(Camera.position);
+			tempshadowvertex3.rotate_XZ(Camera.XZ_angle);
+			tempshadowvertex3.rotate_YZ(Camera.YZ_angle);
 			tempshadowvertex3.updateLocation();
 
 			
@@ -411,6 +411,37 @@ public class goldMine extends solidObject{
 	public vector getMovement(){
 		return movenment;
 	}
-	
-	
+
+
+    //clone a group of polygons (doesn't work on smooth shaded polygons)
+    public polygon3D[] clonePolygons(polygon3D[] polys, boolean createNewOUV){
+        int l = polys.length;
+
+        polygon3D[] clone = new polygon3D[l];
+
+        for(int i = 0; i < l; i++){
+            if(polys[i] == null)
+                continue;
+            int length = polys[i].vertex3D.length;
+            v = new vector[length];
+            for(int j = 0; j < length; j++){
+                v[j] = polys[i].vertex3D[j].myClone();
+            }
+
+            int myType = polys[i].type;
+            float scaleX = polys[i].scaleX;
+            float scaleY = polys[i].scaleY;
+            texture myTexture = polys[i].myTexture;
+            if(createNewOUV)
+                clone[i] = new polygon3D(v, polys[i].origin.myClone(), polys[i].rightEnd.myClone(), polys[i].bottomEnd.myClone(), myTexture, scaleX, scaleY, myType);
+            else
+                clone[i] = new polygon3D(v, v[0], v[1], v[3], myTexture, scaleX, scaleY, myType);
+            clone[i].shadowBias = polys[i].shadowBias;
+            clone[i].diffuse_I = polys[i].diffuse_I;
+            clone[i].Ambient_I = polys[i].Ambient_I;
+        }
+
+
+        return clone;
+    }
 }

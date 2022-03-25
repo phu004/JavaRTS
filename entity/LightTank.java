@@ -1,13 +1,11 @@
 package entity;
 
-import java.awt.Rectangle;
-
 import core.*;
-import enemyAI.enemyCommander;
+import enemyAI.EnemyCommander;
 
 //light tank 3D model
 
-public class lightTank extends Tank {
+public class LightTank extends Tank {
 	public vector iDirectionBody, jDirectionBody, kDirectionBody, iDirectionTurret, jDirectionTurret, kDirectionTurret;
 	public static int maxHP = 120;
 
@@ -19,7 +17,7 @@ public class lightTank extends Tank {
 	public int bodyAngleDelta_offscreen, turretAngleDelta_offscreen; 
 	public vector movement_offscreen;
 	
-	//whether the geometry of the object in world coordinate neesd to be updated in the current frame
+	//whether the Geometry of the object in world coordinate neesd to be updated in the current frame
 	public boolean geometryNeedModify;
 
 	public int bodyTurnRate = 8; 
@@ -33,7 +31,7 @@ public class lightTank extends Tank {
 	public static int[] tileCheckList, tileCheckList_player, tileCheckList_enemy;
 	
 	
-	public lightTank(vector origin, int bodyAngle, int teamNo){
+	public LightTank(vector origin, int bodyAngle, int teamNo){
 		speed = 0.012f;
 		attackRange = 1.60f;
 		groupAttackRange = 1.2f;
@@ -57,9 +55,9 @@ public class lightTank extends Tank {
 		
 		
 		ID = globalUniqID++;
-		randomNumber = gameData.getRandom();
+		randomNumber = GameData.getRandom();
 		height = centre.y + 0.2f;
-		theAssetManager = mainThread.theAssetManager; 
+		theAssetManager = MainThread.theAssetManager;
 		boundary2D = new Rect((int)(origin.x*64) - 8, (int)(origin.z*64) + 8, 16, 16);
 		movement = new vector(0,0,0);
 		updateOccupiedTiles(boundary2D.x1, boundary2D.y1);
@@ -106,50 +104,50 @@ public class lightTank extends Tank {
 			skinTextureIndex = 10;
 		
 		body = new polygon3D[15];
-		v = new vector[]{put(-0.071, 0.025, 0.11), put(-0.071, 0.025, -0.11), put(-0.071, 0.005, -0.11), put(-0.071, -0.025, -0.08), put(-0.071, -0.025, 0.07), put(-0.071, 0.005, 0.11)};
-		body[0] = new polygon3D(v, put(-0.071, 0.027, 0.11), put(-0.071, 0.027, -0.11), put(-0.071, -0.025, 0.11), mainThread.textures[3], 1,1,1);
+		v = new vector[]{createArbitraryVertex(-0.071, 0.025, 0.11), createArbitraryVertex(-0.071, 0.025, -0.11), createArbitraryVertex(-0.071, 0.005, -0.11), createArbitraryVertex(-0.071, -0.025, -0.08), createArbitraryVertex(-0.071, -0.025, 0.07), createArbitraryVertex(-0.071, 0.005, 0.11)};
+		body[0] = new polygon3D(v, createArbitraryVertex(-0.071, 0.027, 0.11), createArbitraryVertex(-0.071, 0.027, -0.11), createArbitraryVertex(-0.071, -0.025, 0.11), MainThread.textures[3], 1,1,1);
 		
-		v = new vector[]{put(0.071, 0.005, 0.11), put(0.071, -0.025, 0.07), put(0.071, -0.025, -0.08), put(0.071, 0.005, -0.11), put(0.071, 0.025, -0.11), put(0.071, 0.025, 0.11)};
-		body[1] = new polygon3D(v, put(0.071, 0.027, -0.11),put(0.071, 0.027, 0.11), put(0.071, -0.025, -0.11), mainThread.textures[3], 1,1,1);
+		v = new vector[]{createArbitraryVertex(0.071, 0.005, 0.11), createArbitraryVertex(0.071, -0.025, 0.07), createArbitraryVertex(0.071, -0.025, -0.08), createArbitraryVertex(0.071, 0.005, -0.11), createArbitraryVertex(0.071, 0.025, -0.11), createArbitraryVertex(0.071, 0.025, 0.11)};
+		body[1] = new polygon3D(v, createArbitraryVertex(0.071, 0.027, -0.11), createArbitraryVertex(0.071, 0.027, 0.11), createArbitraryVertex(0.071, -0.025, -0.11), MainThread.textures[3], 1,1,1);
 		
-		v = new vector[]{put(-0.06, 0.055, 0.05), put(0.06, 0.055, 0.05), put(0.06, 0.055, -0.1), put(-0.06, 0.055, -0.1)};
-		body[2] = new polygon3D(v, v[0], v[1], v [3], mainThread.textures[skinTextureIndex], 1,0.9f, 1);
+		v = new vector[]{createArbitraryVertex(-0.06, 0.055, 0.05), createArbitraryVertex(0.06, 0.055, 0.05), createArbitraryVertex(0.06, 0.055, -0.1), createArbitraryVertex(-0.06, 0.055, -0.1)};
+		body[2] = new polygon3D(v, v[0], v[1], v [3], MainThread.textures[skinTextureIndex], 1,0.9f, 1);
 		
-		v = new vector[]{put(-0.07, 0.04, 0.11), put(0.07, 0.04, 0.11), put(0.06, 0.055, 0.05), put(-0.06, 0.055, 0.05)};
-		body[3] = new polygon3D(v, v[2], v[3], v [1], mainThread.textures[skinTextureIndex], 1,0.3f,1);
+		v = new vector[]{createArbitraryVertex(-0.07, 0.04, 0.11), createArbitraryVertex(0.07, 0.04, 0.11), createArbitraryVertex(0.06, 0.055, 0.05), createArbitraryVertex(-0.06, 0.055, 0.05)};
+		body[3] = new polygon3D(v, v[2], v[3], v [1], MainThread.textures[skinTextureIndex], 1,0.3f,1);
 	
-		v = new vector[]{put(-0.06, 0.055, 0.05),put(-0.06, 0.055, -0.1), put(-0.07, 0.04, -0.11), put(-0.07, 0.04, 0.11)};
-		body[4] = new polygon3D(v, v[2], v[3], v [1], mainThread.textures[skinTextureIndex], 1,0.3f,1);
+		v = new vector[]{createArbitraryVertex(-0.06, 0.055, 0.05), createArbitraryVertex(-0.06, 0.055, -0.1), createArbitraryVertex(-0.07, 0.04, -0.11), createArbitraryVertex(-0.07, 0.04, 0.11)};
+		body[4] = new polygon3D(v, v[2], v[3], v [1], MainThread.textures[skinTextureIndex], 1,0.3f,1);
 	
-		v = new vector[]{put(0.07, 0.04, 0.11), put(0.07, 0.04, -0.11), put(0.06, 0.055, -0.1),put(0.06, 0.055, 0.05)};
-		body[5] = new polygon3D(v, v[2], v[3], v [1], mainThread.textures[skinTextureIndex], 1,0.3f,1);
+		v = new vector[]{createArbitraryVertex(0.07, 0.04, 0.11), createArbitraryVertex(0.07, 0.04, -0.11), createArbitraryVertex(0.06, 0.055, -0.1), createArbitraryVertex(0.06, 0.055, 0.05)};
+		body[5] = new polygon3D(v, v[2], v[3], v [1], MainThread.textures[skinTextureIndex], 1,0.3f,1);
 		
-		v = new vector[]{put(-0.06, 0.055, -0.1), put(0.06, 0.055, -0.1), put(0.07, 0.04, -0.11), put(-0.07, 0.04, -0.11)};
-		body[6] = new polygon3D(v, v[2], v[3], v [1], mainThread.textures[skinTextureIndex], 1,0.3f,1);
+		v = new vector[]{createArbitraryVertex(-0.06, 0.055, -0.1), createArbitraryVertex(0.06, 0.055, -0.1), createArbitraryVertex(0.07, 0.04, -0.11), createArbitraryVertex(-0.07, 0.04, -0.11)};
+		body[6] = new polygon3D(v, v[2], v[3], v [1], MainThread.textures[skinTextureIndex], 1,0.3f,1);
 		
-		v = new vector[]{put(0.07, 0.04, 0.11), put(-0.07, 0.04, 0.11), put(-0.07, 0.01, 0.11), put(0.07, 0.01, 0.11)};
-		body[7] = new polygon3D(v, v[2], v[3], v [1], mainThread.textures[skinTextureIndex], 1,0.3f,1);
+		v = new vector[]{createArbitraryVertex(0.07, 0.04, 0.11), createArbitraryVertex(-0.07, 0.04, 0.11), createArbitraryVertex(-0.07, 0.01, 0.11), createArbitraryVertex(0.07, 0.01, 0.11)};
+		body[7] = new polygon3D(v, v[2], v[3], v [1], MainThread.textures[skinTextureIndex], 1,0.3f,1);
 	
-		v = new vector[]{put(-0.07, 0.04, 0.11), put(-0.07, 0.04, -0.11), put(-0.07, 0.015, -0.11), put(-0.07, 0.005, -0.09), put(-0.07, 0.005, 0.09),put(-0.07, 0.015, 0.11)};
-		body[8] = new polygon3D(v, put(-0.07, 0.04, 0.11), put(-0.07, 0.04, -0.11), put(-0.07, 0.025, 0.11), mainThread.textures[skinTextureIndex], 1,0.3f,1);
+		v = new vector[]{createArbitraryVertex(-0.07, 0.04, 0.11), createArbitraryVertex(-0.07, 0.04, -0.11), createArbitraryVertex(-0.07, 0.015, -0.11), createArbitraryVertex(-0.07, 0.005, -0.09), createArbitraryVertex(-0.07, 0.005, 0.09), createArbitraryVertex(-0.07, 0.015, 0.11)};
+		body[8] = new polygon3D(v, createArbitraryVertex(-0.07, 0.04, 0.11), createArbitraryVertex(-0.07, 0.04, -0.11), createArbitraryVertex(-0.07, 0.025, 0.11), MainThread.textures[skinTextureIndex], 1,0.3f,1);
 	
-		v = new vector[]{put(0.07, 0.015, 0.11), put(0.07, 0.005, 0.09), put(0.07, 0.005, -0.09), put(0.07, 0.015, -0.11), put(0.07, 0.04, -0.11),put(0.07, 0.04, 0.11)};
-		body[9] = new polygon3D(v, put(0.07, 0.04, 0.11), put(0.07, 0.04, -0.11), put(0.07, 0.025, 0.11), mainThread.textures[skinTextureIndex], 1,0.3f,1);
+		v = new vector[]{createArbitraryVertex(0.07, 0.015, 0.11), createArbitraryVertex(0.07, 0.005, 0.09), createArbitraryVertex(0.07, 0.005, -0.09), createArbitraryVertex(0.07, 0.015, -0.11), createArbitraryVertex(0.07, 0.04, -0.11), createArbitraryVertex(0.07, 0.04, 0.11)};
+		body[9] = new polygon3D(v, createArbitraryVertex(0.07, 0.04, 0.11), createArbitraryVertex(0.07, 0.04, -0.11), createArbitraryVertex(0.07, 0.025, 0.11), MainThread.textures[skinTextureIndex], 1,0.3f,1);
 	
-		v = new vector[]{put(-0.07, 0.04, -0.11), put(0.07, 0.04, -0.11), put(0.07, 0.015, -0.11), put(-0.07, 0.015, -0.11)};
-		body[10] = new polygon3D(v, v[0], v[1], v [3], mainThread.textures[skinTextureIndex], 1,0.3f,1);
+		v = new vector[]{createArbitraryVertex(-0.07, 0.04, -0.11), createArbitraryVertex(0.07, 0.04, -0.11), createArbitraryVertex(0.07, 0.015, -0.11), createArbitraryVertex(-0.07, 0.015, -0.11)};
+		body[10] = new polygon3D(v, v[0], v[1], v [3], MainThread.textures[skinTextureIndex], 1,0.3f,1);
 		
-		v = new vector[]{put(-0.07, 0.005, -0.11), put(-0.04, 0.005, -0.11), put(-0.04, -0.025, -0.08), put(-0.07, -0.025, -0.08)};
-		body[11] = new polygon3D(v, v[0], v[1], v [3], mainThread.textures[3], 1,1,1);
+		v = new vector[]{createArbitraryVertex(-0.07, 0.005, -0.11), createArbitraryVertex(-0.04, 0.005, -0.11), createArbitraryVertex(-0.04, -0.025, -0.08), createArbitraryVertex(-0.07, -0.025, -0.08)};
+		body[11] = new polygon3D(v, v[0], v[1], v [3], MainThread.textures[3], 1,1,1);
 		
-		v = new vector[]{put(-0.07, 0.015, -0.11), put(-0.04, 0.015, -0.11), put(-0.04, 0.005, -0.11), put(-0.07, 0.005, -0.11)};
-		body[12] = new polygon3D(v, v[0], v[1], v [3], mainThread.textures[3], 1,1,1);
+		v = new vector[]{createArbitraryVertex(-0.07, 0.015, -0.11), createArbitraryVertex(-0.04, 0.015, -0.11), createArbitraryVertex(-0.04, 0.005, -0.11), createArbitraryVertex(-0.07, 0.005, -0.11)};
+		body[12] = new polygon3D(v, v[0], v[1], v [3], MainThread.textures[3], 1,1,1);
 		
-		v = new vector[]{put(0.04, 0.015, -0.11), put(0.07, 0.015, -0.11), put(0.07, 0.005, -0.11), put(0.04, 0.005, -0.11)};
-		body[13] = new polygon3D(v, v[0], v[1], v [3], mainThread.textures[3], 1,1,1);
+		v = new vector[]{createArbitraryVertex(0.04, 0.015, -0.11), createArbitraryVertex(0.07, 0.015, -0.11), createArbitraryVertex(0.07, 0.005, -0.11), createArbitraryVertex(0.04, 0.005, -0.11)};
+		body[13] = new polygon3D(v, v[0], v[1], v [3], MainThread.textures[3], 1,1,1);
 		
-		v = new vector[]{put(0.04, 0.005, -0.11), put(0.07, 0.005, -0.11), put(0.07, -0.025, -0.08), put(0.04, -0.025, -0.08)};
-		body[14] = new polygon3D(v, v[0], v[1], v [3], mainThread.textures[3], 1,1,1);
+		v = new vector[]{createArbitraryVertex(0.04, 0.005, -0.11), createArbitraryVertex(0.07, 0.005, -0.11), createArbitraryVertex(0.07, -0.025, -0.08), createArbitraryVertex(0.04, -0.025, -0.08)};
+		body[14] = new polygon3D(v, v[0], v[1], v [3], MainThread.textures[3], 1,1,1);
 		
 		
 		
@@ -161,44 +159,44 @@ public class lightTank extends Tank {
 		}
 		
 
-		turretCenter = put(0, 0.065, -0.0);
+		turretCenter = createArbitraryVertex(0, 0.065, -0.0);
 		start.set(turretCenter);
 		
 		turret = new polygon3D[11];
 		kDirection.set(kDirectionTurret);
 		
-		v = new vector[]{put(0.04, 0.035, 0.06), put(-0.04, 0.035, 0.06), put(-0.04, 0, 0.06), put(0.04, 0, 0.06)};
-		turret[0] = new polygon3D(v, v[0], v[1], v [3], mainThread.textures[skinTextureIndex], 0.6f,0.3f,1);
+		v = new vector[]{createArbitraryVertex(0.04, 0.035, 0.06), createArbitraryVertex(-0.04, 0.035, 0.06), createArbitraryVertex(-0.04, 0, 0.06), createArbitraryVertex(0.04, 0, 0.06)};
+		turret[0] = new polygon3D(v, v[0], v[1], v [3], MainThread.textures[skinTextureIndex], 0.6f,0.3f,1);
 		
-		v = new vector[]{put(0, 0.04, 0.18), put(0.006, 0.03, 0.18), put(0.008, 0.025, 0.06), put(0, 0.035, 0.06)};
-		turret[1] = new polygon3D(v, v[0], v[1], v [3], mainThread.textures[skinTextureIndex], 0.1f,1,1);
+		v = new vector[]{createArbitraryVertex(0, 0.04, 0.18), createArbitraryVertex(0.006, 0.03, 0.18), createArbitraryVertex(0.008, 0.025, 0.06), createArbitraryVertex(0, 0.035, 0.06)};
+		turret[1] = new polygon3D(v, v[0], v[1], v [3], MainThread.textures[skinTextureIndex], 0.1f,1,1);
 		
-		v = new vector[]{ put(0, 0.035, 0.06), put(-0.008, 0.025, 0.06), put(-0.006, 0.03, 0.18),put(0, 0.04, 0.18)};
-		turret[2] = new polygon3D(v, v[0], v[1], v [3], mainThread.textures[skinTextureIndex], 0.1f,1,1);
+		v = new vector[]{ createArbitraryVertex(0, 0.035, 0.06), createArbitraryVertex(-0.008, 0.025, 0.06), createArbitraryVertex(-0.006, 0.03, 0.18), createArbitraryVertex(0, 0.04, 0.18)};
+		turret[2] = new polygon3D(v, v[0], v[1], v [3], MainThread.textures[skinTextureIndex], 0.1f,1,1);
 		
-		v = new vector[]{put(-0.04, 0.035, 0.06), put(0.04, 0.035, 0.06), put(0.05, 0.035, 0.04), put(0.05, 0.035, -0.03), put(0.03, 0.035, -0.07),  put(-0.03, 0.035, -0.07),put(-0.05, 0.035, -0.03), put(-0.05, 0.035, 0.04)};
-		turret[3] = new polygon3D(v, put(-0.04, 0.035, 0.19), put(0.04, 0.035, 0.19), put(-0.04, 0.035, 0.09), mainThread.textures[skinTextureIndex], 0.6f,0.6f,1);
+		v = new vector[]{createArbitraryVertex(-0.04, 0.035, 0.06), createArbitraryVertex(0.04, 0.035, 0.06), createArbitraryVertex(0.05, 0.035, 0.04), createArbitraryVertex(0.05, 0.035, -0.03), createArbitraryVertex(0.03, 0.035, -0.07),  createArbitraryVertex(-0.03, 0.035, -0.07), createArbitraryVertex(-0.05, 0.035, -0.03), createArbitraryVertex(-0.05, 0.035, 0.04)};
+		turret[3] = new polygon3D(v, createArbitraryVertex(-0.04, 0.035, 0.19), createArbitraryVertex(0.04, 0.035, 0.19), createArbitraryVertex(-0.04, 0.035, 0.09), MainThread.textures[skinTextureIndex], 0.6f,0.6f,1);
 		
-		v = new vector[]{put(0.03, 0, -0.07), put(-0.03, 0, -0.07),  put(-0.03, 0.035, -0.07),   put(0.03, 0.035, -0.07)};
-		turret[4] = new polygon3D(v, v[0], v[1], v [3], mainThread.textures[skinTextureIndex], 0.4f,0.2f,1);
+		v = new vector[]{createArbitraryVertex(0.03, 0, -0.07), createArbitraryVertex(-0.03, 0, -0.07),  createArbitraryVertex(-0.03, 0.035, -0.07),   createArbitraryVertex(0.03, 0.035, -0.07)};
+		turret[4] = new polygon3D(v, v[0], v[1], v [3], MainThread.textures[skinTextureIndex], 0.4f,0.2f,1);
 		
-		v = new vector[]{put(0.03, 0.035, -0.07), put(0.05, 0.035, -0.03), put(0.05, 0, -0.03), put(0.03, 0, -0.07)};
-		turret[5] = new polygon3D(v, v[0], v[1], v [3], mainThread.textures[skinTextureIndex], 0.4f,0.2f,1);
+		v = new vector[]{createArbitraryVertex(0.03, 0.035, -0.07), createArbitraryVertex(0.05, 0.035, -0.03), createArbitraryVertex(0.05, 0, -0.03), createArbitraryVertex(0.03, 0, -0.07)};
+		turret[5] = new polygon3D(v, v[0], v[1], v [3], MainThread.textures[skinTextureIndex], 0.4f,0.2f,1);
 		
-		v = new vector[]{put(-0.03, 0, -0.07), put(-0.05, 0, -0.03), put(-0.05, 0.035, -0.03), put(-0.03, 0.035, -0.07)};
-		turret[6] = new polygon3D(v, v[0], v[1], v [3], mainThread.textures[skinTextureIndex], 0.4f,0.2f,1);
+		v = new vector[]{createArbitraryVertex(-0.03, 0, -0.07), createArbitraryVertex(-0.05, 0, -0.03), createArbitraryVertex(-0.05, 0.035, -0.03), createArbitraryVertex(-0.03, 0.035, -0.07)};
+		turret[6] = new polygon3D(v, v[0], v[1], v [3], MainThread.textures[skinTextureIndex], 0.4f,0.2f,1);
 		
-		v = new vector[]{put(0.05, 0.035, -0.03), put(0.05, 0.035, 0.04), put(0.05, 0, 0.04), put(0.05, 0, -0.03)};
-		turret[7] = new polygon3D(v, v[0], v[1], v [3], mainThread.textures[skinTextureIndex], 0.5f,0.3f,1);
+		v = new vector[]{createArbitraryVertex(0.05, 0.035, -0.03), createArbitraryVertex(0.05, 0.035, 0.04), createArbitraryVertex(0.05, 0, 0.04), createArbitraryVertex(0.05, 0, -0.03)};
+		turret[7] = new polygon3D(v, v[0], v[1], v [3], MainThread.textures[skinTextureIndex], 0.5f,0.3f,1);
 		
-		v = new vector[]{put(-0.05, 0, -0.03), put(-0.05, 0, 0.04), put(-0.05, 0.035, 0.04), put(-0.05, 0.035, -0.03)};
-		turret[8] = new polygon3D(v, v[0], v[1], v [3], mainThread.textures[skinTextureIndex], 0.5f,0.3f,1);
+		v = new vector[]{createArbitraryVertex(-0.05, 0, -0.03), createArbitraryVertex(-0.05, 0, 0.04), createArbitraryVertex(-0.05, 0.035, 0.04), createArbitraryVertex(-0.05, 0.035, -0.03)};
+		turret[8] = new polygon3D(v, v[0], v[1], v [3], MainThread.textures[skinTextureIndex], 0.5f,0.3f,1);
 		
-		v = new vector[]{put(0.05, 0.035, 0.04), put(0.04, 0.035, 0.06), put(0.04, 0, 0.06), put(0.05, 0, 0.04)};
-		turret[9] = new polygon3D(v, v[0], v[1], v [3], mainThread.textures[skinTextureIndex], 0.3f,0.3f,1);
+		v = new vector[]{createArbitraryVertex(0.05, 0.035, 0.04), createArbitraryVertex(0.04, 0.035, 0.06), createArbitraryVertex(0.04, 0, 0.06), createArbitraryVertex(0.05, 0, 0.04)};
+		turret[9] = new polygon3D(v, v[0], v[1], v [3], MainThread.textures[skinTextureIndex], 0.3f,0.3f,1);
 		
-		v = new vector[]{put(-0.05, 0, 0.04), put(-0.04, 0, 0.06), put(-0.04, 0.035, 0.06), put(-0.05, 0.035, 0.04)};
-		turret[10] = new polygon3D(v, v[0], v[1], v [3], mainThread.textures[skinTextureIndex], 0.3f,0.3f,1);
+		v = new vector[]{createArbitraryVertex(-0.05, 0, 0.04), createArbitraryVertex(-0.04, 0, 0.06), createArbitraryVertex(-0.04, 0.035, 0.06), createArbitraryVertex(-0.05, 0.035, 0.04)};
+		turret[10] = new polygon3D(v, v[0], v[1], v [3], MainThread.textures[skinTextureIndex], 0.3f,0.3f,1);
 		
 		for(int i = 0; i < turret.length; i++){
 			turret[i].Ambient_I+=6;
@@ -215,7 +213,7 @@ public class lightTank extends Tank {
 			
 		//check if tank has been destroyed
 		if(currentHP <= 0){
-			//spawn an explosion when the tank is destroyed
+			//spawn an Explosion when the tank is destroyed
 			float[] tempFloat = theAssetManager.explosionInfo[theAssetManager.explosionCount];	
 			tempFloat[0] = centre.x;
 			tempFloat[1] = centre.y - 0.05f;
@@ -240,7 +238,7 @@ public class lightTank extends Tank {
 			if(experience >= 80){
 				level = 2;
 				myDamage = 30 ;
-				if(currentHP < maxHP && mainThread.gameFrame%12==0)
+				if(currentHP < maxHP && MainThread.gameFrame%12==0)
 					currentHP++;
 			}
 		}
@@ -265,20 +263,20 @@ public class lightTank extends Tank {
 			
 		
 		
-		//find out if the geometry of the object need to be modified
+		//find out if the Geometry of the object need to be modified
 		geometryNeedModify = true;
 		if(movement.x == 0 && movement.z == 0){
 			if(turretAngleDelta == 0 && bodyAngleDelta == 0){
 				geometryNeedModify = false;
 			}
 			if(occupiedTile0 != -1)
-				mainThread.gridMap.currentObstacleMap[occupiedTile0] = false;
+				MainThread.gridMap.currentObstacleMap[occupiedTile0] = false;
 			if(occupiedTile1 != -1)
-				mainThread.gridMap.currentObstacleMap[occupiedTile1] = false;
+				MainThread.gridMap.currentObstacleMap[occupiedTile1] = false;
 			if(occupiedTile2 != -1)
-				mainThread.gridMap.currentObstacleMap[occupiedTile2] = false;
+				MainThread.gridMap.currentObstacleMap[occupiedTile2] = false;
 			if(occupiedTile3 != -1)
-				mainThread.gridMap.currentObstacleMap[occupiedTile3] = false;
+				MainThread.gridMap.currentObstacleMap[occupiedTile3] = false;
 		}else{
 			//update centre, make sure the tank isnt moving at a ridiculous speed
 			if (Math.abs(movement.x) + Math.abs(movement.z) < 0.25f) {
@@ -294,28 +292,28 @@ public class lightTank extends Tank {
 			}else{
 				movement.reset();
 				if(occupiedTile0 != -1)
-					mainThread.gridMap.currentObstacleMap[occupiedTile0] = false;
+					MainThread.gridMap.currentObstacleMap[occupiedTile0] = false;
 				if(occupiedTile1 != -1)
-					mainThread.gridMap.currentObstacleMap[occupiedTile1] = false;
+					MainThread.gridMap.currentObstacleMap[occupiedTile1] = false;
 				if(occupiedTile2 != -1)
-					mainThread.gridMap.currentObstacleMap[occupiedTile2] = false;
+					MainThread.gridMap.currentObstacleMap[occupiedTile2] = false;
 				if(occupiedTile3 != -1)
-					mainThread.gridMap.currentObstacleMap[occupiedTile3] = false;
+					MainThread.gridMap.currentObstacleMap[occupiedTile3] = false;
 			}
 		}
 		
 		
-		//update center in camera coordinate
+		//update center in Camera coordinate
 		tempCentre.set(centre);
 		tempCentre.y -= 0.2f;
-		tempCentre.subtract(camera.position);
-		tempCentre.rotate_XZ(camera.XZ_angle);
-		tempCentre.rotate_YZ(camera.YZ_angle); 
+		tempCentre.subtract(Camera.position);
+		tempCentre.rotate_XZ(Camera.XZ_angle);
+		tempCentre.rotate_YZ(Camera.YZ_angle);
 		tempCentre.updateLocation();
 		
 		visionBoundary.x = (int) (tempCentre.screenX - visionW);
 		visionBoundary.y = (int) (tempCentre.screenY - visionH);
-		visionInsideScreen = camera.screen.intersects(visionBoundary);
+		visionInsideScreen = Camera.screen.intersects(visionBoundary);
 		
 		if(attackStatus == isAttacking && targetObject != null &&  targetObject.teamNo != teamNo)
 			exposedCountDown = 64;
@@ -328,7 +326,7 @@ public class lightTank extends Tank {
 			for(int y = 0; y < 13; y++){
 				for(int x = 0; x < 13; x++){
 					if(bitmapVisionForEnemy[x+ y*13])
-						enemyCommander.tempBitmap[xPos + x + (yPos+y)*148] =true;
+						EnemyCommander.tempBitmap[xPos + x + (yPos+y)*148] =true;
 				}
 			}
 		}else if(exposedCountDown > 0){
@@ -338,7 +336,7 @@ public class lightTank extends Tank {
 			for(int y = 0; y < 5; y++){
 				for(int x = 0; x < 5; x++){
 					if(bitmapVisionGainFromAttackingUnit[x+ y*5])
-						enemyCommander.tempBitmap[xPos + x + (yPos+y)*148] =true;
+						EnemyCommander.tempBitmap[xPos + x + (yPos+y)*148] =true;
 				}
 			}
 		}
@@ -386,9 +384,9 @@ public class lightTank extends Tank {
 		
 		
 		
-		//test if the tank object is visible in camera point of view
+		//test if the tank object is visible in Camera point of view
 		if(visible_minimap){
-			if(currentHP <= 60 && (mainThread.gameFrame + ID) % 3 ==0){
+			if(currentHP <= 60 && (MainThread.gameFrame + ID) % 3 ==0){
 				//spawn smoke particle if the tank is badly damaged
 				float[] tempFloat = theAssetManager.smokeEmmiterList[theAssetManager.smokeEmmiterCount];
 				tempFloat[0] = centre.x + (float)(Math.random()/20) - 0.025f;
@@ -415,7 +413,7 @@ public class lightTank extends Tank {
 				
 			}
 		}else{
-			mainThread.pc.deSelect(this);
+			MainThread.playerCommander.deSelect(this);
 			visible = false;
 		}
 		
@@ -575,7 +573,7 @@ public class lightTank extends Tank {
 			tileCheckList = tileCheckList_enemy;
 		
 		//scan for hostile unit
-		if((ID + mainThread.gameFrame)%32 == 0){
+		if((ID + MainThread.gameFrame)%32 == 0){
 			currentOccupiedTile = (int)(centre.x*64)/16 + (127 - (int)(centre.z*64)/16)*128;
 			
 			for(int i = 0; i < tileCheckList.length; i++){
@@ -583,14 +581,14 @@ public class lightTank extends Tank {
 					int index = currentOccupiedTile + tileCheckList[i];
 					if(index < 0 || index >= 16384 || Math.abs(index%128 - currentOccupiedTile%128) > 20)
 						continue;
-					tile = mainThread.gridMap.tiles[index];
+					tile = MainThread.gridMap.tiles[index];
 					
 					for(int j = 0; j < 4; j++){
 						if(tile[j] != null){
 							if(tile[j].teamNo !=  teamNo && tile[j].teamNo != -1 && tile[j].currentHP > 0 && !tile[j].isCloaked){
 								attackMoveTo((tile[j].centre.x + centre.x)/2, (tile[j].centre.z+centre.z)/2);
-								currentCommand = solidObject.attackMove;
-								secondaryCommand = solidObject.attackMove;
+								currentCommand = SolidObject.attackMove;
+								secondaryCommand = SolidObject.attackMove;
 								return;
 							}
 						}
@@ -624,7 +622,7 @@ public class lightTank extends Tank {
 			for(int i = 0; i < numberOfIterations; i++){
 				xStart+=dx;
 				yStart+=dy;
-				solidObject s = mainThread.gridMap.tiles[(int)(xStart*4) + (127 - (int)(yStart*4))*128][0];
+				SolidObject s = MainThread.gridMap.tiles[(int)(xStart*4) + (127 - (int)(yStart*4))*128][0];
 				if(s != null){
 					if(s.type > 100 && s.type < 200 && s != targetObject){
 						hasLineOfSightToTarget = false;
@@ -637,7 +635,7 @@ public class lightTank extends Tank {
 		
 		if(currentMovementStatus !=  hugRight && currentMovementStatus != hugLeft){
 			calculateMovement();
-			destinationAngle = geometry.findAngle(centre.x, centre.z, destinationX, destinationY);
+			destinationAngle = Geometry.findAngle(centre.x, centre.z, destinationX, destinationY);
 			immediateDestinationAngle = destinationAngle;
 		}
 		
@@ -669,11 +667,11 @@ public class lightTank extends Tank {
 		
 		
 		if(attackStatus == isAttacking){
-			int attackAngle = geometry.findAngle(centre.x, centre.z, destinationX, destinationY);
+			int attackAngle = Geometry.findAngle(centre.x, centre.z, destinationX, destinationY);
 			
 			if(turretAngle != attackAngle){
 				
-				turretAngleDelta = 360 - (geometry.findAngleDelta(turretAngle, attackAngle, turretTurnRate) + 360)%360;
+				turretAngleDelta = 360 - (Geometry.findAngleDelta(turretAngle, attackAngle, turretTurnRate) + 360)%360;
 				turretAngle= (turretAngle - turretAngleDelta + 360)%360;
 				
 				if(Math.abs(turretAngle - attackAngle) < 10)
@@ -687,7 +685,7 @@ public class lightTank extends Tank {
 		
 		}else{
 			if(turretAngle != immediateDestinationAngle){
-				turretAngleDelta = 360 - (geometry.findAngleDelta(turretAngle, immediateDestinationAngle, turretTurnRate) + 360)%360;
+				turretAngleDelta = 360 - (Geometry.findAngleDelta(turretAngle, immediateDestinationAngle, turretTurnRate) + 360)%360;
 				turretAngle= (turretAngle - turretAngleDelta + 360)%360;
 			}else{
 				turretAngleDelta = 0;
@@ -696,7 +694,7 @@ public class lightTank extends Tank {
 		
 		if(Math.abs(bodyAngle - immediateDestinationAngle) > 45 && Math.abs(bodyAngle - immediateDestinationAngle) < 315){
 			if(!(distanceToDesination <  attackRange && hasLineOfSightToTarget && movement.x ==0 && movement.z ==0)){
-				bodyAngleDelta = 360 - (geometry.findAngleDelta(bodyAngle, immediateDestinationAngle, bodyTurnRate) + 360)%360;
+				bodyAngleDelta = 360 - (Geometry.findAngleDelta(bodyAngle, immediateDestinationAngle, bodyTurnRate) + 360)%360;
 				bodyAngle= (bodyAngle - bodyAngleDelta + 360)%360;
 				movement.reset();
 			}else{
@@ -706,7 +704,7 @@ public class lightTank extends Tank {
 		}else{
 			if(bodyAngle != immediateDestinationAngle){
 				if(!(distanceToDesination <  attackRange && hasLineOfSightToTarget && movement.x ==0 && movement.z ==0)){
-					bodyAngleDelta = 360 - (geometry.findAngleDelta(bodyAngle, immediateDestinationAngle, bodyTurnRate) + 360)%360;
+					bodyAngleDelta = 360 - (Geometry.findAngleDelta(bodyAngle, immediateDestinationAngle, bodyTurnRate) + 360)%360;
 					bodyAngle= (bodyAngle - bodyAngleDelta + 360)%360;
 					
 				}
@@ -800,7 +798,7 @@ public class lightTank extends Tank {
 		
 		currentOccupiedTile = (int)(centre.x*64)/16 + (127 - (int)(centre.z*64)/16)*128;
 		
-		solidObject target = null;
+		SolidObject target = null;
 		if(teamNo == 0)
 			tileCheckList = tileCheckList_player;
 		else
@@ -811,7 +809,7 @@ public class lightTank extends Tank {
 				int index = currentOccupiedTile + tileCheckList[i];
 				if(index < 0 || index >= 16384 || Math.abs(index%128 - currentOccupiedTile%128) > 20)
 					continue;
-				tile = mainThread.gridMap.tiles[index];
+				tile = MainThread.gridMap.tiles[index];
 				
 				for(int j = 0; j < 4; j++){
 					if(tile[j] != null){
@@ -842,7 +840,7 @@ public class lightTank extends Tank {
 	
 	//move to a destination position,  ignore any hostile units it encounters 
 	public void performMovementLogic(){
-		attackStatus = solidObject.noTarget;
+		attackStatus = SolidObject.noTarget;
 		
 		//clear things a bit
 		unStableObstacle = null;
@@ -852,7 +850,7 @@ public class lightTank extends Tank {
 			
 			distanceToDesination = (float)Math.sqrt((destinationX - centre.x) * (destinationX - centre.x) + (destinationY - centre.z) * (destinationY - centre.z));
 			calculateMovement();
-			destinationAngle = geometry.findAngle(centre.x, centre.z, destinationX, destinationY);
+			destinationAngle = Geometry.findAngle(centre.x, centre.z, destinationX, destinationY);
 			immediateDestinationAngle = destinationAngle;
 			
 			//currentMovementStatus = validateMovement();
@@ -860,7 +858,7 @@ public class lightTank extends Tank {
 		
 		
 		if(turretAngle != immediateDestinationAngle){
-			turretAngleDelta = 360 - (geometry.findAngleDelta(turretAngle, immediateDestinationAngle, turretTurnRate) + 360)%360;
+			turretAngleDelta = 360 - (Geometry.findAngleDelta(turretAngle, immediateDestinationAngle, turretTurnRate) + 360)%360;
 			turretAngle= (turretAngle - turretAngleDelta + 360)%360;
 		}else{
 			turretAngleDelta = 0;
@@ -868,13 +866,13 @@ public class lightTank extends Tank {
 		
 		if(Math.abs(bodyAngle - immediateDestinationAngle) > 45 && Math.abs(bodyAngle - immediateDestinationAngle) < 315){
 			
-			bodyAngleDelta = 360 - (geometry.findAngleDelta(bodyAngle, immediateDestinationAngle, bodyTurnRate) + 360)%360;
+			bodyAngleDelta = 360 - (Geometry.findAngleDelta(bodyAngle, immediateDestinationAngle, bodyTurnRate) + 360)%360;
 			bodyAngle= (bodyAngle - bodyAngleDelta + 360)%360;
 			movement.reset();
 			
 		}else{
 			if(bodyAngle != immediateDestinationAngle){
-				bodyAngleDelta = 360 - (geometry.findAngleDelta(bodyAngle, immediateDestinationAngle, bodyTurnRate) + 360)%360;
+				bodyAngleDelta = 360 - (Geometry.findAngleDelta(bodyAngle, immediateDestinationAngle, bodyTurnRate) + 360)%360;
 				bodyAngle= (bodyAngle - bodyAngleDelta + 360)%360;
 			}else{
 			

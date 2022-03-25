@@ -5,10 +5,10 @@ import java.awt.image.PixelGrabber;
 
 import javax.imageio.ImageIO;
 
-import core.camera;
-import core.mainThread;
+import core.Camera;
+import core.MainThread;
 
-public class gameCursor {
+public class GameCursor {
 	
 	public int[][] arrowIcons;
 	public int[][] smallArrowIcons;
@@ -17,9 +17,9 @@ public class gameCursor {
 	public int[] screen;
 	public int[][] iconOverWriteBuffer;
 	public int iconOverWriteBufferIndex;
-	public static int screen_width = mainThread.screen_width;
-	public static int screen_height = mainThread.screen_height;
-	public static int screen_size = mainThread.screen_size;
+	public static int screen_width = MainThread.screen_width;
+	public static int screen_height = MainThread.screen_height;
+	public static int screen_size = MainThread.screen_size;
 	
 	public void init() {
 		
@@ -50,20 +50,20 @@ public class gameCursor {
 
 	public void updateAndDraw(int[] screen) {
 		this.screen = screen;
-		int mouseX = inputHandler.mouse_x;
-		int mouseY = inputHandler.mouse_y;
+		int mouseX = InputHandler.mouse_x;
+		int mouseY = InputHandler.mouse_y;
 		
-		boolean mouseOverSelectableUnit = mainThread.pc.mouseOverSelectableUnit;
-		int mouseOverUnitType = mainThread.pc.mouseOverUnitType;
-		int mouseOverUnitTeam =  mainThread.pc.mouseOverUnitTeam;
-		boolean mouseOverUnitIsSelected = mainThread.pc.mouseOverUnitIsSelected;
-		boolean hasConVehicleSelected = mainThread.pc.hasConVehicleSelected;
-		boolean hasHarvesterSelected = mainThread.pc.hasHarvesterSelected;
-		boolean hasTroopsSelected = mainThread.pc.hasTroopsSelected;
-		boolean hasTowerSelected = mainThread.pc.hasTowerSelected;
-		boolean attackKeyPressed = mainThread.pc.attackKeyPressed;
-		boolean cursorIsInMiniMap =  mainThread.pc.cursorIsInMiniMap();
-		boolean cursorIsInSideBar = mainThread.pc.cursorIsInSideBar();
+		boolean mouseOverSelectableUnit = MainThread.playerCommander.mouseOverSelectableUnit;
+		int mouseOverUnitType = MainThread.playerCommander.mouseOverUnitType;
+		int mouseOverUnitTeam =  MainThread.playerCommander.mouseOverUnitTeam;
+		boolean mouseOverUnitIsSelected = MainThread.playerCommander.mouseOverUnitIsSelected;
+		boolean hasConVehicleSelected = MainThread.playerCommander.hasConVehicleSelected;
+		boolean hasHarvesterSelected = MainThread.playerCommander.hasHarvesterSelected;
+		boolean hasTroopsSelected = MainThread.playerCommander.hasTroopsSelected;
+		boolean hasTowerSelected = MainThread.playerCommander.hasTowerSelected;
+		boolean attackKeyPressed = MainThread.playerCommander.attackKeyPressed;
+		boolean cursorIsInMiniMap =  MainThread.playerCommander.cursorIsInMiniMap();
+		boolean cursorIsInSideBar = MainThread.playerCommander.cursorIsInSideBar();
 		
 		
 		for(int i = 0; i < 1024; i++) {
@@ -76,19 +76,19 @@ public class gameCursor {
 		iconOverWriteBufferIndex = 0;
 		
 		
-		if(!mainThread.gamePaused  && mainThread.gameStarted) {
+		if(!MainThread.gamePaused  && MainThread.gameStarted) {
 			//draw arrow icons if the player is scrolling the screen with the mouse
 			int cursorX = 0;
 			int cursorY = 0;
-			if(camera.MOVE_DOWN && !camera.MOVE_LEFT && ! camera.MOVE_RIGHT) {
+			if(Camera.MOVE_DOWN && !Camera.MOVE_LEFT && ! Camera.MOVE_RIGHT) {
 				drawIcon(arrowIcons[1], mouseX-12,screen_height - 23);
-			}else if(camera.MOVE_UP && !camera.MOVE_LEFT && ! camera.MOVE_RIGHT) {
+			}else if(Camera.MOVE_UP && !Camera.MOVE_LEFT && ! Camera.MOVE_RIGHT) {
 				drawIcon(arrowIcons[3], mouseX-12,0);
-			}else if(camera.MOVE_LEFT && !camera.MOVE_UP && ! camera.MOVE_DOWN) {
+			}else if(Camera.MOVE_LEFT && !Camera.MOVE_UP && ! Camera.MOVE_DOWN) {
 				drawIcon(arrowIcons[2], 0,mouseY-12);
-			}else if(camera.MOVE_RIGHT && !camera.MOVE_UP && ! camera.MOVE_DOWN) {
+			}else if(Camera.MOVE_RIGHT && !Camera.MOVE_UP && ! Camera.MOVE_DOWN) {
 				drawIcon(arrowIcons[0], screen_width-23 ,mouseY-12);
-			}else if(camera.MOVE_RIGHT && camera.MOVE_UP) {
+			}else if(Camera.MOVE_RIGHT && Camera.MOVE_UP) {
 				if(mouseY> screen_width - mouseX) {
 					cursorX = screen_width-21;
 					cursorY = mouseY-12;
@@ -101,7 +101,7 @@ public class gameCursor {
 				if(cursorY < -3)
 					cursorY = -3;
 				drawIcon(arrowIcons[4], cursorX, cursorY);
-			}else if(camera.MOVE_LEFT && camera.MOVE_UP) {
+			}else if(Camera.MOVE_LEFT && Camera.MOVE_UP) {
 				if(mouseY > mouseX) {
 					cursorX = -3;
 					cursorY = mouseY-12;
@@ -114,7 +114,7 @@ public class gameCursor {
 				if(cursorY < -3)
 					cursorY = -3;
 				drawIcon(arrowIcons[7], cursorX, cursorY);
-			}else if(camera.MOVE_LEFT && camera.MOVE_DOWN) {
+			}else if(Camera.MOVE_LEFT && Camera.MOVE_DOWN) {
 				if(screen_height - mouseY > mouseX) {
 					cursorX = -3;
 					cursorY = mouseY-12;
@@ -128,7 +128,7 @@ public class gameCursor {
 				if(cursorY > screen_height - 21)
 					cursorY = screen_height - 21;
 				drawIcon(arrowIcons[6], cursorX, cursorY);
-			}else if(camera.MOVE_RIGHT && camera.MOVE_DOWN) {
+			}else if(Camera.MOVE_RIGHT && Camera.MOVE_DOWN) {
 				if(screen_height - mouseY > screen_width -mouseX) {
 					cursorX = screen_width-21;
 					cursorY = mouseY-12;
@@ -278,7 +278,7 @@ public class gameCursor {
 		xPos-=10;
 		yPos-=10;
 	
-		int r = (7 - (mainThread.gameFrame%21)/3) + 9;
+		int r = (7 - (MainThread.gameFrame%21)/3) + 9;
 		
 		int index = 0;
 		int color = 0;
@@ -449,7 +449,7 @@ public class gameCursor {
 	public void drawSelectionIcon(int xPos, int yPos) {
 		
 		
-		int r = (9 - (mainThread.gameFrame%18)/2) + 10;
+		int r = (9 - (MainThread.gameFrame%18)/2) + 10;
 		int w = 8;
 		int index = 0;
 		int lightGray = 0xffffff;

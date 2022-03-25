@@ -1,10 +1,10 @@
 package entity;
 
 import core.*;
-import enemyAI.scoutingManagerAI;
+import enemyAI.ScoutingManagerAI;
 
-//this is the class for storing geometry information of a 3D model
-public abstract class solidObject{
+//this is the class for storing Geometry information of a 3D model
+public abstract class SolidObject {
 	
 	//reference point of the model (in world coordinate)
 	public vector start;
@@ -65,7 +65,7 @@ public abstract class solidObject{
 	
 	public boolean newDestinationisGiven;
 	
-	public solidObject attacker;
+	public SolidObject attacker;
 	
 	public int myDamage;
 	
@@ -76,13 +76,13 @@ public abstract class solidObject{
 	public int immediateDestinationAngle;
 	public int tempAngle1, tempAngle2, tempAngle3,tempAngle4;
 	
-	//the index of tiles the harvester has occupied on the grid map
+	//the index of tiles the Harvester has occupied on the Grid map
 	public int currentOccupiedTile, occupiedTile0, occupiedTile1,occupiedTile2,occupiedTile3, 
 						   previousOccupiedTile0, previousOccupiedTile1,previousOccupiedTile2,previousOccupiedTile3,
 						   newOccupiedTile0, newOccupiedTile1, newOccupiedTile2,newOccupiedTile3,
 						   tempTile0, tempTile1, tempTile2, tempTile3;	
 	
-	public solidObject[] tile;
+	public SolidObject[] tile;
 	public int xPos, yPos, xPos2, yPos2, xPos_old, yPos_old;
 	public float[] tempFloat;
 	public int[] tempInt;
@@ -116,8 +116,8 @@ public abstract class solidObject{
 	public final static int notInRange = 2;
 	public float attackRange, groupAttackRange;
 	
-	public static int screen_width = mainThread.screen_width;
-	public static int screen_height = mainThread.screen_height;
+	public static int screen_width = MainThread.screen_width;
+	public static int screen_height = MainThread.screen_height;
 	
 	public int experience, level;
 	
@@ -127,7 +127,7 @@ public abstract class solidObject{
 	//A cool down which prevents the object to change target too often
 	//public int changeTargetCountDown;
 	
-	//a rectangle which represent the object boundary in grid map
+	//a rectangle which represent the object boundary in Grid map
 	public Rect boundary2D;
 	
 	//vertices
@@ -139,7 +139,7 @@ public abstract class solidObject{
 	//the centre of the model in world coordinate
 	public vector centre;
 	
-	//the centre of the model in camera coordinate 
+	//the centre of the model in Camera coordinate
 	public vector tempCentre = new vector(0,0,0);
 	public vector tempVector = new vector(0,0,0);
 	
@@ -155,7 +155,7 @@ public abstract class solidObject{
 	
 	public int progressStatus = -1;
 	
-	public drone myHealer;
+	public Drone myHealer;
 	
 	public boolean isCloaked;
 	public int cloakCooldownCount;
@@ -165,13 +165,13 @@ public abstract class solidObject{
 	public int screenX_gui, screenY_gui;
 	
 	//object that the unit is trying to attack
-	public solidObject targetObject;
+	public SolidObject targetObject;
 	
 	public int groupNo = 255;
 
 	public boolean leftFactory;
 
-	//get centre of this model in camera coordinate
+	//get centre of this model in Camera coordinate
 	public  vector getCentre(){
 		return tempCentre;
 	}
@@ -185,18 +185,24 @@ public abstract class solidObject{
 	public boolean getVisibility(){
 		return visible;
 	}
-		
+	/**
+	 * renamed method to from put() to createArbitraryVertex() to make it more meaningful
+	 * as put was not conveying what the method was doing
+	 * */
 	//create a arbitrary vertex
-	public  vector put(double i, double j, double k){
+	public  vector createArbitraryVertex(double i, double j, double k){
 		vector temp = start.myClone();
 		temp.add(iDirection, (float)i);
 		temp.add(jDirection, (float)j);
 		temp.add(kDirection, (float)k);
 		return temp;
 	}
-	
-	//change the 3d geometry of a vertex
-	public  void change(float i, float j, float k, vector v){
+
+	/**
+	 * renamed method to from change() to changeVertex3DGeometry() to make it more meaningful and readable
+	 * */
+	//change the 3d Geometry of a vertex
+	public  void changeVertex3DGeometry(float i, float j, float k, vector v){
 		v.set(start);
 		v.add(iDirection, i);
 		v.add(jDirection, j);
@@ -271,42 +277,10 @@ public abstract class solidObject{
 		}
 		return vision;
 	}
-	
-	//clone a group of polygons (doesn't work on smooth shaded polygons)
-	public polygon3D[] clonePolygons(polygon3D[] polys, boolean createNewOUV){
-		int l = polys.length;
-		
-		polygon3D[] clone = new polygon3D[l];
-		
-		for(int i = 0; i < l; i++){
-			if(polys[i] == null)
-				continue;
-			int length = polys[i].vertex3D.length;
-			v = new vector[length];
-			for(int j = 0; j < length; j++){
-				v[j] = polys[i].vertex3D[j].myClone();
-			}
-			
-			int myType = polys[i].type;
-			float scaleX = polys[i].scaleX;
-			float scaleY = polys[i].scaleY;
-			texture myTexture = polys[i].myTexture;
-			if(createNewOUV)
-				clone[i] = new polygon3D(v, polys[i].origin.myClone(), polys[i].rightEnd.myClone(), polys[i].bottomEnd.myClone(), myTexture, scaleX, scaleY, myType);
-			else
-				clone[i] = new polygon3D(v, v[0], v[1], v[3], myTexture, scaleX, scaleY, myType);
-			clone[i].shadowBias = polys[i].shadowBias;
-			clone[i].diffuse_I = polys[i].diffuse_I;
-			clone[i].Ambient_I = polys[i].Ambient_I;
-		}
-		
-		
-		return clone;
-	}
-	
-	public boolean isStable(solidObject o){
-		if(o != null){
-			if(o.currentCommand == StandBy || (o.attackStatus == isAttacking && o.getMovement().x ==0 && o.getMovement().z ==0)  || o.type > 100){
+
+	public boolean isStable(SolidObject solidObject){ /** renamed o to solidObject so it is easy to identify when used*/
+		if(solidObject != null){
+			if(solidObject.currentCommand == StandBy || (solidObject.attackStatus == isAttacking && solidObject.getMovement().x ==0 && solidObject.getMovement().z ==0)  || solidObject.type > 100){
 			
 				return true;
 			}
@@ -318,7 +292,7 @@ public abstract class solidObject{
 	public void removeFromGridMap(){
 		boundary2D.setOrigin(100000, 100000);
 		if(occupiedTile0 != -1){
-			tile = mainThread.gridMap.tiles[occupiedTile0];
+			tile = MainThread.gridMap.tiles[occupiedTile0];
 			for(int i = 0; i < 5; i++){
 				if(tile[i] == this){
 					tile[i] = null;
@@ -328,7 +302,7 @@ public abstract class solidObject{
 		}
 		
 		if(occupiedTile1 != -1){
-			tile = mainThread.gridMap.tiles[occupiedTile1];
+			tile = MainThread.gridMap.tiles[occupiedTile1];
 			for(int i = 0; i < 5; i++){
 				if(tile[i] == this){
 					tile[i] = null;
@@ -338,7 +312,7 @@ public abstract class solidObject{
 		}
 		
 		if(occupiedTile2 != -1){
-			tile = mainThread.gridMap.tiles[occupiedTile2];
+			tile = MainThread.gridMap.tiles[occupiedTile2];
 			for(int i = 0; i < 5; i++){
 				if(tile[i] == this){
 					tile[i] = null;
@@ -348,7 +322,7 @@ public abstract class solidObject{
 		}
 		
 		if(occupiedTile3 != -1){
-			tile = mainThread.gridMap.tiles[occupiedTile3];
+			tile = MainThread.gridMap.tiles[occupiedTile3];
 			for(int i = 0; i < 5; i++){
 				if(tile[i] == this){
 					tile[i] = null;
@@ -371,7 +345,7 @@ public abstract class solidObject{
 		occupiedTile2= -1;
 		occupiedTile3= -1;
 		if(movement.x == 0 && movement.z == 0){
-			mainThread.gridMap.currentObstacleMap[occupiedTile0] = false;
+			MainThread.gridMap.currentObstacleMap[occupiedTile0] = false;
 		}
 		
 		if(x%16 >0 && y%16 > 0){
@@ -380,20 +354,20 @@ public abstract class solidObject{
 			occupiedTile3= occupiedTile2 + 1;
 			
 			if(movement.x == 0 && movement.z == 0){
-				mainThread.gridMap.currentObstacleMap[occupiedTile1] = false;
-				mainThread.gridMap.currentObstacleMap[occupiedTile2] = false;
-				mainThread.gridMap.currentObstacleMap[occupiedTile3] = false;
+				MainThread.gridMap.currentObstacleMap[occupiedTile1] = false;
+				MainThread.gridMap.currentObstacleMap[occupiedTile2] = false;
+				MainThread.gridMap.currentObstacleMap[occupiedTile3] = false;
 			}
 			
 		}else if(x%16 > 0){
 			occupiedTile1= occupiedTile0 + 1;
 			if(movement.x == 0 && movement.z == 0){
-				mainThread.gridMap.currentObstacleMap[occupiedTile1] = false;
+				MainThread.gridMap.currentObstacleMap[occupiedTile1] = false;
 			}
 		}else if(y%16 > 0){
 			occupiedTile2= occupiedTile0 + 128;
 			if(movement.x == 0 && movement.z == 0){
-				mainThread.gridMap.currentObstacleMap[occupiedTile2] = false;
+				MainThread.gridMap.currentObstacleMap[occupiedTile2] = false;
 			}
 		}
 		
@@ -405,7 +379,7 @@ public abstract class solidObject{
 		
 		//remove the object from the old tiles
 		if(previousOccupiedTile0 != -1){
-			tile = mainThread.gridMap.tiles[previousOccupiedTile0];
+			tile = MainThread.gridMap.tiles[previousOccupiedTile0];
 			for(int i = 0; i < 4; i++){
 				if(tile[i] == this){
 					tile[i] = null;
@@ -414,7 +388,7 @@ public abstract class solidObject{
 			}
 		}
 		if(previousOccupiedTile1 != -1){
-			tile = mainThread.gridMap.tiles[previousOccupiedTile1];
+			tile = MainThread.gridMap.tiles[previousOccupiedTile1];
 			for(int i = 0; i < 4; i++){
 				if(tile[i] == this){
 					tile[i] = null;
@@ -423,7 +397,7 @@ public abstract class solidObject{
 			}
 		}
 		if(previousOccupiedTile2 != -1){
-			tile = mainThread.gridMap.tiles[previousOccupiedTile2];
+			tile = MainThread.gridMap.tiles[previousOccupiedTile2];
 			for(int i = 0; i < 4; i++){
 				if(tile[i] == this){
 					tile[i] = null;
@@ -432,7 +406,7 @@ public abstract class solidObject{
 			}
 		}
 		if(previousOccupiedTile3 != -1){
-			tile = mainThread.gridMap.tiles[previousOccupiedTile3];
+			tile = MainThread.gridMap.tiles[previousOccupiedTile3];
 			for(int i = 0; i < 4; i++){
 				if(tile[i] == this){
 					tile[i] = null;
@@ -443,7 +417,7 @@ public abstract class solidObject{
 		
 		//add the object to the new tiles
 		if(occupiedTile0 != -1){
-			tile = mainThread.gridMap.tiles[occupiedTile0];
+			tile = MainThread.gridMap.tiles[occupiedTile0];
 			for(int i = 0; i < 4; i++){
 				if(tile[i] == null){
 					tile[i] = this;
@@ -452,7 +426,7 @@ public abstract class solidObject{
 			}
 		}
 		if(occupiedTile1 != -1){
-			tile = mainThread.gridMap.tiles[occupiedTile1];
+			tile = MainThread.gridMap.tiles[occupiedTile1];
 			for(int i = 0; i < 4; i++){
 				if(tile[i] == null){
 					tile[i] = this;
@@ -461,7 +435,7 @@ public abstract class solidObject{
 			}
 		}
 		if(occupiedTile2 != -1){
-			tile = mainThread.gridMap.tiles[occupiedTile2];
+			tile = MainThread.gridMap.tiles[occupiedTile2];
 			for(int i = 0; i < 4; i++){
 				if(tile[i] == null){
 					tile[i] = this;
@@ -470,7 +444,7 @@ public abstract class solidObject{
 			}
 		}
 		if(occupiedTile3 != -1){
-			tile = mainThread.gridMap.tiles[occupiedTile3];
+			tile = MainThread.gridMap.tiles[occupiedTile3];
 			for(int i = 0; i < 4; i++){
 				if(tile[i] == null){
 					tile[i] = this;
@@ -489,7 +463,7 @@ public abstract class solidObject{
 		Rect r = null;
 		
 		if(tempTile0 >=0 && tempTile0 < 16384){
-			tile = mainThread.gridMap.tiles[tempTile0];
+			tile = MainThread.gridMap.tiles[tempTile0];
 			for(int i = 0; i < 5; i++){
 				if(tile[i] != null){
 					if(tile[i].ID != ID){
@@ -503,7 +477,7 @@ public abstract class solidObject{
 		}
 		
 		if(tempTile1 >=0 && tempTile1 < 16384){
-			tile = mainThread.gridMap.tiles[tempTile1];
+			tile = MainThread.gridMap.tiles[tempTile1];
 			for(int i = 0; i < 5; i++){
 				if(tile[i] != null){
 					if( tile[i].ID != ID){
@@ -517,7 +491,7 @@ public abstract class solidObject{
 		}
 		
 		if(tempTile2 >=0 && tempTile2 < 16384){
-			tile = mainThread.gridMap.tiles[tempTile2];
+			tile = MainThread.gridMap.tiles[tempTile2];
 			for(int i = 0; i < 5; i++){
 				if(tile[i] != null){
 					if(tile[i].ID != ID){
@@ -531,7 +505,7 @@ public abstract class solidObject{
 		}
 	
 		if(tempTile3 >=0 && tempTile3 < 16384){
-			tile = mainThread.gridMap.tiles[tempTile3];
+			tile = MainThread.gridMap.tiles[tempTile3];
 			for(int i = 0; i < 5; i++){
 				if(tile[i] != null){
 					if(tile[i].ID != ID){
@@ -547,77 +521,77 @@ public abstract class solidObject{
 
 		return r;
 	}
-	
-	
+
+
 	public int validateMovement(){
-		
-		
-		
+
+
+
 		xPos_old = boundary2D.x1;
 		yPos_old = boundary2D.y1;
 		xPos = (int)((centre.x + movement.x)*64) - 8;
 		yPos = (int)((centre.z + movement.z)*64) + 8;
 		boundary2D.setOrigin(xPos, yPos);
-	
+
 		obstacle = checkForCollision(boundary2D);
-		
+
 		boundary2D.setOrigin(xPos_old, yPos_old);
-		
-		if(obstacle == null){	
-			
+
+		if(obstacle == null){
+
 			return freeToMove;
 		}else{
 			destinationX_ = (int)(destinationX*64);
 			destinationY_ = (int)(destinationY*64);
-			
+
 			int x = 0;
 			int y = 0;
 			if(obstacle.owner!= null){
 				x = obstacle.owner.boundary2D.x1;
 				y = obstacle.owner.boundary2D.y1;
-				
+
 				if(x - xPos_old < -16)
 					x+=16;
-				
+
 				if(y - yPos_old > 16)
 					y-=16;
-				
+
 				if(x - xPos_old > 16)
 					x-=16;
-				
+
 				if(y - yPos_old < -16)
 					y+=16;
-				
+
 				if(obstacle.owner.teamNo != teamNo)
 					obstacle.owner.cloakCooldownCount = 60;
-				
+
 			}else{
 				x = obstacle.x1;
 				y = obstacle.y1;
 			}
-			
+
 			float dx = Math.abs(centre.x - destinationX);
 			float dy = Math.abs(centre.z - destinationY);
-			
+
 			float dx_ = 0;
 			float dy_ = 0;
 			if(obstacle.owner != null){
 				dx_ = centre.x - obstacle.owner.centre.x;
 				dy_ = centre.z - obstacle.owner.centre.z;
 			}
-			
-			
-			
-			
-			
+
+
+
+
+
 			//figure out which action should be taken next
 			float upDistance = 0;
 			float downDistance =0;
 			float leftDistance = 0;
 			float rightDistance = 0;
-			
+
 			if(obstacle.x1 > boundary2D.x2){
-				
+
 				if((currentCommand == attackCautiously || currentCommand == attackInNumbers) && distanceToDesination  <= 1.5f){
 					upDistance = countOccupiedBlocksDuringAttack(x, y, 0, 16, 16, 0) * 0.25f;
 					downDistance = countOccupiedBlocksDuringAttack(x, y, 0, -16, 16, 0) * 0.25f;
@@ -625,14 +599,14 @@ public abstract class solidObject{
 					upDistance = countOccupiedBlocks(x, y, 0, 16, 16, 0) * 0.25f;
 					downDistance = countOccupiedBlocks(x, y, 0, -16, 16, 0) * 0.25f;
 				}
-				
+
 				if(destinationY < centre.z){
 
 					if(downDistance <= dy || dx < 0.125f){
 						immediateDestinationAngle = 180;
 						return hugLeft;
 					}
-					
+
 					if(downDistance < upDistance){
 						immediateDestinationAngle = 180;
 						return hugLeft;
@@ -643,63 +617,63 @@ public abstract class solidObject{
 								return hugLeft;
 							}
 						}
-						
+
 						immediateDestinationAngle = 0;
 						return hugRight;
 					}
 				}else{
-					
-					
-					
+
+
+
 					if(upDistance <= dy || dx < 0.125f){
 						immediateDestinationAngle = 0;
 						return hugRight;
 					}
-					
+
 					if(upDistance < downDistance){
 						immediateDestinationAngle = 0;
 						return hugRight;
 					}else{
-						
+
 						immediateDestinationAngle = 180;
 						return hugLeft;
 					}
-					
+
 				}
 
 			}
-			
+
 			if(obstacle.x2 < boundary2D.x1){
-				
+
 				if((currentCommand == attackCautiously || currentCommand == attackInNumbers) && distanceToDesination  <= 1.5f){
 					upDistance = countOccupiedBlocksDuringAttack(x, y, 0, 16, -16, 0) * 0.25f;
 					downDistance = countOccupiedBlocksDuringAttack(x, y, 0, -16, -16, 0) * 0.25f;
-					
+
 				}else{
 					upDistance = countOccupiedBlocks(x, y, 0, 16, -16, 0) * 0.25f;
 					downDistance = countOccupiedBlocks(x, y, 0, -16, -16, 0) * 0.25f;
 				}
-				
-			
-				
+
+
+
 				if(destinationY < centre.z){
 					if(downDistance <= dy || dx < 0.125f){
 						immediateDestinationAngle = 180;
 						return hugRight;
 					}
-					
+
 					if(downDistance < upDistance){
 						immediateDestinationAngle = 180;
 						return hugRight;
 					}else{
-						
+
 						if(upDistance == downDistance){
 							if(dy_ < 0){
 								immediateDestinationAngle = 180;
 								return hugRight;
 							}
 						}
-						
+
 						immediateDestinationAngle = 0;
 						return hugLeft;
 					}
@@ -708,21 +682,21 @@ public abstract class solidObject{
 						immediateDestinationAngle = 0;
 						return hugLeft;
 					}
-					
+
 					if(upDistance < downDistance){
 						immediateDestinationAngle = 0;
 						return hugLeft;
 					}else{
-						
+
 						immediateDestinationAngle = 180;
 						return hugRight;
 					}
-					
+
 				}
 			}
-			
+
 			if(obstacle.y2 > boundary2D.y1){
-				
+
 				if((currentCommand == attackCautiously || currentCommand == attackInNumbers) && distanceToDesination  <= 1.5f){
 					leftDistance = countOccupiedBlocksDuringAttack(x, y, -16, 0, 0, 16) * 0.25f;
 					rightDistance = countOccupiedBlocksDuringAttack(x, y, 16, 0, 0, 16) * 0.25f;
@@ -730,13 +704,13 @@ public abstract class solidObject{
 					leftDistance = countOccupiedBlocks(x, y, -16, 0, 0, 16) * 0.25f;
 					rightDistance = countOccupiedBlocks(x, y, 16, 0, 0, 16) * 0.25f;
 				}
-				
+
 				if(destinationX < centre.x){
 					if(leftDistance <= dx || dy < 0.125f){
 						immediateDestinationAngle = 270;
 						return hugRight;
 					}
-						
+
 					if(leftDistance < rightDistance){
 						immediateDestinationAngle = 270;
 						return hugRight;
@@ -745,35 +719,33 @@ public abstract class solidObject{
 						return hugLeft;
 					}
 				}else{
-					
-					
+
 					if(rightDistance <= dx || dy < 0.125f){
 						immediateDestinationAngle = 90;
-						
-						
+
 						return hugLeft;
 					}
 					if(rightDistance < leftDistance){
 						immediateDestinationAngle = 90;
 						return hugLeft;
 					}else{
-						
+
 						if(rightDistance == leftDistance){
 							if(dx_ > 0){
 								immediateDestinationAngle = 90;
 								return hugLeft;
 							}
 						}
-						
+
 						immediateDestinationAngle = 270;
 						return hugRight;
 					}
 				}
 			}
-			
+
 			if(obstacle.y1 < boundary2D.y2){
-				
-				
+
+
 				if((currentCommand == attackCautiously || currentCommand == attackInNumbers) && distanceToDesination  <= 1.5f){
 					leftDistance = countOccupiedBlocksDuringAttack(x, y, -16, 0, 0, -16) * 0.25f;
 					rightDistance = countOccupiedBlocksDuringAttack(x, y, 16, 0, 0, -16) * 0.25f;
@@ -781,14 +753,14 @@ public abstract class solidObject{
 					leftDistance = countOccupiedBlocks(x, y, -16, 0, 0, -16) * 0.25f;
 					rightDistance = countOccupiedBlocks(x, y, 16, 0, 0, -16) * 0.25f;
 				}
-				
+
 				if(destinationX < centre.x){
-	
+
 					if(leftDistance <= dx || dy < 0.125f){
 						immediateDestinationAngle = 270;
 						return hugLeft;
 					}
-						
+
 					if(leftDistance < rightDistance){
 						immediateDestinationAngle = 270;
 						return hugLeft;
@@ -803,7 +775,7 @@ public abstract class solidObject{
 					}
 					if(rightDistance < leftDistance){
 						immediateDestinationAngle = 90;
-					
+
 						return hugRight;
 					}else{
 						if(rightDistance == leftDistance){
@@ -812,18 +784,18 @@ public abstract class solidObject{
 								return hugRight;
 							}
 						}
-						
-						
+
+
 						immediateDestinationAngle = 270;
 						return hugLeft;
 					}
 				}
 			}
-		
+
 			return -1;
 		}
 	}
-	
+
 	//count the number of occupied block (up to 10 blocks) in a given direction
 	public int countOccupiedBlocks(int x, int y, int dx, int dy, int dx_, int dy_){
 		int count = 0;
@@ -944,7 +916,7 @@ public abstract class solidObject{
 		tempObstacle = null;
 		
 		if(newOccupiedTile0 >= 0 && newOccupiedTile0 < 16384){
-			tile = mainThread.gridMap.tiles[newOccupiedTile0];
+			tile = MainThread.gridMap.tiles[newOccupiedTile0];
 			for(int i = 0; i < 5; i++){
 				if(tile[i] != null){
 					if(tile[i].boundary2D.intersect(myRect) && tile[i].ID != ID)
@@ -959,7 +931,7 @@ public abstract class solidObject{
 		}
 		
 		if(newOccupiedTile1 >= 0 && newOccupiedTile1 < 16384){
-			tile = mainThread.gridMap.tiles[newOccupiedTile1];
+			tile = MainThread.gridMap.tiles[newOccupiedTile1];
 			for(int i = 0; i < 5; i++){
 				if(tile[i] != null){
 					if(tile[i].boundary2D.intersect(myRect) && tile[i].ID != ID)
@@ -974,7 +946,7 @@ public abstract class solidObject{
 		}
 	
 		if(newOccupiedTile2 >= 0 && newOccupiedTile2 < 16384){
-			tile = mainThread.gridMap.tiles[newOccupiedTile2];
+			tile = MainThread.gridMap.tiles[newOccupiedTile2];
 			for(int i = 0; i < 5; i++){
 				if(tile[i] != null){
 					if(tile[i].boundary2D.intersect(myRect) && tile[i].ID != ID)
@@ -989,7 +961,7 @@ public abstract class solidObject{
 		}
 	
 		if(newOccupiedTile3 >= 0 && newOccupiedTile3 < 16384){
-			tile = mainThread.gridMap.tiles[newOccupiedTile3];
+			tile = MainThread.gridMap.tiles[newOccupiedTile3];
 			for(int i = 0; i < 5; i++){
 				if(tile[i] != null){
 					if(tile[i].boundary2D.intersect(myRect) && tile[i].ID != ID)
@@ -1008,13 +980,13 @@ public abstract class solidObject{
 		
 		return tempObstacle;
 	}
-	
+
 	public void calculateMovement(){
 		movement.set(destinationX - centre.x, 0, destinationY - centre.z);
 		movement.unit();
 		movement.scale(speed);
 	}
-	
+
 	public void changeMovement(int angle){
 		if(angle == 0)
 			movement.set(0,0,speed);
@@ -1025,7 +997,7 @@ public abstract class solidObject{
 		if(angle == 270)
 			movement.set(-speed,0,0);
 	}
-	
+
 	public boolean checkIfTileIsOccupiedByStaticUnitProbe(float x, float y){
 		xPos = (int)(x*64);
 		yPos = (int)(y*64);
@@ -1033,7 +1005,7 @@ public abstract class solidObject{
 			return true;
 		
 		probeBlock.setOrigin(xPos-6, yPos+6);
-		tile = mainThread.gridMap.tiles[xPos/16 + (127 - yPos/16)*128];
+		tile = MainThread.gridMap.tiles[xPos/16 + (127 - yPos/16)*128];
 
 		for(int i = 0; i < 4; i++){
 			if(tile[i] != null){
@@ -1051,7 +1023,7 @@ public abstract class solidObject{
 		
 		if(xPos <= 0 || yPos <= 0 || xPos >= 2048 || yPos >=2048)
 			return true;
-		tile = mainThread.gridMap.tiles[xPos/16 + (127 - yPos/16)*128];
+		tile = MainThread.gridMap.tiles[xPos/16 + (127 - yPos/16)*128];
 
 		for(int i = 0; i < 4; i++){
 			if(tile[i] != null){
@@ -1475,13 +1447,13 @@ public abstract class solidObject{
 		
 
 		if(obstacle != null && attackStatus != isAttacking){
-			if((unStableObstacle != null ||  !isStable(obstacle.owner)) && (ID + randomNumber + mainThread.gameFrame)%128 ==0){
+			if((unStableObstacle != null ||  !isStable(obstacle.owner)) && (ID + randomNumber + MainThread.gameFrame)%128 ==0){
 				
 				newDestinationisGiven = true;
 				currentMovementStatus = freeToMove;
 				hugWallCoolDown = 0;
 				stuckCount = 0;
-				randomNumber = gameData.getRandom();
+				randomNumber = GameData.getRandom();
 			}
 		}
 		
@@ -1499,15 +1471,15 @@ public abstract class solidObject{
 	public String toString(){
 		String label = "";
 		if(type == 0)
-			label+="lightTank";
+			label+="LightTank";
 		if(type == 1)
-			label+="rocketTank";
+			label+="RocketTank";
 		if(type == 101)
-			label+="powerPlant";
+			label+="PowerPlant";
 		if(type == 2)
-			label+="harvester";
+			label+="Harvester";
 		if(type==102)
-			label+="refinery";
+			label+="Refinery";
 		if(type==3)
 			label+="constructionVehichle";
 		if(type ==4)
@@ -1515,21 +1487,21 @@ public abstract class solidObject{
 		if(type== 6)
 			label+="stealthTank";
 		if(type == 7)
-			label+="heavyTank";
+			label+="HeavyTank";
 		if(type==103)
-			label+="goldMine";
+			label+="GoldMine";
 		if(type==104)
-			label+="constructionYard";
+			label+="ConstructionYard";
 		if(type==105)
-			label+="factory";
+			label+="Factory";
 		if(type==106)
-			label+="communicationCenter";
+			label+="CommunicationCenter";
 		if(type==107)
 			label+="techCenter";
 		if(type == 200)
-			label+="gunTurret";
+			label+="GunTurrent";
 		if(type == 199)
-			label+="missileTurret";
+			label+="MissileTurret";
 			
 		return label + "    "  + centre.x + "   " + centre.z;
 	}
@@ -1567,7 +1539,7 @@ public abstract class solidObject{
 	}
 	
 	
-	public double getDistance(solidObject o){
+	public double getDistance(SolidObject o){
 		return Math.sqrt((centre.x - o.centre.x)*(centre.x - o.centre.x) + (centre.z - o.centre.z)*(centre.z - o.centre.z));
 	}
 	
@@ -1617,7 +1589,7 @@ public abstract class solidObject{
 	
 	
 	
-	public void attack(solidObject o){
+	public void attack(SolidObject o){
 		if(targetObject != o){
 			targetObject = o;
 			resetLogicStatus();
@@ -1647,22 +1619,22 @@ public abstract class solidObject{
 	//to be implemented in child classes
 	public void update(){}
 	public void draw(){}
-	public void harvest(solidObject o){}
-	public void returnToRefinery(solidObject o){}
+	public void harvest(SolidObject o){}
+	public void returnToRefinery(SolidObject o){}
 	public void hold(){currentCommand = StandBy;}
 	public int getMaxHp(){return 0;}
 
 
 	/**
-	 * This method is moved from scoutingMangerAI.java to solidObject
-	 * This method is causing feature envy smell as it was more interested in object of soliObject class than scoutingManagerAI
+	 * This method is moved from scoutingMangerAI.java to SolidObject
+	 * This method is causing feature envy smell as it was more interested in object of soliObject class than ScoutingManagerAI
 	 * Feature envy smell is removed by move method refactoring.
 	 */
 
-	public void addStealthTank(solidObject o, scoutingManagerAI scoutingManagerAI){
+	public void addStealthTank(SolidObject o, ScoutingManagerAI scoutingManagerAI){
 		if(this != null && currentHP > 0 && type == 0){
-			mainThread.ec.theUnitProductionAI.addLightTank((lightTank) this);
-			moveTo(mainThread.ec.theUnitProductionAI.rallyPoint.x, mainThread.ec.theUnitProductionAI.rallyPoint.z);
+			MainThread.enemyCommander.theUnitProductionAI.addLightTank((LightTank) this);
+			moveTo(MainThread.enemyCommander.theUnitProductionAI.rallyPoint.x, MainThread.enemyCommander.theUnitProductionAI.rallyPoint.z);
 			currentCommand = move;
 			secondaryCommand = StandBy;
 		}

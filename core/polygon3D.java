@@ -1,18 +1,18 @@
 package core;
 
-import entity.solidObject;
+import entity.SolidObject;
 
 public class polygon3D {
-	//The vertex of the polygon with the respect of the world/camera coordinate
+	//The vertex of the polygon with the respect of the world/Camera coordinate
 	public vector[] vertex3D, tempVertex;
 
 	//The vertex of the polygon after clipping
 	public vector[] vertex2D;
 
-	//the normal of the polygon with the respect of the world/camera coordinate
+	//the normal of the polygon with the respect of the world/Camera coordinate
 	public vector normal;
 
-	//the centre of the polygon with the respect of the world/camera coordinate
+	//the centre of the polygon with the respect of the world/Camera coordinate
 	public vector centre;
 
 	//The number of vertex
@@ -46,7 +46,7 @@ public class polygon3D {
 	public float scaleX, scaleY;
 
 	//the 3D  object which this polygon belongs to
-	public solidObject parentObject;
+	public SolidObject parentObject;
 
 	//A pool of vectors which will be used for vector arithmetic
 	public static vector
@@ -217,11 +217,11 @@ public class polygon3D {
 		findDiffuse();
 	}
 
-	//update this polygon based on camera movement in each frame
+	//update this polygon based on Camera movement in each frame
 	public void update(){
 
 		//back face culling
-		tempVector1.set(camera.position);
+		tempVector1.set(Camera.position);
 		tempVector1.subtract(vertex3D[0]);
 		if(tempVector1.dot(normal) <= 0){
 			visible = false;
@@ -229,13 +229,13 @@ public class polygon3D {
 			return;
 		}
 
-		//translate vertex from world space to camera space
+		//translate vertex from world space to Camera space
 		float x = 0,y = 0, z = 0,
-				camX = camera.position.x, camY = camera.position.y, camZ = camera.position.z,
-				sinXZ = camera.sinXZ_angle,
-				cosXZ = camera.cosXZ_angle,
-				sinYZ = camera.sinYZ_angle,
-				cosYZ = camera.cosYZ_angle;
+				camX = Camera.position.x, camY = Camera.position.y, camZ = Camera.position.z,
+				sinXZ = Camera.sinXZ_angle,
+				cosXZ = Camera.cosXZ_angle,
+				sinYZ = Camera.sinYZ_angle,
+				cosYZ = Camera.cosYZ_angle;
 
 
 		withinViewScreen = false;
@@ -309,7 +309,7 @@ public class polygon3D {
 		vector cameraPosition = postProcessingThread.cameraPosition;
 
 
-		//translate vertex from world space to camera space
+		//translate vertex from world space to Camera space
 		float x = 0,y = 0, z = 0,
 				camX = cameraPosition.x, camY = cameraPosition.y, camZ = cameraPosition.z,
 				sinXZ = postProcessingThread.sinXZ,
@@ -395,12 +395,12 @@ public class polygon3D {
 		}
 
 		if(type == 1){
-			rasterizer.renderShadow(this);
+			Rasterizer.renderShadow(this);
 		}else{
 			if(type == 4)
-				rasterizer.renderShadowRemover(this);
+				Rasterizer.renderShadowRemover(this);
 			else if(type == 9)
-				rasterizer.renderCloakedShadow(this);
+				Rasterizer.renderCloakedShadow(this);
 		}
 
 	}
@@ -535,10 +535,10 @@ public class polygon3D {
 	}
 
 	public void draw(){
-		//send this polygon to rasterizer
+		//send this polygon to Rasterizer
 		if(visible){
-			mainThread.theAssetManager.polygonCount++;
-			rasterizer.rasterize(this);
+			MainThread.theAssetManager.polygonCount++;
+			Rasterizer.rasterize(this);
 		}
 	}
 }

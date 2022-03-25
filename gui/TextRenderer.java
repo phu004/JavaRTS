@@ -5,18 +5,18 @@ import java.awt.image.PixelGrabber;
 
 import javax.imageio.ImageIO;
 
-import core.mainThread;
+import core.MainThread;
 
 //handle text rendering
 
 
-public class textRenderer {
+public class TextRenderer {
 
 	public  int[] fontBuffer, menuFontBuffer, star, halfStar;
 	public  int[][] chars, menuChars;
 	public  int[] menuCharsWidth;
-	public static int screen_width = mainThread.screen_width;
-	public static int screen_height = mainThread.screen_height;
+	public static int screen_width = MainThread.screen_width;
+	public static int screen_height = MainThread.screen_height;
 	
 	public void init(){
 		fontBuffer = new int[665*16];
@@ -175,7 +175,7 @@ public class textRenderer {
 		
 		char[] theText = text.toCharArray();
 		
-		int t = (int)(35 * Math.sin((double)mainThread.gameFrame/7)) + 35;
+		int t = (int)(35 * Math.sin((double) MainThread.gameFrame/7)) + 35;
 		if(t > 64)
 			 t = 64;
 		

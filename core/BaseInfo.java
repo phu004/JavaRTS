@@ -2,7 +2,7 @@ package core;
 
 //store all the information about a base, eg current credit, number of structures , current power level, tech trees and etc...
 
-public class baseInfo {
+public class BaseInfo {
 	public int numberOfPowerPlant;
 	public int numberOfConstructionYard;
 	public int numberOfRefinery;
@@ -20,21 +20,21 @@ public class baseInfo {
 	public int powerStatus;
 	public boolean lowPower;
 	
-	public baseInfo(){
+	public BaseInfo(){
 		currentCredit = 5000;
 		
 	}
 	
 	public void update(){
 		//update tech tree
-		canBuildPowerPlant = true; 
+		canBuildPowerPlant = true;
 		canBuildRefinery = false;
 		canBuildFactory = false;
 		canBuildCommunicationCenter= false;
 		canBuildTechCenter = false;
-		canBuildGunTurret = false; 
+		canBuildGunTurret = false;
 		canBuildMissileTurret= false;
-		
+
 		canBuildLightTank = true;
 		canBuildRocketTank = true;
 		canBuildDrone = true;
@@ -42,36 +42,36 @@ public class baseInfo {
 		canBuildMCV = false;
 		canBuildHeavyTank = false;
 		canBuildStealthTank = false;
-		
+
 		if(numberOfPowerPlant > 0){
 			canBuildRefinery = true;
-			
+
 		}
-		
+
 		if(numberOfRefinery > 0){
 			canBuildFactory = true;
 			canBuildHarvester = true;
 		}
-		
+
 		if(numberOfFactory > 0){
 			canBuildCommunicationCenter = true;
 			canBuildGunTurret = true;
 		}
-		
+
 		if(numberOfCommunicationCenter > 0){
 			canBuildMissileTurret = true;
 			canBuildTechCenter = true;
 			canBuildStealthTank = true;
 			canBuildMCV = true;
 		}
-		
+
 		if(numberOfTechCenter > 0){
 			canBuildHeavyTank = true;
 		}
-		
-		
+
+
 		reCalculatePower();
-		
+
 		//calculate power level and power consumption
 		calculatePowerLevel();
 

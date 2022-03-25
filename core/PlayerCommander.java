@@ -2,17 +2,17 @@ package core;
 
 import java.awt.Rectangle;
 
-import entity.constructionYard;
-import entity.factory;
-import entity.solidObject;
-import gui.inputHandler;
+import entity.SolidObject;
+import entity.ConstructionYard;
+import entity.Factory;
+import gui.InputHandler;
 
 //this class interprets  player's inputs and turns them into commands that can be issued to game  units 
-public class playerCommander {
+public class PlayerCommander {
 
-	public solidObject[] selectedUnits;
+	public SolidObject[] selectedUnits;
 	
-	public solidObject[][] groups;
+	public SolidObject[][] groups;
 	
 	public boolean leftMouseButtonPressed, rightMouseButtonPressed, leftMouseButtonReleased, rightMouseButtonReleased, attackKeyPressed, toggleConyard, toggleFactory, holdKeyPressed, controlKeyPressed;
 	
@@ -43,9 +43,9 @@ public class playerCommander {
 	public sideBarManager theSideBarManager;
 	
 	public boolean isDeployingBuilding;
-	public constructionYard selectedConstructionYard;
+	public ConstructionYard selectedConstructionYard;
 	
-	public baseInfo theBaseInfo;
+	public BaseInfo theBaseInfo;
 	
 	public boolean mouseOverSelectableUnit;
 	public int mouseOverUnitType;
@@ -62,18 +62,18 @@ public class playerCommander {
 	
 	public void init(){
 		
-		screen_width = mainThread.screen_width;
-		screen_height = mainThread.screen_height;
-		screen_size = mainThread.screen_size;
+		screen_width = MainThread.screen_width;
+		screen_height = MainThread.screen_height;
+		screen_size = MainThread.screen_size;
 		
-		selectedUnits = new solidObject[100];
-		groups = new solidObject[5][100];
+		selectedUnits = new SolidObject[100];
+		groups = new SolidObject[5][100];
 		area = new Rectangle();
 		areaSmall = new Rectangle();
 		clickPoint = new vector(0,0,0);
-		theAssetManager = mainThread.theAssetManager;
+		theAssetManager = MainThread.theAssetManager;
 		theSideBarManager = new sideBarManager(this);
-		theBaseInfo = new baseInfo();
+		theBaseInfo = new BaseInfo();
 		
 	}
 	
@@ -196,9 +196,9 @@ public class playerCommander {
 				}
 				
 				
-				//center camera to the one of the selected units
+				//center Camera to the one of the selected units
 				if(doubleNumberPressed){
-					solidObject selectedUnit = null;
+					SolidObject selectedUnit = null;
 					int nullCount = 0;
 					
 					for(int j = 0; j < 100; j++){
@@ -215,8 +215,8 @@ public class playerCommander {
 				
 					if(selectedUnit != null){
 						
-						camera.position.x = selectedUnit.centre.x - camera.view_Direction.x * 3;
-						camera.position.z = selectedUnit.centre.z - camera.view_Direction.z * 3;
+						Camera.position.x = selectedUnit.centre.x - Camera.view_Direction.x * 3;
+						Camera.position.z = selectedUnit.centre.z - Camera.view_Direction.z * 3;
 					}
 					
 				}
@@ -242,14 +242,14 @@ public class playerCommander {
 				if(performAttack){
 					
 					if(cursorIsInMiniMap()){
-						clickPoint.set(0.25f*(inputHandler.mouse_x-3), 0, 0.25f*(127-(inputHandler.mouse_y-(screen_height-131))));
+						clickPoint.set(0.25f*(InputHandler.mouse_x-3), 0, 0.25f*(127-(InputHandler.mouse_y-(screen_height-131))));
 						attackMoveSelectUnit(clickPoint.x, clickPoint.z);
 						
 					}else if(cursorIsInSideBar()){
 						theSideBarManager.leftMouseButtonClicked = true;
 						
 					}else{
-						clickPoint.set(mainThread.my2Dto3DFactory.get3DLocation(theAssetManager.Terrain.ground[0], inputHandler.mouse_x, inputHandler.mouse_y)); 
+						clickPoint.set(MainThread.my2Dto3DFactory.get3DLocation(theAssetManager.Terrain.ground[0], InputHandler.mouse_x, InputHandler.mouse_y));
 						float x = clickPoint.x;
 						float y = clickPoint.z;
 						
@@ -269,13 +269,13 @@ public class playerCommander {
 						int yPos = (int)(y*64);
 						int index = xPos/16 + (127-yPos/16)*128;
 						boolean clickOnEmptyGround = true;
-						for(int i = 0; i < mainThread.gridMap.tiles[index].length; i++){
+						for(int i = 0; i < MainThread.gridMap.tiles[index].length; i++){
 							
-							if(mainThread.gridMap.tiles[index][i] != null){
+							if(MainThread.gridMap.tiles[index][i] != null){
 								
-								if(mainThread.gridMap.tiles[index][i].boundary2D.contains(xPos, yPos)){
-									if(mainThread.gridMap.tiles[index][i].visible_minimap){			
-										attackUnit(mainThread.gridMap.tiles[index][i]);
+								if(MainThread.gridMap.tiles[index][i].boundary2D.contains(xPos, yPos)){
+									if(MainThread.gridMap.tiles[index][i].visible_minimap){
+										attackUnit(MainThread.gridMap.tiles[index][i]);
 										clickOnEmptyGround = false;
 										break;
 									}
@@ -308,23 +308,23 @@ public class playerCommander {
 					
 					if(!cursorIsInSideBar())
 						isSelectingUnit = true;
-					startX = inputHandler.mouse_x;
-					startY = inputHandler.mouse_y;
+					startX = InputHandler.mouse_x;
+					startY = InputHandler.mouse_y;
 				}
 			}
 			
 		}
 		
 		if(isMovingViewWindow){
-			camera.position.x = 0.25f*(inputHandler.mouse_x-3) - camera.view_Direction.x * 3;
-			camera.position.z = 0.25f*(127-(inputHandler.mouse_y-(screen_height-131))) - camera.view_Direction.z * 3;
+			Camera.position.x = 0.25f*(InputHandler.mouse_x-3) - Camera.view_Direction.x * 3;
+			Camera.position.z = 0.25f*(127-(InputHandler.mouse_y-(screen_height-131))) - Camera.view_Direction.z * 3;
 			
 			
 		}
 		
 		if(isSelectingUnit){
-			endX = inputHandler.mouse_x;
-			endY = inputHandler.mouse_y;
+			endX = InputHandler.mouse_x;
+			endY = InputHandler.mouse_y;
 
 			if(startX < 0)
 				startX = 0;
@@ -381,9 +381,9 @@ public class playerCommander {
 			attackKeyPressed = false;
 			
 			if(cursorIsInMiniMap()){
-				clickPoint.set(0.25f*(inputHandler.mouse_x-3), 0, 0.25f*(127-(inputHandler.mouse_y-(screen_height-131))));
+				clickPoint.set(0.25f*(InputHandler.mouse_x-3), 0, 0.25f*(127-(InputHandler.mouse_y-(screen_height-131))));
 			}else{
-				clickPoint.set(mainThread.my2Dto3DFactory.get3DLocation(theAssetManager.Terrain.ground[0], inputHandler.mouse_x, inputHandler.mouse_y)); 
+				clickPoint.set(MainThread.my2Dto3DFactory.get3DLocation(theAssetManager.Terrain.ground[0], InputHandler.mouse_x, InputHandler.mouse_y));
 			}
 			
 			if(!cursorIsInSideBar()){
@@ -422,7 +422,7 @@ public class playerCommander {
 			}
 		
 			//toggle to a different conyard
-			constructionYard[] constructionYards = mainThread.theAssetManager.constructionYards;
+			ConstructionYard[] constructionYards = MainThread.theAssetManager.constructionYards;
 			int conyardIndex = -1;
 			
 			if(selectedConyardID != -1) {	
@@ -457,7 +457,7 @@ public class playerCommander {
 		
 		if(toggleFactory) {
 			int selectedConyardID = -1;
-			//deselect all the selected condyard and factory;
+			//deselect all the selected condyard and Factory;
 			for(int i = 0; i < selectedUnits.length; i++) {
 				if(selectedUnits[i] != null && selectedUnits[i].teamNo == 0 && selectedUnits[i].currentHP > 0 ) {
 					if(selectedUnits[i].type == 105) {
@@ -470,7 +470,7 @@ public class playerCommander {
 			}
 			
 			//toggle to a different conyard
-			factory[] factories = mainThread.theAssetManager.factories;
+			Factory[] factories = MainThread.theAssetManager.factories;
 			int factoryIndex = -1;
 				
 			if(selectedConyardID != -1) {	
@@ -506,8 +506,8 @@ public class playerCommander {
 
 		//display health bar when mouse cursor hover over a unit
 		if(!isSelectingUnit){
-			startX = inputHandler.mouse_x;
-			startY = inputHandler.mouse_y;
+			startX = InputHandler.mouse_x;
+			startY = InputHandler.mouse_y;
 			
 			
 			
@@ -558,16 +558,16 @@ public class playerCommander {
 	
 	
 	public boolean cursorIsInMiniMap(){
-		return inputHandler.mouse_x >=3 && inputHandler.mouse_x <=131 && inputHandler.mouse_y >= (screen_height-131) && inputHandler.mouse_y <= (screen_height - 3);
+		return InputHandler.mouse_x >=3 && InputHandler.mouse_x <=131 && InputHandler.mouse_y >= (screen_height-131) && InputHandler.mouse_y <= (screen_height - 3);
 	}
 	
 	public boolean cursorIsInSideBar(){
-		return inputHandler.mouse_x >=(screen_width - 131) && inputHandler.mouse_x <=(screen_width - 3) && inputHandler.mouse_y >= (screen_height-131) && inputHandler.mouse_y <= (screen_height - 3);
+		return InputHandler.mouse_x >=(screen_width - 131) && InputHandler.mouse_x <=(screen_width - 3) && InputHandler.mouse_y >= (screen_height-131) && InputHandler.mouse_y <= (screen_height - 3);
 	}
 	
 	
 	
-	public void removeDestoryedObjectFromSelection(solidObject o){
+	public void removeDestoryedObjectFromSelection(SolidObject o){
 		for(int i = 0; i < selectedUnits.length; i++){
 			if(selectedUnits[i] == o){
 				selectedUnits[i] = null;
@@ -603,8 +603,8 @@ public class playerCommander {
 				if(selectedUnits[i].teamNo == 0){
 					if(selectedUnits[i].type < 100 || selectedUnits[i].type == 105){
 						selectedUnits[i].moveTo(x, y); 
-						selectedUnits[i].currentCommand = solidObject.move;
-						selectedUnits[i].secondaryCommand = solidObject.StandBy;
+						selectedUnits[i].currentCommand = SolidObject.move;
+						selectedUnits[i].secondaryCommand = SolidObject.StandBy;
 						moveableUnitSelected = true;
 					}
 					
@@ -638,8 +638,8 @@ public class playerCommander {
 		
 						if(distance_x*distance_x + distance_y*distance_y < innerCircleRadius) {					
 							selectedUnits[i].moveTo(selectedUnits[i].centre.x + directionX, selectedUnits[i].centre.z + directionY); 
-							selectedUnits[i].currentCommand = solidObject.move;
-							selectedUnits[i].secondaryCommand = solidObject.StandBy;
+							selectedUnits[i].currentCommand = SolidObject.move;
+							selectedUnits[i].secondaryCommand = SolidObject.StandBy;
 						}
 					}
 				}
@@ -690,7 +690,7 @@ public class playerCommander {
 		
 		for(int i = 0; i < selectedUnits.length; i++){
 			if(selectedUnits[i] != null){
-				if(selectedUnits[i].teamNo == 0 && selectedUnits[i].type != 2 && selectedUnits[i].type != 3 && selectedUnits[i].type < 100){  //not harvesters or MCVs or any buildings
+				if(selectedUnits[i].teamNo == 0 && selectedUnits[i].type != 2 && selectedUnits[i].type != 3 && selectedUnits[i].type < 100){  //not Harvesters or MCVs or any buildings
 					
 					float distance_x = selectedUnits[i].centre.x- groupCenterX;
 					float distance_y = selectedUnits[i].centre.z - groupCenterY;
@@ -702,8 +702,8 @@ public class playerCommander {
 						selectedUnits[i].attackMoveTo(x, y); 
 					}
 					
-					selectedUnits[i].currentCommand = solidObject.attackMove;
-					selectedUnits[i].secondaryCommand = solidObject.attackMove;
+					selectedUnits[i].currentCommand = SolidObject.attackMove;
+					selectedUnits[i].secondaryCommand = SolidObject.attackMove;
 					
 					mobileUnitSelected = true;
 				}
@@ -721,7 +721,7 @@ public class playerCommander {
 	}
 	
 	public void addMouseHoverUnitToDisplayInfo(Rectangle unitArea, Rectangle unitAreaSmall){
-		solidObject theSelected = null;
+		SolidObject theSelected = null;
 		mouseOverSelectableUnit = false;
 		mouseOverUnitIsSelected = false;
 		for(int i = 0; i < theAssetManager.visibleUnitCount; i++){
@@ -749,26 +749,26 @@ public class playerCommander {
 		}
 		
 		if(theSelected != null && !theSelected.isSelected && theSelected.isSelectable && !cursorIsInMiniMap() && !cursorIsInSideBar()){
-			mainThread.theAssetManager.selectedUnitsInfo[99][0] =  theSelected.level << 16 | theSelected.groupNo << 8 | theSelected.type;
-			mainThread.theAssetManager.selectedUnitsInfo[99][1] = (int)theSelected.tempCentre.screenX;
-			mainThread.theAssetManager.selectedUnitsInfo[99][2] = (int)theSelected.tempCentre.screenY;
+			MainThread.theAssetManager.selectedUnitsInfo[99][0] =  theSelected.level << 16 | theSelected.groupNo << 8 | theSelected.type;
+			MainThread.theAssetManager.selectedUnitsInfo[99][1] = (int)theSelected.tempCentre.screenX;
+			MainThread.theAssetManager.selectedUnitsInfo[99][2] = (int)theSelected.tempCentre.screenY;
 			if(theSelected.type == 199){
-				mainThread.theAssetManager.selectedUnitsInfo[99][1] = (int)theSelected.screenX_gui;
-				mainThread.theAssetManager.selectedUnitsInfo[99][2] = (int)theSelected.screenY_gui;
+				MainThread.theAssetManager.selectedUnitsInfo[99][1] = (int)theSelected.screenX_gui;
+				MainThread.theAssetManager.selectedUnitsInfo[99][2] = (int)theSelected.screenY_gui;
 			}
 			
-			mainThread.theAssetManager.selectedUnitsInfo[99][3] = (int)theSelected.type;
-			mainThread.theAssetManager.selectedUnitsInfo[99][4] = theSelected.currentHP;
-			mainThread.theAssetManager.selectedUnitsInfo[99][5] = theSelected.progressStatus;
+			MainThread.theAssetManager.selectedUnitsInfo[99][3] = (int)theSelected.type;
+			MainThread.theAssetManager.selectedUnitsInfo[99][4] = theSelected.currentHP;
+			MainThread.theAssetManager.selectedUnitsInfo[99][5] = theSelected.progressStatus;
 		}else{
-			mainThread.theAssetManager.selectedUnitsInfo[99][0] = -1;
+			MainThread.theAssetManager.selectedUnitsInfo[99][0] = -1;
 		}
 	}
 	
 	public void selectUnit(Rectangle unitArea, Rectangle unitAreaSmall){
 		
 		
-		solidObject theSelected = null;
+		SolidObject theSelected = null;
 		
 		for(int i = 0; i < theAssetManager.visibleUnitCount; i++){
 			if(unitArea.contains(theAssetManager.visibleUnit[i].tempCentre.screenX,  theAssetManager.visibleUnit[i].tempCentre.screenY)){
@@ -833,7 +833,7 @@ public class playerCommander {
 		}
 	}
 	
-	public void addToSelection(solidObject o){
+	public void addToSelection(SolidObject o){
 		//dont add gold mine to select units
 		//if(o.type == 103)
 		//	return;
@@ -853,7 +853,7 @@ public class playerCommander {
 		}
 	}
 	
-	public void deSelect(solidObject o){
+	public void deSelect(SolidObject o){
 		for(int i = 0; i < 100; i++){
 			if(selectedUnits[i] == o){
 				selectedUnits[i].isSelected = false;
@@ -908,20 +908,20 @@ public class playerCommander {
 		int yPos = (int)(clickPoint.z*64);
 		int index = xPos/16 + (127-yPos/16)*128;
 		
-		for(int i = 0; i < mainThread.gridMap.tiles[index].length; i++){
-			if(mainThread.gridMap.tiles[index][i] != null){
-				if(mainThread.gridMap.tiles[index][i].boundary2D.contains(xPos, yPos)){
+		for(int i = 0; i < MainThread.gridMap.tiles[index].length; i++){
+			if(MainThread.gridMap.tiles[index][i] != null){
+				if(MainThread.gridMap.tiles[index][i].boundary2D.contains(xPos, yPos)){
 					//handle right click on a gold mine
-					if(mainThread.gridMap.tiles[index][i].type == 103){
-						harvestMine(mainThread.gridMap.tiles[index][i]);
+					if(MainThread.gridMap.tiles[index][i].type == 103){
+						harvestMine(MainThread.gridMap.tiles[index][i]);
 						return;
-					}else if(mainThread.gridMap.tiles[index][i].type == 102 && mainThread.gridMap.tiles[index][i].teamNo == 0){
-						returnToRefinery(mainThread.gridMap.tiles[index][i]);
+					}else if(MainThread.gridMap.tiles[index][i].type == 102 && MainThread.gridMap.tiles[index][i].teamNo == 0){
+						returnToRefinery(MainThread.gridMap.tiles[index][i]);
 						
 						return;
-					}else if(mainThread.gridMap.tiles[index][i].teamNo != 0 && mainThread.gridMap.tiles[index][i].visible_minimap && !cursorIsInMiniMap()){
+					}else if(MainThread.gridMap.tiles[index][i].teamNo != 0 && MainThread.gridMap.tiles[index][i].visible_minimap && !cursorIsInMiniMap()){
 						//the enemy is only clickable if its visible in minimap
-						attackUnit(mainThread.gridMap.tiles[index][i]);
+						attackUnit(MainThread.gridMap.tiles[index][i]);
 						return;
 					}
 					
@@ -933,7 +933,7 @@ public class playerCommander {
 		
 	}
 	
-	public void attackUnit(solidObject o){
+	public void attackUnit(SolidObject o){
 		if(o.isCloaked && o.teamNo != 0)
 			return;
 			
@@ -943,10 +943,10 @@ public class playerCommander {
 				if(selectedUnits[i].teamNo == 0 && selectedUnits[i] != o && selectedUnits[i].type != 2 && selectedUnits[i].type != 3 &&  (selectedUnits[i].type < 100 || selectedUnits[i].type >=199)){  //can't attack self
 					selectedUnits[i].attack(o); 
 					if(numberOfSelectedUnits <= 4)
-						selectedUnits[i].currentCommand = solidObject.attackCautiously;
+						selectedUnits[i].currentCommand = SolidObject.attackCautiously;
 					else
-						selectedUnits[i].currentCommand = solidObject.attackInNumbers; 
-					selectedUnits[i].secondaryCommand = solidObject.StandBy;
+						selectedUnits[i].currentCommand = SolidObject.attackInNumbers;
+					selectedUnits[i].secondaryCommand = SolidObject.StandBy;
 					
 					combatUnitSelected = true;
 				}
@@ -963,10 +963,10 @@ public class playerCommander {
 		
 	}
 	
-	public void harvestMine(solidObject o){
+	public void harvestMine(SolidObject o){
 		for(int i = 0; i < selectedUnits.length; i++){
 			if(selectedUnits[i] != null){
-				if(selectedUnits[i].teamNo == 0 && (selectedUnits[i].type  == 2 || selectedUnits[i].type  == 105)){  //must be a harvester/factory to perform such a move
+				if(selectedUnits[i].teamNo == 0 && (selectedUnits[i].type  == 2 || selectedUnits[i].type  == 105)){  //must be a Harvester/Factory to perform such a move
 					selectedUnits[i].harvest(o);
 					theAssetManager.confirmationIconInfo[0] = 1;
 					theAssetManager.confirmationIconInfo[1] = o.centre.x;
@@ -978,10 +978,10 @@ public class playerCommander {
 		}
 	}
 	
-	public void returnToRefinery(solidObject o){
+	public void returnToRefinery(SolidObject o){
 		for(int i = 0; i < selectedUnits.length; i++){
 			if(selectedUnits[i] != null){
-				if(selectedUnits[i].teamNo == 0 && selectedUnits[i].type  == 2){  //must be a harvester to perform such a move
+				if(selectedUnits[i].teamNo == 0 && selectedUnits[i].type  == 2){  //must be a Harvester to perform such a move
 					selectedUnits[i].returnToRefinery(o);
 					theAssetManager.confirmationIconInfo[0] = 1;
 					theAssetManager.confirmationIconInfo[1] = o.centre.x;
@@ -993,7 +993,7 @@ public class playerCommander {
 	}
 	
 
-	public void removeFromOtherGroup(solidObject o, int groupNumber){
+	public void removeFromOtherGroup(SolidObject o, int groupNumber){
 		for(int i = 0; i < groups.length; i++){
 			if(i != groupNumber){
 				for(int j = 0; j < groups[i].length; j++){

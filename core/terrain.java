@@ -2,7 +2,7 @@ package core;
 
 import entity.*;
 
-// this class store the geometry for terrain objects
+// this class store the Geometry for terrain objects
 public class terrain {
 	
 	public polygon3D[] ground; 
@@ -23,7 +23,7 @@ public class terrain {
 	public vector lakeCenterTemp1;
 	public boolean lake1Visible;
 	public int lake1PolyCount;
-	public palmTree lake1Tree, lake1Tree2;
+	public PalmTree lake1Tree, lake1Tree2;
 
 	//lake2
 	public polygon3D water2;
@@ -33,7 +33,7 @@ public class terrain {
 	public vector lakeCenterTemp2;
 	public boolean lake2Visible;
 	public int lake2PolyCount;
-	public goldMine goldMine2;
+	public GoldMine goldMine2;
 	
 	//lake3
 	public polygon3D water3;
@@ -53,7 +53,7 @@ public class terrain {
 	public boolean lake4Visible;
 	public int lake4PolyCount;
 	
-	public tokenObject theToken;
+	public TokenObject theToken;
 	
 	//road
 	public polygon3D[] road;
@@ -67,18 +67,18 @@ public class terrain {
 	public vector roadSideCorner1, roadSideCorner2, roadSideCorner3, roadSideCorner4;
 	
 	//light poles
-	public lightPole[] lightPoles;
+	public LightPole[] LightPoles;
 	public int numOfLightPoles;
 	
 	public int curveAngle;
 
-	public static int screen_width = mainThread.screen_width;
-	public static int screen_height = mainThread.screen_height;
+	public static int screen_width = MainThread.screen_width;
+	public static int screen_height = MainThread.screen_height;
 	
 	public terrain(){
 		ground = new polygon3D[1];
 		vector[] v = new vector[]{new vector(-3f,-0.5001f,35f), new vector(35f,-0.5001f,35f), new vector(35f,-0.5001f,-3f), new vector(-3f,-0.5001f, -3f)};
-		ground[0] = new polygon3D(v, v[0], v[1], v[3], mainThread.textures[0], 39f,38.15f, 2); 
+		ground[0] = new polygon3D(v, v[0], v[1], v[3], MainThread.textures[0], 39f,38.15f, 2);
 		ground[0].Ambient_I = Ambient_I;
 		ground[0].reflectance = reflectance;
 		ground[0].findDiffuse();
@@ -95,7 +95,7 @@ public class terrain {
 		float dx = 3f/128*25;
 		float dz = -3f/128*17;
 		
-		theToken = new tokenObject(-1, -1, -1, 0x00ffff);
+		theToken = new TokenObject(-1, -1, -1, 0x00ffff);
 		theToken.withinViewScreen = true;
 		
 		int waveAngle = 320;
@@ -112,17 +112,17 @@ public class terrain {
 		c1.rotate_XZ(waveAngle);
 		
 		
-		water1 = new polygon3D(v, a1, b1, c1, mainThread.textures[54],w*1.2f,h*1.1f, 6); 
+		water1 = new polygon3D(v, a1, b1, c1, MainThread.textures[54],w*1.2f,h*1.1f, 6);
 		
 		v = new vector[]{new vector(x_start+dx,-0.5001f,z_start + dz), new vector(x_start + dx + w,-0.5001f,z_start + dz), new vector(x_start + dx + w,-0.5001f,z_start + dz-h), new vector(x_start+dx,-0.5001f, z_start + dz-h)};
 		groundRemover1 = new polygon3D(v, v[0], v[1], v[3], null,l,l, 4); 
 		
-		lake1 = createLake(mainThread.textures[55].heightmap, x_start, z_start, l , 128, 17, 12, 25, 20);
+		lake1 = createLake(MainThread.textures[55].heightmap, x_start, z_start, l , 128, 17, 12, 25, 20);
 		lake1PolyCount = index + 1;
 		lakeCenter1 = new vector(5f, -0.5001f, 6.5f);
 		lakeCenterTemp1 = new vector(0,0,0);
-		lake1Tree = new palmTree(4.983713f,-0.3028361f,6.419566f,-0.03152565f,0.03608194f,-0.030372922f,0.19448919f,-0.11764373f,187,64,148,205,281,352);
-		lake1Tree2 =  new palmTree(4.983713f,-0.3028361f,6.389566f,-0.03152565f,0.11608194f,-0.010372922f,-0.29448919f,-0.11764373f,187,64,148,205,281,352);
+		lake1Tree = new PalmTree(4.983713f,-0.3028361f,6.419566f,-0.03152565f,0.03608194f,-0.030372922f,0.19448919f,-0.11764373f,187,64,148,205,281,352);
+		lake1Tree2 =  new PalmTree(4.983713f,-0.3028361f,6.389566f,-0.03152565f,0.11608194f,-0.010372922f,-0.29448919f,-0.11764373f,187,64,148,205,281,352);
 		
 		
 		//create lake2
@@ -145,16 +145,16 @@ public class terrain {
 		b2.rotate_XZ(waveAngle);
 		c2.rotate_XZ(waveAngle);
 		
-		water2 = new polygon3D(v,a2, b2, c2, mainThread.textures[54],w*1.2f,h*1.1f, 6); 
+		water2 = new polygon3D(v,a2, b2, c2, MainThread.textures[54],w*1.2f,h*1.1f, 6);
 		
 		v = new vector[]{new vector(x_start+dx,-0.5001f,z_start + dz), new vector(x_start + dx + w,-0.5001f,z_start + dz), new vector(x_start + dx + w,-0.5001f,z_start + dz-h), new vector(x_start+dx,-0.5001f, z_start + dz-h)};
 		groundRemover2 = new polygon3D(v, v[0], v[1], v[3], null,l,l, 4); 
 		
-		lake2 = createLake(mainThread.textures[57].heightmap, x_start, z_start, l , 128, 2, 4, 35, 43);
+		lake2 = createLake(MainThread.textures[57].heightmap, x_start, z_start, l , 128, 2, 4, 35, 43);
 		lake2PolyCount = index + 1;
 		lakeCenter2 = new vector(x_start+1.5f, -0.5001f, z_start-1.5f);
 		lakeCenterTemp2 = new vector(0,0,0);
-		goldMine2 = new goldMine(27.5f,-0.80f, 23.75f, 30000);
+		goldMine2 = new GoldMine(27.5f,-0.80f, 23.75f, 30000);
 		
 		
 		//create lake3
@@ -176,12 +176,12 @@ public class terrain {
 		b3.rotate_XZ(waveAngle);
 		c3.rotate_XZ(waveAngle);
 		
-		water3 = new polygon3D(v, a3, b3, c3, mainThread.textures[54],w*1.2f,h*1.1f, 6); 
+		water3 = new polygon3D(v, a3, b3, c3, MainThread.textures[54],w*1.2f,h*1.1f, 6);
 		
 		v = new vector[]{new vector(x_start+dx,-0.5001f,z_start + dz), new vector(x_start + dx + w,-0.5001f,z_start + dz), new vector(x_start + dx + w,-0.5001f,z_start + dz-h), new vector(x_start+dx,-0.5001f, z_start + dz-h)};
 		groundRemover3 = new polygon3D(v, v[0], v[1], v[3], null,l,l, 4); 
 		
-		lake3 = createLake(mainThread.textures[58].heightmap, x_start, z_start, l , 128, 17, 27, 18, 20);
+		lake3 = createLake(MainThread.textures[58].heightmap, x_start, z_start, l , 128, 17, 27, 18, 20);
 		lake3PolyCount = index + 1;
 		lakeCenter3 = new vector(x_start+1.5f, -0.5001f, z_start-1.5f);
 		lakeCenterTemp3 = new vector(0,0,0);
@@ -206,12 +206,12 @@ public class terrain {
 		b4.rotate_XZ(waveAngle);
 		c4.rotate_XZ(waveAngle);
 		
-		water4 = new polygon3D(v, a4, b4, c4, mainThread.textures[54],w*1.2f,h*1.1f, 6); 
+		water4 = new polygon3D(v, a4, b4, c4, MainThread.textures[54],w*1.2f,h*1.1f, 6);
 		
 		v = new vector[]{new vector(x_start+dx,-0.5001f,z_start + dz), new vector(x_start + dx + w,-0.5001f,z_start + dz), new vector(x_start + dx + w,-0.5001f,z_start + dz-h), new vector(x_start+dx,-0.5001f, z_start + dz-h)};
 		groundRemover4 = new polygon3D(v, v[0], v[1], v[3], null,l,l, 4); 
 		
-		lake4 = createLake(mainThread.textures[59].heightmap, x_start, z_start, l , 128, 4, 0, 1, 2);
+		lake4 = createLake(MainThread.textures[59].heightmap, x_start, z_start, l , 128, 4, 0, 1, 2);
 		lake4PolyCount = index + 1;
 		lakeCenter4 = new vector(x_start+1.5f, -0.5001f, z_start-1.5f);
 		lakeCenterTemp4 = new vector(0,0,0);
@@ -237,32 +237,34 @@ public class terrain {
 		roadSideCorner3 = new vector(0,0,0);
 		roadSideCorner4 = new vector(0,0,0);
 		
-		lightPoles = new lightPole[100];
+		LightPoles = new LightPole[100];
 		
 		
-		createStrightRoadSection(4.5f);
+		createStraightRoadSection(4.5f);
 		createCurvedRoadSection(0.25f,80,-4);
 		createCurvedRoadSection(0.25f,40,4);
-		createStrightRoadSection(5);
+		createStraightRoadSection(5);
 		createCurvedRoadSection(0.25f,40,4);
-		createStrightRoadSection(0.5f);
+		createStraightRoadSection(0.5f);
 		createCurvedRoadSection(0.25f,88,-4);
-		createStrightRoadSection(1.5f);
+		createStraightRoadSection(1.5f);
 		createCurvedRoadSection(0.25f,72,4);
-		createStrightRoadSection(5f);
+		createStraightRoadSection(5f);
 		createCurvedRoadSection(0.25f,64,-4);
 		createCurvedRoadSection(0.25f,80,5);
-		createStrightRoadSection(5f);
+		createStraightRoadSection(5f);
 		
-		lightPoles[5].vanish();
-		lightPoles[18].vanish();
-		lightPoles[21].vanish();
-		lightPoles[28].vanish();
-		lightPoles[40].vanish();	
+		LightPoles[5].vanish();
+		LightPoles[18].vanish();
+		LightPoles[21].vanish();
+		LightPoles[28].vanish();
+		LightPoles[40].vanish();
 	}
 	
-	
-	public void createStrightRoadSection(float l){
+	/**
+	 * There was typo in method name renamed it
+	 * */
+	public void createStraightRoadSection(float l){
 		roadCorner1.set(roadCorner3);
 		roadCorner2.set(roadCorner4);
 		roadCentre.set(roadCorner1);
@@ -274,7 +276,7 @@ public class terrain {
 		roadCorner4.set(roadCentre);
 		roadCorner4.add(roadSideDirection, -0.18f);
 		vector[] v = new vector[]{roadCorner3.myClone(), roadCorner4.myClone(), roadCorner2.myClone(), roadCorner1.myClone()};
-		road[roadPolygonIndex] = new polygon3D(v, new vector(4f,-0.500f,35f), new vector(4.5f,-0.500f,35f), new vector(4f,-0.500f, -3f), mainThread.textures[61], 1f,80f, 2); 
+		road[roadPolygonIndex] = new polygon3D(v, new vector(4f,-0.500f,35f), new vector(4.5f,-0.500f,35f), new vector(4f,-0.500f, -3f), MainThread.textures[61], 1f,80f, 2);
 		roadPolygonIndex++;
 		
 		roadSideCorner1.set(roadCorner3);
@@ -282,7 +284,7 @@ public class terrain {
 		roadSideCorner4.set(roadCorner1);
 		roadSideCorner4.add(roadSideDirection, 0.03f);
 		v = new vector[]{roadSideCorner1.myClone(), roadCorner3.myClone(), roadCorner1.myClone(), roadSideCorner4.myClone()};
-		road[roadPolygonIndex] = new polygon3D(v,v[0].myClone(), v[1].myClone(), v[3].myClone(), mainThread.textures[62], 0.2f, l, 8); 
+		road[roadPolygonIndex] = new polygon3D(v,v[0].myClone(), v[1].myClone(), v[3].myClone(), MainThread.textures[62], 0.2f, l, 8);
 		roadPolygonIndex++;
 		
 		roadSideCorner2.set(roadCorner4);
@@ -290,7 +292,7 @@ public class terrain {
 		roadSideCorner3.set(roadCorner2);
 		roadSideCorner3.add(roadSideDirection, -0.03f);
 		v = new vector[]{roadCorner4.myClone(), roadSideCorner2.myClone(), roadSideCorner3.myClone(), roadCorner2.myClone()};
-		road[roadPolygonIndex] = new polygon3D(v,v[0].myClone(), v[1].myClone(), v[3].myClone(), mainThread.textures[63], 1f, l, 8); 
+		road[roadPolygonIndex] = new polygon3D(v,v[0].myClone(), v[1].myClone(), v[3].myClone(), MainThread.textures[63], 1f, l, 8);
 		roadPolygonIndex++;
 		
 		
@@ -309,19 +311,19 @@ public class terrain {
 			roadCentre.add(roadDirection, -0.25f);
 			
 			v = new vector[]{roadMarkCorner1.myClone(), roadMarkCorner2.myClone(), roadMarkCorner3.myClone(), roadMarkCorner4.myClone()};
-			road[roadPolygonIndex] = new polygon3D(v, v[0], v[1], v[3] , mainThread.textures[60], 1f,1f, 1); 
+			road[roadPolygonIndex] = new polygon3D(v, v[0], v[1], v[3] , MainThread.textures[60], 1f,1f, 1);
 			roadPolygonIndex++;
 			
 			if(i%4 ==0){
 
 				
 				if(numOfLightPoles == 29)
-					lightPoles[numOfLightPoles] = new lightPole(roadCentre.x-roadSideDirection.x*0.26f + 0.5f, roadCentre.y, roadCentre.z - roadSideDirection.z*0.26f,(curveAngle + 90)%360);
+					LightPoles[numOfLightPoles] = new LightPole(roadCentre.x-roadSideDirection.x*0.26f + 0.5f, roadCentre.y, roadCentre.z - roadSideDirection.z*0.26f,(curveAngle + 90)%360);
 				else
 					if(numOfLightPoles%2==0)
-						lightPoles[numOfLightPoles] = new lightPole(roadCentre.x+roadSideDirection.x*0.26f, roadCentre.y, roadCentre.z + roadSideDirection.z*0.26f,(curveAngle + 270)%360);
+						LightPoles[numOfLightPoles] = new LightPole(roadCentre.x+roadSideDirection.x*0.26f, roadCentre.y, roadCentre.z + roadSideDirection.z*0.26f,(curveAngle + 270)%360);
 					else
-						lightPoles[numOfLightPoles] = new lightPole(roadCentre.x-roadSideDirection.x*0.26f, roadCentre.y, roadCentre.z - roadSideDirection.z*0.26f,(curveAngle + 90)%360);
+						LightPoles[numOfLightPoles] = new LightPole(roadCentre.x-roadSideDirection.x*0.26f, roadCentre.y, roadCentre.z - roadSideDirection.z*0.26f,(curveAngle + 90)%360);
 				numOfLightPoles++;
 			}
 		}
@@ -349,7 +351,7 @@ public class terrain {
 			roadCorner4.set(roadCentre);
 			roadCorner4.add(roadSideDirection, -0.18f);
 			vector[] v = new vector[]{roadCorner3.myClone(), roadCorner4.myClone(), roadCorner2.myClone(), roadCorner1.myClone()};
-			road[roadPolygonIndex] = new polygon3D(v, new vector(4f,-0.5f,35f), new vector(4.5f,-0.5f,35f), new vector(4f,-0.5f, -3f), mainThread.textures[61], 1f,80f, 2); 
+			road[roadPolygonIndex] = new polygon3D(v, new vector(4f,-0.5f,35f), new vector(4.5f,-0.5f,35f), new vector(4f,-0.5f, -3f), MainThread.textures[61], 1f,80f, 2);
 			roadPolygonIndex++;
 			
 			roadSideCorner1.set(roadCorner3);
@@ -357,7 +359,7 @@ public class terrain {
 			roadSideCorner4.set(roadCorner1);
 			roadSideCorner4.add(roadSideDirection, 0.03f);
 			v = new vector[]{roadSideCorner1.myClone(), roadCorner3.myClone(), roadCorner1.myClone(), roadSideCorner4.myClone()};
-			road[roadPolygonIndex] = new polygon3D(v,v[0].myClone(), v[1].myClone(), v[3].myClone(), mainThread.textures[62], 0.2f, l*1.5f, 8); 
+			road[roadPolygonIndex] = new polygon3D(v,v[0].myClone(), v[1].myClone(), v[3].myClone(), MainThread.textures[62], 0.2f, l*1.5f, 8);
 			roadPolygonIndex++;
 			
 			
@@ -366,7 +368,7 @@ public class terrain {
 			roadSideCorner3.set(roadCorner2);
 			roadSideCorner3.add(roadSideDirection, -0.03f);
 			v = new vector[]{roadCorner4.myClone(), roadSideCorner2.myClone(), roadSideCorner3.myClone(), roadCorner2.myClone()};
-			road[roadPolygonIndex] = new polygon3D(v,v[0].myClone(), v[1].myClone(), v[3].myClone(), mainThread.textures[63], 1f, l*1.5f, 8); 
+			road[roadPolygonIndex] = new polygon3D(v,v[0].myClone(), v[1].myClone(), v[3].myClone(), MainThread.textures[63], 1f, l*1.5f, 8);
 			roadPolygonIndex++;
 			
 			roadCentre.y+=0.0001f;
@@ -380,14 +382,14 @@ public class terrain {
 			roadMarkCorner4.add(roadDirection, -0.1f);
 			
 			v = new vector[]{roadMarkCorner1.myClone(), roadMarkCorner2.myClone(), roadMarkCorner3.myClone(), roadMarkCorner4.myClone()};
-			road[roadPolygonIndex] = new polygon3D(v, v[0], v[1], v[3] , mainThread.textures[60], 1f,1f, 1); 
+			road[roadPolygonIndex] = new polygon3D(v, v[0], v[1], v[3] , MainThread.textures[60], 1f,1f, 1);
 			roadPolygonIndex++;
 			
 			if((i/Math.abs(turnRate))%4 ==0){
 				if(numOfLightPoles%2==0)
-					lightPoles[numOfLightPoles] = new lightPole(roadCentre.x+roadSideDirection.x*0.26f, roadCentre.y, roadCentre.z + roadSideDirection.z*0.26f,(curveAngle + 270)%360);
+					LightPoles[numOfLightPoles] = new LightPole(roadCentre.x+roadSideDirection.x*0.26f, roadCentre.y, roadCentre.z + roadSideDirection.z*0.26f,(curveAngle + 270)%360);
 				else
-					lightPoles[numOfLightPoles] = new lightPole(roadCentre.x-roadSideDirection.x*0.26f, roadCentre.y, roadCentre.z - roadSideDirection.z*0.26f,(curveAngle + 90)%360);
+					LightPoles[numOfLightPoles] = new LightPole(roadCentre.x-roadSideDirection.x*0.26f, roadCentre.y, roadCentre.z - roadSideDirection.z*0.26f,(curveAngle + 90)%360);
 				numOfLightPoles++;
 			}
 			
@@ -466,7 +468,7 @@ public class terrain {
 				
 				if(belowGround){
 					
-					tokenObject t = new tokenObject(((int)(tempVector0.x/0.25f)) * 0.25f + 0.125f,tempVector0.y, ((int)(tempVector0.z/0.25f)) * 0.25f + 0.125f, 64 << 16 | 64 << 8 | 255);
+					TokenObject t = new TokenObject(((int)(tempVector0.x/0.25f)) * 0.25f + 0.125f,tempVector0.y, ((int)(tempVector0.z/0.25f)) * 0.25f + 0.125f, 64 << 16 | 64 << 8 | 255);
 					if(!t.noNeedForThisToken){
 						lakeObstacleIndex[lakeObstacleCount] = t.tileIndex;
 						lakeObstacleCount++;
@@ -498,7 +500,7 @@ public class terrain {
 						bot.set(origin);
 						bot.add(deltaZ, -blocks);
 						
-						lake[index] = new polygon3D(v, origin.myClone(), top.myClone(), bot.myClone(), mainThread.textures[0], l,l,1);
+						lake[index] = new polygon3D(v, origin.myClone(), top.myClone(), bot.myClone(), MainThread.textures[0], l,l,1);
 						lake[index].Ambient_I = Ambient_I;
 						lake[index].reflectance = reflectance;
 						lake[index].findDiffuse();
@@ -531,7 +533,7 @@ public class terrain {
 					bot.set(origin);
 					bot.add(deltaZ, -blocks);
 					
-					lake[index] = new polygon3D(v, origin.myClone(), top.myClone(), bot.myClone(), mainThread.textures[0], l,l,1);
+					lake[index] = new polygon3D(v, origin.myClone(), top.myClone(), bot.myClone(), MainThread.textures[0], l,l,1);
 					lake[index].Ambient_I = Ambient_I;
 					lake[index].reflectance = reflectance;
 					lake[index].findDiffuse();
@@ -561,7 +563,7 @@ public class terrain {
 				bot.set(origin);
 				bot.add(deltaZ, -blocks);
 				
-				lake[index] = new polygon3D(v, origin.myClone(), top.myClone(), bot.myClone(), mainThread.textures[0], l,l,5);
+				lake[index] = new polygon3D(v, origin.myClone(), top.myClone(), bot.myClone(), MainThread.textures[0], l,l,5);
 				lake[index].Ambient_I = Ambient_I;
 				lake[index].reflectance = reflectance;
 				lake[index].findDiffuse();
@@ -587,7 +589,7 @@ public class terrain {
 				bot.add(deltaZ, -blocks);
 				
 				v = new vector[]{tempVector1.myClone(), tempVector2.myClone(), tempVector3.myClone()};
-				lake[index+1] = new polygon3D(v, origin.myClone(), top.myClone(), bot.myClone(), mainThread.textures[0], l,l,5);
+				lake[index+1] = new polygon3D(v, origin.myClone(), top.myClone(), bot.myClone(), MainThread.textures[0], l,l,5);
 				lake[index+1].Ambient_I = Ambient_I;
 				lake[index+1].reflectance = reflectance;
 				lake[index+1].findDiffuse();
@@ -598,7 +600,7 @@ public class terrain {
 		}
 		
 		v = new vector[]{new vector(x_start,-0.7551f,z_start), new vector(x_start + l,-0.7551f,z_start), new vector(x_start + l,-0.7551f,z_start - l), new vector(x_start,-0.7551f, z_start - l)};
-		lake[index] = new polygon3D(v, v[0], v[1], v[3], mainThread.textures[0],l,l, 7); 
+		lake[index] = new polygon3D(v, v[0], v[1], v[3], MainThread.textures[0],l,l, 7);
 		lake[index].Ambient_I = Ambient_I;
 		lake[index].reflectance = reflectance;
 		lake[index].findDiffuse();
@@ -708,16 +710,16 @@ public class terrain {
 		}
 		
 		for(int i = 0; i < lakeObstacleCount; i++){
-			mainThread.gridMap.currentObstacleMap[lakeObstacleIndex[i]] = false;
+			MainThread.gridMap.currentObstacleMap[lakeObstacleIndex[i]] = false;
 		}
 	
 		
 		//update lake1
 		lake1Visible = true;
 		lakeCenterTemp1.set(lakeCenter1);
-		lakeCenterTemp1.subtract(camera.position);
-		lakeCenterTemp1.rotate_XZ(camera.XZ_angle);
-		lakeCenterTemp1.rotate_YZ(camera.YZ_angle); 
+		lakeCenterTemp1.subtract(Camera.position);
+		lakeCenterTemp1.rotate_XZ(Camera.XZ_angle);
+		lakeCenterTemp1.rotate_YZ(Camera.YZ_angle);
 		lakeCenterTemp1.updateLocation();
 		
 		if(lakeCenterTemp1.screenX > screen_width+350 || lakeCenterTemp1.screenX < - 350 || lakeCenterTemp1.screenY < - 140 || lakeCenterTemp1.screenY > screen_height+550){
@@ -746,9 +748,9 @@ public class terrain {
 		//update lake 2
 		lake2Visible = true;
 		lakeCenterTemp2.set(lakeCenter2);
-		lakeCenterTemp2.subtract(camera.position);
-		lakeCenterTemp2.rotate_XZ(camera.XZ_angle);
-		lakeCenterTemp2.rotate_YZ(camera.YZ_angle); 
+		lakeCenterTemp2.subtract(Camera.position);
+		lakeCenterTemp2.rotate_XZ(Camera.XZ_angle);
+		lakeCenterTemp2.rotate_YZ(Camera.YZ_angle);
 		lakeCenterTemp2.updateLocation();
 		
 		if(lakeCenterTemp2.screenX > screen_width + 350 || lakeCenterTemp2.screenX < - 350 || lakeCenterTemp2.screenY < - 160 || lakeCenterTemp2.screenY > screen_height+550){
@@ -776,9 +778,9 @@ public class terrain {
 		//update lake3
 		lake3Visible = true;
 		lakeCenterTemp3.set(lakeCenter3);
-		lakeCenterTemp3.subtract(camera.position);
-		lakeCenterTemp3.rotate_XZ(camera.XZ_angle);
-		lakeCenterTemp3.rotate_YZ(camera.YZ_angle); 
+		lakeCenterTemp3.subtract(Camera.position);
+		lakeCenterTemp3.rotate_XZ(Camera.XZ_angle);
+		lakeCenterTemp3.rotate_YZ(Camera.YZ_angle);
 		lakeCenterTemp3.updateLocation();
 		
 		if(lakeCenterTemp3.screenX > screen_width + 350 || lakeCenterTemp3.screenX < - 350 || lakeCenterTemp3.screenY < - 150 || lakeCenterTemp3.screenY > screen_height + 450){
@@ -805,9 +807,9 @@ public class terrain {
 		//update lake 4
 		lake4Visible = true;
 		lakeCenterTemp4.set(lakeCenter4);
-		lakeCenterTemp4.subtract(camera.position);
-		lakeCenterTemp4.rotate_XZ(camera.XZ_angle);
-		lakeCenterTemp4.rotate_YZ(camera.YZ_angle); 
+		lakeCenterTemp4.subtract(Camera.position);
+		lakeCenterTemp4.rotate_XZ(Camera.XZ_angle);
+		lakeCenterTemp4.rotate_YZ(Camera.YZ_angle);
 		lakeCenterTemp4.updateLocation();
 		
 		if(lakeCenterTemp4.screenX > screen_width+400 || lakeCenterTemp4.screenX < - 400 || lakeCenterTemp4.screenY < - 150 || lakeCenterTemp4.screenY > screen_height + 590){
@@ -833,7 +835,7 @@ public class terrain {
 		}
 		
 		//animate water surface
-		mainThread.textures[54].waterHeightMap = mainThread.textures[54].waterHeightMaps[(mainThread.gameFrame)%48];
+		MainThread.textures[54].waterHeightMap = MainThread.textures[54].waterHeightMaps[(MainThread.gameFrame)%48];
 		
 		for(int i = 0; i < roadPolygonIndex; i++){
 			road[i].update();
@@ -842,7 +844,7 @@ public class terrain {
 		}
 		
 		for(int i = 0; i < numOfLightPoles; i++){
-			lightPoles[i].update();
+			LightPoles[i].update();
 		}
 	}
 	
@@ -861,7 +863,7 @@ public class terrain {
 		
 		
 		for(int i = 0; i < numOfLightPoles; i++){
-			lightPoles[i].draw();
+			LightPoles[i].draw();
 		}
 		
 		for(int i = 0; i < roadPolygonIndex; i++)

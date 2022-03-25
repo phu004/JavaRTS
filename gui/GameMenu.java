@@ -1,13 +1,12 @@
 package gui;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.awt.Image;
 import java.awt.image.PixelGrabber;
 import javax.imageio.ImageIO;
 import core.*;
 
-public class gameMenu {
+public class GameMenu {
 	
 	public int gameSuspendCount;
 	
@@ -25,7 +24,7 @@ public class gameMenu {
 	
 	public int[] titleImage, lightTankImage, rocketTankImage, stealthTankImage, heavyTankImage;
 	
-	public button newGame, unpauseGame, showHelp, showOptions, showHighscores, quitGame, abortGame, easyGame, normalGame, hardGame, quitDifficulty, quitHelpMenu, quitOptionMenu, quitHighscoreMenu, nextPage, previousPage,
+	public Button newGame, unpauseGame, showHelp, showOptions, showHighscores, quitGame, abortGame, easyGame, normalGame, hardGame, quitDifficulty, quitHelpMenu, quitOptionMenu, quitHighscoreMenu, nextPage, previousPage,
 	              enableMouseCapture, disableMouseCapture, enableFogOfWar, disableFogOfWar, confirmErrorLoadingHighscore, normalToHardButton, normalToEasyButton, hardToNormalButton, easyToNormalButton,
 	              backToMapDefeat, leaveGameDefeat, backToMapVictory, leaveGameVictory, uploadScore;
 	
@@ -34,15 +33,15 @@ public class gameMenu {
 	public int currentHelpPage;
 	public int highscoreLevel;
 	
-	public ArrayList<button> buttons = new ArrayList<button>();
+	public ArrayList<Button> buttons = new ArrayList<Button>();
 	
-	public highscoreManager theHighscoreManager;
+	public HighscoreManager theHighscoreManager;
 	
 	public char[] name;
 	public String nameString;
 	public static boolean uploadingScore, scoreUploaded;
-	public static int screen_width = mainThread.screen_width;
-	public static int screen_height = mainThread.screen_height;
+	public static int screen_width = MainThread.screen_width;
+	public static int screen_height = MainThread.screen_height;
 	
 	
 	public void init() {
@@ -56,7 +55,7 @@ public class gameMenu {
 		if(screenBlurBuffer == null)
 			screenBlurBuffer = new int[screen_height * screen_width];
 	
-		theHighscoreManager = new highscoreManager();
+		theHighscoreManager = new HighscoreManager();
 		Thread   t   =   new   Thread(theHighscoreManager);
 		t.start();
 		
@@ -73,37 +72,37 @@ public class gameMenu {
 		loadTexture(folder + "83.jpg", heavyTankImage, 44, 44);
 		
 		
-		newGame = new button("newGame", "New Game", 324, 110, 120, 28);  
+		newGame = new Button("newGame", "New Game", 324, 110, 120, 28);
 		buttons.add(newGame);
 		
-		unpauseGame = new button("unpauseGame", "Resume Game",  324, 110, 120, 28);
+		unpauseGame = new Button("unpauseGame", "Resume Game",  324, 110, 120, 28);
 		buttons.add(unpauseGame);
 		
-		showHelp = new button("showHelp", "Help", 324, 160, 120, 28);
+		showHelp = new Button("showHelp", "Help", 324, 160, 120, 28);
 		buttons.add(showHelp);
 		
-		showOptions = new button("showOptions", "Options", 324, 210, 120, 28);
+		showOptions = new Button("showOptions", "Options", 324, 210, 120, 28);
 		buttons.add(showOptions);
 		
-		showHighscores = new button("showHighscores", "Highscores", 324, 260, 120, 28);
+		showHighscores = new Button("showHighscores", "Highscores", 324, 260, 120, 28);
 		buttons.add(showHighscores);
 		
-		quitGame = new button("quitGame", "Quit Game", 324, 345, 120, 28);
+		quitGame = new Button("quitGame", "Quit Game", 324, 345, 120, 28);
 		buttons.add(quitGame);
 		
-		abortGame = new button("abortGame", "Abort Game", 324, 345, 120, 28);
+		abortGame = new Button("abortGame", "Abort Game", 324, 345, 120, 28);
 		buttons.add(abortGame);
 		
-		easyGame = new button("easyGame", "Easy", 190, 120, 85, 28);
+		easyGame = new Button("easyGame", "Easy", 190, 120, 85, 28);
 		buttons.add(easyGame);
 		
-		normalGame = new button("normalGame", "Normal", 190, 200, 85, 28);
+		normalGame = new Button("normalGame", "Normal", 190, 200, 85, 28);
 		buttons.add(normalGame);
 		
-		hardGame = new button("hardGame", "Hard", 190, 280, 85, 28);
+		hardGame = new Button("hardGame", "Hard", 190, 280, 85, 28);
 		buttons.add(hardGame);
 		
-		quitDifficulty = new button("quitDifficulty", "x", 570, 80, 18,16);
+		quitDifficulty = new Button("quitDifficulty", "x", 570, 80, 18,16);
 		buttons.add(quitDifficulty);
 		
 		easyDescription = "AI will attack blindly at player's base \nwithout thinking too much. ".toCharArray();
@@ -122,7 +121,7 @@ public class gameMenu {
 				   + "                                                  1/4                  ").toCharArray();
 		
 		helpPage2 = ("                                          Controls (Cont.)             \n\n"
-					+ "\"Left and Right arrow keys\" -- Change camera view angle.\n\n"
+					+ "\"Left and Right arrow keys\" -- Change Camera view angle.\n\n"
 					+ "\"c\" -- Toggle between different construction yards under your control.\n\n"
 					+ "\"f\" -- Toggle between different factories under your control.\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n"
 					+ "                                                  2/4                  ").toCharArray();
@@ -154,68 +153,68 @@ public class gameMenu {
 		mouseMode = ("                                    Options \n\n\nMouse capture. When enabled the game will prevent \nthe mouse cursor from leaving the current window.\n\n\n"
 				   + "Fog of war. When enabled, enemy units that are not \nin vision will be hidden. Note that your score will NOT \nbe saved when this option is disabled.").toCharArray();
 		
-		quitHelpMenu = new button("quitHelpMenu", "x", 670, 80, 18,16);
+		quitHelpMenu = new Button("quitHelpMenu", "x", 670, 80, 18,16);
 		buttons.add(quitHelpMenu);
 		
-		quitOptionMenu = new button("quitOptionMenu", "x", 620, 80, 18,16);
+		quitOptionMenu = new Button("quitOptionMenu", "x", 620, 80, 18,16);
 		buttons.add(quitOptionMenu);
 		
-		quitHighscoreMenu = new button("quitHighscoreMenu", "x", 570, 80, 18,16);
+		quitHighscoreMenu = new Button("quitHighscoreMenu", "x", 570, 80, 18,16);
 		buttons.add(quitHighscoreMenu);
 		
-		nextPage = new button("nextPage", "Next Page", 550, 450, 120, 28);
+		nextPage = new Button("nextPage", "Next Page", 550, 450, 120, 28);
 		buttons.add(nextPage);
 		
-		previousPage = new button("previousPage", "Previous Page", 98, 450, 120, 28);
+		previousPage = new Button("previousPage", "Previous Page", 98, 450, 120, 28);
 		buttons.add(previousPage);
 		
-		enableMouseCapture = new button("enableMouseCapture", "Disabled", 545, 145, 80, 25);
+		enableMouseCapture = new Button("enableMouseCapture", "Disabled", 545, 145, 80, 25);
 		buttons.add(enableMouseCapture);
 		
-		disableMouseCapture = new button("disableMouseCapture", "Enabled", 545, 145, 80, 25);
+		disableMouseCapture = new Button("disableMouseCapture", "Enabled", 545, 145, 80, 25);
 		buttons.add(disableMouseCapture);
 		
-		enableFogOfWar = new button("enableFogOfWar", "Disabled", 545, 215, 80, 25);
+		enableFogOfWar = new Button("enableFogOfWar", "Disabled", 545, 215, 80, 25);
 		buttons.add(enableFogOfWar);
 		
-		disableFogOfWar = new button("disableFogOfWar", "Enabled", 545, 215, 80, 25);
+		disableFogOfWar = new Button("disableFogOfWar", "Enabled", 545, 215, 80, 25);
 		buttons.add(disableFogOfWar);
 		
-		confirmErrorLoadingHighscore = new button("confirmErrorLoadingHighscore", "Ok", 350, 280, 80, 25);
+		confirmErrorLoadingHighscore = new Button("confirmErrorLoadingHighscore", "Ok", 350, 280, 80, 25);
 		buttons.add(confirmErrorLoadingHighscore);
 		
-		normalToHardButton = new button("normalToHardButton", ">", 543, 430, 40, 25);
+		normalToHardButton = new Button("normalToHardButton", ">", 543, 430, 40, 25);
 		buttons.add(normalToHardButton);
 		
-		normalToEasyButton = new button("normalToEasyButton", "<", 185, 430, 40, 25);
+		normalToEasyButton = new Button("normalToEasyButton", "<", 185, 430, 40, 25);
 		buttons.add(normalToEasyButton);
 		
-		hardToNormalButton = new button("hardToNormalButton", "<", 185, 430, 40, 25);
+		hardToNormalButton = new Button("hardToNormalButton", "<", 185, 430, 40, 25);
 		buttons.add(hardToNormalButton);
 		
-		easyToNormalButton = new button("easyToNormalButton", ">", 543, 430, 40, 25);
+		easyToNormalButton = new Button("easyToNormalButton", ">", 543, 430, 40, 25);
 		buttons.add(easyToNormalButton);
 		
-		backToMapDefeat =  new button("backToMap", "Back to Map", 210, 235, 120, 25);
+		backToMapDefeat =  new Button("backToMap", "Back to Map", 210, 235, 120, 25);
 		buttons.add(backToMapDefeat);
 		
-		leaveGameDefeat =  new button("abortGame", "Leave game", 440, 235, 120, 25);
+		leaveGameDefeat =  new Button("abortGame", "Leave game", 440, 235, 120, 25);
 		buttons.add(leaveGameDefeat);
 		
-		backToMapVictory =  new button("backToMap", "Back to Map", 135, 315, 120, 25);
+		backToMapVictory =  new Button("backToMap", "Back to Map", 135, 315, 120, 25);
 		buttons.add(backToMapVictory);
 		
-		leaveGameVictory =  new button("abortGame", "Leave game", 515, 315, 120, 25);
+		leaveGameVictory =  new Button("abortGame", "Leave game", 515, 315, 120, 25);
 		buttons.add(leaveGameVictory);
 		
-		uploadScore = new button("uploadScore", "Upload", 530, 250, 90, 25);
+		uploadScore = new Button("uploadScore", "Upload", 530, 250, 90, 25);
 		buttons.add(uploadScore);
 	}
 	
 	
 	public void updateAndDraw(int[] screen, boolean gameStarted, boolean gamePaused, boolean playerVictory, boolean AIVictory) {
 		this.screen = screen;
-		textRenderer tRenderer = postProcessingThread.theTextRenderer;
+		TextRenderer tRenderer = postProcessingThread.theTextRenderer;
 		
 		if(gamePaused){
 			gameSuspendCount++;
@@ -254,13 +253,13 @@ public class gameMenu {
 				tRenderer.drawMenuText(320,138,"You are Victorious!".toCharArray(), screen, 255,255,255, 0);
 				
 				String difficulty = "Normal";
-				if(mainThread.ec.difficulty == 0)
+				if(MainThread.enemyCommander.difficulty == 0)
 					difficulty = "Easy";
-				if(mainThread.ec.difficulty == 2)
+				if(MainThread.enemyCommander.difficulty == 2)
 					difficulty = "Hard";
 				tRenderer.drawMenuText(205,198,("Difficulty:  "+ difficulty).toCharArray(), screen, 255,255,255, 0);
 				
-				String time = mainThread.timeString;
+				String time = MainThread.timeString;
 				
 				tRenderer.drawMenuText(232,228,("Time:  "+ time).toCharArray(), screen, 255,255,255, 0);
 				
@@ -530,7 +529,7 @@ public class gameMenu {
 	
 	public void drawHighscore() {
 		
-		textRenderer tRenderer = postProcessingThread.theTextRenderer;
+		TextRenderer tRenderer = postProcessingThread.theTextRenderer;
 		String[][] result =  theHighscoreManager.result;
 		int startRow = 0;
 		//draw high scores
@@ -576,7 +575,7 @@ public class gameMenu {
 	}
 	
 	public void drawLoadingScreen(int[] screen) {
-		textRenderer tRenderer = postProcessingThread.theTextRenderer;
+		TextRenderer tRenderer = postProcessingThread.theTextRenderer;
 		
 		if(postProcessingThread.frameIndex%50 < 10) {
 			tRenderer.drawMenuText(360,250,"Loading....".toCharArray(), screen, 255,255,255,0);

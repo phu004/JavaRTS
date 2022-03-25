@@ -1,27 +1,27 @@
 package enemyAI;
 
-import core.baseInfo;
-import core.mainThread;
+import core.BaseInfo;
+import core.MainThread;
 
-public class enemyCommander {
+public class EnemyCommander {
 	
 	//vision map represents the vision of the  enemy commander
 	public static boolean[] visionMap;
 	
 	public static boolean[] tempBitmap;
 	
-	public baseInfo theBaseInfo;
+	public BaseInfo theBaseInfo;
 	
-	public buildingManagerAI theBuildingManagerAI;
-	public economyManagerAI  theEconomyManagerAI;
-	public mapAwarenessAI theMapAwarenessAI;
-	public unitProductionAI theUnitProductionAI;
-	public baseExpensionAI theBaseExpentionAI;
-	public scoutingManagerAI theScoutingManagerAI;
-	public defenseManagerAI theDefenseManagerAI;
-	public combatManagerAI theCombatManagerAI;
-	public microManagementAI theMicroManagementAI;
-	public harassmentAI theHarassmentAI;
+	public BuildingManagerAI theBuildingManagerAI;
+	public EconomyManagerAI theEconomyManagerAI;
+	public MapAwarenessAI theMapAwarenessAI;
+	public UnitProductionAI theUnitProductionAI;
+	public BaseExpensionAI theBaseExpentionAI;
+	public ScoutingManagerAI theScoutingManagerAI;
+	public DefenseManagerAI theDefenseManagerAI;
+	public CombatManagerAI theCombatManagerAI;
+	public MicroManagementAI theMicroManagementAI;
+	public HarassmentAI theHarassmentAI;
 	public int difficulty;
 	
 	public int frameAI;
@@ -33,18 +33,18 @@ public class enemyCommander {
 	
 		tempBitmap = new boolean[148 * 148];
 		
-		theBaseInfo = new baseInfo();
+		theBaseInfo = new BaseInfo();
 		
-		theBuildingManagerAI = new buildingManagerAI();
-		theEconomyManagerAI = new economyManagerAI();
-		theMapAwarenessAI = new mapAwarenessAI();
-		theUnitProductionAI = new unitProductionAI();
-		theBaseExpentionAI = new baseExpensionAI();
-		theScoutingManagerAI = new scoutingManagerAI();
-		theDefenseManagerAI = new defenseManagerAI();
-		theCombatManagerAI = new combatManagerAI();
-		theMicroManagementAI = new microManagementAI();
-		theHarassmentAI = new harassmentAI();
+		theBuildingManagerAI = new BuildingManagerAI();
+		theEconomyManagerAI = new EconomyManagerAI();
+		theMapAwarenessAI = new MapAwarenessAI();
+		theUnitProductionAI = new UnitProductionAI();
+		theBaseExpentionAI = new BaseExpensionAI();
+		theScoutingManagerAI = new ScoutingManagerAI();
+		theDefenseManagerAI = new DefenseManagerAI();
+		theCombatManagerAI = new CombatManagerAI();
+		theMicroManagementAI = new MicroManagementAI();
+		theHarassmentAI = new HarassmentAI();
 		
 	}
 	
@@ -76,7 +76,7 @@ public class enemyCommander {
 	public void drawVisionMap(){
 		int pos = 2 + 20 * 768;
 		boolean tile;
-		int[] screen = mainThread.screen2;
+		int[] screen = MainThread.screen2;
 		for(int i = 0; i < 128; i++){
 			for(int j = 0; j < 128; j++){
 				tile = visionMap[j + i*128];
@@ -89,39 +89,39 @@ public class enemyCommander {
 	
 	
 	public void thinkHardLikeHumanPlayer(){
-		frameAI = mainThread.gameFrame/30;
+		frameAI = MainThread.gameFrame/30;
 		
 		//the order is important!!
-		if(mainThread.gameFrame % 30 == 0){
+		if(MainThread.gameFrame % 30 == 0){
 			theMapAwarenessAI.processAI();
 		}
 		
-		if(mainThread.gameFrame % 30 == 1){
+		if(MainThread.gameFrame % 30 == 1){
 			theBuildingManagerAI.processAI();
 		} 
 		
-		if(mainThread.gameFrame % 30 == 2){
+		if(MainThread.gameFrame % 30 == 2){
 			theEconomyManagerAI.processAI();
 		}
 		
-		if(mainThread.gameFrame % 30 == 3){
+		if(MainThread.gameFrame % 30 == 3){
 			if(difficulty > 0)
 				theScoutingManagerAI.processAI();
 		}
 		
-		if(mainThread.gameFrame % 30 == 4){
+		if(MainThread.gameFrame % 30 == 4){
 			theUnitProductionAI.processAI();
 		}
 		
-		if(mainThread.gameFrame % 30 == 5){
+		if(MainThread.gameFrame % 30 == 5){
 			theBaseExpentionAI.processAI();
 		}
 		
-		if(mainThread.gameFrame % 30 == 6){
+		if(MainThread.gameFrame % 30 == 6){
 			theCombatManagerAI.processAI();   
 		}
 		
-		if(mainThread.gameFrame % 30 == 7){
+		if(MainThread.gameFrame % 30 == 7){
 			if(difficulty > 0)
 				theDefenseManagerAI.processAI();
 		}

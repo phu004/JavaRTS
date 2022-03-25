@@ -3,11 +3,11 @@ package entity;
 import core.*;
 
 //the only purpose of this object is to create an invisible boundary block
-public class tokenObject extends solidObject{
+public class TokenObject extends SolidObject {
 	public int tileIndex;
 	public boolean noNeedForThisToken;
 	
-	public tokenObject(float x, float y, float z, int color){
+	public TokenObject(float x, float y, float z, int color){
 		ID = -1;
 		type = 4;
 		teamNo = -1;
@@ -23,7 +23,7 @@ public class tokenObject extends solidObject{
 		tileIndex = boundary2D.x1/16 + (127 - (boundary2D.y1 - 1)/16)*128;
 		
 		
-		if(x < 0 || mainThread.gridMap.tiles[tileIndex][0]!= null){
+		if(x < 0 || MainThread.gridMap.tiles[tileIndex][0]!= null){
 			noNeedForThisToken = true;
 			return;
 		}

@@ -1,19 +1,13 @@
 package enemyAI;
 
-import core.baseInfo;
-import entity.factory;
-import core.mainThread;
+import core.BaseInfo;
+import core.MainThread;
+import entity.*;
 import core.vector;
-import entity.lightTank;
-import entity.solidObject;
-import entity.stealthTank;
-import entity.communicationCenter;
-import entity.constructionYard;
-import entity.gunTurret;
-import entity.missileTurret;
+import entity.SolidObject;
 
-public class defenseManagerAI {
-	public baseInfo theBaseInfo;
+public class DefenseManagerAI {
+	public BaseInfo theBaseInfo;
 	
 	public int frameAI;
 	
@@ -22,12 +16,12 @@ public class defenseManagerAI {
 	public final int aggressing = 1;
 	public final int defending = 2;
 
-	public solidObject[] observers;
+	public SolidObject[] observers;
 	 
-	public solidObject[] stealthTanksControlledByCombatAI;
-	public solidObject[] lightTanksControlledByCombatAI;
+	public SolidObject[] stealthTanksControlledByCombatAI;
+	public SolidObject[] lightTanksControlledByCombatAI;
 	
-	public solidObject[] defenders;
+	public SolidObject[] defenders;
 	public int numOfDefenders;
 	
 	public vector direction;
@@ -44,12 +38,12 @@ public class defenseManagerAI {
 	public vector missileTurretDeployLocation;
 	
 	
-	public defenseManagerAI(){
-		this.theBaseInfo = mainThread.ec.theBaseInfo;
+	public DefenseManagerAI(){
+		this.theBaseInfo = MainThread.enemyCommander.theBaseInfo;
 		
-		observers = new solidObject[4];
+		observers = new SolidObject[4];
 		
-		defenders = new solidObject[5];
+		defenders = new SolidObject[5];
 		
 		direction = new vector(0,0,0);
 		threatToBaseDirection = new vector(0,0,0);
@@ -67,25 +61,25 @@ public class defenseManagerAI {
 	
 	
 	public void processAI(){
-		frameAI = mainThread.ec.frameAI;
+		frameAI = MainThread.enemyCommander.frameAI;
 		
 		
 		
 		if(majorThreatCooldown > 0)
 			majorThreatCooldown --;
 		
-		currentState = mainThread.ec.theCombatManagerAI.currentState;
+		currentState = MainThread.enemyCommander.theCombatManagerAI.currentState;
 		
-		stealthTanksControlledByCombatAI = mainThread.ec.theUnitProductionAI.stealthTanksControlledByCombatAI;
-		lightTanksControlledByCombatAI = mainThread.ec.theUnitProductionAI.lightTanksControlledByCombatAI;
+		stealthTanksControlledByCombatAI = MainThread.enemyCommander.theUnitProductionAI.stealthTanksControlledByCombatAI;
+		lightTanksControlledByCombatAI = MainThread.enemyCommander.theUnitProductionAI.lightTanksControlledByCombatAI;
 		
 		//after 500 seconds mark, borrow 2 stealth tanks from combat manager, and send them to guard western and southern side of the main base
-		if(mainThread.ec.difficulty == 2) {
-			if(frameAI >= 450 && mainThread.ec.theCombatManagerAI.checkIfAIHasBiggerForce(0.8f)) {
+		if(MainThread.enemyCommander.difficulty == 2) {
+			if(frameAI >= 450 && MainThread.enemyCommander.theCombatManagerAI.checkIfAIHasBiggerForce(0.8f)) {
 				for(int i = 0; i < 2; i++) {
 					if(observers[i] == null || observers[i].currentHP <=0) {
 						for(int j = 0; j < stealthTanksControlledByCombatAI.length; j++) {
-							if(stealthTanksControlledByCombatAI[j] != null && stealthTanksControlledByCombatAI[j].currentHP == 80 && stealthTanksControlledByCombatAI[j].attackStatus != solidObject.isAttacking) {
+							if(stealthTanksControlledByCombatAI[j] != null && stealthTanksControlledByCombatAI[j].currentHP == 80 && stealthTanksControlledByCombatAI[j].attackStatus != SolidObject.isAttacking) {
 								observers[i] = stealthTanksControlledByCombatAI[j];
 								stealthTanksControlledByCombatAI[j] = null;
 								float xPos = 20f;
@@ -108,8 +102,8 @@ public class defenseManagerAI {
 								}
 								
 								observers[i].moveTo(xPos, zPos);
-								observers[i].currentCommand = solidObject.move;
-								observers[i].secondaryCommand = solidObject.StandBy;
+								observers[i].currentCommand = SolidObject.move;
+								observers[i].secondaryCommand = SolidObject.StandBy;
 								break;
 							}
 						}
@@ -169,8 +163,8 @@ public class defenseManagerAI {
 							
 						}
 						observers[i].moveTo(xPos, zPos);
-						observers[i].currentCommand = solidObject.move;
-						observers[i].secondaryCommand = solidObject.StandBy;
+						observers[i].currentCommand = SolidObject.move;
+						observers[i].secondaryCommand = SolidObject.StandBy;
 					}
 					
 				}
@@ -178,9 +172,9 @@ public class defenseManagerAI {
 		}
 		
 		//send units to deal with minor threat on the map if there is any
-		vector mainPlayerForceLocation = mainThread.ec.theMapAwarenessAI.mainPlayerForceLocation;
-		vector mainPlayerForceDirection = mainThread.ec.theMapAwarenessAI.mainPlayerForceDirection;
-		int mainPlayerForceSize = mainThread.ec.theMapAwarenessAI.mainPlayerForceSize;
+		vector mainPlayerForceLocation = MainThread.enemyCommander.theMapAwarenessAI.mainPlayerForceLocation;
+		vector mainPlayerForceDirection = MainThread.enemyCommander.theMapAwarenessAI.mainPlayerForceDirection;
+		int mainPlayerForceSize = MainThread.enemyCommander.theMapAwarenessAI.mainPlayerForceSize;
 		
 		minorThreatLocation.reset();
 		if(majorThreatCooldown == 0)
@@ -192,13 +186,13 @@ public class defenseManagerAI {
 			boolean attackedByRocketTank = false;
 			int numOfHeavyTanks = numOfHeavyTankAroundLocation(mainPlayerForceLocation);
 			if(numOfHeavyTanks < 1) {
-				for(int i = 0; i < mainThread.ec.theMapAwarenessAI.numOfAIStructures; i++) {
-					if(mainThread.ec.theMapAwarenessAI.AIStructures[i].underAttackCountDown > 0 &&
-					   mainThread.ec.theMapAwarenessAI.AIStructures[i].attacker != null &&
-					   mainThread.ec.theMapAwarenessAI.AIStructures[i].attacker.currentHP > 0 &&
-					   mainThread.ec.theMapAwarenessAI.AIStructures[i].attacker.type == 1) {
+				for(int i = 0; i < MainThread.enemyCommander.theMapAwarenessAI.numOfAIStructures; i++) {
+					if(MainThread.enemyCommander.theMapAwarenessAI.AIStructures[i].underAttackCountDown > 0 &&
+					   MainThread.enemyCommander.theMapAwarenessAI.AIStructures[i].attacker != null &&
+					   MainThread.enemyCommander.theMapAwarenessAI.AIStructures[i].attacker.currentHP > 0 &&
+					   MainThread.enemyCommander.theMapAwarenessAI.AIStructures[i].attacker.type == 1) {
 						attackedByRocketTank = true;
-						minorThreatLocation.set(mainThread.ec.theMapAwarenessAI.AIStructures[i].attacker.centre);
+						minorThreatLocation.set(MainThread.enemyCommander.theMapAwarenessAI.AIStructures[i].attacker.centre);
 						break;
 					}
 				}
@@ -231,9 +225,9 @@ public class defenseManagerAI {
 		}
 		
 		//treat player buildings that is close to the base as major threat too. 
-		constructionYard[] constructionYards = mainThread.theAssetManager.constructionYards;
+		ConstructionYard[] constructionYards = MainThread.theAssetManager.constructionYards;
 		boolean playerBuildingNearBase = false;
-		solidObject[] playerStructures = mainThread.ec.theMapAwarenessAI.playerStructures;
+		SolidObject[] playerStructures = MainThread.enemyCommander.theMapAwarenessAI.playerStructures;
 		for(int i = 0; i < playerStructures.length; i++) {
 			if(playerStructures[i] != null && playerStructures[i].currentHP > 0) {
 				float x1 = playerStructures[i].centre.x;
@@ -271,8 +265,8 @@ public class defenseManagerAI {
 			for(int i =0; i < defenders.length; i++) {
 				if(defenders[i] != null) {
 					defenders[i].moveTo(minorThreatLocation.x, minorThreatLocation.z);
-					defenders[i].currentCommand = solidObject.attackMove;
-					defenders[i].secondaryCommand = solidObject.attackMove;
+					defenders[i].currentCommand = SolidObject.attackMove;
+					defenders[i].secondaryCommand = SolidObject.attackMove;
 				}
 			}
 		}
@@ -294,9 +288,9 @@ public class defenseManagerAI {
 				//move back to rally point
 				for(int i =0; i < defenders.length; i++) {
 					if(defenders[i] != null && frameAI%20==0) {
-						defenders[i].moveTo(mainThread.ec.theUnitProductionAI.rallyPoint.x, mainThread.ec.theUnitProductionAI.rallyPoint.z);
-						defenders[i].currentCommand = solidObject.attackMove;
-						defenders[i].secondaryCommand = solidObject.attackMove;
+						defenders[i].moveTo(MainThread.enemyCommander.theUnitProductionAI.rallyPoint.x, MainThread.enemyCommander.theUnitProductionAI.rallyPoint.z);
+						defenders[i].currentCommand = SolidObject.attackMove;
+						defenders[i].secondaryCommand = SolidObject.attackMove;
 					}
 				}
 			}
@@ -368,7 +362,7 @@ public class defenseManagerAI {
 		  Deploy gun turret if the minor/major threat is close enough to the construction yard
 		 */
 		
-		solidObject[] AIStructures = mainThread.ec.theMapAwarenessAI.AIStructures;
+		SolidObject[] AIStructures = MainThread.enemyCommander.theMapAwarenessAI.AIStructures;
 		gunTurretDeployLocation.reset();
 		missileTurretDeployLocation.reset();
 		
@@ -436,8 +430,8 @@ public class defenseManagerAI {
 				if(threatX != 0 && distanceToThreat < 4.75 && (numOfGunTurretNearThreat < (float)mainPlayerForceSize/3  || playerBuildingNearBase)) {
 					
 					float d = 1.85f;  //minimum deploy distance from conyard
-					if(distanceToThreat > d + gunTurret.attackRange)
-						d = distanceToThreat - gunTurret.attackRange;
+					if(distanceToThreat > d + entity.GunTurrent.attackRange)
+						d = distanceToThreat - entity.GunTurrent.attackRange;
 					if(distanceToThreat < 3.5)
 						d = 1.75f;
 					
@@ -451,8 +445,8 @@ public class defenseManagerAI {
 				if(threatX != 0 && distanceToThreat < 5.15 && (numOfMissileTurretNearThreat < mainPlayerForceSize/6 || (playerBuildingNearBase && numOfMissileTurretNearThreat < 2))) {
 					
 					float d = 1.65f;  //minimum deploy distance from conyard
-					if(distanceToThreat > d + missileTurret.attackRange)
-						d = distanceToThreat - missileTurret.attackRange;
+					if(distanceToThreat > d + MissileTurret.attackRange)
+						d = distanceToThreat - MissileTurret.attackRange;
 					if(distanceToThreat < 4.75)
 						d = 1.25f;
 					
@@ -462,7 +456,7 @@ public class defenseManagerAI {
 			}
 		}
 		
-		//tell the factory that are closest to the  threat location to build a repair drone
+		//tell the Factory that are closest to the  threat location to build a repair Drone
 		float threatX = 0;
 		float threatZ = 0;
 
@@ -476,8 +470,8 @@ public class defenseManagerAI {
 			threatZ = majorThreatLocation.z;
 		}
 		
-		factory cloestFactory = null;
-		factory[] factories = mainThread.theAssetManager.factories;
+		Factory cloestFactory = null;
+		Factory[] factories = MainThread.theAssetManager.factories;
 		float threatDistance = 999f;
 		for(int i = 0; i < factories.length; i++) {
 			if(factories[i] !=null && factories[i].teamNo !=0 && factories[i].currentHP > 0) {
@@ -491,32 +485,32 @@ public class defenseManagerAI {
 			}
 		}
 		if(cloestFactory != null && cloestFactory.numOfDrones == 0 && cloestFactory.numOfDroneOnQueue == 0) {
-			cloestFactory.cancelItemFromProductionQueue(factory.lightTankType);
-			cloestFactory.cancelItemFromProductionQueue(factory.rocketTankType);
-			cloestFactory.cancelItemFromProductionQueue(factory.stealthTankType);
-			cloestFactory.cancelItemFromProductionQueue(factory.heavyTankType);
+			cloestFactory.cancelItemFromProductionQueue(Factory.lightTankType);
+			cloestFactory.cancelItemFromProductionQueue(Factory.rocketTankType);
+			cloestFactory.cancelItemFromProductionQueue(Factory.stealthTankType);
+			cloestFactory.cancelItemFromProductionQueue(Factory.heavyTankType);
 			cloestFactory.buildDrone();
 		}
 		
 		
 		//enable rapid fire ability for missiles turrets
-		if(communicationCenter.rapidfireResearched_enemy) {
+		if(CommunicationCenter.rapidfireResearched_enemy) {
 			for(int i = 0; i < AIStructures.length; i++) {
 				if(AIStructures[i] != null && AIStructures[i].currentHP > 0 && AIStructures[i].teamNo == 1 && AIStructures[i].type == 199) {
-					missileTurret t = (missileTurret)AIStructures[i];
+					MissileTurret t = (MissileTurret)AIStructures[i];
 					if(t.targetObject != null && t.overCharge == false) {
-						mainThread.ec.theBaseInfo.numberOfOverChargedMissileTurret++;
+						MainThread.enemyCommander.theBaseInfo.numberOfOverChargedMissileTurret++;
 						t.overCharge = true;
-						mainThread.ec.theBaseInfo.reCalculatePower();
-						if(mainThread.ec.theBaseInfo.currentPowerConsumption > mainThread.ec.theBaseInfo.currentPowerLevel) {
-							mainThread.ec.theBaseInfo.numberOfOverChargedMissileTurret--;
+						MainThread.enemyCommander.theBaseInfo.reCalculatePower();
+						if(MainThread.enemyCommander.theBaseInfo.currentPowerConsumption > MainThread.enemyCommander.theBaseInfo.currentPowerLevel) {
+							MainThread.enemyCommander.theBaseInfo.numberOfOverChargedMissileTurret--;
 							t.overCharge = false;
-							mainThread.ec.theBaseInfo.reCalculatePower();
+							MainThread.enemyCommander.theBaseInfo.reCalculatePower();
 						}
-					}else if((t.targetObject == null || mainThread.ec.theBaseInfo.currentPowerConsumption > mainThread.ec.theBaseInfo.currentPowerLevel) && t.overCharge == true) {
-						mainThread.ec.theBaseInfo.numberOfOverChargedMissileTurret--;
+					}else if((t.targetObject == null || MainThread.enemyCommander.theBaseInfo.currentPowerConsumption > MainThread.enemyCommander.theBaseInfo.currentPowerLevel) && t.overCharge == true) {
+						MainThread.enemyCommander.theBaseInfo.numberOfOverChargedMissileTurret--;
 						t.overCharge = false;
-						mainThread.ec.theBaseInfo.reCalculatePower();
+						MainThread.enemyCommander.theBaseInfo.reCalculatePower();
 					}
 				}
 			}
@@ -526,10 +520,10 @@ public class defenseManagerAI {
 	
 	public float playerForceIsMovingTwoardsBase(vector location, vector direction) {
 		float threatDistance = 999f;
-		for(int i = 0; i < mainThread.theAssetManager.refineries.length;i++) {
-			if(mainThread.theAssetManager.refineries[i] != null && mainThread.theAssetManager.refineries[i].teamNo != 0) {
-				float xPos = mainThread.theAssetManager.refineries[i].nearestGoldMine.centre.x;
-				float zPos = mainThread.theAssetManager.refineries[i].nearestGoldMine.centre.z;
+		for(int i = 0; i < MainThread.theAssetManager.refineries.length; i++) {
+			if(MainThread.theAssetManager.refineries[i] != null && MainThread.theAssetManager.refineries[i].teamNo != 0) {
+				float xPos = MainThread.theAssetManager.refineries[i].nearestGoldMine.centre.x;
+				float zPos = MainThread.theAssetManager.refineries[i].nearestGoldMine.centre.z;
 				
 				threatToBaseDirection.set(xPos - location.x, 0, zPos - location.z);
 				float d = threatToBaseDirection.getLength();
@@ -565,7 +559,7 @@ public class defenseManagerAI {
 					}
 				}
 				if(!alreadyControledByCombatAI)
-					mainThread.ec.theUnitProductionAI.addStealthTank((stealthTank)defenders[i]);
+					MainThread.enemyCommander.theUnitProductionAI.addStealthTank((StealthTank)defenders[i]);
 			}else if(defenders[i].type == 0) {
 				boolean alreadyControledByCombatAI = false;
 				for(int j = 0; j < lightTanksControlledByCombatAI.length; j++) {
@@ -575,7 +569,7 @@ public class defenseManagerAI {
 					}
 				}
 				if(!alreadyControledByCombatAI)
-					mainThread.ec.theUnitProductionAI.addLightTank((lightTank)defenders[i]);
+					MainThread.enemyCommander.theUnitProductionAI.addLightTank((LightTank)defenders[i]);
 			}
 		}
 	}
@@ -604,11 +598,11 @@ public class defenseManagerAI {
 	}
 	
 	public boolean playerForceIsNearBase(vector location) {
-		for(int i = 0; i < mainThread.ec.theMapAwarenessAI.AIStructures.length; i++) {
-			if(mainThread.ec.theMapAwarenessAI.AIStructures[i] == null)
+		for(int i = 0; i < MainThread.enemyCommander.theMapAwarenessAI.AIStructures.length; i++) {
+			if(MainThread.enemyCommander.theMapAwarenessAI.AIStructures[i] == null)
 				continue;
-			float xPos = mainThread.ec.theMapAwarenessAI.AIStructures[i].centre.x;
-			float zPos = mainThread.ec.theMapAwarenessAI.AIStructures[i].centre.z;
+			float xPos = MainThread.enemyCommander.theMapAwarenessAI.AIStructures[i].centre.x;
+			float zPos = MainThread.enemyCommander.theMapAwarenessAI.AIStructures[i].centre.z;
 			float d = (location.x -  xPos)*(location.x -  xPos) + (location.z -  zPos)*(location.z -  zPos);
 			if(d < 9)
 				return true;
@@ -618,10 +612,10 @@ public class defenseManagerAI {
 	}
 	
 	public int numOfHeavyTankAroundLocation(vector location) {
-		solidObject o = null;
+		SolidObject o = null;
 		int numberOfHeaveyTankNearLocation = 0;
-		for(int i = 0; i < mainThread.ec.theMapAwarenessAI.playerUnitInMinimap.length; i++) {
-			o = mainThread.ec.theMapAwarenessAI.playerUnitInMinimap[i];
+		for(int i = 0; i < MainThread.enemyCommander.theMapAwarenessAI.playerUnitInMinimap.length; i++) {
+			o = MainThread.enemyCommander.theMapAwarenessAI.playerUnitInMinimap[i];
 			if(o !=null && o.currentHP > 0 && o.type == 7 && (o.centre.x - location.x)*(o.centre.x - location.x) + (o.centre.z - location.z)*(o.centre.z - location.z) < 4)
 				numberOfHeaveyTankNearLocation++;
 		}
@@ -629,7 +623,7 @@ public class defenseManagerAI {
 		return numberOfHeaveyTankNearLocation;
 	}
 	
-	public void addUnitToDefenders(solidObject o) {
+	public void addUnitToDefenders(SolidObject o) {
 		numOfDefenders = 0;
 		boolean defenersInStandbyMode = true;
 		for(int i = 0; i < defenders.length; i++) {
@@ -657,7 +651,7 @@ public class defenseManagerAI {
 		}
 	}
 	
-	public boolean newUnitIsCloserToThreat(solidObject o) {
+	public boolean newUnitIsCloserToThreat(SolidObject o) {
 		float d = (o.centre.x - minorThreatLocation.x)*(o.centre.x - minorThreatLocation.x) + (o.centre.z - minorThreatLocation.z)*(o.centre.z - minorThreatLocation.z);
 		for(int i = 0; i < defenders.length; i++) {
 			if(defenders[i] != null && defenders[i].currentHP > 0) {
@@ -674,7 +668,7 @@ public class defenseManagerAI {
 	
 	public boolean evadePlayerUnit(int  observerIndex){
 		//scan for hostile unit
-		int[] tileCheckList = stealthTank.tileCheckList;
+		int[] tileCheckList = StealthTank.tileCheckList;
 		
 		int currentOccupiedTile = (int)(observers[observerIndex].centre.x*64)/16 + (127 - (int)(observers[observerIndex].centre.z*64)/16)*128;
 		
@@ -687,7 +681,7 @@ public class defenseManagerAI {
 				int index = currentOccupiedTile + tileCheckList[i];
 				if(index < 0 || index >= 16384 || Math.abs(index%128 - currentOccupiedTile%128) > 20)
 					continue;
-				solidObject[] tile = mainThread.gridMap.tiles[index];
+				SolidObject[] tile = MainThread.gridMap.tiles[index];
 				
 				for(int j = 0; j < 4; j++){
 					if(tile[j] != null){
@@ -717,8 +711,8 @@ public class defenseManagerAI {
 		
 		if(directionSet) {
 			observers[observerIndex].moveTo(observers[observerIndex].centre.x + direction.x , observers[observerIndex].centre.z + direction.z);
-			observers[observerIndex].currentCommand = solidObject.move;
-			observers[observerIndex].secondaryCommand = solidObject.StandBy;
+			observers[observerIndex].currentCommand = SolidObject.move;
+			observers[observerIndex].secondaryCommand = SolidObject.StandBy;
 		}
 		
 		return directionSet; 

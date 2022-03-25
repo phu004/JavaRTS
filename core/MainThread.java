@@ -13,7 +13,7 @@ import javax.swing.JPanel;
 import enemyAI.*;
 import gui.*;
 
-public class mainThread extends JFrame implements KeyListener, ActionListener, MouseMotionListener, MouseListener, FocusListener{
+public class MainThread extends JFrame implements KeyListener, ActionListener, MouseMotionListener, MouseListener, FocusListener{
 
 	public static int[] screen, bufferScreen;
 	public static int[] screen2, buffer2Screen;
@@ -36,12 +36,12 @@ public class mainThread extends JFrame implements KeyListener, ActionListener, M
 	public static texture[] textures;
 	public static byte[][] lightMapTextures;
 	public static int[][] lightMapTexturesInfo;
-	public static camera Camera;
-	public static playerCommander pc;
-	public static enemyCommander ec;
+	public static core.Camera Camera;
+	public static PlayerCommander playerCommander; // refactored variable name from pc to playerCommander as it was hard to follow
+	public static EnemyCommander enemyCommander; // refactored variable name from ec to enemyCommander
 	public static AssetManager theAssetManager;
-	public static gameCursor theGameCursor;
-	public static grid gridMap;
+	public static GameCursor theGameCursor;
+	public static Grid gridMap;
 	public static postProcessingThread PPT;
 	public static Object PPT_Lock;
 	public static JPanel panel;
@@ -78,7 +78,7 @@ public class mainThread extends JFrame implements KeyListener, ActionListener, M
 	public static int mouseX, mouseY, centerScreenX, centerScreenY, currentMouseX, currentMouseY;
 	public static char currentInputChar;
 	
-	public mainThread(){
+	public MainThread(){
 		setTitle("Battle Tank 3");
 		panel= (JPanel) this.getContentPane();
 		panel.setPreferredSize(new Dimension(screen_width, screen_height));
@@ -165,7 +165,7 @@ public class mainThread extends JFrame implements KeyListener, ActionListener, M
 	
 	
 	//This method is called every time the ticker ticks. To take advantage of modern multicore cpu, 
-	//The graphic engine does polygon rasterization on the main thread and post processing stuff (explosion, 
+	//The graphic engine does polygon rasterization on the main thread and post processing stuff (Explosion,
 	//smokes, user interface etc...) on a second thread. One draw back is that the post processing 
 	//thread is always lag the main thread by 1 frame. However it is barely noticeable.
 	
@@ -181,22 +181,22 @@ public class mainThread extends JFrame implements KeyListener, ActionListener, M
 			panel.addFocusListener(this);
 			panel.requestFocus();
 			
-			//create camera
-			Camera = new camera(new vector(3,2f,-1.25f), 0, 300);
+			//create Camera
+			Camera = new Camera(new vector(3,2f,-1.25f), 0, 300);
 		
 			//Create look up tables
-			gameData.makeData();
+			GameData.makeData();
 			
-			//init grid 
-			gridMap = new grid(128);
+			//init Grid
+			gridMap = new Grid(128);
 			
 			//init light source
 			sunLight.init();
 			
-			//init rasterizer
-			rasterizer.init();
+			//init Rasterizer
+			Rasterizer.init();
 			
-			//init 2d to 3d factory
+			//init 2d to 3d Factory
 			my2Dto3DFactory = new Turn2DTo3DFactory();
 			my2Dto3DFactory.init();
 	       
@@ -205,7 +205,7 @@ public class mainThread extends JFrame implements KeyListener, ActionListener, M
 			theAssetManager = new AssetManager();
 			theAssetManager.init();
 			
-			theGameCursor = new gameCursor();
+			theGameCursor = new GameCursor();
 			theGameCursor.init();
 			
 			currentMouseX = getLocationOnScreen().x + screen_width/2;
@@ -257,10 +257,10 @@ public class mainThread extends JFrame implements KeyListener, ActionListener, M
 			if(mouseY >= screen_height)
 				mouseY = screen_height-1;
 			
-			inputHandler.mouse_x = mouseX;
-			inputHandler.mouse_y = mouseY;
+			InputHandler.mouse_x = mouseX;
+			InputHandler.mouse_y = mouseY;
 		}
-		inputHandler.processInput();
+		InputHandler.processInput();
 		
 		if(!gamePaused) {
 			if(gameStarted)
@@ -278,7 +278,7 @@ public class mainThread extends JFrame implements KeyListener, ActionListener, M
 			//Clears the z-buffer. All depth values are set to 0.
 			clearDepthBuffer();
 			
-			//update camera
+			//update Camera
 			Camera.update();
 			
 			//update light source
@@ -288,8 +288,8 @@ public class mainThread extends JFrame implements KeyListener, ActionListener, M
 			theAssetManager.updateAndDraw();
 			
 			if(gameStarted) {
-				pc.update();
-				ec.update();
+				playerCommander.update();
+				enemyCommander.update();
 			}
 		}else {
 			
@@ -363,29 +363,29 @@ public class mainThread extends JFrame implements KeyListener, ActionListener, M
 	public void keyPressed(KeyEvent e){
 		
 		if(e.getKeyCode() == KeyEvent.VK_LEFT)
-			inputHandler.leftKeyPressed = true;
+			InputHandler.leftKeyPressed = true;
 		else if(e.getKeyCode() == KeyEvent.VK_RIGHT)
-			inputHandler.rightKeyPressed = true;
+			InputHandler.rightKeyPressed = true;
 		else if(e.getKeyCode() == KeyEvent.VK_CONTROL)
-			inputHandler.controlKeyPressed = true;
+			InputHandler.controlKeyPressed = true;
 		else if(e.getKeyCode() == KeyEvent.VK_ESCAPE)
-			inputHandler.escapeKeyPressed = true;
+			InputHandler.escapeKeyPressed = true;
 			
-		inputHandler.readCharacter(e.getKeyChar());
+		InputHandler.readCharacter(e.getKeyChar());
 		
 	}
 
 	public void keyReleased(KeyEvent e){
 		 if(e.getKeyCode() == KeyEvent.VK_LEFT)
-			 inputHandler.leftKeyPressed = false;
+			 InputHandler.leftKeyPressed = false;
 		 else if(e.getKeyCode() == KeyEvent.VK_RIGHT)
-			 inputHandler.rightKeyPressed = false;
+			 InputHandler.rightKeyPressed = false;
 		 else if(e.getKeyCode() == KeyEvent.VK_CONTROL)
-			 inputHandler.controlKeyPressed = false;
+			 InputHandler.controlKeyPressed = false;
 		 else if(e.getKeyCode() == KeyEvent.VK_ESCAPE) 
-				inputHandler.escapeKeyReleased = true;
+				InputHandler.escapeKeyReleased = true;
 			
-		 inputHandler.handleKeyRelease(e.getKeyChar());
+		 InputHandler.handleKeyRelease(e.getKeyChar());
 	}
 
 
@@ -400,8 +400,8 @@ public class mainThread extends JFrame implements KeyListener, ActionListener, M
 		if(capturedMouse && !focusLost) {
 			
 		}else {
-			inputHandler.mouse_x = e.getX();
-			inputHandler.mouse_y = e.getY();
+			InputHandler.mouse_x = e.getX();
+			InputHandler.mouse_y = e.getY();
 		}
 	}
 
@@ -410,8 +410,8 @@ public class mainThread extends JFrame implements KeyListener, ActionListener, M
 		if(capturedMouse && !focusLost) {
 			
 		}else {
-			inputHandler.mouse_x = e.getX();
-			inputHandler.mouse_y = e.getY();
+			InputHandler.mouse_x = e.getX();
+			InputHandler.mouse_y = e.getY();
 		}
 	}
 
@@ -423,7 +423,7 @@ public class mainThread extends JFrame implements KeyListener, ActionListener, M
 	@Override
 	public void mouseEntered(MouseEvent arg0) {
 		mouseLeftScreen = false;
-		inputHandler.mouseIsInsideScreen = true;
+		InputHandler.mouseIsInsideScreen = true;
 	}
 
 
@@ -432,22 +432,22 @@ public class mainThread extends JFrame implements KeyListener, ActionListener, M
 		mouseLeftScreen = true;
 		
 		
-		inputHandler.mouseIsInsideScreen = false;
+		InputHandler.mouseIsInsideScreen = false;
 	
 		if(capturedMouse)
-			inputHandler.mouseIsInsideScreen = true;
+			InputHandler.mouseIsInsideScreen = true;
 	}
 
 
 	@Override
 	public void mousePressed(MouseEvent e) {
 		if(e.getButton() == 1){
-			inputHandler.leftMouseButtonPressed = true;
+			InputHandler.leftMouseButtonPressed = true;
 		
 		}
 		
 		if(e.getButton() == 3){
-			inputHandler.rightMouseButtonPressed = true;
+			InputHandler.rightMouseButtonPressed = true;
 		}
 		
 	}
@@ -457,11 +457,11 @@ public class mainThread extends JFrame implements KeyListener, ActionListener, M
 	public void mouseReleased(MouseEvent e) {
 		if(e.getButton() == 1){
 			
-			inputHandler.leftMouseButtonReleased = true;
+			InputHandler.leftMouseButtonReleased = true;
 		}
 		
 		if(e.getButton() == 3){
-			inputHandler.rightMouseButtonReleased = true;
+			InputHandler.rightMouseButtonReleased = true;
 		}
 		
 	}
@@ -471,15 +471,15 @@ public class mainThread extends JFrame implements KeyListener, ActionListener, M
 		String imageFolder = "../images/";
 		try{
 			textures[0] = new texture("basic", ImageIO.read(getClass().getResource(imageFolder + "1.jpg")), 9, 9);
-			textures[1] = new texture("explosion aura", ImageIO.read(getClass().getResource(imageFolder + "2.jpg")), 7, 7);
+			textures[1] = new texture("Explosion aura", ImageIO.read(getClass().getResource(imageFolder + "2.jpg")), 7, 7);
 			textures[2] = new texture("basic", ImageIO.read(getClass().getResource(imageFolder + "3.jpg")), 6, 6);
 			textures[3] = new texture("basic", ImageIO.read(getClass().getResource(imageFolder + "4.jpg")), 8, 6);
 			textures[4] = new texture("basic", ImageIO.read(getClass().getResource(imageFolder + "5.jpg")), 7, 7);
 			textures[5] = new texture("basic", ImageIO.read(getClass().getResource(imageFolder + "6.jpg")), 5, 7);
-			textures[6] = new texture("explosion", ImageIO.read(getClass().getResource(imageFolder + "7.jpg")), 8, 8);
-			textures[7] = new texture("explosion", ImageIO.read(getClass().getResource(imageFolder + "8.jpg")), 8, 8);
-			textures[8] = new texture("explosion", ImageIO.read(getClass().getResource(imageFolder + "9.jpg")), 8, 8);
-			textures[9] = new texture("explosion", ImageIO.read(getClass().getResource(imageFolder + "10.jpg")), 8, 8);
+			textures[6] = new texture("Explosion", ImageIO.read(getClass().getResource(imageFolder + "7.jpg")), 8, 8);
+			textures[7] = new texture("Explosion", ImageIO.read(getClass().getResource(imageFolder + "8.jpg")), 8, 8);
+			textures[8] = new texture("Explosion", ImageIO.read(getClass().getResource(imageFolder + "9.jpg")), 8, 8);
+			textures[9] = new texture("Explosion", ImageIO.read(getClass().getResource(imageFolder + "10.jpg")), 8, 8);
 			textures[10] = new texture("basic", ImageIO.read(getClass().getResource(imageFolder + "12.jpg")), 6, 6);
 			textures[11] = new texture("smoke", ImageIO.read(getClass().getResource(imageFolder + "11.jpg")), 9, 9);
 			textures[12] = new texture("basic", ImageIO.read(getClass().getResource(imageFolder + "13.jpg")), 7, 7);
@@ -592,14 +592,14 @@ public class mainThread extends JFrame implements KeyListener, ActionListener, M
 		displacementBuffer = displacementBuffer2;
 		displacementBuffer2 = Dbuffer;
 	
-		rasterizer.screen = mainThread.screen;
-		rasterizer.shadowBitmap = mainThread.shadowBitmap;
-		rasterizer.zBuffer = mainThread.zBuffer;
-		rasterizer.displacementBuffer = mainThread.displacementBuffer;
+		Rasterizer.screen = MainThread.screen;
+		Rasterizer.shadowBitmap = MainThread.shadowBitmap;
+		Rasterizer.zBuffer = MainThread.zBuffer;
+		Rasterizer.displacementBuffer = MainThread.displacementBuffer;
 		
 		theAssetManager.swapResources();
 		if(gameStarted)
-			pc.theSideBarManager.swapResources();
+			playerCommander.theSideBarManager.swapResources();
 		
 	}
 	
@@ -633,8 +633,8 @@ public class mainThread extends JFrame implements KeyListener, ActionListener, M
 					if(mouseY >= screen_height)
 						mouseY = screen_height-1;
 					
-					inputHandler.mouse_x = mouseX;
-					inputHandler.mouse_y = mouseY;
+					InputHandler.mouse_x = mouseX;
+					InputHandler.mouse_y = mouseY;
 				}
 				
 				if(frameIndex %2 == 0 && frameIndex > 3){

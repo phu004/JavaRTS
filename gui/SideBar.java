@@ -5,7 +5,7 @@ import java.awt.*;
 
 import javax.imageio.ImageIO;
 
-import core.mainThread;
+import core.MainThread;
 import core.postProcessingThread;
 
 public class SideBar {
@@ -23,8 +23,8 @@ public class SideBar {
 	
 	public int MASK7Bit = 0xFEFEFF;
 	public int pixel, overflow, screenIndex;
-	public static int screen_width = mainThread.screen_width;
-	public static int screen_height = mainThread.screen_height;
+	public static int screen_width = MainThread.screen_width;
+	public static int screen_height = MainThread.screen_height;
 	
 	public void init(){		
 		xStart = new int[]{screen_width - 134, screen_width-91, screen_width-46, screen_width-134, screen_width-91, screen_width-46,screen_width-134, screen_width-91, screen_width-46};
@@ -277,7 +277,7 @@ public class SideBar {
 					postProcessingThread.theTextRenderer.drawText(screen_width-62, screen_height-152, "-4", screen, 255,0,0);
 				}else if(displayInfo == harvesterResearchInfo){
 					drawInfoBackGround(screen, screen_width-131, screen_height - 184, 129,48,128);
-					postProcessingThread.theTextRenderer.drawText(screen_width-129, screen_height - 184, "Research harvester", screen, 255,255,255);
+					postProcessingThread.theTextRenderer.drawText(screen_width-129, screen_height - 184, "Research Harvester", screen, 255,255,255);
 					postProcessingThread.theTextRenderer.drawText(screen_width-128, screen_height-168, "movement speed.", screen, 255,255,255);
 					postProcessingThread.theTextRenderer.drawText(screen_width-129, screen_height-152, "$:1200", screen, 245,197,51);
 				}else if(displayInfo == missileTurretResearchInfo){
@@ -310,7 +310,7 @@ public class SideBar {
 					postProcessingThread.theTextRenderer.drawText(screen_width-129, screen_height-152, "$:1500", screen, 245,197,51);
 				}else if(displayInfo == rocketTankResearchInfo){
 					drawInfoBackGround(screen, screen_width-131, screen_height-200, 129,64,128);
-					postProcessingThread.theTextRenderer.drawText(screen_width-129, screen_height-200, "Research rocket", screen, 255,255,255);
+					postProcessingThread.theTextRenderer.drawText(screen_width-129, screen_height-200, "Research Rocket", screen, 255,255,255);
 					postProcessingThread.theTextRenderer.drawText(screen_width-129, screen_height - 184, "tank's damage", screen, 255,255,255);
 					postProcessingThread.theTextRenderer.drawText(screen_width-129, screen_height-168, "against building", screen, 255,255,255);
 					postProcessingThread.theTextRenderer.drawText(screen_width-129, screen_height-152, "$:2000", screen, 245,197,51);
@@ -335,10 +335,10 @@ public class SideBar {
 					if(iconTextureIndex == 17)
 						d = screen_width*44;
 					
-					int startIndex1 = (int)(mainThread.gameFrame/1.5)%74;
-					int startIndex2 = ((int)(mainThread.gameFrame/1.5)%74 + 18)%74;
-					int startIndex3 = ((int)(mainThread.gameFrame/1.5)%74 + 37)%74;
-					int startIndex4 = ((int)(mainThread.gameFrame/1.5)%74 + 55)%74;
+					int startIndex1 = (int)(MainThread.gameFrame/1.5)%74;
+					int startIndex2 = ((int)(MainThread.gameFrame/1.5)%74 + 18)%74;
+					int startIndex3 = ((int)(MainThread.gameFrame/1.5)%74 + 37)%74;
+					int startIndex4 = ((int)(MainThread.gameFrame/1.5)%74 + 55)%74;
 					
 					int markerR = 255;
 					int markerG = 255;

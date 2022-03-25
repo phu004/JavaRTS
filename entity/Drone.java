@@ -6,7 +6,7 @@ import core.*;
 
 //small flying unit capable of repairing tanks
 
-public class drone extends solidObject{
+public class Drone extends SolidInfrastructure{
 
 	public vector iDirectionBody, jDirectionBody, kDirectionBody;
 	
@@ -29,10 +29,10 @@ public class drone extends solidObject{
 	
 	public int bodyAngle, destinationAngle;
 	
-	//index of the tiles to check when the drone is idle
+	//index of the tiles to check when the Drone is idle
 	public static int[] tileCheckList;
 	
-	public factory myFactory;
+	public Factory myFactory;
 	
 	public static int numOfPolygons;
 	
@@ -40,7 +40,7 @@ public class drone extends solidObject{
 	
 	public int randomNumber;
 	
-	public solidObject targetUnit;
+	public SolidObject targetUnit;
 	
 	public vector idlePosition;
 	
@@ -58,8 +58,8 @@ public class drone extends solidObject{
 	public int returnToIdlePositionCountdown;
 		
 		
-	public drone(vector origin, int bodyAngle, factory myFactory){
-		//register itself in factory and find out idle location
+	public Drone(vector origin, int bodyAngle, Factory myFactory){
+		//register itself in Factory and find out idle location
 		idlePosition = new vector(0,0,0);
 		
 		serviceRadius = 3.5f;
@@ -94,12 +94,12 @@ public class drone extends solidObject{
 		teamNo = myFactory.teamNo;
 		this.myFactory = myFactory;
 		
-		//drone does't have any collision boundary, and its unselectable
+		//Drone does't have any collision boundary, and its unselectable
 		type = 5;  
 		isSelectable = false;
 		
 		height = centre.y + 0.5f;  //?
-		theAssetManager = mainThread.theAssetManager; 
+		theAssetManager = MainThread.theAssetManager;
 		
 		movement = new vector(0,0,0);
 		
@@ -140,58 +140,58 @@ public class drone extends solidObject{
 			start.reset();
 			float delta = (float)Math.PI/4;
 			v = new vector[]{
-					put(0.027*Math.cos(1*delta), -0.01, 0.027*Math.sin(1*delta)),
-					put(0.027*Math.cos((0)*delta), -0.01, 0.027*Math.sin((0)*delta)),
-					put(0.00001*Math.cos((0)*delta), -0.01, 0.00001*Math.sin((0)*delta)),
-					put(0.00001*Math.cos(1*delta), -0.01, 0.00001*Math.sin(1*delta)),
+					createArbitraryVertex(0.027*Math.cos(1*delta), -0.01, 0.027*Math.sin(1*delta)),
+					createArbitraryVertex(0.027*Math.cos((0)*delta), -0.01, 0.027*Math.sin((0)*delta)),
+					createArbitraryVertex(0.00001*Math.cos((0)*delta), -0.01, 0.00001*Math.sin((0)*delta)),
+					createArbitraryVertex(0.00001*Math.cos(1*delta), -0.01, 0.00001*Math.sin(1*delta)),
 			};
-			addPolygon(polys, new polygon3D(v, v[0], v[1], v[3], mainThread.textures[26], 1f,1f,1));
+			addPolygon(polys, new polygon3D(v, v[0], v[1], v[3], MainThread.textures[26], 1f,1f,1));
 			v = new vector[]{
-					put(0.027*Math.cos(5*delta), -0.01, 0.027*Math.sin(5*delta)),
-					put(0.027*Math.cos((4)*delta), -0.01, 0.027*Math.sin((4)*delta)),
-					put(0.00001*Math.cos((4)*delta), -0.01, 0.00001*Math.sin((4)*delta)),
-					put(0.00001*Math.cos(5*delta), -0.01, 0.00001*Math.sin(5*delta)),
+					createArbitraryVertex(0.027*Math.cos(5*delta), -0.01, 0.027*Math.sin(5*delta)),
+					createArbitraryVertex(0.027*Math.cos((4)*delta), -0.01, 0.027*Math.sin((4)*delta)),
+					createArbitraryVertex(0.00001*Math.cos((4)*delta), -0.01, 0.00001*Math.sin((4)*delta)),
+					createArbitraryVertex(0.00001*Math.cos(5*delta), -0.01, 0.00001*Math.sin(5*delta)),
 			};
-			addPolygon(polys, new polygon3D(v, v[0], v[1], v[3], mainThread.textures[26], 1f,1f,1));
+			addPolygon(polys, new polygon3D(v, v[0], v[1], v[3], MainThread.textures[26], 1f,1f,1));
 			
 			
 			v = new vector[]{
-					put(0.027*Math.cos(3*delta), -0.01, 0.027*Math.sin(3*delta)),
-					put(0.027*Math.cos((2)*delta), -0.01, 0.027*Math.sin((2)*delta)),
-					put(0.00001*Math.cos((2)*delta), -0.01, 0.00001*Math.sin((2)*delta)),
-					put(0.00001*Math.cos(3*delta), -0.01, 0.00001*Math.sin(3*delta)),
+					createArbitraryVertex(0.027*Math.cos(3*delta), -0.01, 0.027*Math.sin(3*delta)),
+					createArbitraryVertex(0.027*Math.cos((2)*delta), -0.01, 0.027*Math.sin((2)*delta)),
+					createArbitraryVertex(0.00001*Math.cos((2)*delta), -0.01, 0.00001*Math.sin((2)*delta)),
+					createArbitraryVertex(0.00001*Math.cos(3*delta), -0.01, 0.00001*Math.sin(3*delta)),
 			};
-			addPolygon(polys, new polygon3D(v, v[0], v[1], v[3], mainThread.textures[26], 1f,1f,1));
+			addPolygon(polys, new polygon3D(v, v[0], v[1], v[3], MainThread.textures[26], 1f,1f,1));
 			v = new vector[]{
-					put(0.027*Math.cos(7*delta), -0.01, 0.027*Math.sin(7*delta)),
-					put(0.027*Math.cos((6)*delta), -0.01, 0.027*Math.sin((6)*delta)),
-					put(0.00001*Math.cos((6)*delta), -0.01, 0.00001*Math.sin((6)*delta)),
-					put(0.00001*Math.cos(7*delta), -0.01, 0.00001*Math.sin(7*delta)),
+					createArbitraryVertex(0.027*Math.cos(7*delta), -0.01, 0.027*Math.sin(7*delta)),
+					createArbitraryVertex(0.027*Math.cos((6)*delta), -0.01, 0.027*Math.sin((6)*delta)),
+					createArbitraryVertex(0.00001*Math.cos((6)*delta), -0.01, 0.00001*Math.sin((6)*delta)),
+					createArbitraryVertex(0.00001*Math.cos(7*delta), -0.01, 0.00001*Math.sin(7*delta)),
 			};
-			addPolygon(polys, new polygon3D(v, v[0], v[1], v[3], mainThread.textures[26], 1f,1f,1));
+			addPolygon(polys, new polygon3D(v, v[0], v[1], v[3], MainThread.textures[26], 1f,1f,1));
 			
 			
 			//create main body section
-			v = new vector[]{ put(-0.016, 0, -0.006),put(-0.016, 0, 0.006), put(-0.015, 0, 0.013), put(0.015, 0, 0.013), put(0.016, 0, 0.006), put(0.016, 0, -0.006),  put(0.015, 0, -0.013),put(-0.015, 0, -0.013)};
-			addPolygon(polys, new polygon3D(v, v[0], v[1], v[3], mainThread.textures[26], 1f,1f,1));
+			v = new vector[]{ createArbitraryVertex(-0.016, 0, -0.006), createArbitraryVertex(-0.016, 0, 0.006), createArbitraryVertex(-0.015, 0, 0.013), createArbitraryVertex(0.015, 0, 0.013), createArbitraryVertex(0.016, 0, 0.006), createArbitraryVertex(0.016, 0, -0.006),  createArbitraryVertex(0.015, 0, -0.013), createArbitraryVertex(-0.015, 0, -0.013)};
+			addPolygon(polys, new polygon3D(v, v[0], v[1], v[3], MainThread.textures[26], 1f,1f,1));
 			
-			v = new vector[]{put(-0.016, 0, -0.006), put(-0.015, 0, -0.013), put(-0.015, -0.015, -0.013), put(-0.016, -0.015, -0.006)};
-			addPolygon(polys, new polygon3D(v, v[0], v[1], v[3], mainThread.textures[26], 1f,1f,1));
+			v = new vector[]{createArbitraryVertex(-0.016, 0, -0.006), createArbitraryVertex(-0.015, 0, -0.013), createArbitraryVertex(-0.015, -0.015, -0.013), createArbitraryVertex(-0.016, -0.015, -0.006)};
+			addPolygon(polys, new polygon3D(v, v[0], v[1], v[3], MainThread.textures[26], 1f,1f,1));
 			
-			v = new vector[]{ put(0.016, -0.015, -0.006), put(0.015, -0.015, -0.013), put(0.015, 0, -0.013),put(0.016, 0, -0.006)};
-			addPolygon(polys, new polygon3D(v, v[0], v[1], v[3], mainThread.textures[26], 1f,1f,1));
+			v = new vector[]{ createArbitraryVertex(0.016, -0.015, -0.006), createArbitraryVertex(0.015, -0.015, -0.013), createArbitraryVertex(0.015, 0, -0.013), createArbitraryVertex(0.016, 0, -0.006)};
+			addPolygon(polys, new polygon3D(v, v[0], v[1], v[3], MainThread.textures[26], 1f,1f,1));
 			
-			v = new vector[]{put(-0.016, -0.015, 0.006), put(-0.015, -0.015, 0.013), put(-0.015, 0, 0.013), put(-0.016, 0, 0.006)};
-			addPolygon(polys, new polygon3D(v, v[0], v[1], v[3], mainThread.textures[26], 1f,1f,1));
+			v = new vector[]{createArbitraryVertex(-0.016, -0.015, 0.006), createArbitraryVertex(-0.015, -0.015, 0.013), createArbitraryVertex(-0.015, 0, 0.013), createArbitraryVertex(-0.016, 0, 0.006)};
+			addPolygon(polys, new polygon3D(v, v[0], v[1], v[3], MainThread.textures[26], 1f,1f,1));
 			
-			v = new vector[]{put(0.016, 0, 0.006), put(0.015, 0, 0.013), put(0.015, -0.015, 0.013), put(0.016, -0.015, 0.006)};
-			addPolygon(polys, new polygon3D(v, v[0], v[1], v[3], mainThread.textures[26], 1f,1f,1));
+			v = new vector[]{createArbitraryVertex(0.016, 0, 0.006), createArbitraryVertex(0.015, 0, 0.013), createArbitraryVertex(0.015, -0.015, 0.013), createArbitraryVertex(0.016, -0.015, 0.006)};
+			addPolygon(polys, new polygon3D(v, v[0], v[1], v[3], MainThread.textures[26], 1f,1f,1));
 			
-			v = new vector[]{put(0.015, 0, 0.013), put(-0.015, 0, 0.013), put(-0.015, -0.015, 0.013), put(0.015, -0.015, 0.013)};
-			addPolygon(polys, new polygon3D(v, v[0], v[1], v[3], mainThread.textures[26], 1f,1f,1));
+			v = new vector[]{createArbitraryVertex(0.015, 0, 0.013), createArbitraryVertex(-0.015, 0, 0.013), createArbitraryVertex(-0.015, -0.015, 0.013), createArbitraryVertex(0.015, -0.015, 0.013)};
+			addPolygon(polys, new polygon3D(v, v[0], v[1], v[3], MainThread.textures[26], 1f,1f,1));
 			
-			v = new vector[]{put(0.015, -0.015, -0.013), put(-0.015, -0.015, -0.013), put(-0.015, 0, -0.013), put(0.015, 0, -0.013)};
-			addPolygon(polys, new polygon3D(v, v[0], v[1], v[3], mainThread.textures[26], 1f,1f,1));
+			v = new vector[]{createArbitraryVertex(0.015, -0.015, -0.013), createArbitraryVertex(-0.015, -0.015, -0.013), createArbitraryVertex(-0.015, 0, -0.013), createArbitraryVertex(0.015, 0, -0.013)};
+			addPolygon(polys, new polygon3D(v, v[0], v[1], v[3], MainThread.textures[26], 1f,1f,1));
 			
 			//left engine
 			float r = 0.03f;
@@ -200,96 +200,96 @@ public class drone extends solidObject{
 			start.x-=0.041f;
 
 			for(int i = 0; i < 16; i++){
-				v = new vector[]{put(r*Math.cos(i*delta), 0.01, r*Math.sin(i*delta)),
-								 put(r*Math.cos((i+1)*delta), 0.01, r*Math.sin((i+1)*delta)),
-								 put(r*Math.cos((i+1)*delta), -0.013,  r*Math.sin((i+1)*delta)),
-								 put(r*Math.cos(i*delta), -0.013, r*Math.sin(i*delta))
+				v = new vector[]{createArbitraryVertex(r*Math.cos(i*delta), 0.01, r*Math.sin(i*delta)),
+								 createArbitraryVertex(r*Math.cos((i+1)*delta), 0.01, r*Math.sin((i+1)*delta)),
+								 createArbitraryVertex(r*Math.cos((i+1)*delta), -0.013,  r*Math.sin((i+1)*delta)),
+								 createArbitraryVertex(r*Math.cos(i*delta), -0.013, r*Math.sin(i*delta))
 								};
 				
-				addPolygon(polys, new polygon3D(v, v[0], v[1], v[3], mainThread.textures[26], 1f,1f,1));
+				addPolygon(polys, new polygon3D(v, v[0], v[1], v[3], MainThread.textures[26], 1f,1f,1));
 				
 			}
 			
 			float r2 = 0.026f;
 			for(int i = 0; i < 16; i++){
-				v = new vector[]{put(r2*Math.cos(i*delta), -0.013, r2*Math.sin(i*delta)),
-						 		put(r2*Math.cos((i+1)*delta), -0.013,  r2*Math.sin((i+1)*delta)),
-						 		put(r2*Math.cos((i+1)*delta), 0.01, r2*Math.sin((i+1)*delta)),
-						 		put(r2*Math.cos(i*delta), 0.01, r2*Math.sin(i*delta))
+				v = new vector[]{createArbitraryVertex(r2*Math.cos(i*delta), -0.013, r2*Math.sin(i*delta)),
+						 		createArbitraryVertex(r2*Math.cos((i+1)*delta), -0.013,  r2*Math.sin((i+1)*delta)),
+						 		createArbitraryVertex(r2*Math.cos((i+1)*delta), 0.01, r2*Math.sin((i+1)*delta)),
+						 		createArbitraryVertex(r2*Math.cos(i*delta), 0.01, r2*Math.sin(i*delta))
 
 								};
 				
-				addPolygon(polys, new polygon3D(v, v[0], v[1], v[3], mainThread.textures[26], 1f,1f,1));
+				addPolygon(polys, new polygon3D(v, v[0], v[1], v[3], MainThread.textures[26], 1f,1f,1));
 				
 			}
 			
 			for(int i = 0; i < 16; i++){
 				v = new vector[]{
-						put(r2*Math.cos(i*delta), 0.01, r2*Math.sin(i*delta)),
-						put(r2*Math.cos((i+1)*delta), 0.01, r2*Math.sin((i+1)*delta)),
-						put(r*Math.cos((i+1)*delta), 0.01, r*Math.sin((i+1)*delta)),
-						put(r*Math.cos(i*delta), 0.01, r*Math.sin(i*delta)),
+						createArbitraryVertex(r2*Math.cos(i*delta), 0.01, r2*Math.sin(i*delta)),
+						createArbitraryVertex(r2*Math.cos((i+1)*delta), 0.01, r2*Math.sin((i+1)*delta)),
+						createArbitraryVertex(r*Math.cos((i+1)*delta), 0.01, r*Math.sin((i+1)*delta)),
+						createArbitraryVertex(r*Math.cos(i*delta), 0.01, r*Math.sin(i*delta)),
 				};
-				addPolygon(polys, new polygon3D(v, v[0], v[1], v[3], mainThread.textures[26], 1f,1f,1));
+				addPolygon(polys, new polygon3D(v, v[0], v[1], v[3], MainThread.textures[26], 1f,1f,1));
 			}
 			
 			float r3 = 0.005f;
 			float r4 = 0.0001f;
 			for(int i = 0; i < 16; i++){
-				v = new vector[]{put(r4*Math.cos(i*delta), 0.01, r4*Math.sin(i*delta)),
-								 put(r4*Math.cos((i+1)*delta), 0.01, r4*Math.sin((i+1)*delta)),
-								 put(r3*Math.cos((i+1)*delta), -0.01,  r3*Math.sin((i+1)*delta)),
-								 put(r3*Math.cos(i*delta), -0.01, r3*Math.sin(i*delta))
+				v = new vector[]{createArbitraryVertex(r4*Math.cos(i*delta), 0.01, r4*Math.sin(i*delta)),
+								 createArbitraryVertex(r4*Math.cos((i+1)*delta), 0.01, r4*Math.sin((i+1)*delta)),
+								 createArbitraryVertex(r3*Math.cos((i+1)*delta), -0.01,  r3*Math.sin((i+1)*delta)),
+								 createArbitraryVertex(r3*Math.cos(i*delta), -0.01, r3*Math.sin(i*delta))
 								};
 				
-				addPolygon(polys, new polygon3D(v, v[0], v[1], v[3], mainThread.textures[26], 1f,1f,1));
+				addPolygon(polys, new polygon3D(v, v[0], v[1], v[3], MainThread.textures[26], 1f,1f,1));
 				
 			}
 			
 			//right engine
 			start.x+=0.082f;
 			for(int i = 0; i < 16; i++){
-				v = new vector[]{put(r*Math.cos(i*delta), 0.01, r*Math.sin(i*delta)),
-								 put(r*Math.cos((i+1)*delta), 0.01, r*Math.sin((i+1)*delta)),
-								 put(r*Math.cos((i+1)*delta), -0.013,  r*Math.sin((i+1)*delta)),
-								 put(r*Math.cos(i*delta), -0.013, r*Math.sin(i*delta))
+				v = new vector[]{createArbitraryVertex(r*Math.cos(i*delta), 0.01, r*Math.sin(i*delta)),
+								 createArbitraryVertex(r*Math.cos((i+1)*delta), 0.01, r*Math.sin((i+1)*delta)),
+								 createArbitraryVertex(r*Math.cos((i+1)*delta), -0.013,  r*Math.sin((i+1)*delta)),
+								 createArbitraryVertex(r*Math.cos(i*delta), -0.013, r*Math.sin(i*delta))
 								};
 				
-				addPolygon(polys, new polygon3D(v, v[0], v[1], v[3], mainThread.textures[26], 1f,1f,1));
+				addPolygon(polys, new polygon3D(v, v[0], v[1], v[3], MainThread.textures[26], 1f,1f,1));
 				
 			}
 			
 			
 			for(int i = 0; i < 16; i++){
-				v = new vector[]{put(r2*Math.cos(i*delta), -0.013, r2*Math.sin(i*delta)),
-						 		put(r2*Math.cos((i+1)*delta), -0.013,  r2*Math.sin((i+1)*delta)),
-						 		put(r2*Math.cos((i+1)*delta), 0.01, r2*Math.sin((i+1)*delta)),
-						 		put(r2*Math.cos(i*delta), 0.01, r2*Math.sin(i*delta))
+				v = new vector[]{createArbitraryVertex(r2*Math.cos(i*delta), -0.013, r2*Math.sin(i*delta)),
+						 		createArbitraryVertex(r2*Math.cos((i+1)*delta), -0.013,  r2*Math.sin((i+1)*delta)),
+						 		createArbitraryVertex(r2*Math.cos((i+1)*delta), 0.01, r2*Math.sin((i+1)*delta)),
+						 		createArbitraryVertex(r2*Math.cos(i*delta), 0.01, r2*Math.sin(i*delta))
 
 								};
 				
-				addPolygon(polys, new polygon3D(v, v[0], v[1], v[3], mainThread.textures[26], 1f,1f,1));
+				addPolygon(polys, new polygon3D(v, v[0], v[1], v[3], MainThread.textures[26], 1f,1f,1));
 				
 			}
 			
 			for(int i = 0; i < 16; i++){
 				v = new vector[]{
-						put(r2*Math.cos(i*delta), 0.01, r2*Math.sin(i*delta)),
-						put(r2*Math.cos((i+1)*delta), 0.01, r2*Math.sin((i+1)*delta)),
-						put(r*Math.cos((i+1)*delta), 0.01, r*Math.sin((i+1)*delta)),
-						put(r*Math.cos(i*delta), 0.01, r*Math.sin(i*delta)),
+						createArbitraryVertex(r2*Math.cos(i*delta), 0.01, r2*Math.sin(i*delta)),
+						createArbitraryVertex(r2*Math.cos((i+1)*delta), 0.01, r2*Math.sin((i+1)*delta)),
+						createArbitraryVertex(r*Math.cos((i+1)*delta), 0.01, r*Math.sin((i+1)*delta)),
+						createArbitraryVertex(r*Math.cos(i*delta), 0.01, r*Math.sin(i*delta)),
 				};
-				addPolygon(polys, new polygon3D(v, v[0], v[1], v[3], mainThread.textures[26], 1f,1f,1));
+				addPolygon(polys, new polygon3D(v, v[0], v[1], v[3], MainThread.textures[26], 1f,1f,1));
 			}
 			
 			for(int i = 0; i < 16; i++){
-				v = new vector[]{put(r4*Math.cos(i*delta), 0.01, r4*Math.sin(i*delta)),
-								 put(r4*Math.cos((i+1)*delta), 0.01, r4*Math.sin((i+1)*delta)),
-								 put(r3*Math.cos((i+1)*delta), -0.01,  r3*Math.sin((i+1)*delta)),
-								 put(r3*Math.cos(i*delta), -0.01, r3*Math.sin(i*delta))
+				v = new vector[]{createArbitraryVertex(r4*Math.cos(i*delta), 0.01, r4*Math.sin(i*delta)),
+								 createArbitraryVertex(r4*Math.cos((i+1)*delta), 0.01, r4*Math.sin((i+1)*delta)),
+								 createArbitraryVertex(r3*Math.cos((i+1)*delta), -0.01,  r3*Math.sin((i+1)*delta)),
+								 createArbitraryVertex(r3*Math.cos(i*delta), -0.01, r3*Math.sin(i*delta))
 								};
 				
-				addPolygon(polys, new polygon3D(v, v[0], v[1], v[3], mainThread.textures[26], 1f,1f,1));
+				addPolygon(polys, new polygon3D(v, v[0], v[1], v[3], MainThread.textures[26], 1f,1f,1));
 				
 			}
 			
@@ -297,13 +297,13 @@ public class drone extends solidObject{
 			start.x-=0.041f;
 			r2 = 0.008f;
 			for(int i = 0; i < 16; i++){
-				v = new vector[]{put(r2*Math.cos(i*delta), 0, r2*Math.sin(i*delta)),
-						put(r2*Math.cos((i+1)*delta), 0, r2*Math.sin((i+1)*delta)),
-						put(r2*Math.cos((i+1)*delta), -0.08,  r2*Math.sin((i+1)*delta)),
-						put(r2*Math.cos(i*delta), -0.08, r2*Math.sin(i*delta))
+				v = new vector[]{createArbitraryVertex(r2*Math.cos(i*delta), 0, r2*Math.sin(i*delta)),
+						createArbitraryVertex(r2*Math.cos((i+1)*delta), 0, r2*Math.sin((i+1)*delta)),
+						createArbitraryVertex(r2*Math.cos((i+1)*delta), -0.08,  r2*Math.sin((i+1)*delta)),
+						createArbitraryVertex(r2*Math.cos(i*delta), -0.08, r2*Math.sin(i*delta))
 								};
 				
-				addPolygon(polys, new polygon3D(v, v[0], v[1], v[3], mainThread.textures[26], 1f,1f,1));
+				addPolygon(polys, new polygon3D(v, v[0], v[1], v[3], MainThread.textures[26], 1f,1f,1));
 			}
 			
 			
@@ -315,16 +315,16 @@ public class drone extends solidObject{
 			start.y-=0.075f;
 			r3 = 0.007f;
 			for(int i = 0; i < 16; i++){
-				v = new vector[]{put(r2*Math.cos(i*delta), 0, r2*Math.sin(i*delta)),
-						put(r2*Math.cos((i+1)*delta), 0, r2*Math.sin((i+1)*delta)),
-						put(r3*Math.cos((i+1)*delta), -0.04,  r3*Math.sin((i+1)*delta)),
-						put(r3*Math.cos(i*delta), -0.04, r3*Math.sin(i*delta))
+				v = new vector[]{createArbitraryVertex(r2*Math.cos(i*delta), 0, r2*Math.sin(i*delta)),
+						createArbitraryVertex(r2*Math.cos((i+1)*delta), 0, r2*Math.sin((i+1)*delta)),
+						createArbitraryVertex(r3*Math.cos((i+1)*delta), -0.04,  r3*Math.sin((i+1)*delta)),
+						createArbitraryVertex(r3*Math.cos(i*delta), -0.04, r3*Math.sin(i*delta))
 								};
 				
-				addPolygon(polys, new polygon3D(v, v[0], v[1], v[3], mainThread.textures[26], 1f,1f,1));
+				addPolygon(polys, new polygon3D(v, v[0], v[1], v[3], MainThread.textures[26], 1f,1f,1));
 			}
 			
-			armCenter = put(0,-0.04, 0);
+			armCenter = createArbitraryVertex(0,-0.04, 0);
 			armDirection = jDirection.myClone();
 			armDirection.y*=-1;
 			
@@ -344,13 +344,13 @@ public class drone extends solidObject{
 		if(returnToIdlePositionCountdown > 0)
 			returnToIdlePositionCountdown--;
 		
-		//check if factory where the drone is spawned has been destroyed
+		//check if Factory where the Drone is spawned has been destroyed
 		if(myFactory.currentHP <= 0){
 			
 			if(targetUnit != null)
 				targetUnit.myHealer = null;
 			
-			//spawn an explosion when the object is destroyed
+			//spawn an Explosion when the object is destroyed
 			float[] tempFloat = theAssetManager.explosionInfo[theAssetManager.explosionCount];	
 			tempFloat[0] = centre.x;
 			tempFloat[1] = centre.y;
@@ -410,8 +410,8 @@ public class drone extends solidObject{
 					}
 					
 					//face idle position
-					destinationAngle = geometry.findAngle(centre.x, centre.z, idlePosition.x, idlePosition.z);
-					int angleDelta = 360 - (geometry.findAngleDelta(bodyAngle, destinationAngle, turnRate) + 360)%360;
+					destinationAngle = Geometry.findAngle(centre.x, centre.z, idlePosition.x, idlePosition.z);
+					int angleDelta = 360 - (Geometry.findAngleDelta(bodyAngle, destinationAngle, turnRate) + 360)%360;
 					bodyAngle= (bodyAngle - angleDelta + 360)%360;
 					if(Math.abs(bodyAngle - destinationAngle) <= turnRate)
 						bodyAngle = destinationAngle;
@@ -429,7 +429,7 @@ public class drone extends solidObject{
 						int index = currentOccupiedTile + tileCheckList[i];
 						if(index < 0 || index >= 16384)
 							continue;
-						tile = mainThread.gridMap.tiles[index];
+						tile = MainThread.gridMap.tiles[index];
 						
 						for(int j = 0; j < 4; j++){
 							if(tile[j] != null){
@@ -478,12 +478,12 @@ public class drone extends solidObject{
 							
 							//heal unit
 							if(targetUnit.currentHP < targetUnit.getMaxHp() || targetUnit.underAttackCountDown > 60){
-								if(mainThread.gameFrame%5 == 1  && centre.y <=-0.1){
+								if(MainThread.gameFrame%5 == 1  && centre.y <=-0.1){
 									targetUnit.currentHP+=5;
 									if(targetUnit.currentHP > targetUnit.getMaxHp())
 										targetUnit.currentHP = targetUnit.getMaxHp();
 								}
-								if(mainThread.gameFrame%2==0 && centre.y <=-0.15){
+								if(MainThread.gameFrame%2==0 && centre.y <=-0.15){
 									//spawn a healing steam particle
 									float[] tempFloat = theAssetManager.smokeEmmiterList[theAssetManager.smokeEmmiterCount];
 									tempFloat[0] = armCenterClone.x + (float)(Math.random()/20) - 0.025f;
@@ -524,8 +524,8 @@ public class drone extends solidObject{
 						}
 						
 						//face idle position
-						destinationAngle = geometry.findAngle(centre.x, centre.z, tempVector.x, tempVector.z);
-						int angleDelta = 360 - (geometry.findAngleDelta(bodyAngle, destinationAngle, turnRate) + 360)%360;
+						destinationAngle = Geometry.findAngle(centre.x, centre.z, tempVector.x, tempVector.z);
+						int angleDelta = 360 - (Geometry.findAngleDelta(bodyAngle, destinationAngle, turnRate) + 360)%360;
 						bodyAngle= (bodyAngle - angleDelta + 360)%360;
 						if(Math.abs(bodyAngle - destinationAngle) <= turnRate)
 							bodyAngle = destinationAngle;
@@ -542,14 +542,14 @@ public class drone extends solidObject{
 		fan1Angle = fan1Angle%360;
 		fan2Angle = fan2Angle%360;
 		
-		heightVariance = gameData.sin[((mainThread.gameFrame+randomNumber)*5)%360] * 0.01f;
+		heightVariance = GameData.sin[((MainThread.gameFrame+randomNumber)*5)%360] * 0.01f;
 		
 			
-		//update center in camera coordinate
+		//update center in Camera coordinate
 		tempCentre.set(centre);
-		tempCentre.subtract(camera.position);
-		tempCentre.rotate_XZ(camera.XZ_angle);
-		tempCentre.rotate_YZ(camera.YZ_angle); 
+		tempCentre.subtract(Camera.position);
+		tempCentre.rotate_XZ(Camera.XZ_angle);
+		tempCentre.rotate_YZ(Camera.YZ_angle);
 		tempCentre.updateLocation();
 		
 		//check if the tank object is visible in mini map
@@ -561,7 +561,7 @@ public class drone extends solidObject{
 		
 
 	
-		//test if the object is visible in camera point of view
+		//test if the object is visible in Camera point of view
 		if(visibleBoundary.contains(tempCentre.screenX, tempCentre.screenY) && myFactory.isRevealed && visible_minimap){
 			visible = true;
 			
@@ -674,7 +674,7 @@ public class drone extends solidObject{
 		return -1;
 	}
 	
-	public float getDistance(solidObject o1, solidObject o2){
+	public float getDistance(SolidObject o1, SolidObject o2){
 		return (float)Math.sqrt((o1.centre.x - o2.centre.x)*(o1.centre.x - o2.centre.x) +   (o1.centre.z - o2.centre.z)*(o1.centre.z - o2.centre.z));
 	}
 

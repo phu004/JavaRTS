@@ -7,7 +7,7 @@ import javax.imageio.ImageIO;
 
 //Store useful arithmetic data for the game engine such as 
 //Cos/Sin look up table, color palette, etc...
-public class gameData {
+public class GameData {
 	public static int[] random;
 	public static int randomIndex;
 	public static float[] sin;  
@@ -125,7 +125,7 @@ public class gameData {
 		//size[7] = new int[]{-1534, -1538, 1538, 1534, -2304, 2304, -3, 3, -1537, -1535, -770,-766,766, 770,1535, 1537,-1536,-769,-2,-767,1, 2, 0,-1, -768,768, 767, 769, 1536};
 		//size[8] = new int[]{0};
 		
-		int w = mainThread.screen_width;
+		int w = MainThread.screen_width;
 		
 		size[0] = new int[]{0,-1, -w};  
 		size[1] = new int[]{-(w+1), 0, -1, -w};
@@ -186,7 +186,7 @@ public class gameData {
 	public static void loadTexture(String imgName, int[] buffer, byte[] dest, int width, int height){
 		Image img = null;
 		try{
-			img = ImageIO.read(gameData.class.getResource(imageFolder + imgName));
+			img = ImageIO.read(GameData.class.getResource(imageFolder + imgName));
 		}catch(Exception e){
 			e.printStackTrace();
 		}

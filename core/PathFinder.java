@@ -28,7 +28,7 @@ public class PathFinder{
 		int l = 128 * 128;
 		for(int i = 0; i < l ; i++)
 			heuristicMap[i] = 127;
-		boolean[] obstacleMap = mainThread.gridMap.previousObstacleMap;
+		boolean[] obstacleMap = MainThread.gridMap.previousObstacleMap;
 		
 		int destTile = destX + destY*128;
 		//mark destination tile with heuristic value 0

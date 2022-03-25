@@ -5,15 +5,15 @@
 
 package enemyAI;
 
-import core.baseInfo;
-import core.gameData;
-import core.mainThread;
+import core.BaseInfo;
+import core.GameData;
+import core.MainThread;
 import core.vector;
 import entity.*;
 
-public class buildingManagerAI {
+public class BuildingManagerAI {
 	
-	public baseInfo theBaseInfo;
+	public BaseInfo theBaseInfo;
 	public int[] buildingPlacementCheckTiles, buildingPlacementCheckTiles_2x2, buildingPlacementCheckTiles_3x3;
 	public int placementTile;
 	public boolean powerPlantUnderConstruction;
@@ -21,10 +21,10 @@ public class buildingManagerAI {
 	public vector tempVector;
 
 	
-	public buildingManagerAI (){
-		this.theBaseInfo = mainThread.ec.theBaseInfo;
+	public BuildingManagerAI(){
+		this.theBaseInfo = MainThread.enemyCommander.theBaseInfo;
 		
-		buildingPlacementCheckTiles = solidObject.generateTileCheckList(13);
+		buildingPlacementCheckTiles = SolidObject.generateTileCheckList(13);
 		buildingPlacementCheckTiles_2x2 = new int[buildingPlacementCheckTiles.length];
 		buildingPlacementCheckTiles_3x3 = new int[buildingPlacementCheckTiles.length];
 	
@@ -36,8 +36,8 @@ public class buildingManagerAI {
 		
 		
 		for(int i = 0; i < 400; i++){
-			int temp = (gameData.getRandom() * 70) >> 10;
-			int temp1 = (gameData.getRandom() * 70) >> 10;
+			int temp = (GameData.getRandom() * 70) >> 10;
+			int temp1 = (GameData.getRandom() * 70) >> 10;
 				
 			int list = buildingPlacementCheckTiles_2x2[temp];
 			buildingPlacementCheckTiles_2x2[temp] = buildingPlacementCheckTiles_2x2[temp1];
@@ -45,8 +45,8 @@ public class buildingManagerAI {
 		}
 		
 		for(int i = 0; i < 400; i++){
-			int temp = (gameData.getRandom() * 50 + 40*1024) >> 10;
-			int temp1 = (gameData.getRandom() * 50 + 40*1024) >> 10;
+			int temp = (GameData.getRandom() * 50 + 40*1024) >> 10;
+			int temp1 = (GameData.getRandom() * 50 + 40*1024) >> 10;
 				
 			int list = buildingPlacementCheckTiles_3x3[temp];
 			buildingPlacementCheckTiles_3x3[temp] = buildingPlacementCheckTiles_3x3[temp1];
@@ -67,7 +67,7 @@ public class buildingManagerAI {
 		
 		//check if the building is already in the queue
 		boolean alreadyInQueue = false;
-		constructionYard[] constructionYards = mainThread.theAssetManager.constructionYards;
+		ConstructionYard[] constructionYards = MainThread.theAssetManager.constructionYards;
 		
 		//can only build one none defense structure at a time
 		//but can build more than  defense structure at a time if there are more construction yards
@@ -96,7 +96,7 @@ public class buildingManagerAI {
 				}
 			}
 			
-			//Prioritize factory construction over static defense if there is no idle con yard
+			//Prioritize Factory construction over static defense if there is no idle con yard
 			if(!hasIdleConYard && buildingType == 105) {
 				for(int i = 0; i < constructionYards.length; i ++){
 					if(constructionYards[i] != null && constructionYards[i].teamNo != 0 && constructionYards[i].currentBuildingType == 200){
@@ -117,7 +117,7 @@ public class buildingManagerAI {
 	}
 	
 	public void processAI(){
-		frameAI = mainThread.ec.frameAI;
+		frameAI = MainThread.enemyCommander.frameAI;
 		
 		
 		powerPlantUnderConstruction = buildingUnderProduction(101);
@@ -127,31 +127,31 @@ public class buildingManagerAI {
 			addBuildingToQueue(101);
 		}
 			
-		//build a refinery  center if there isn't any
+		//build a Refinery  center if there isn't any
 		if(theBaseInfo.numberOfRefinery == 0 && theBaseInfo.canBuildRefinery){
 			addBuildingToQueue(102);
 		}
 		
 		
-		//build an additional refinery if there are more production building
-		//don't build more than 2 refinery around a goldmine
+		//build an additional Refinery if there are more production building
+		//don't build more than 2 Refinery around a goldmine
 		if(getNumberOfFunctionalRefinery() < theBaseInfo.numberOfConstructionYard*2 && (getNumberOfFunctionalRefinery() == 0 || theBaseInfo.numberOfFactory > 0) && theBaseInfo.canBuildRefinery && getNumberOfRefineriesNearPreferedGoldMine() < 2){
 			addBuildingToQueue(102);
 		}
 		
-		//build a factory  if there isnt any
+		//build a Factory  if there isnt any
 		if(theBaseInfo.numberOfFactory == 0 && theBaseInfo.canBuildFactory){
 			addBuildingToQueue(105);
 			
 		}
 		
 		//build a gun turret if there is a need for it
-		if(theBaseInfo.canBuildGunTurret && mainThread.ec.theDefenseManagerAI.needGunTurret) {
+		if(theBaseInfo.canBuildGunTurret && MainThread.enemyCommander.theDefenseManagerAI.needGunTurret) {
 			addBuildingToQueue(200);
 		}
 		
-		//build an addtional factory if we have enough harvester to sustain the production
-		if(mainThread.ec.theEconomyManagerAI.numberOfharvesters/2 > theBaseInfo.numberOfFactory && theBaseInfo.canBuildFactory && theBaseInfo.numberOfFactory < 2 && theBaseInfo.currentCredit > 1300){ 
+		//build an addtional Factory if we have enough Harvester to sustain the production
+		if(MainThread.enemyCommander.theEconomyManagerAI.numberOfharvesters/2 > theBaseInfo.numberOfFactory && theBaseInfo.canBuildFactory && theBaseInfo.numberOfFactory < 2 && theBaseInfo.currentCredit > 1300){
 			addBuildingToQueue(105);
 		}
 		
@@ -167,20 +167,20 @@ public class buildingManagerAI {
 		
 	
 		//build missile turret if there is a need for it
-		if(theBaseInfo.canBuildMissileTurret && mainThread.ec.theDefenseManagerAI.needMissileTurret) {
+		if(theBaseInfo.canBuildMissileTurret && MainThread.enemyCommander.theDefenseManagerAI.needMissileTurret) {
 			addBuildingToQueue(199);
 		}
 		
 		
-		//build more factory if we have plenty of money in the bank 
-		if(theBaseInfo.currentCredit > 2200 && mainThread.ec.difficulty > 0 && theBaseInfo.canBuildFactory && theBaseInfo.numberOfFactory < 5 && theBaseInfo.numberOfFactory <= mainThread.ec.theEconomyManagerAI.numberOfharvesters/2){
+		//build more Factory if we have plenty of money in the bank
+		if(theBaseInfo.currentCredit > 2200 && MainThread.enemyCommander.difficulty > 0 && theBaseInfo.canBuildFactory && theBaseInfo.numberOfFactory < 5 && theBaseInfo.numberOfFactory <= MainThread.enemyCommander.theEconomyManagerAI.numberOfharvesters/2){
 			addBuildingToQueue(105);
 		}
 		
 	
 	
 		//process structure building event
-		constructionYard[] constructionYards = mainThread.theAssetManager.constructionYards;
+		ConstructionYard[] constructionYards = MainThread.theAssetManager.constructionYards;
 		for(int i = 0; i < constructionYards.length; i++){
 			if(constructionYards[i] != null && constructionYards[i].teamNo != 0){
 				//deploy power plant
@@ -188,29 +188,29 @@ public class buildingManagerAI {
 					if(hasRoomForPlacement(101, -1)){
 						int y = 127 - placementTile/128;
 						int x = placementTile%128 + 1;
-						powerPlant o = new powerPlant(x*0.25f, -1f, y*0.25f, 1);
-						mainThread.theAssetManager.addPowerPlant(o);
+						PowerPlant o = new PowerPlant(x*0.25f, -1f, y*0.25f, 1);
+						MainThread.theAssetManager.addPowerPlant(o);
 						constructionYards[i].finishDeployment();	
 					}
 				}
 				
-				//deploy refinery
+				//deploy Refinery
 				if(constructionYards[i].refineryProgress == 240){
 					
 					
-					if(hasRoomForPlacement(102, mainThread.ec.theEconomyManagerAI.preferedGoldMineLocation)){
+					if(hasRoomForPlacement(102, MainThread.enemyCommander.theEconomyManagerAI.preferedGoldMineLocation)){
 						int y = 127 - placementTile/128;
 						int x = placementTile%128 + 1;
-						refinery o = new refinery(x*0.25f + 0.125f, -1.43f, y*0.25f, 1);
-						mainThread.theAssetManager.addRefinery(o);
+						Refinery o = new Refinery(x*0.25f + 0.125f, -1.43f, y*0.25f, 1);
+						MainThread.theAssetManager.addRefinery(o);
 						
-						harvester h = new harvester(new vector(x*0.25f + 0.125f,-0.3f, y*0.25f - 0.375f), 180, 1);
-						mainThread.theAssetManager.addHarvester(h);
+						Harvester h = new Harvester(new vector(x*0.25f + 0.125f,-0.3f, y*0.25f - 0.375f), 180, 1);
+						MainThread.theAssetManager.addHarvester(h);
 						h.goToTheNearestGoldMine();  
 						constructionYards[i].finishDeployment();
 					}
 				}else if(constructionYards[i].refineryProgress < 240 && frameAI > 300) {
-					//if there is not enough money to finish building the refinery, reset all other production.
+					//if there is not enough money to finish building the Refinery, reset all other production.
 				
 
 					// first reset construction yard production
@@ -230,10 +230,10 @@ public class buildingManagerAI {
 						}
 					}
 				
-					//then reset factory production if still dont have enough credit to finish refinery
+					//then reset Factory production if still dont have enough credit to finish Refinery
 					hasEnoughCredit = theBaseInfo.currentCredit > 1200 -constructionYards[i].creditSpentOnBuilding;
 					if(!hasEnoughCredit) {
-						factory[] factories = mainThread.theAssetManager.factories;
+						Factory[] factories = MainThread.theAssetManager.factories;
 						for(int j = 0; j < factories.length; j++) {
 							if(factories[j] != null && factories[j].teamNo != 0) {
 								factories[j].cancelBuilding();
@@ -247,15 +247,15 @@ public class buildingManagerAI {
 				}
 				
 				
-				//deploy factory
+				//deploy Factory
 				if(constructionYards[i].factoryProgress == 240){
 				
 					int factoryDeployLocation = findFactoryDeployLocation();
 					if(hasRoomForPlacement(105, factoryDeployLocation)){
 						int y = 127 - placementTile/128;
 						int x = placementTile%128 + 1;
-						factory o = new factory(x*0.25f + 0.125f, -1.13f, y*0.25f, 1);
-						mainThread.theAssetManager.addFactory(o);
+						Factory o = new Factory(x*0.25f + 0.125f, -1.13f, y*0.25f, 1);
+						MainThread.theAssetManager.addFactory(o);
 							
 						constructionYards[i].finishDeployment();				
 						
@@ -264,41 +264,41 @@ public class buildingManagerAI {
 				
 				//deploy communication center
 				if(constructionYards[i].communicationCenterProgress == 240){
-					if(hasRoomForPlacement(106, communicationCenter.intendedDeployLocation)){
+					if(hasRoomForPlacement(106, CommunicationCenter.intendedDeployLocation)){
 						int y = 127 - placementTile/128;
 						int x = placementTile%128 + 1;
-						communicationCenter o = new communicationCenter(x*0.25f, -1f, y*0.25f, 1);
-						mainThread.theAssetManager.addCommunicationCenter(o);
+						CommunicationCenter o = new CommunicationCenter(x*0.25f, -1f, y*0.25f, 1);
+						MainThread.theAssetManager.addCommunicationCenter(o);
 							
 						constructionYards[i].finishDeployment();				
-						communicationCenter.intendedDeployLocation = -1;	
+						CommunicationCenter.intendedDeployLocation = -1;
 					}
 				}
 				
 				//deploy tech center
 				if(constructionYards[i].techCenterProgress == 240){
-					if(hasRoomForPlacement(107, techCenter.intendedDeployLocation)){
+					if(hasRoomForPlacement(107, TechCenter.intendedDeployLocation)){
 						int y = 127 - placementTile/128;
 						int x = placementTile%128 + 1;
-						techCenter o = new techCenter(x*0.25f, -1f, y*0.25f, 1);
-						mainThread.theAssetManager.addTechCenter(o);
+						TechCenter o = new TechCenter(x*0.25f, -1f, y*0.25f, 1);
+						MainThread.theAssetManager.addTechCenter(o);
 							
 						constructionYards[i].finishDeployment();				
-						techCenter.intendedDeployLocation = -1;	
+						TechCenter.intendedDeployLocation = -1;
 					}
 				}
 				
 				//deploy gun turret
 				if(constructionYards[i].gunTurretProgress == 240) {
-					float xPos = mainThread.ec.theDefenseManagerAI.gunTurretDeployLocation.x;
-					float zPos = mainThread.ec.theDefenseManagerAI.gunTurretDeployLocation.z;
+					float xPos = MainThread.enemyCommander.theDefenseManagerAI.gunTurretDeployLocation.x;
+					float zPos = MainThread.enemyCommander.theDefenseManagerAI.gunTurretDeployLocation.z;
 					int centerTile = (int)(xPos*64)/16 + (127 - (int)(zPos*64)/16)*128;
 					if(xPos != 0) {
 						if(hasRoomForPlacement(200, centerTile)) {
 							int y = 127 - placementTile/128;
 							int x = placementTile%128;
-							gunTurret o = new gunTurret(x*0.25f + 0.125f, -0.65f, y*0.25f + 0.125f, 1);
-							mainThread.theAssetManager.addGunTurret(o);
+							GunTurrent o = new GunTurrent(x*0.25f + 0.125f, -0.65f, y*0.25f + 0.125f, 1);
+							MainThread.theAssetManager.addGunTurret(o);
 							
 							constructionYards[i].finishDeployment();			
 						}
@@ -307,15 +307,15 @@ public class buildingManagerAI {
 				
 				//deploy missile turret
 				if(constructionYards[i].missileTurretProgress == 240) {
-					float xPos = mainThread.ec.theDefenseManagerAI.missileTurretDeployLocation.x;
-					float zPos = mainThread.ec.theDefenseManagerAI.missileTurretDeployLocation.z;
+					float xPos = MainThread.enemyCommander.theDefenseManagerAI.missileTurretDeployLocation.x;
+					float zPos = MainThread.enemyCommander.theDefenseManagerAI.missileTurretDeployLocation.z;
 					int centerTile = (int)(xPos*64)/16 + (127 - (int)(zPos*64)/16)*128;
 					if(xPos != 0) {
 						if(hasRoomForPlacement(199, centerTile)) {
 							int y = 127 - placementTile/128;
 							int x = placementTile%128;
-							missileTurret o = new missileTurret(x*0.25f + 0.125f, -0.65f, y*0.25f + 0.125f, 1);
-							mainThread.theAssetManager.addMissileTurret(o);
+							MissileTurret o = new MissileTurret(x*0.25f + 0.125f, -0.65f, y*0.25f + 0.125f, 1);
+							MainThread.theAssetManager.addMissileTurret(o);
 							constructionYards[i].finishDeployment();			
 						}
 					}
@@ -370,10 +370,10 @@ public class buildingManagerAI {
 			
 			
 			//place missile turret behind buildings to take advantage of its long range and shoot over building ability
-			float x = mainThread.ec.theDefenseManagerAI.majorThreatLocation.x;
-			float z = mainThread.ec.theDefenseManagerAI.majorThreatLocation.z;
+			float x = MainThread.enemyCommander.theDefenseManagerAI.majorThreatLocation.x;
+			float z = MainThread.enemyCommander.theDefenseManagerAI.majorThreatLocation.z;
 			
-			if(x == 0 && z == 0 || !mainThread.ec.theMapAwarenessAI.playerForceNearBase) {
+			if(x == 0 && z == 0 || !MainThread.enemyCommander.theMapAwarenessAI.playerForceNearBase) {
 				return true;
 			}
 			
@@ -420,7 +420,7 @@ public class buildingManagerAI {
 		
 		//check placement for power plant
 		if(buildingType == 101){
-			constructionYard[] constructionYards = mainThread.theAssetManager.constructionYards;
+			ConstructionYard[] constructionYards = MainThread.theAssetManager.constructionYards;
 			for(int i = 0; i < constructionYards.length; i++){
 				if(constructionYards[i] == null)
 					continue;
@@ -451,7 +451,7 @@ public class buildingManagerAI {
 			}
 		}
 		
-		//check placement for refinery
+		//check placement for Refinery
 		if(buildingType == 102){
 			
 			boolean foundSuitableTile = false;
@@ -489,7 +489,7 @@ public class buildingManagerAI {
 			}
 		}
 		
-		//check placement for factory
+		//check placement for Factory
 		if(buildingType == 105){
 			for(int j = 40; j < buildingPlacementCheckTiles.length; j++){
 				if(buildingPlacementCheckTiles_3x3[j] != Integer.MAX_VALUE){
@@ -518,7 +518,7 @@ public class buildingManagerAI {
 		//check placement for communication center 
 		if(buildingType == 106){
 			if(centerTile == -1){
-				constructionYard[] constructionYards = mainThread.theAssetManager.constructionYards;
+				ConstructionYard[] constructionYards = MainThread.theAssetManager.constructionYards;
 				for(int i = 0; i < constructionYards.length; i++){
 					if(constructionYards[i] == null)
 						continue;
@@ -536,10 +536,10 @@ public class buildingManagerAI {
 							int y =  placementTile/128;
 							
 							boolean tooCloseToOtherCommunicationCenter = false;
-							for(int k = 0; k < mainThread.theAssetManager.communicationCenters.length; k++){
-								if(mainThread.theAssetManager.communicationCenters[k] != null && mainThread.theAssetManager.communicationCenters[k].teamNo != 0){
-									int x_ = mainThread.theAssetManager.communicationCenters[k].tileIndex[0]%128;
-									int y_ = mainThread.theAssetManager.communicationCenters[k].tileIndex[0]/128;
+							for(int k = 0; k < MainThread.theAssetManager.communicationCenters.length; k++){
+								if(MainThread.theAssetManager.communicationCenters[k] != null && MainThread.theAssetManager.communicationCenters[k].teamNo != 0){
+									int x_ = MainThread.theAssetManager.communicationCenters[k].tileIndex[0]%128;
+									int y_ = MainThread.theAssetManager.communicationCenters[k].tileIndex[0]/128;
 									
 									if(Math.abs(x - x_)  + Math.abs(y - y_) <= 14){
 										tooCloseToOtherCommunicationCenter = true;
@@ -573,7 +573,7 @@ public class buildingManagerAI {
 		//check placement for tech center 
 		if(buildingType == 107){
 			if(centerTile == -1){
-				constructionYard[] constructionYards = mainThread.theAssetManager.constructionYards;
+				ConstructionYard[] constructionYards = MainThread.theAssetManager.constructionYards;
 				for(int i = 0; i < constructionYards.length; i++){
 					if(constructionYards[i] == null)
 						continue;
@@ -612,7 +612,7 @@ public class buildingManagerAI {
 		int x = index%128;
 		
 		if(y > 0 && y < 127 && x > 0 && x < 127){
-			solidObject[] tile = mainThread.gridMap.tiles[index];
+			SolidObject[] tile = MainThread.gridMap.tiles[index];
 			for(int j = 0; j < 5; j++){
 				if(tile[j] != null){
 					
@@ -620,8 +620,8 @@ public class buildingManagerAI {
 				}
 			}
 			
-			if(mainThread.ec.theEconomyManagerAI.preferedGoldMine != null){
-				int location = mainThread.ec.theEconomyManagerAI.preferedGoldMine.tileIndex[1];
+			if(MainThread.enemyCommander.theEconomyManagerAI.preferedGoldMine != null){
+				int location = MainThread.enemyCommander.theEconomyManagerAI.preferedGoldMine.tileIndex[1];
 			
 				if( index == location - 128 || index == location - 129 || index == location - 130 || index == location - 2 || 
 				    index == location + 126 || index == location + 254 || index == location + 255 || index == location + 256 ||
@@ -630,7 +630,7 @@ public class buildingManagerAI {
 				}
 			}
 			
-			constructionYard[] constructionYards = mainThread.theAssetManager.constructionYards;
+			ConstructionYard[] constructionYards = MainThread.theAssetManager.constructionYards;
 			for(int i = 0; i < constructionYards.length; i++){
 				if(constructionYards[i] != null && constructionYards[i].teamNo != 0){
 					float xPos = x * 0.25f + 0.125f;
@@ -652,7 +652,7 @@ public class buildingManagerAI {
 	
 	public boolean buildingUnderProduction(int buildingType){
 		boolean alreadyInQueue = false;
-		constructionYard[] constructionYards = mainThread.theAssetManager.constructionYards;
+		ConstructionYard[] constructionYards = MainThread.theAssetManager.constructionYards;
 		for(int i = 0; i < constructionYards.length; i ++){
 			if(constructionYards[i] != null && constructionYards[i].teamNo != 0){
 				if(constructionYards[i].currentBuildingType == buildingType){
@@ -667,8 +667,8 @@ public class buildingManagerAI {
 	
 
 	public int findFactoryDeployLocation(){
-		constructionYard[] constructionYards = mainThread.theAssetManager.constructionYards;
-		factory[] factories = mainThread.theAssetManager.factories;
+		ConstructionYard[] constructionYards = MainThread.theAssetManager.constructionYards;
+		Factory[] factories = MainThread.theAssetManager.factories;
 		for(int i = 0; i < constructionYards.length; i++){
 			if(constructionYards[i] == null || constructionYards[i].teamNo == 0)
 				continue;
@@ -697,10 +697,10 @@ public class buildingManagerAI {
 	
 	public int getNumberOfRefineriesNearPreferedGoldMine(){
 		int numberOfRefineriesNearPreferedGoldMine = 0;
-		refinery[] refineries = mainThread.theAssetManager.refineries;
+		Refinery[] refineries = MainThread.theAssetManager.refineries;
 		for(int i = 0; i < refineries.length; i++){
 			if(refineries[i] != null && refineries[i].teamNo != 0){
-				if(mainThread.ec.theEconomyManagerAI.preferedGoldMine.getDistance(refineries[i]) < 2.5){
+				if(MainThread.enemyCommander.theEconomyManagerAI.preferedGoldMine.getDistance(refineries[i]) < 2.5){
 					numberOfRefineriesNearPreferedGoldMine++;
 				}
 			}
@@ -712,7 +712,7 @@ public class buildingManagerAI {
 	public int getNumberOfFunctionalRefinery(){
 		int numberOfFunctionalRefinery = 0;
 		
-		refinery[] refineries = mainThread.theAssetManager.refineries;
+		Refinery[] refineries = MainThread.theAssetManager.refineries;
 		for(int i = 0; i < refineries.length; i++){
 			if(refineries[i] != null && refineries[i].teamNo != 0 && refineries[i].nearestGoldMine != null &&  refineries[i].nearestGoldMine.goldDeposite > 5000){
 				numberOfFunctionalRefinery++;
@@ -734,7 +734,7 @@ public class buildingManagerAI {
 		else if(buildingType == 200)
 			return 100;
 		else if(buildingType == 199) {
-			if(communicationCenter.rapidfireResearched_enemy)
+			if(CommunicationCenter.rapidfireResearched_enemy)
 				return 300;
 			else
 				return 250;
@@ -762,7 +762,7 @@ public class buildingManagerAI {
 		for(int i = 0; i < 4; i++){
 			xStart+=tempVector.x;
 			yStart+=tempVector.z;
-			solidObject s = mainThread.gridMap.tiles[(int)(xStart*4) + (127 - (int)(yStart*4))*128][0];
+			SolidObject s = MainThread.gridMap.tiles[(int)(xStart*4) + (127 - (int)(yStart*4))*128][0];
 			if(s != null){
 				if(s.type > 100 && s.type < 200){
 					hasLineOfSight = false;

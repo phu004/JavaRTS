@@ -7,12 +7,12 @@ import core.vector;
 public class SolidInfrastructure extends SolidObject {
 
    /**
-    * This method is pushed down from the parent class SolidObject
-    * This method is only being used by Harvester, ConstructionYard, ConstructionVehicle,and Drone class.
-    * all the remaining classes were rejecting the cloneObjects method
-    * Thus an intermediate layer is introduced and above classes are extended from this layer
-    * Thus the clone method would only be available to above classes.
-    * This refactoring would remove the rebellious hierarchy smell.
+        * This method is pushed down from the parent class SolidObject
+        * This method is only being used by Harvester, ConstructionYard, ConstructionVehicle,and Drone class.
+        * all the remaining classes were rejecting the cloneObjects method
+        * Thus an intermediate layer is introduced and above classes are extended from this layer
+        * Thus the clone method would only be available to above classes.
+        * This refactoring would remove the rebellious hierarchy smell.
     * */
     //clone a group of polygons (doesn't work on smooth shaded polygons)
     public polygon3D[] clonePolygons(polygon3D[] polys, boolean createNewOUV){

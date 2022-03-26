@@ -13,7 +13,7 @@ public class texture {
 	
 	public byte[] pixelDataByte;
 	
-	//stores a sequence of explosion texture
+	//stores a sequence of Explosion texture
 	public int[][] explosions;
 	
 	//stores a sequence of smoke texture
@@ -22,7 +22,7 @@ public class texture {
 	//store height map
 	public int[] heightmap;
 	
-	//stores animated light maps created by an explosion 
+	//stores animated light maps created by an Explosion
 	public short[][] explosionAura;
 	
 	//store displacement map
@@ -133,8 +133,8 @@ public class texture {
 			}
 		}
 		
-		//create a series of explosion texture
-		if(type.equals("explosion")){
+		//create a series of Explosion texture
+		if(type.equals("Explosion")){
 			explosions = new int[16][64*64];
 			
 			
@@ -203,8 +203,8 @@ public class texture {
 		}
 		
 		
-		//create a series of light maps to stimulate the illumination created during an explosion
-		if(type.equals("explosion aura")){
+		//create a series of light maps to stimulate the illumination created during an Explosion
+		if(type.equals("Explosion aura")){
 			explosionAura = new short[16][width*height];
 			for(int j = 0; j < 16; j++){
 				for(int i = 0; i < width*height; i ++){

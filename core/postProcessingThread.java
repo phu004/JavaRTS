@@ -1,15 +1,11 @@
 package core;
 
 import entity.*;
-import gui.MiniMap;
-import gui.SideBar;
-import gui.confirmationIcon;
-import gui.gameMenu;
-import gui.inputHandler;
-import gui.textRenderer;
-import particles.explosion;
-import particles.helix;
-import particles.smokeParticle;
+import gui.*;
+import gui.GameMenu;
+import particles.Explosion;
+import particles.SmokeParticle;
+import particles.Helix;
 
 //this class handles all the post processing effect
 public class postProcessingThread implements Runnable{
@@ -36,7 +32,7 @@ public class postProcessingThread implements Runnable{
 	
 	public static MiniMap theMiniMap;
 	public static SideBar theSideBar;
-	public static gameMenu theGameMenu;
+	public static GameMenu theGameMenu;
 	
 	private boolean isWorking;
 	public static int sleepTime;
@@ -65,21 +61,21 @@ public class postProcessingThread implements Runnable{
 	
 	public static Turn2DTo3DFactory my2Dto3DFactory;
 
-	public static explosion[] explosions;
+	public static Explosion[] explosions;
 	
-	public static smokeParticle[] smokeParticles;
+	public static SmokeParticle[] SmokeParticles;
 	public int currentParticleIndex;
 	
-	public static helix[] railgunHelix;
+	public static Helix[] railgunHelixes;
 	public int currentHelix;
 	
 	public static int[] sideBarInfo;
 	
-	public static confirmationIcon theConfirmationIcon;
+	public static ConfirmationIcon theConfirmationIcon;
 	
 	public static double[] confirmationIconInfo;
 	
-	public static textRenderer theTextRenderer;
+	public static TextRenderer theTextRenderer;
 	
 	public static boolean gamePaused, gameStarted, playerVictory, AIVictory, afterMatch;
 	
@@ -129,9 +125,9 @@ public class postProcessingThread implements Runnable{
 	
 	public static void init(){
 		
-		screen_width = mainThread.screen_width;
-		screen_height = mainThread.screen_height;
-		screen_size = mainThread.screen_size;
+		screen_width = MainThread.screen_width;
+		screen_height = MainThread.screen_height;
+		screen_size = MainThread.screen_size;
 		
 		xLeft = new int[screen_height];
 		xRight = new int[screen_height];
@@ -139,11 +135,11 @@ public class postProcessingThread implements Runnable{
 		xMax = new int[screen_height];
 		
 		//init game menu
-		theGameMenu = new gameMenu();
+		theGameMenu = new GameMenu();
 		theGameMenu.init();
 		
 		//create font bitmaps
-		theTextRenderer = new textRenderer();
+		theTextRenderer = new TextRenderer();
 		theTextRenderer.init();
 		
 		
@@ -165,39 +161,39 @@ public class postProcessingThread implements Runnable{
 		unitInfoTable = new int[201][4];
 		
 		//							 Max health		      Health_bar Length	     Health_bar Xpos	Health_bar yPos       
-		unitInfoTable[0] = new int[]{lightTank.maxHP,            44,                  -22,                -25};
-		unitInfoTable[1] = new int[]{rocketTank.maxHP,           44,                  -22,                -36};
-		unitInfoTable[2] = new int[]{harvester.maxHP,            58,                  -29,                -46}; 
-		unitInfoTable[3] = new int[]{constructionVehicle.maxHP,  58,                  -29,                -40}; 
-		unitInfoTable[6] = new int[]{stealthTank.maxHP,          44,                  -22,                -30}; 
-		unitInfoTable[7] = new int[]{heavyTank.maxHP,            58,                  -29,                -37}; 
-		unitInfoTable[101] = new int[]{powerPlant.maxHP,         88,                  -37,                -80};  
-		unitInfoTable[102] = new int[]{refinery.maxHP,           132,                 -65,                -130};   
-		unitInfoTable[103] = new int[]{goldMine.maxHP,           100,                 -49,                -80};   
-		unitInfoTable[104] = new int[]{constructionYard.maxHP,   132,                 -65,                -130};   
-		unitInfoTable[105] = new int[]{factory.maxHP,            132,                 -65,                -130};   
-		unitInfoTable[106] = new int[]{communicationCenter.maxHP, 88,                 -37,                -70};  
-		unitInfoTable[107] = new int[]{techCenter.maxHP,          88,                 -37,                -115};  
-		unitInfoTable[199] = new int[]{missileTurret.maxHP, 	  44,                 -22,                -20};
-		unitInfoTable[200] = new int[]{gunTurret.maxHP, 		  44,                 -22,                -35};
+		unitInfoTable[0] = new int[]{LightTank.maxHP,            44,                  -22,                -25};
+		unitInfoTable[1] = new int[]{RocketTank.maxHP,           44,                  -22,                -36};
+		unitInfoTable[2] = new int[]{Harvester.maxHP,            58,                  -29,                -46};
+		unitInfoTable[3] = new int[]{ConstructionVehicle.maxHP,  58,                  -29,                -40};
+		unitInfoTable[6] = new int[]{StealthTank.maxHP,          44,                  -22,                -30};
+		unitInfoTable[7] = new int[]{HeavyTank.maxHP,            58,                  -29,                -37};
+		unitInfoTable[101] = new int[]{PowerPlant.maxHP,         88,                  -37,                -80};
+		unitInfoTable[102] = new int[]{Refinery.maxHP,           132,                 -65,                -130};
+		unitInfoTable[103] = new int[]{GoldMine.maxHP,           100,                 -49,                -80};
+		unitInfoTable[104] = new int[]{ConstructionYard.maxHP,   132,                 -65,                -130};
+		unitInfoTable[105] = new int[]{Factory.maxHP,            132,                 -65,                -130};
+		unitInfoTable[106] = new int[]{CommunicationCenter.maxHP, 88,                 -37,                -70};
+		unitInfoTable[107] = new int[]{TechCenter.maxHP,          88,                 -37,                -115};
+		unitInfoTable[199] = new int[]{MissileTurret.maxHP, 	  44,                 -22,                -20};
+		unitInfoTable[200] = new int[]{entity.GunTurrent.maxHP, 		  44,                 -22,                -35};
 		
 		my2Dto3DFactory = new Turn2DTo3DFactory();
 		my2Dto3DFactory.init();
 		
-		explosions = new explosion[200];
+		explosions = new Explosion[200];
 		for(int i = 0; i < 200; i++)
-			explosions[i] = new explosion();
+			explosions[i] = new Explosion();
 		
 		
-		smokeParticles = new smokeParticle[2000]; 
+		SmokeParticles = new SmokeParticle[2000];
 		for(int i = 0; i < 2000; i++)
-			smokeParticles[i] = new smokeParticle();
+			SmokeParticles[i] = new SmokeParticle();
 		
-		railgunHelix = new helix[1500];
+		railgunHelixes = new Helix[1500];
 		for(int i = 0; i < 1500; i++)
-			railgunHelix[i] = new helix();
+			railgunHelixes[i] = new Helix();
 		
-		theConfirmationIcon = new confirmationIcon();
+		theConfirmationIcon = new ConfirmationIcon();
 		
 		frameIndex =  0;
 		
@@ -218,8 +214,8 @@ public class postProcessingThread implements Runnable{
 		while(true){
 			synchronized (this) {
 				try {	
-					synchronized (mainThread.PPT_Lock) {
-						mainThread.PPT_Lock.notify();
+					synchronized (MainThread.PPT_Lock) {
+						MainThread.PPT_Lock.notify();
 						isWorking = false;
 					}
 					
@@ -262,7 +258,7 @@ public class postProcessingThread implements Runnable{
 		int ObjectType, groupNo, level,  maxHealth, healthBarLength, remainingHealth, xPos, yPos, selectAreaWidth, selectAreaHeight, color = 0;
 				
 		
-		//load explosion animation instances 
+		//load Explosion animation instances
 		float[] tempFloat;
 		for(int i = 0, j = 0; i < 200; i ++){
 			if(!explosions[i].isInAction){
@@ -277,11 +273,11 @@ public class postProcessingThread implements Runnable{
 		}
 		
 		
-		//sort explosion according to its size
+		//sort Explosion according to its size
 		//for(int i = 1; i < 200; i++){
 		//	for(int j = 0; j <200 - i; j++){ 
 		//		if(explosions[j].size > explosions[j+1].size){
-		//			explosion temp = explosions[j+1];
+		//			Explosion temp = explosions[j+1];
 		//			explosions[j+1] = explosions[j];
 		//			explosions[j] = temp;
 		//		}
@@ -293,7 +289,7 @@ public class postProcessingThread implements Runnable{
 		blurShadow();
 		
 		
-		//draw explosion animations
+		//draw Explosion animations
 		for(int i = 0; i < 200; i++)
 			explosions[i].updateAndDrawExplosionAura();
 		
@@ -334,8 +330,8 @@ public class postProcessingThread implements Runnable{
 		lightReflect.y*=-1;
 		lightReflect.x*=-1;
 		lightReflect.set(lightReflect.x, -lightReflect.y, lightReflect.z);
-		lightReflect.rotate_XZ(camera.XZ_angle);
-		lightReflect.rotate_YZ(camera.YZ_angle); 
+		lightReflect.rotate_XZ(Camera.XZ_angle);
+		lightReflect.rotate_YZ(Camera.YZ_angle);
 		
 		
 		int SpriteValue = 0;
@@ -406,22 +402,22 @@ public class postProcessingThread implements Runnable{
 		}
 		
 		if(gameStarted) {
-			//create helix particles that are spawned by stealth tank's railgun trail.
+			//create Helix particles that are spawned by stealth tank's railgun trail.
 			for(int i = 0; i < helixCount; i++){
 				tempFloat = helixInfo[i];
-				railgunHelix[currentHelix].setActive(tempFloat[0], tempFloat[1], tempFloat[2], (int)tempFloat[3]);
+				railgunHelixes[currentHelix].setActive(tempFloat[0], tempFloat[1], tempFloat[2], (int)tempFloat[3]);
 				currentHelix++;
 				currentHelix%=1500;
 			}
 			
-			//draw helix particles
+			//draw Helix particles
 			for(int i = 0; i < 1500; i++){
-				 if(railgunHelix[i].isInAction)
-					 railgunHelix[i].updateAndDraw();
+				 if(railgunHelixes[i].isInAction)
+					 railgunHelixes[i].updateAndDraw();
 			}
 			
 			
-			//draw explosion sprite
+			//draw Explosion sprite
 			for(int i = 0; i < 200; i++)
 				explosions[i].drawExplosionSprite();
 			
@@ -430,7 +426,7 @@ public class postProcessingThread implements Runnable{
 			//create smoke particles
 			for(int i = 0; i < smokeEmmiterCount; i++){
 				tempFloat = smokeEmmiterList[i];
-				smokeParticles[currentParticleIndex].setActive(tempFloat[0], tempFloat[1], tempFloat[2],  tempFloat[3], (int)tempFloat[4] ,  (int)tempFloat[5], tempFloat[6]);
+				SmokeParticles[currentParticleIndex].setActive(tempFloat[0], tempFloat[1], tempFloat[2],  tempFloat[3], (int)tempFloat[4] ,  (int)tempFloat[5], tempFloat[6]);
 				currentParticleIndex++;
 				currentParticleIndex%=2000;
 			}
@@ -438,8 +434,8 @@ public class postProcessingThread implements Runnable{
 			
 			//draw smoke particles
 			for(int i = 0; i < 2000; i++){ 
-				if(smokeParticles[i].isInAction)
-					smokeParticles[i].updateAndDraw();
+				if(SmokeParticles[i].isInAction)
+					SmokeParticles[i].updateAndDraw();
 			}
 			
 			
@@ -602,8 +598,8 @@ public class postProcessingThread implements Runnable{
 				float[] list;
 				//shaffule vision polygons
 				for(int i = 0; i < 400; i++){
-					temp = (gameData.getRandom() * visionPolygonCount) >> 10;
-					temp1 = (gameData.getRandom() * visionPolygonCount) >> 10;
+					temp = (GameData.getRandom() * visionPolygonCount) >> 10;
+					temp1 = (GameData.getRandom() * visionPolygonCount) >> 10;
 						
 					list = visionPolygonInfo[temp];
 					visionPolygonInfo[temp] = visionPolygonInfo[temp1];
@@ -614,9 +610,9 @@ public class postProcessingThread implements Runnable{
 				for(int i = 0; i < visionPolygonCount; i++){
 					tempVector1.set(visionPolygonInfo[i][1], visionPolygonInfo[i][2], visionPolygonInfo[i][3]);
 					if(visionPolygonInfo[i][0] != 0){
-						poly = mainThread.theAssetManager.visionPolygon[1];
+						poly = MainThread.theAssetManager.visionPolygon[1];
 					}else{
-						poly = mainThread.theAssetManager.visionPolygon[(int)visionPolygonInfo[i][4]];
+						poly = MainThread.theAssetManager.visionPolygon[(int)visionPolygonInfo[i][4]];
 					}
 					tempVector1.subtract(poly.centre);
 					for(int j = 0; j < 48; j++)
@@ -710,11 +706,11 @@ public class postProcessingThread implements Runnable{
 		
 		
 			//draw select rectangle
-			if(mainThread.pc.isSelectingUnit){
-				xPos = mainThread.pc.area.x;
-				yPos = mainThread.pc.area.y;
-				selectAreaWidth = mainThread.pc.area.width;
-				selectAreaHeight = mainThread.pc.area.height;
+			if(MainThread.playerCommander.isSelectingUnit){
+				xPos = MainThread.playerCommander.area.x;
+				yPos = MainThread.playerCommander.area.y;
+				selectAreaWidth = MainThread.playerCommander.area.width;
+				selectAreaHeight = MainThread.playerCommander.area.height;
 				
 				try{
 					if(!(yPos == h_ || xPos == w_)){
@@ -766,7 +762,7 @@ public class postProcessingThread implements Runnable{
 	//start rasterization
 	public static void rasterize(polygon3D polygon){
 		poly = polygon;
-		vertex2D = poly.vertex2D;
+		vertex2D = vertex2D;
 		visibleCount = poly.visibleCount;	
 		scanPolygon();
 	}
@@ -996,61 +992,61 @@ public class postProcessingThread implements Runnable{
 	
 	public static void prepareResources(){
 		
-		gamePaused = mainThread.gamePaused;
-		gameStarted = mainThread.gameStarted;
-		playerVictory = mainThread.playerVictory;
-		AIVictory = mainThread.AIVictory;
-		afterMatch = mainThread.afterMatch;
+		gamePaused = MainThread.gamePaused;
+		gameStarted = MainThread.gameStarted;
+		playerVictory = MainThread.playerVictory;
+		AIVictory = MainThread.AIVictory;
+		afterMatch = MainThread.afterMatch;
 		
-		timeString = mainThread.timeString;
-		fogOfWarDisabled = mainThread.fogOfWarDisabled;
-		capturedMouse = mainThread.capturedMouse;
-		currentInputChar = mainThread.currentInputChar;
+		timeString = MainThread.timeString;
+		fogOfWarDisabled = MainThread.fogOfWarDisabled;
+		capturedMouse = MainThread.capturedMouse;
+		currentInputChar = MainThread.currentInputChar;
 		
 		
-		currentScreen = mainThread.screen;
-		currentZbuffer = mainThread.zBuffer;
-		displacementBuffer = mainThread.displacementBuffer;
-		shadowBitmap = mainThread.shadowBitmap;
-		currentSelectedUnitsInfo = mainThread.theAssetManager.selectedUnitsInfo;
-		visionPolygonInfo = mainThread.theAssetManager.visionPolygonInfo;
-		visionPolygonCount = mainThread.theAssetManager.visionPolygonCount;
-		unitsForMiniMap = mainThread.theAssetManager.unitsForMiniMap;
-		unitsForMiniMapCount = mainThread.theAssetManager.unitsForMiniMapCount;
-		minimapBitmap = mainThread.theAssetManager.minimapBitmap;
-		explosionInfo = mainThread.theAssetManager.explosionInfo;
-		explosionCount =  mainThread.theAssetManager.explosionCount;
-		helixInfo = mainThread.theAssetManager.helixInfo;
-		helixCount = mainThread.theAssetManager.helixCount;
-		smokeEmmiterList = mainThread.theAssetManager.smokeEmmiterList;
-		smokeEmmiterCount = mainThread.theAssetManager.smokeEmmiterCount;
+		currentScreen = MainThread.screen;
+		currentZbuffer = MainThread.zBuffer;
+		displacementBuffer = MainThread.displacementBuffer;
+		shadowBitmap = MainThread.shadowBitmap;
+		currentSelectedUnitsInfo = MainThread.theAssetManager.selectedUnitsInfo;
+		visionPolygonInfo = MainThread.theAssetManager.visionPolygonInfo;
+		visionPolygonCount = MainThread.theAssetManager.visionPolygonCount;
+		unitsForMiniMap = MainThread.theAssetManager.unitsForMiniMap;
+		unitsForMiniMapCount = MainThread.theAssetManager.unitsForMiniMapCount;
+		minimapBitmap = MainThread.theAssetManager.minimapBitmap;
+		explosionInfo = MainThread.theAssetManager.explosionInfo;
+		explosionCount =  MainThread.theAssetManager.explosionCount;
+		helixInfo = MainThread.theAssetManager.helixInfo;
+		helixCount = MainThread.theAssetManager.helixCount;
+		smokeEmmiterList = MainThread.theAssetManager.smokeEmmiterList;
+		smokeEmmiterCount = MainThread.theAssetManager.smokeEmmiterCount;
 		if(gameStarted) {
-			sideBarInfo = mainThread.pc.theSideBarManager.sideBarInfo;
-			playerMoney = mainThread.pc.theBaseInfo.currentCredit;
-			playerPowerStatus = mainThread.pc.theBaseInfo.powerStatus;	
+			sideBarInfo = MainThread.playerCommander.theSideBarManager.sideBarInfo;
+			playerMoney = MainThread.playerCommander.theBaseInfo.currentCredit;
+			playerPowerStatus = MainThread.playerCommander.theBaseInfo.powerStatus;
 		}
-		confirmationIconInfo = mainThread.theAssetManager.confirmationIconInfo;
+		confirmationIconInfo = MainThread.theAssetManager.confirmationIconInfo;
 	
-		cameraPosition.set(camera.position);
-		sinXZ = camera.sinXZ_angle;
-		cosXZ = camera.cosXZ_angle;
-		sinYZ = camera.sinYZ_angle;
-		cosYZ = camera.cosYZ_angle;
-		cameraXZAngle = camera.XZ_angle;
+		cameraPosition.set(Camera.position);
+		sinXZ = Camera.sinXZ_angle;
+		cosXZ = Camera.cosXZ_angle;
+		sinYZ = Camera.sinYZ_angle;
+		cosYZ = Camera.cosYZ_angle;
+		cameraXZAngle = Camera.XZ_angle;
 		
 		theMiniMap.findCorners();
 		
-		mouse_x = inputHandler.mouse_x;
-		mouse_y = inputHandler.mouse_y;
-		leftMouseButtonReleased = mainThread.leftMouseButtonReleased;
-		escapeKeyPressed = mainThread.escapeKeyPressed;
-		mainThread.leftMouseButtonReleased = false;
-		mainThread.escapeKeyPressed = false;
+		mouse_x = InputHandler.mouse_x;
+		mouse_y = InputHandler.mouse_y;
+		leftMouseButtonReleased = MainThread.leftMouseButtonReleased;
+		escapeKeyPressed = MainThread.escapeKeyPressed;
+		MainThread.leftMouseButtonReleased = false;
+		MainThread.escapeKeyPressed = false;
 		
-		//feed main thread with button action
-		mainThread.buttonAction = buttonAction;
+		//feed main thread with Button action
+		MainThread.buttonAction = buttonAction;
 		buttonAction = null;
-		mainThread.menuStatus = gameMenu.menuStatus;
+		MainThread.menuStatus = GameMenu.menuStatus;
 		
 	}
 	

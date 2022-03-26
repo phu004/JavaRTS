@@ -13,9 +13,9 @@ public class sunLight {
 	
 	public static vector lightDirection;
 	
-	public static int screen_width = mainThread.screen_width;
-	public static int screen_height = mainThread.screen_height;
-	public static int shadowmap_width = mainThread.shadowmap_width;
+	public static int screen_width = MainThread.screen_width;
+	public static int screen_height = MainThread.screen_height;
+	public static int shadowmap_width = MainThread.shadowmap_width;
 	public static int shadowmap_size = shadowmap_width * shadowmap_width;
 	
 	
@@ -25,10 +25,10 @@ public class sunLight {
 		
 		XZ_angle = 225;
 		YZ_angle = 316;
-		sinXZ_angle = gameData.sin[XZ_angle];
-		cosXZ_angle = gameData.cos[XZ_angle];
-		sinYZ_angle = gameData.sin[YZ_angle];
-		cosYZ_angle = gameData.cos[YZ_angle];
+		sinXZ_angle = GameData.sin[XZ_angle];
+		cosXZ_angle = GameData.cos[XZ_angle];
+		sinYZ_angle = GameData.sin[YZ_angle];
+		cosYZ_angle = GameData.cos[YZ_angle];
 		
 		lightDirection = new vector(0,0,1);
 		lightDirection.rotate_YZ(YZ_angle);
@@ -41,7 +41,7 @@ public class sunLight {
 	}
 	
 	public static void update(){
-		position.set(mainThread.my2Dto3DFactory.get3DLocation(mainThread.theAssetManager.Terrain.ground[0], screen_width/2, screen_height*13/32));
+		position.set(MainThread.my2Dto3DFactory.get3DLocation(MainThread.theAssetManager.Terrain.ground[0], screen_width/2, screen_height*13/32));
 		position.add(lightDirection, -5);
 		
 		//reset shadow buffer

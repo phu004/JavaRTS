@@ -17,7 +17,7 @@ Some features about the AI:
 Feel free to grab anything you want here, including the source code and image files! 
 
 Demo avaliable on youtube: 
-https://www.youtube.com/watch?v=hE69S2aLrjk&t=201s
+https://www.youtube.com/watch?v=hUJWMpyWdVo
 
 Some screenshots:
 

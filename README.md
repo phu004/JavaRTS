@@ -17,7 +17,7 @@ Feel free to grab anything you want here, including the source code and image fi
    other units in safe distance (hard difficulty).
 
 **How to run the game:**
-For windows users, you can download the compiled game [here](https://github.com/phu004/test/blob/master/test/BattleTank3.zip)
+For windows users, you can download the compiled game [here](https://github.com/phu004/test/blob/master/test/BattleTank3.zip?raw=true)
 
 
 **Demo avaliable on youtube: **

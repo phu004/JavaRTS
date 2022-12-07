@@ -20,7 +20,7 @@ Feel free to grab anything you want here, including the source code and image fi
 
 For windows users, you can download the compiled game [here](https://github.com/phu004/test/blob/master/test/BattleTank3.zip?raw=true). After unpackaging simply click on play.bat to start the game. It comes with its own JRE, so you don't even need to have Java installed.
 
-For non-windows users, you will need to have Java installed and start the game. Download the same game package as above, start the game with CLI commands e.g. "java main.java"
+For non-windows users, you will need to have Java installed. Download the same game package as above, start the game with CLI commands e.g. "java main.java"
 
 
 **Demo avaliable on youtube:**

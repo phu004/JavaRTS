@@ -1,6 +1,6 @@
 # JavaRTS
-Hobby project, trying to create a simple RTS game with somewhat challenging AI using Pure Java. 
-Feel free to grab anything you want here, including the source code and image files! 
+My hobby project, trying to create a simple RTS game with somewhat challenging AI with only Java. 
+Feel free to grab anything you like here, including the source code and image files! 
 
 
 **How to run the game:**
@@ -10,7 +10,7 @@ For windows users, you can download the compiled game [here](https://github.com/
 For non-windows users, you will need to have Java installed. Download the same game package as above, start the game with CLI commands e.g. "java main.java"
 
 
-**Some features about the AI:**
+**About the AI:**
 
 1. AI does not cheat, its vision are limited by fog of war, and it doesn't have any advantage in resource gathering.
 2. AI will send scout unit to look for player's bases and figure out player's army composition. It will use this info to change its own 

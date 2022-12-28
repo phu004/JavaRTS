@@ -3,7 +3,7 @@ My hobby project, trying to create a simple RTS game with somewhat challenging A
 Feel free to grab anything you like here, including the source code and image files! 
 
 
-**How to run the game:**
+## How to run the game: ##
 
 For windows users, you can download the compiled game [here](https://github.com/phu004/test/blob/master/test/BattleTank3.zip?raw=true). After unpackaging simply click on play.bat to start the game. It comes with its own JRE, so you don't even need to have Java installed.
 

@@ -3,14 +3,14 @@ My hobby project, trying to create a simple RTS game with somewhat challenging A
 Feel free to grab anything you like here, including the source code and image files! 
 
 
-## How to run the game: ##
+### How to run the game: ###
 
 For windows users, you can download the compiled game [here](https://github.com/phu004/test/blob/master/test/BattleTank3.zip?raw=true). After unpackaging simply click on play.bat to start the game. It comes with its own JRE, so you don't even need to have Java installed.
 
 For non-windows users, you will need to have Java installed. Download the same game package as above, start the game with CLI commands e.g. "java main.java"
 
 
-**About the AI:**
+### About the AI: ###
 
 - AI does not cheat, its vision are limited by fog of war, and it doesn't have any advantage in resource gathering.
 - AI will send scout unit to look for player's bases and figure out player's army composition. It will use this info to change its own 
@@ -24,11 +24,11 @@ For non-windows users, you will need to have Java installed. Download the same g
    other units in safe distance (hard difficulty).
 
 
-**Demo avaliable on youtube:**
+### Demo avaliable on youtube: ###
 
 https://www.youtube.com/watch?v=hUJWMpyWdVo
 
-**Some screenshots:**
+### Some screenshots: ###
 
 ![alt text](https://github.com/phu004/test/blob/master/test/rts_screenshot01.png)
 

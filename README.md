@@ -12,9 +12,9 @@ For non-windows users, you will need to have Java installed. Download the same g
 
 ### About the AI: ###
 
-- AI does not cheat, its vision are limited by fog of war, and it doesn't have any advantage in resource gathering.
-- AI will send scout unit to look for player's bases and figure out player's army composition. It will use this info to change its own 
-   army composition, and make decisions on when and where to attack (normal/hard difficulty).
+- AI does not cheat, its vision is limited by fog of war, and it doesn't have any advantage in resource gathering.
+- AI will send scout unit to look for player's bases and figure out player's army composition. It will use this info to adjust its own 
+   army composition, and make decisions on when/where to attack (normal/hard difficulty).
 - AI will expand to a different mining location when the current one is running low.
 - During battle, AI will pick off weakened player units first (hard difficulty). 
 - During travelling AI units will wait for each other to avoid being scattered all over the map (normal/hard difficulty). 
@@ -24,7 +24,7 @@ For non-windows users, you will need to have Java installed. Download the same g
    other units in safe distance (hard difficulty).
 
 
-### Demo avaliable on youtube: ###
+### Recorded demo playthrough video: ###
 
 https://www.youtube.com/watch?v=hUJWMpyWdVo
 

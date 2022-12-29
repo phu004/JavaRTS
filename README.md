@@ -20,7 +20,7 @@ For non-windows users, you will need to have Java installed. Download the same g
 - During travelling AI units will wait for each other to avoid being scattered all over the map (normal/hard difficulty). 
 - AI will retreat when it lost a significant number of units (normal/hard difficulty).
 - Send units to partol the outer parameter of the base, so AI can deal with player's sneak attack eariler (hard difficulty).
-- When ecnounter a concentrated player static defences, use long range units to deal with the static defence while keep 
+- When the AI ecnounters concentrated player static defences, it will send long range units to deal with the static defence while keep 
    other units in safe distance (hard difficulty).
 
 

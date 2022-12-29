@@ -24,7 +24,7 @@ For non-windows users, you will need to have Java installed. Download the same g
    other units in safe distance (hard difficulty).
 
 
-### Recorded demo playthrough video: ###
+### Demo playthrough video: ###
 
 https://www.youtube.com/watch?v=hUJWMpyWdVo
 

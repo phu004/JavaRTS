@@ -258,17 +258,18 @@ public class unitProductionAI {
 				
 			}
 		}else {
+			//cap the number of units that can be built by the AI in easy difficulty
 			int roll = gameData.getRandom();
-			if(roll < 612) {
+			currentProductionOrder = -1;
+			if((roll < 612) && (numberOfLightTanksControlledByCombatAI < 7)) {
 				currentProductionOrder = produceLightTank;
-			}else if(roll >= 612 && roll < 700) {
+			}else if(roll >= 612 && roll < 700 && numberOfRocketTanksControlledByCombatAI < 2) {
 				currentProductionOrder = produceRocketTank;
-			}else if(roll >= 700 && roll < 900) {
+			}else if(roll >= 700 && roll < 900 && numberOfStealthTanksControlledByCombatAI < 2) {
 				currentProductionOrder = produceStealthTank;
-			}else {
+			}else if(numberOfHeavyTanksControlledByCombatAI < 1){
 				currentProductionOrder = produceHeavyTank;
 			}
-			
 		}
 		
 	

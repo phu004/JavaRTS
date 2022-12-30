@@ -33,9 +33,7 @@ public class highscoreManager implements Runnable{
 		// TODO Auto-generated method stub
 		while(true) {
 			if(counter == 0) {
-				
-					status = idle;
-							
+				status = idle;
 			}
 			
 			if(status == idle) {

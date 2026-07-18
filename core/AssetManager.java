@@ -242,7 +242,7 @@ public class AssetManager {
 
 		numberOfPlayerBuildings = 1;
 	    numberOfAIBuildings = 1;
-		
+
 		//testing only
 		for(int i = 0; i < 6; i ++){
 			
@@ -934,12 +934,13 @@ public class AssetManager {
 		for(int i = 0; i < 200; i ++)
 			if(!bullets[i].isInAction){
 				bullets[i].setActive(angle, damage, target, centre, attacker);
+				float bulletVolume = SoundEngine.volumeForDistance(centre.x, centre.y, centre.z);
 				if(attacker.type == 7)
-					SoundEngine.play(Sfx.SHOOT_CANNON_HEAVY);
+					SoundEngine.play(Sfx.SHOOT_CANNON_HEAVY, bulletVolume);
 				else if(attacker.type == 200)
-					SoundEngine.play(Sfx.SHOOT_AUTOCANNON);
+					SoundEngine.play(Sfx.SHOOT_AUTOCANNON, bulletVolume);
 				else
-					SoundEngine.play(Sfx.SHOOT_CANNON);
+					SoundEngine.play(Sfx.SHOOT_CANNON, bulletVolume);
 				break;
 			}
 	}
@@ -949,10 +950,11 @@ public class AssetManager {
 		for(int i = 0; i < 200; i ++)
 			if(!rockets[i].isInAction){
 				rockets[i].setActive(angle, damage, target, centre, attacker);
+				float rocketVolume = SoundEngine.volumeForDistance(centre.x, centre.y, centre.z);
 				if(attacker.type == 199)
-					SoundEngine.play(Sfx.SHOOT_MISSILE);
+					SoundEngine.play(Sfx.SHOOT_MISSILE, rocketVolume);
 				else
-					SoundEngine.play(Sfx.SHOOT_ROCKET);
+					SoundEngine.play(Sfx.SHOOT_ROCKET, rocketVolume);
 				break;
 			}
 	}

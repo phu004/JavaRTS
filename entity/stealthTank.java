@@ -1152,7 +1152,7 @@ public class stealthTank extends solidObject{
 			
 			attackCoolDown = myAttackCooldown;
 			cloakCooldownCount = 120;
-			SoundEngine.play(Sfx.SHOOT_RAILGUN);
+			SoundEngine.play(Sfx.SHOOT_RAILGUN, SoundEngine.volumeForDistance(firingPosition.x, firingPosition.y, firingPosition.z));
 
 			for(float i = 0.1f; i < distanceToDesination; i+=0.1f){
 				if(theAssetManager.helixCount >= theAssetManager.helixInfo.length)

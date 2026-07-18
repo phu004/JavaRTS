@@ -6,6 +6,8 @@ import javax.sound.sampled.Clip;
 import javax.sound.sampled.FloatControl;
 import javax.sound.sampled.LineUnavailableException;
 
+import core.camera;
+
 //Small non-blocking sound engine on top of javax.sound.sampled. Every effect keeps a
 //pool of Clips so overlapping triggers (e.g. several units firing the same frame)
 //don't cut each other off. play() never blocks the caller - Clip playback runs on the
@@ -73,6 +75,29 @@ public class SoundEngine {
 
 	public static void play(Sfx sfx) {
 		play(sfx, 1f);
+	}
+
+	//world-space distance under which a battlefield sound (gunfire, explosions) plays at full volume
+	private static final float NEAR_DISTANCE = 3f;
+	//distance beyond which it's faded all the way down to MIN_VOLUME rather than going silent -
+	//still audible so the player gets a sense something is happening elsewhere on the map
+	private static final float FAR_DISTANCE = 14f;
+	private static final float MIN_VOLUME = 0.15f;
+
+	//volume multiplier for a sound emitted at the given world position, based on distance from the camera
+	public static float volumeForDistance(float x, float y, float z) {
+		float dx = x - camera.position.x;
+		float dy = y - camera.position.y;
+		float dz = z - camera.position.z;
+		float distance = (float) Math.sqrt(dx * dx + dy * dy + dz * dz);
+
+		if (distance <= NEAR_DISTANCE)
+			return 1f;
+		if (distance >= FAR_DISTANCE)
+			return MIN_VOLUME;
+
+		float t = (distance - NEAR_DISTANCE) / (FAR_DISTANCE - NEAR_DISTANCE);
+		return 1f - t * (1f - MIN_VOLUME);
 	}
 
 	public static void play(Sfx sfx, float volume) {

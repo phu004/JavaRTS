@@ -272,7 +272,8 @@ public class postProcessingThread implements Runnable{
 				if(j < explosionCount){
 					tempFloat = explosionInfo[j];
 					explosions[i].setActive(tempFloat[0], tempFloat[1], tempFloat[2], tempFloat[3], (int)tempFloat[4], (int)tempFloat[5], (int)tempFloat[6], tempFloat[7]);
-					SoundEngine.play(tempFloat[3] >= 2.5f ? Sfx.EXPLOSION_LARGE : Sfx.EXPLOSION_SMALL);
+					SoundEngine.play(tempFloat[3] >= 2.5f ? Sfx.EXPLOSION_LARGE : Sfx.EXPLOSION_SMALL,
+							SoundEngine.volumeForDistance(tempFloat[0], tempFloat[1], tempFloat[2]));
 					j++;
 				}else {
 					break;

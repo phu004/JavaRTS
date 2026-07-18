@@ -147,12 +147,12 @@ public class SoundSynth {
 		return out;
 	}
 
-	//a dry mechanical switch/relay tick, not a musical blip
+	//a crisp UI button tap: bright, very short, no low-end thump so it reads as a press, not a thud
 	public static byte[] click() {
-		int n = ms(16);
-		double[] tick = envelope(filteredNoise(n, 0.7), i -> expDecay(i, n, 11));
-		double[] thump = envelope(tone(190, 120, n, SINE), i -> expDecay(i, n, 13));
-		return toPcm(saturate(mix(gain(tick, 0.85), gain(thump, 0.55)), 1.3), 0.32);
+		int n = ms(18);
+		double[] tick = envelope(filteredNoise(n, 0.9), i -> expDecay(i, n, 17));
+		double[] snap = envelope(tone(1900, 900, n, SINE), i -> expDecay(i, n, 19));
+		return toPcm(saturate(mix(gain(tick, 0.55), gain(snap, 0.6)), 1.15), 0.3);
 	}
 
 	//a single "ding": the exact same tone+noise click structure as creditSpend() below, just pitched up

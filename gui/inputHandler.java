@@ -7,12 +7,13 @@ import java.awt.*;
 import core.camera;
 import core.geometry;
 import core.mainThread;
+import audio.SoundEngine;
 
 public class inputHandler {
 
 	public static int mouse_x, mouse_y,mouse_x0, mouse_x1, mouse_y0, mouse_y1, cameraMovementAngle;
 	
-	public static boolean mouseIsInsideScreen, userIsHoldingA, userIsHoldingC, userIsHoldingF;
+	public static boolean mouseIsInsideScreen, userIsHoldingA, userIsHoldingC, userIsHoldingF, userIsHoldingD;
 	
 	public static boolean leftKeyPressed, 
 	                      rightKeyPressed, 
@@ -25,8 +26,14 @@ public class inputHandler {
 	                      A_pressed,
 	                      C_pressed,
 	                      F_pressed,
+	                      D_pressed,
 	                      escapeKeyPressed,
-	                      escapeKeyReleased;
+	                      escapeKeyReleased,
+	                      rightMouseButtonHeld,
+	                      isDraggingCamera,
+	                      wasRightMouseButtonHeldLastFrame;
+
+	public static int rightDragAnchorX, rightDragAnchorY;
 	            
 	                  
 	public static int numberTyped;
@@ -80,8 +87,12 @@ public class inputHandler {
 				if(c == 'f' || c == 'F'){
 					F_pressed = true;
 				}
-				
-				
+
+				if(c == 'd' || c == 'D'){
+					D_pressed = true;
+				}
+
+
 				if(c >=49 && c <=53){
 					numberTyped = c - 48;
 				}
@@ -114,7 +125,11 @@ public class inputHandler {
 			if(c == 'f' || c == 'F'){
 				F_pressed = true;
 			}
-			
+
+			if(c == 'd' || c == 'D'){
+				D_pressed = true;
+			}
+
 			if(c >=49 && c <=53){
 				numberTyped = c - 48;
 			}
@@ -148,6 +163,10 @@ public class inputHandler {
 					F_pressed = false;
 					userIsHoldingF = false;
 				}
+				if(c == 'd' || c == 'D'){
+					D_pressed = false;
+					userIsHoldingD = false;
+				}
 				keyReleaseBufferIndex++;
 			}
 			keyReleaseBufferIndex = 0;
@@ -172,7 +191,11 @@ public class inputHandler {
 				F_pressed = false;
 				userIsHoldingF = false;
 			}
-			
+			if(c == 'd' || c == 'D'){
+				D_pressed = false;
+				userIsHoldingD = false;
+			}
+
 			keyReleaseBufferIndex++;
 		}
 		
@@ -186,7 +209,34 @@ public class inputHandler {
 			camera.MOVE_DOWN = false;
 			camera.TURN_LEFT = false;
 			camera.TURN_RIGHT = false;
-			
+
+			//right-click-drag map scrolling: press to anchor a point, then the screen keeps scrolling
+			//towards wherever the cursor is dragged - relative to that fixed anchor, not frame-to-frame
+			//movement - for as long as the button stays held, at a speed based on how far the cursor
+			//has been pulled away from the anchor. Releasing the button stops the scroll immediately.
+			if(rightMouseButtonHeld){
+				if(!wasRightMouseButtonHeldLastFrame){
+					rightDragAnchorX = mouse_x;
+					rightDragAnchorY = mouse_y;
+					isDraggingCamera = false;
+				}
+
+				int offsetX = mouse_x - rightDragAnchorX;
+				int offsetY = mouse_y - rightDragAnchorY;
+				if(!isDraggingCamera && Math.abs(offsetX) + Math.abs(offsetY) > 6)
+					isDraggingCamera = true;
+				if(isDraggingCamera)
+					camera.panByHeldOffset(offsetX, offsetY);
+
+				wasRightMouseButtonHeldLastFrame = true;
+			}else{
+				//isDraggingCamera itself is deliberately NOT reset here - playerCommander checks it on
+				//the same frame the release event fires to decide whether to suppress the move/attack
+				//command that a right-click would otherwise issue, and resetting it this early would
+				//defeat that check. gameCursor instead also requires rightMouseButtonHeld for its icon.
+				wasRightMouseButtonHeldLastFrame = false;
+			}
+
 			if(!mainThread.pc.isSelectingUnit){
 				mouse_x0 = mouse_x;
 				mouse_y0 = mouse_y;
@@ -314,6 +364,12 @@ public class inputHandler {
 					userIsHoldingF = true;
 				}
 			}
+			if(D_pressed) {
+				if(!userIsHoldingD) {
+					mainThread.pc.deployKeyPressed = true;
+					userIsHoldingD = true;
+				}
+			}
 			
 			
 			//handle escape key
@@ -363,11 +419,20 @@ public class inputHandler {
 				
 				if(mainThread.buttonAction == "enableFogOfWar") {
 					mainThread.fogOfWarDisabled = false;
-					
+
 				}else if(mainThread.buttonAction == "disableFogOfWar") {
 					mainThread.fogOfWarDisabled = true;
-					
+
 				}
+			}
+
+			//toggle sound, allowed whether or not a game is in progress
+			if(mainThread.buttonAction == "enableSound") {
+				SoundEngine.enabled = true;
+
+			}else if(mainThread.buttonAction == "disableSound") {
+				SoundEngine.enabled = false;
+
 			}
 			
 			//abort current game when the abort button is pressed
@@ -425,6 +490,7 @@ public class inputHandler {
 		S_pressed = false;
 		C_pressed = false;
 		F_pressed = false;
+		D_pressed = false;
 		numberTyped = 0;
 		
 	}

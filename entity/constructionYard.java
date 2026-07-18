@@ -5,6 +5,8 @@ import java.awt.Rectangle;
 import core.*;
 import enemyAI.enemyCommander;
 import gui.deployGrid;
+import audio.SoundEngine;
+import audio.SoundEngine.Sfx;
 
 //the construction yard model
 
@@ -1065,7 +1067,8 @@ public class constructionYard extends solidObject{
 	
 	//update the model 
 	public void update(){
-		
+		updateActiveBlastLight();
+
 		//update tech tree info
 		canBuildPowerPlant = theBaseInfo.canBuildPowerPlant;
 		canBuildRefinery = theBaseInfo.canBuildRefinery;
@@ -1104,17 +1107,17 @@ public class constructionYard extends solidObject{
 		//process emerging from  ground animation
 		if(centre.y < -0.79f){
 			centre.y+=0.01;
-			for(int i = 0; i < polygons.length; i++){		
+			for(int i = 0; i < polygons.length; i++){
 				polygons[i].origin.y+=0.01;
 				polygons[i].rightEnd.y+=0.01;
 				polygons[i].bottomEnd.y+=0.01;
-				
+
 				for(int j = 0; j < polygons[i].vertex3D.length; j++){
 					polygons[i].vertex3D[j].y+=0.01;
 				}
 			}
-			
-			
+
+
 			shadowvertex0.y+=0.01;
 			shadowvertex1.y+=0.01;
 			shadowvertex2.y+=0.01;
@@ -1671,6 +1674,7 @@ public class constructionYard extends solidObject{
 	
 	//create building
 	public void createBuilding(){
+		SoundEngine.play(Sfx.DEPLOY_BUILDING);
 		if(powerPlantProgress == 240){
 			int y = 127 - dg.gridOneIndex/128;
 			int x = dg.gridOneIndex%128 + 1;

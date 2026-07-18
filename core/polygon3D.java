@@ -49,13 +49,14 @@ public class polygon3D {
 	public solidObject parentObject;
 	
 	//A pool of vectors which will be used for vector arithmetic
-	public static vector 
+	public static vector
 		tempVector1 = new vector(0,0,0),
 		tempVector2 = new vector(0,0,0),
 		tempVector3 = new vector(0,0,0),
 		tempVector4 = new vector(0,0,0),
 		tempVector5 = new vector(0,0,0),
-		tempVector6 = new vector(0,0,0);
+		tempVector6 = new vector(0,0,0),
+		tempVector7 = new vector(0,0,0);
 	
 	
 	//whether the polygon is visible
@@ -77,7 +78,11 @@ public class polygon3D {
 	public int diffuse_I;
 	public int Ambient_I = 16;     //the default ambient intensity is 16
 	public int reflectance = 96;
-	
+
+	//additional brightness from a nearby explosion this frame, added on top of diffuse_I at render time;
+	//recomputed fresh every frame in update(), never accumulates
+	public int blastLightBoost;
+
 	
 	//diffuse value at vertex (only for polygons with 3 vertex)
 	public byte[] diffuse = new byte[3];
@@ -225,10 +230,30 @@ public class polygon3D {
 		tempVector1.subtract(vertex3D[0]);
 		if(tempVector1.dot(normal) <= 0){
 			visible = false;
-			
+
 			return;
 		}
-				
+
+		//add this frame's explosion light contribution, if this face actually points toward it
+		blastLightBoost = 0;
+		if(parentObject != null && parentObject.activeBlastLightIntensity > 0){
+			tempVector7.set(parentObject.activeBlastLightPos);
+			tempVector7.subtract(vertex3D[0]);
+			tempVector7.unit();
+			double facing = normal.dot(tempVector7);
+			//each face is lit purely by its own flat normal, with nothing shared across edges. on
+			//thin/angled geometry (e.g. a crane arm) two adjacent faces can sit near opposite
+			//extremes of facing - one nearly toward the blast, one nearly away - so a purely
+			//directional boost makes one face jump to full brightness right next to a neighbor at
+			//zero, reading as a hard dark seam along their shared edge. flooring the boost at a
+			//fraction of peak (instead of letting it hit zero) keeps that face-to-face gap bounded
+			//while still favoring the side that actually faces the explosion
+			double normalizedFacing = (facing + 1) / 2; //-1..1 -> 0..1
+			double factor = 0.6 + 0.4 * normalizedFacing;
+			blastLightBoost = (int)(factor * parentObject.activeBlastLightIntensity * 90);
+		}
+
+
 		//translate vertex from world space to camera space
 		float x = 0,y = 0, z = 0, 
 		camX = camera.position.x, camY = camera.position.y, camZ = camera.position.z,

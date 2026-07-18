@@ -2,6 +2,8 @@ package core;
 
 import entity.*;
 import gui.inputHandler;
+import audio.SoundEngine;
+import audio.SoundEngine.Sfx;
 
 //this class handles player's interaction with the sidebar
 public class sideBarManager {
@@ -43,7 +45,10 @@ public class sideBarManager {
 			
 	}
 	
-	public void update(){		
+	public void update(){
+		if(leftMouseButtonClicked)
+			SoundEngine.play(Sfx.CLICK);
+
 		//reset sideBarInfo
 		for(int i = 0; i < 9; i++)
 			sideBarInfo[i] = -1;

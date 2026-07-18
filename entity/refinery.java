@@ -13,6 +13,7 @@ public class refinery extends solidObject{
 	
 	public polygon3D storageCoverLeft;
 	public polygon3D storageCoverRight;
+	public polygon3D depositFloor;
 	public int unloadOreCountDown;
 	public final int unloadOreTime = 190;
 	
@@ -367,7 +368,8 @@ public class refinery extends solidObject{
 		addPolygon(polygons, storageCoverRight);
 		
 		v = new vector[]{put(-0.34, 0.27, -0.01), put(-0.13, 0.27, -0.01), put(-0.13, 0.27, -0.24),  put(-0.34, 0.27, -0.24)};
-		addPolygon(polygons, new polygon3D(v, v[0].myClone(), v[1].myClone(), v[3].myClone(), mainThread.textures[34], 1,1f,3));
+		depositFloor = new polygon3D(v, v[0].myClone(), v[1].myClone(), v[3].myClone(), mainThread.textures[34], 1,1f,3);
+		addPolygon(polygons, depositFloor);
 		
 		v = new vector[]{put(-0.34,0.3,0.08), put(-0.34,0.3,0.2), put(-0.2,0.4,0.2),  put(-0.2,0.4,0.08)};
 		addPolygon(polygons, new polygon3D(v, v[0].myClone(), v[1].myClone(), v[3].myClone(), mainThread.textures[35], 0.5f,0.3f,1));
@@ -698,6 +700,8 @@ public class refinery extends solidObject{
 	
 	//update the model 
 	public void update(){
+		updateActiveBlastLight();
+
 		//process emerging from  ground animation
 		if(centre.y < -0.79f){
 			centre.y+=0.02f;
@@ -1100,10 +1104,14 @@ public class refinery extends solidObject{
 		if(!visible)
 			return;
 		for(int i = 0; i < polygons.length; i++){
-			
+
 			polygons[i].update();
 		}
-		
+
+		//don't show the ore deposit while the refinery is still rising out of the ground
+		if(centre.y < -0.79f)
+			depositFloor.visible = false;
+
 		for(int i = 0; i < polygons.length; i++){
 			polygons[i].draw();
 		}

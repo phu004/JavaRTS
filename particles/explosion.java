@@ -105,6 +105,12 @@ public class explosion {
 			short[] sprite = mainThread.textures[1].explosionAura[frameIndex];
 			float ratioX = size*4f/tempCentre.z;
 			float ratioY = size*3.6f/tempCentre.z;
+			//without a cap, the aura grows without bound as the camera gets close (tempCentre.z shrinks),
+			//which is what made it balloon across the screen instead of staying local to the blast
+			if(ratioX > 2.5f)
+				ratioX = 2.5f;
+			if(ratioY > 2.5f)
+				ratioY = 2.5f;
 			int xPos = (int)tempCentre.screenX;
 			int yPos = (int)tempCentre.screenY;
 			int originalWidth = 128;
@@ -113,9 +119,6 @@ public class explosion {
 			xStart +=5;
 			yStart +=5;
 			
-			int depth; 
-			
-			int[] zbuffer = postProcessingThread.currentZbuffer;
 			byte[] smoothedShadowBitmap = postProcessingThread.smoothedShadowBitmap;
 			
 			//find the size ratio between a sprite pixel and screen pixel
@@ -140,8 +143,7 @@ public class explosion {
 			for(int i = yTop, y = yStart; i < yBot; i++, y++){
 				if(i < 0 || i >=screen_height)
 					continue;
-				
-				depth = zTop + i*zDelta;
+
 				int ratioInverseY_Times_Y_Times_originalWidth = (int)(ratioInverseY*y)*originalWidth;
 				
 				for(int j = xTop, x = xStart;  j < xBot; j++, x++){
@@ -150,11 +152,7 @@ public class explosion {
 					if(j < 0 || j >= screen_width)
 						continue;
 					screenIndex = j + i*screen_width;
-					
-					
-					if(zbuffer[screenIndex] - depth > 30000)
-						continue;
-					
+
 					SpriteValue = sprite[((int)(ratioInverseX*x) + ratioInverseY_Times_Y_Times_originalWidth)& 0x3fff] ;
 				
 					if(SpriteValue > smoothedShadowBitmap[screenIndex])
@@ -191,6 +189,10 @@ public class explosion {
 		if(lifeTime <=16){
 			int[] sprite = mainThread.textures[spriteIndex].explosions[frameIndex];
 			float ratio = size*2/tempCentre.z;
+			//same unbounded-growth issue as the aura above - cap it so the fireball itself
+			//can't balloon across the screen when the camera is close to the blast
+			if(ratio > 2.5f)
+				ratio = 2.5f;
 			int xPos = (int)tempCentre.screenX;
 			int yPos = (int)tempCentre.screenY;
 			int width = 64;

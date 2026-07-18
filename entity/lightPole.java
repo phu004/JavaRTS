@@ -195,16 +195,16 @@ public class lightPole extends solidObject{
 		
 			polygons[i].parentObject = this;
 		}
-		
-		
-		
+
+		theAssetManager = mainThread.theAssetManager;
 	}
-	
-	//update the model 
+
+	//update the model
 	public void update(){
 		if(vanished)
-			return; 
-		
+			return;
+
+		updateActiveBlastLight();
 		mainThread.gridMap.currentObstacleMap[tileIndex] = false;
 		
 		//update center in camera coordinate

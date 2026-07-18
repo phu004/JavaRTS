@@ -578,9 +578,9 @@ public class harvester extends solidObject{
 	
 	
 	//update the model 
-	public void update(){		
-		
-	
+	public void update(){
+		updateActiveBlastLight();
+
 		//handle unloading gold ore event
 		if(unloadingCount > 0){
 			if(unloadingCount > 69 && cargoAngle > 300)

@@ -147,9 +147,60 @@ public abstract class solidObject{
 	public int ID;
 	
 	public AssetManager theAssetManager;
-	
+
 	public float height;
-	
+
+	//the single strongest nearby explosion light this model is currently reacting to, if any
+	public vector activeBlastLightPos = new vector(0,0,0);
+	public float activeBlastLightIntensity;
+
+	//TEMPORARY DIAGNOSTIC: highest activeBlastLightIntensity ever observed on any model, shown in the
+	//title bar. score is supposed to be capped at 1f in updateActiveBlastLight() below - if this ever
+	//reads above 1.00 the cap itself is being bypassed somewhere; if it never exceeds 1.00 even during
+	//an "over bright" moment, the bug is in rendering, not in this scoring math
+	public static float debugPeakBlastIntensity = 0;
+
+	//finds the single strongest nearby blast light (if any) for this model to react to;
+	//deliberately picks only one light per model instead of summing every explosion in range,
+	//so each polygon only ever has to test against one light source
+	public void updateActiveBlastLight(){
+		activeBlastLightIntensity = 0;
+		if(theAssetManager == null)
+			return;
+
+		float[][] lights = theAssetManager.blastLights;
+		float range = 2.4f;
+
+		for(int i = 0; i < lights.length; i++){
+			float[] light = lights[i];
+			if(light[3] <= 0)
+				continue;
+
+			float dx = centre.x - light[0];
+			float dy = centre.y - light[1];
+			float dz = centre.z - light[2];
+			float distSq = dx*dx + dy*dy + dz*dz;
+			if(distSq >= range*range)
+				continue;
+
+			float dist = (float)Math.sqrt(distSq);
+			float distanceFalloff = 1f - dist/range;
+			distanceFalloff *= distanceFalloff; //steeper falloff so a closer light reliably wins over a bigger, farther one
+			float lifeFalloff = light[3]/11f;
+			float sizeFactor = Math.min(light[4]/2f, 1.5f); //bounds how much a bigger blast can outweigh distance
+			float score = Math.min(sizeFactor * distanceFalloff * lifeFalloff, 1f); //cap so a big, close, fresh blast can't inflate the boost beyond the range polygon3D's factor curve is tuned for
+
+			if(score > activeBlastLightIntensity){
+				activeBlastLightIntensity = score;
+				activeBlastLightPos.set(light[0], light[1], light[2]);
+			}
+		}
+
+		if(activeBlastLightIntensity > debugPeakBlastIntensity)
+			debugPeakBlastIntensity = activeBlastLightIntensity;
+	}
+
+
 	public static Rect fullSizedProbe = new Rect(0,0, 16, 16);
 	
 	public int progressStatus = -1;

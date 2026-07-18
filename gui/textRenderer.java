@@ -27,7 +27,7 @@ public class textRenderer {
 		//load font image
 		Image img = null;
 		try{
-			img = ImageIO.read(getClass().getResource("../images/" + "font.jpg"));
+			img = ImageIO.read(getClass().getResource("/images/" +"font.jpg"));
 		}catch(Exception e){
 			e.printStackTrace();
 		}
@@ -40,7 +40,7 @@ public class textRenderer {
 		}
 		
 		try{
-			img = ImageIO.read(getClass().getResource("../images/" + "menuFont.png"));
+			img = ImageIO.read(getClass().getResource("/images/" +"menuFont.png"));
 		}catch(Exception e){
 			e.printStackTrace();
 		}
@@ -86,7 +86,7 @@ public class textRenderer {
 		
 		//load half star images
 		try{
-			img = ImageIO.read(getClass().getResource("../images/" + "84.jpg"));
+			img = ImageIO.read(getClass().getResource("/images/" +"84.jpg"));
 		}catch(Exception e){
 			e.printStackTrace();
 		}
@@ -101,7 +101,7 @@ public class textRenderer {
 		
 		//load star images
 		try{
-			img = ImageIO.read(getClass().getResource("../images/" + "85.jpg"));
+			img = ImageIO.read(getClass().getResource("/images/" +"85.jpg"));
 		}catch(Exception e){
 			e.printStackTrace();
 		}

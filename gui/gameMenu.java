@@ -6,6 +6,8 @@ import java.awt.Image;
 import java.awt.image.PixelGrabber;
 import javax.imageio.ImageIO;
 import core.*;
+import audio.SoundEngine;
+import audio.SoundEngine.Sfx;
 
 public class gameMenu {
 	
@@ -26,7 +28,7 @@ public class gameMenu {
 	public int[] titleImage, lightTankImage, rocketTankImage, stealthTankImage, heavyTankImage;
 	
 	public button newGame, unpauseGame, showHelp, showOptions, showHighscores, quitGame, abortGame, easyGame, normalGame, hardGame, quitDifficulty, quitHelpMenu, quitOptionMenu, quitHighscoreMenu, nextPage, previousPage,
-	              enableMouseCapture, disableMouseCapture, enableFogOfWar, disableFogOfWar, confirmErrorLoadingHighscore, normalToHardButton, normalToEasyButton, hardToNormalButton, easyToNormalButton,
+	              enableMouseCapture, disableMouseCapture, enableFogOfWar, disableFogOfWar, enableSound, disableSound, confirmErrorLoadingHighscore, normalToHardButton, normalToEasyButton, hardToNormalButton, easyToNormalButton,
 	              backToMapDefeat, leaveGameDefeat, backToMapVictory, leaveGameVictory, uploadScore;
 	
 	public char[] easyDescription, normalDescription, hardDescription, helpPage1, helpPage2, helpPage3, helpPage4, mouseMode;
@@ -65,7 +67,7 @@ public class gameMenu {
 		for(int i = 0; i< 32; i++)
 			name[i] = 255;
 		
-		String folder = "../images/";
+		String folder = "/images/";
 		loadTexture(folder + "title.png", titleImage, 216, 35);
 		loadTexture(folder + "58.jpg", lightTankImage, 44, 44);
 		loadTexture(folder + "59.jpg", rocketTankImage, 44, 44);
@@ -114,17 +116,19 @@ public class gameMenu {
 				   + "\"Esc\" -- Pause/Unpause the game.\n\n"
 				   + "\"Left Click\" -- Select a unit. Left click + mouse drag can be used to select up to \n100 units at a time. Double left click on a unit will automatically select surrounding \nunits of the same type.\n\n"
 				   + "\"Right Click\" -- Issue a move or attack command to the selected unit(s). You can \nalso use right click to set rally point or cancel build progress.\n\n"
+				   + "\"Right Click + Drag\" -- Hold the right button and move the mouse to scroll the map, \nlike a modern RTS \"grab and drag\" camera.\n\n"
 				   + "\"a\" -- Force attack a unit. If no unit is under the cursor, then the selected units will \nbe set to attack move to the cursor location.\n\n"
 				   + "\"s\" -- stop current action for the selected unit(s).\n\n"
 				   + "\"Ctrl + number\" -- Create a control group and assigned the number to the group.\n\n"
-				   + "\"Ctrl + Left Click\" -- Add/Remove a unit to/from the selected units.\n\n"
-				   + "\"Ctrl + Mouse Drag\" -- Add units in the dragging box to the selected units.\n\n\n"
+				   + "\"Ctrl + Left Click\" -- Add/Remove a unit to/from the selected units.\n\n\n\n"
 				   + "                                                  1/4                  ").toCharArray();
 		
 		helpPage2 = ("                                          Controls (Cont.)             \n\n"
 					+ "\"Left and Right arrow keys\" -- Change camera view angle.\n\n"
 					+ "\"c\" -- Toggle between different construction yards under your control.\n\n"
-					+ "\"f\" -- Toggle between different factories under your control.\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n"
+					+ "\"f\" -- Toggle between different factories under your control.\n\n"
+					+ "\"d\" -- Activate the deployment grid for a selected construction yard's building \nthat is ready to be placed, or deploy a selected construction vehicle, without having \nto click a sidebar icon first.\n\n"
+					+ "\"Ctrl + Mouse Drag\" -- Add units in the dragging box to the selected units.\n\n\n\n\n\n\n\n\n\n\n"
 					+ "                                                  2/4                  ").toCharArray();
 		
 		helpPage3 = ("                                                  Units        \n\n"
@@ -152,7 +156,8 @@ public class gameMenu {
 				   + "                                                  4/4").toCharArray();
 		
 		mouseMode = ("                                    Options \n\n\nMouse capture. When enabled the game will prevent \nthe mouse cursor from leaving the current window.\n\n\n"
-				   + "Fog of war. When enabled, enemy units that are not \nin vision will be hidden. Note that your score will NOT \nbe saved when this option is disabled.").toCharArray();
+				   + "Fog of war. When enabled, enemy units that are not \nin vision will be hidden. Note that your score will NOT \nbe saved when this option is disabled.\n\n\n"
+				   + "Sound. Toggles all sound effects on or off.").toCharArray();
 		
 		quitHelpMenu = new button("quitHelpMenu", "x", 670, 80, 18,16);
 		buttons.add(quitHelpMenu);
@@ -180,7 +185,13 @@ public class gameMenu {
 		
 		disableFogOfWar = new button("disableFogOfWar", "Enabled", 545, 215, 80, 25);
 		buttons.add(disableFogOfWar);
-		
+
+		enableSound = new button("enableSound", "Disabled", 545, 285, 80, 25);
+		buttons.add(enableSound);
+
+		disableSound = new button("disableSound", "Enabled", 545, 285, 80, 25);
+		buttons.add(disableSound);
+
 		confirmErrorLoadingHighscore = new button("confirmErrorLoadingHighscore", "Ok", 350, 280, 80, 25);
 		buttons.add(confirmErrorLoadingHighscore);
 		
@@ -477,7 +488,15 @@ public class gameMenu {
 					disableFogOfWar.display = true;
 					enableFogOfWar.display = false;
 				}
-				
+
+				if(SoundEngine.enabled) {
+					disableSound.display = false;
+					enableSound.display = true;
+				}else {
+					disableSound.display = true;
+					enableSound.display = false;
+				}
+
 				quitOptionMenu.display = true;
 				
 				if(postProcessingThread.gameStarted) {
@@ -648,6 +667,7 @@ public class gameMenu {
 							uploadingScore = true;
 						}
 						
+						SoundEngine.play(Sfx.CLICK);
 						postProcessingThread.buttonAction = buttons.get(i).name;
 					}
 				}

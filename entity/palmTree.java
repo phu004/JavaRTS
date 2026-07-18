@@ -241,11 +241,13 @@ public class palmTree extends solidObject{
 			polygons[i].findDiffuse();
 			polygons[i].parentObject = this;
 		}
-		
+
+		theAssetManager = mainThread.theAssetManager;
 	}
-	
-	//update the model 
+
+	//update the model
 	public void update(){
+		updateActiveBlastLight();
 		mainThread.gridMap.currentObstacleMap[tileIndex] = false;
 		
 		//update center in camera coordinate

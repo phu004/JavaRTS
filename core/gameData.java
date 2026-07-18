@@ -17,7 +17,7 @@ public class gameData {
 	public static int[][] size;
 	public static byte[][] cloakTextures;
 	
-	public static String imageFolder = "../images/";
+	public static String imageFolder = "/images/";
 	
 
 	

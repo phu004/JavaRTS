@@ -12,6 +12,7 @@ import javax.swing.JPanel;
 
 import enemyAI.*;
 import gui.*;
+import audio.SoundEngine;
 
 public class mainThread extends JFrame implements KeyListener, ActionListener, MouseMotionListener, MouseListener, FocusListener{
 
@@ -31,6 +32,12 @@ public class mainThread extends JFrame implements KeyListener, ActionListener, M
 	public static long sleepTime;
 	public static int framePerSecond, cpuUsage;
 	public static double thisTime, lastTime;
+	public static long fpsWindowStart;
+	public static int frameCountThisSecond;
+	public static boolean hasWaterDistortion;
+	public static long matchElapsedMs;
+	public static long lastTickRealTime;
+	public static boolean wasPausedLastFrame = true;
 	public static boolean JavaRTSLoaded;
 	public static boolean gamePaused, gameStarted, playerVictory, AIVictory, afterMatch;
 	public static texture[] textures;
@@ -62,8 +69,8 @@ public class mainThread extends JFrame implements KeyListener, ActionListener, M
 	public static final int optionMenu = 4;
 	public static final int highscoreMenu = 5;
 	
-	public static final int screen_width = 1024;
-	public static final int screen_height = 682;
+	public static final int screen_width = (int)(1024);
+	public static final int screen_height = (int)(682);
 	public static final int screen_size= screen_width*screen_height;
 	
 	public static final int shadowmap_width = 2048;
@@ -102,7 +109,7 @@ public class mainThread extends JFrame implements KeyListener, ActionListener, M
 		screen = ((DataBufferInt)dest).getData();
 		bufferScreen = screen;
 		
-		doubleBuffer2 =  new BufferedImage(screen_width, screen_width, BufferedImage.TYPE_INT_RGB);
+		doubleBuffer2 =  new BufferedImage(screen_width, screen_height, BufferedImage.TYPE_INT_RGB);
 		DataBuffer dest2 = doubleBuffer2.getRaster().getDataBuffer();
 		screen2 = ((DataBufferInt)dest2).getData();
 		buffer2Screen = screen2;
@@ -129,8 +136,9 @@ public class mainThread extends JFrame implements KeyListener, ActionListener, M
 		}
 		
 		frameIndex = 0;
-		frameInterval = 25;
+		frameInterval = 22; //~45fps target (1000/45 = 22.2ms, rounded down to the nearest whole ms)
 		lastDraw = 0;
+		fpsWindowStart = System.currentTimeMillis();
 		try {
 			myRobot = new Robot();
 		} catch (AWTException e) {
@@ -179,7 +187,7 @@ public class mainThread extends JFrame implements KeyListener, ActionListener, M
 			panel.addMouseMotionListener(this);
 			panel.addMouseListener(this);
 			panel.addFocusListener(this);
-			panel.requestFocus();
+			panel.requestFocusInWindow();
 			
 			//create camera
 			Camera = new camera(new vector(3,2f,-1.25f), 0, 300);
@@ -207,6 +215,8 @@ public class mainThread extends JFrame implements KeyListener, ActionListener, M
 			
 			theGameCursor = new gameCursor();
 			theGameCursor.init();
+
+			SoundEngine.init();
 			
 			currentMouseX = getLocationOnScreen().x + screen_width/2;
 			currentMouseY = getLocationOnScreen().y + screen_height/2;
@@ -231,7 +241,13 @@ public class mainThread extends JFrame implements KeyListener, ActionListener, M
 	    	
 		}
 		
-		frameIndex++;	
+		frameIndex++;
+
+		//the very first requestFocusInWindow() call can silently fail if the window hasn't actually
+		//been realized on screen yet, which would leave keyboard hotkeys dead until the player clicks
+		//into the window - keep retrying for the first couple of seconds until focus actually lands
+		if(frameIndex < 90 && !panel.isFocusOwner())
+			panel.requestFocusInWindow();
 
 		if(capturedMouse && !mouseLeftScreen && !focusLost) {
 			currentMouseX = MouseInfo.getPointerInfo().getLocation().x;
@@ -265,9 +281,25 @@ public class mainThread extends JFrame implements KeyListener, ActionListener, M
 		if(!gamePaused) {
 			if(gameStarted)
 				gameFrame++;
-			
-			timeString = secondsToString((int)(gameFrame*0.025));
-			
+
+			//the displayed/saved match time is measured from real elapsed wall-clock time (excluding
+			//time spent paused), not derived from gameFrame count, so it stays accurate regardless of
+			//the actual frame rate achieved
+			long now = System.currentTimeMillis();
+			if(gameStarted){
+				if(gameFrame == 1){
+					matchElapsedMs = 0;
+					lastTickRealTime = now;
+				}else if(wasPausedLastFrame){
+					lastTickRealTime = now;
+				}
+				matchElapsedMs += now - lastTickRealTime;
+				lastTickRealTime = now;
+			}
+			wasPausedLastFrame = false;
+
+			timeString = secondsToString((int)(matchElapsedMs/1000));
+
 			//handle user's interaction with game GUI
 			if(gameFrame == 1 && gameStarted){
 				theAssetManager.prepareAssetForNewGame();
@@ -277,7 +309,10 @@ public class mainThread extends JFrame implements KeyListener, ActionListener, M
 			
 			//Clears the z-buffer. All depth values are set to 0.
 			clearDepthBuffer();
-			
+
+			//reset once per frame; the rasterizer sets this back to true if any water polygon is actually drawn
+			hasWaterDistortion = false;
+
 			//update camera
 			Camera.update();
 			
@@ -292,11 +327,10 @@ public class mainThread extends JFrame implements KeyListener, ActionListener, M
 				ec.update();
 			}
 		}else {
-			
-			
+			wasPausedLastFrame = true;
 		}
-		
-		//show unpassable obstacle 
+
+		//show unpassable obstacle
 		//gridMap.draw();
 		
 		if(this.getGraphics() != null && PPT!= null){
@@ -443,32 +477,34 @@ public class mainThread extends JFrame implements KeyListener, ActionListener, M
 	public void mousePressed(MouseEvent e) {
 		if(e.getButton() == 1){
 			inputHandler.leftMouseButtonPressed = true;
-		
+
 		}
-		
+
 		if(e.getButton() == 3){
 			inputHandler.rightMouseButtonPressed = true;
+			inputHandler.rightMouseButtonHeld = true;
 		}
-		
+
 	}
 
 
 	@Override
 	public void mouseReleased(MouseEvent e) {
 		if(e.getButton() == 1){
-			
+
 			inputHandler.leftMouseButtonReleased = true;
 		}
-		
+
 		if(e.getButton() == 3){
 			inputHandler.rightMouseButtonReleased = true;
+			inputHandler.rightMouseButtonHeld = false;
 		}
-		
+
 	}
 	
 	public void loadTexture(){
 		textures = new texture[73];
-		String imageFolder = "../images/";
+		String imageFolder = "/images/";
 		try{
 			textures[0] = new texture("basic", ImageIO.read(getClass().getResource(imageFolder + "1.jpg")), 9, 9);
 			textures[1] = new texture("explosion aura", ImageIO.read(getClass().getResource(imageFolder + "2.jpg")), 7, 7);
@@ -664,10 +700,20 @@ public class mainThread extends JFrame implements KeyListener, ActionListener, M
 			// TODO Auto-generated catch block
 			e1.printStackTrace();
 		}
-		
+
 		lastDraw=System.currentTimeMillis();
+
+		frameCountThisSecond++;
+		long elapsedSinceWindowStart = lastDraw - fpsWindowStart;
+		if(elapsedSinceWindowStart >= 1000){
+			//use the actual elapsed wall-clock time rather than assuming exactly 1000ms passed,
+			//since the window can close a few ms late depending on when frames land
+			framePerSecond = (int)Math.round(frameCountThisSecond * 1000.0 / elapsedSinceWindowStart);
+			frameCountThisSecond = 0;
+			fpsWindowStart = lastDraw;
+		}
 	}
-	
+
 	public static String secondsToString(int pTime) {
 	    int min = pTime/60;
 	    int sec = pTime-(min*60);

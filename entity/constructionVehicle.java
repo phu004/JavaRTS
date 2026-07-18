@@ -4,6 +4,8 @@ import java.awt.Rectangle;
 
 import core.*;
 import enemyAI.enemyCommander;
+import audio.SoundEngine;
+import audio.SoundEngine.Sfx;
 
 
 public class constructionVehicle extends solidObject {
@@ -1972,6 +1974,8 @@ public class constructionVehicle extends solidObject {
 	public void expand() {
 
 		jobStatus = deploying;
+		if(teamNo == 0)
+			SoundEngine.play(Sfx.DEPLOY_VEHICLE);
 
 		float theXPos = ((boundary2D.x1 + 8) / 16 * 0.25f) + 0.125f;
 		float theYPos = ((boundary2D.y1 - 8 - 1) / 16 * 0.25f) + 0.125f;

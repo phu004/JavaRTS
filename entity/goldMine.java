@@ -263,6 +263,7 @@ public class goldMine extends solidObject{
 	
 	//update the model 
 	public void update(){
+		updateActiveBlastLight();
 		if(!mainThread.gameStarted) {
 			isRevealed = true;
 		}else {

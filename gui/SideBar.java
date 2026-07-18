@@ -54,7 +54,7 @@ public class SideBar {
 		
 		iconImages = new int[25][44 * 44];
 		iconImages_dark = new int[25][44 * 44];
-		String folder = "../images/";
+		String folder = "/images/";
 		loadTexture(folder + "44.jpg", iconImages[0], 44, 44, iconImages_dark[0]);
 		loadTexture(folder + "47.jpg", iconImages[1], 44, 44, iconImages_dark[1]);
 		loadTexture(folder + "48.jpg", iconImages[2], 44, 44, iconImages_dark[2]);

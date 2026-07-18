@@ -292,7 +292,9 @@ public class gunTurret extends solidObject{
 		
 	
 	//update the model 
-	public void update(){	
+	public void update(){
+		updateActiveBlastLight();
+
 		//process emerging from  ground animation
 		if(centre.y < -0.5f){
 			centre.y+=0.01f;

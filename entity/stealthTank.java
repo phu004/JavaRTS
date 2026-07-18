@@ -4,6 +4,8 @@ import java.awt.Rectangle;
 
 import core.*;
 import enemyAI.enemyCommander;
+import audio.SoundEngine;
+import audio.SoundEngine.Sfx;
 
 public class stealthTank extends solidObject{
 	
@@ -1149,7 +1151,8 @@ public class stealthTank extends solidObject{
 			tempVector.rotate_XZ(360 - attackAngle);
 			
 			attackCoolDown = myAttackCooldown;
-			cloakCooldownCount = 120; 
+			cloakCooldownCount = 120;
+			SoundEngine.play(Sfx.SHOOT_RAILGUN);
 
 			for(float i = 0.1f; i < distanceToDesination; i+=0.1f){
 				if(theAssetManager.helixCount >= theAssetManager.helixInfo.length)

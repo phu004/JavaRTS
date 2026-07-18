@@ -131,21 +131,56 @@ public class camera{
 		cosXZ_angle = gameData.cos[XZ_angle];
 		sinYZ_angle = gameData.sin[YZ_angle];
 		cosYZ_angle = gameData.cos[YZ_angle];
-		
-		
-		
+
+
+
 		view_Direction.set(viewDirection);
 		view_Direction.rotate_YZ(YZ_angle);
 		view_Direction.rotate_XZ(XZ_angle);
 		view_Direction.y*=-1;
 		view_Direction.x*=-1;
 		view_Direction.unit();
-		
+
 		position.add(-view_Direction.x*3, 0 , -view_Direction.z*3);
-		
-		
-		
-		
+
+
+
+
+	}
+
+	//pan the camera every frame while the right button is held, towards wherever the cursor has
+	//been dragged relative to the fixed anchor point where the drag started; the actual world-bounds
+	//clamp happens right after in update()
+	public static void panByHeldOffset(int offsetXPixels, int offsetYPixels){
+		float dx = holdSpeed(offsetXPixels);
+		float dy = holdSpeed(offsetYPixels);
+
+		vector leftVec = new vector(0,0,0);
+		leftVec.cross(view_Direction, left_);
+		leftVec.unit();
+		position.add(leftVec, dx);
+
+		vector forwardVec = new vector(view_Direction.x, 0, view_Direction.z);
+		forwardVec.unit();
+		position.add(forwardVec, -dy);
+	}
+
+	//converts how far (in pixels) the cursor has been dragged away from the anchor into a per-frame
+	//scroll speed: a small deadzone near the anchor to absorb hand tremor, then an immediate speed
+	//floor right past that (so even a barely-past-deadzone drag scrolls at a usable pace instead of
+	//crawling), ramping the rest of the way up to max speed as the drag gets larger
+	private static float holdSpeed(int pixels){
+		float deadZone = 8f;
+		float maxPixels = 220f;
+		float maxSpeed = 0.4f;
+		float minFraction = 0.18f; //speed as soon as the drag clears the deadzone, as a fraction of maxSpeed
+
+		float mag = Math.abs(pixels);
+		if(mag <= deadZone)
+			return 0;
+		float t = Math.min((mag - deadZone) / (maxPixels - deadZone), 1f);
+		float speed = (minFraction + (1f - minFraction) * t) * maxSpeed;
+		return pixels < 0 ? -speed : speed;
 	}
 
 }

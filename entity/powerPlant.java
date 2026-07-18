@@ -543,6 +543,7 @@ public class powerPlant extends solidObject{
 	
 	//update the model 
 	public void update(){
+		updateActiveBlastLight();
 
 		//process emerging from  ground animation
 		if(centre.y < -0.5f){

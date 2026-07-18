@@ -4,6 +4,8 @@ import enemyAI.*;
 import entity.*;
 import gui.*;
 import particles.*;
+import audio.SoundEngine;
+import audio.SoundEngine.Sfx;
 
 //This class stores and maintains all the entities created in the game 
 public class AssetManager {
@@ -13,8 +15,10 @@ public class AssetManager {
 	public int visibleUnitCount;
 	public solidObject[] visibleUnit;
 
-	public int[][] selectedUnitsInfo;
-	public int[][] selectedUnitsInfo2;
+	//per-frame health bar/group/veterancy display info for every currently-visible unit (not just
+	//selected ones), sourced from visibleUnit[] so health bars show by default regardless of selection
+	public int[][] allUnitsInfo;
+	public int[][] allUnitsInfo2;
 	
 	public float[][] visionPolygonInfo;
 	public float[][] visionPolygonInfo2;
@@ -34,6 +38,9 @@ public class AssetManager {
 	public float[][] explosionInfo;
 	public float[][] explosionInfo2;
 	public int explosionCount;;
+
+	//dynamic point lights spawned by explosions, so nearby models light up instead of just the ground
+	public float[][] blastLights;
 	
 	public float[][] helixInfo;
 	public float[][] helixInfo2;
@@ -139,7 +146,10 @@ public class AssetManager {
 		}	
 		
 		visibleUnit = new solidObject[400];
-		
+
+		//x, y, z, remainingFrames, peakIntensity - a slot with remainingFrames<=0 is unused
+		blastLights = new float[24][5];
+
 		mainThread.pc = new playerCommander();
 		mainThread.ec = new enemyCommander();
 		
@@ -154,8 +164,8 @@ public class AssetManager {
 		camera.XZ_angle = 0;
 		
 		
-		selectedUnitsInfo = new int[100][6];
-		selectedUnitsInfo2 = new int[100][6];
+		allUnitsInfo = new int[400][6];
+		allUnitsInfo2 = new int[400][6];
 	
 		visionPolygonInfo = new float[400][5];
 		visionPolygonInfo2 = new float[400][5];
@@ -226,10 +236,10 @@ public class AssetManager {
 		communicationCenter.resetResearchStatus();
 		
 		
-		addConstructionVehicle(new constructionVehicle(new vector(3.125f,-0.3f, 2.125f), 90, 0));	
-		addConstructionVehicle(new constructionVehicle(new vector(29.625f,-0.3f, 28.875f), 90, 1));	
+		addConstructionVehicle(new constructionVehicle(new vector(3.125f,-0.3f, 2.125f), 90, 0));
+		addConstructionVehicle(new constructionVehicle(new vector(29.625f,-0.3f, 28.875f), 90, 1));
 		constructionVehicles[1].expand();
-		
+
 		numberOfPlayerBuildings = 1;
 	    numberOfAIBuildings = 1;
 		
@@ -279,8 +289,8 @@ public class AssetManager {
 		camera.frameIndex = 0;
 		camera.XZ_angle = 0;
 		
-		selectedUnitsInfo = null;
-		selectedUnitsInfo2 = null;
+		allUnitsInfo = null;
+		allUnitsInfo2 = null;
 	
 		visionPolygonInfo = null;
 		visionPolygonInfo2 = null;
@@ -298,6 +308,10 @@ public class AssetManager {
 		
 		explosionInfo = null;
 		explosionInfo2 = null;
+		explosionCount = 0; //the blast-light harvesting loop at the top of updateAndDraw() reads
+		//explosionInfo unconditionally every frame, before explosionCount gets reset for the frame -
+		//without this, a stale nonzero count left over from the instant the game ended indexes into
+		//the now-null array on the very next frame
 		helixInfo = null;
 		helixInfo2 = null;
 		
@@ -523,10 +537,12 @@ public class AssetManager {
 				if(numberOfAIBuildings == 0) {
 					mainThread.playerVictory = true;
 					mainThread.gamePaused = true;
+					SoundEngine.play(Sfx.VICTORY);
 					destoryAllUnit(1);
 				}else if(numberOfPlayerBuildings == 0) {
 					mainThread.AIVictory = true;
 					mainThread.gamePaused = true;
+					SoundEngine.play(Sfx.DEFEAT);
 					destoryAllUnit(0);
 				}
 				
@@ -538,6 +554,12 @@ public class AssetManager {
 		}
 		
 		
+		//turn last frame's freshly spawned explosions into blast lights that nearby models can react to
+		for(int i = 0; i < explosionCount; i++){
+			registerBlastLight(explosionInfo[i][0], explosionInfo[i][1], explosionInfo[i][2], explosionInfo[i][3]);
+		}
+		decayBlastLights();
+
 		polygonCount = 0;
 		visibleUnitCount = 0;
 		visionPolygonCount = 0;
@@ -810,25 +832,28 @@ public class AssetManager {
 			}
 			
 			
-			//prepare selected unit list
-			for(int i = 0; i < 99; i++){
-				if(mainThread.pc.selectedUnits[i] != null && mainThread.pc.selectedUnits[i].isSelectable){
-					selectedUnitsInfo[i][0] =  mainThread.pc.selectedUnits[i].level << 16 | mainThread.pc.selectedUnits[i].groupNo << 8 | mainThread.pc.selectedUnits[i].type;
-					selectedUnitsInfo[i][1] = (int)mainThread.pc.selectedUnits[i].tempCentre.screenX;
-					selectedUnitsInfo[i][2] = (int)mainThread.pc.selectedUnits[i].tempCentre.screenY;
-					if(mainThread.pc.selectedUnits[i].type == 199){
-						selectedUnitsInfo[i][1] = (int)mainThread.pc.selectedUnits[i].screenX_gui;
-						selectedUnitsInfo[i][2] = (int)mainThread.pc.selectedUnits[i].screenY_gui;
+			//prepare per-unit display info for every visible unit, not just selected ones - the
+			//veterancy star reads directly off this for every unit, while the health bar/group number/
+			//progress bar are only drawn for selected units (the isSelected flag packed into bit 24
+			//of [0] is what the draw loop gates on)
+			for(int i = 0; i < allUnitsInfo.length; i++){
+				if(i < visibleUnitCount && visibleUnit[i] != null && visibleUnit[i].isSelectable){
+					allUnitsInfo[i][0] = (visibleUnit[i].isSelected ? 1<<24 : 0) | visibleUnit[i].level << 16 | visibleUnit[i].groupNo << 8 | visibleUnit[i].type;
+					allUnitsInfo[i][1] = (int)visibleUnit[i].tempCentre.screenX;
+					allUnitsInfo[i][2] = (int)visibleUnit[i].tempCentre.screenY;
+					if(visibleUnit[i].type == 199){
+						allUnitsInfo[i][1] = (int)visibleUnit[i].screenX_gui;
+						allUnitsInfo[i][2] = (int)visibleUnit[i].screenY_gui;
 					}
-					
-					selectedUnitsInfo[i][3] = (int)mainThread.pc.selectedUnits[i].type;
-					selectedUnitsInfo[i][4] = mainThread.pc.selectedUnits[i].currentHP;
-					selectedUnitsInfo[i][5] = mainThread.pc.selectedUnits[i].progressStatus;
+
+					allUnitsInfo[i][3] = (int)visibleUnit[i].type;
+					allUnitsInfo[i][4] = visibleUnit[i].currentHP;
+					allUnitsInfo[i][5] = visibleUnit[i].progressStatus;
 				}else{
-					selectedUnitsInfo[i][0] = -1;
+					allUnitsInfo[i][0] = -1;
 				}
 			}
-			
+
 		}
 	
 	}
@@ -837,9 +862,9 @@ public class AssetManager {
 	//swap the resources that are held by the main thread and the post processing thread
 	public void swapResources(){
 		int[][] list;
-		list = selectedUnitsInfo;
-		selectedUnitsInfo = selectedUnitsInfo2;
-		selectedUnitsInfo2 = list;
+		list = allUnitsInfo;
+		allUnitsInfo = allUnitsInfo2;
+		allUnitsInfo2 = list;
 		
 		float[][] floatList;
 		floatList = visionPolygonInfo;
@@ -872,20 +897,62 @@ public class AssetManager {
 		confirmationIconInfo2 = iconInfo;
 	}
 	
+	//register a dynamic light at an explosion's location; reuses the weakest/expired slot once full
+	public void registerBlastLight(float x, float y, float z, float size){
+		int weakestIndex = 0;
+		float weakestScore = Float.MAX_VALUE;
+
+		for(int i = 0; i < blastLights.length; i++){
+			if(blastLights[i][3] <= 0){
+				weakestIndex = i;
+				break;
+			}
+			if(blastLights[i][3] < weakestScore){
+				weakestScore = blastLights[i][3];
+				weakestIndex = i;
+			}
+		}
+
+		float[] light = blastLights[weakestIndex];
+		light[0] = x;
+		light[1] = y;
+		light[2] = z;
+		light[3] = 11; //shorter lifetime so the light fades out quickly instead of lingering
+		light[4] = size;
+	}
+
+	//ages every active blast light by one frame; called once per frame
+	public void decayBlastLights(){
+		for(int i = 0; i < blastLights.length; i++){
+			if(blastLights[i][3] > 0)
+				blastLights[i][3]--;
+		}
+	}
+
 	//spawn a bullet
 	public void spawnBullet(int angle, int damage, solidObject target, vector centre, solidObject attacker){
 		for(int i = 0; i < 200; i ++)
 			if(!bullets[i].isInAction){
 				bullets[i].setActive(angle, damage, target, centre, attacker);
+				if(attacker.type == 7)
+					SoundEngine.play(Sfx.SHOOT_CANNON_HEAVY);
+				else if(attacker.type == 200)
+					SoundEngine.play(Sfx.SHOOT_AUTOCANNON);
+				else
+					SoundEngine.play(Sfx.SHOOT_CANNON);
 				break;
 			}
 	}
-	
+
 	//spawn a rocket
 	public void spawnRocket(int angle, int damage, solidObject target, vector centre, solidObject attacker){
 		for(int i = 0; i < 200; i ++)
 			if(!rockets[i].isInAction){
 				rockets[i].setActive(angle, damage, target, centre, attacker);
+				if(attacker.type == 199)
+					SoundEngine.play(Sfx.SHOOT_MISSILE);
+				else
+					SoundEngine.play(Sfx.SHOOT_ROCKET);
 				break;
 			}
 	}

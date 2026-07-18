@@ -13,6 +13,7 @@ public class gameCursor {
 	public int[][] arrowIcons;
 	public int[][] smallArrowIcons;
 	public int[] smallArrowIcons4;
+	public int[][] smallArrowCardinal; //0=right, 1=down, 2=left, 3=up - same thin style as smallArrowIcons, for the deploy cursor
 	public int[] cursorIcon;
 	public int[] screen;
 	public int[][] iconOverWriteBuffer;
@@ -23,7 +24,7 @@ public class gameCursor {
 	
 	public void init() {
 		
-		String folder = "../images/";
+		String folder = "/images/";
 		
 		arrowIcons = new int[8][24*24];
 		for(int i = 0; i < 8; i++) {
@@ -40,6 +41,12 @@ public class gameCursor {
 		
 		smallArrowIcons4 = new int[20*20];
 		loadTexture(folder + "smallArrow4.png", smallArrowIcons4, 20,20);
+
+		smallArrowCardinal = new int[4][20*20];
+		String[] cardinalNames = {"Right", "Down", "Left", "Up"};
+		for(int i = 0; i < 4; i++) {
+			loadTexture(folder + "smallArrow" + cardinalNames[i] + ".png", smallArrowCardinal[i], 20,20);
+		}
 		
 		iconOverWriteBuffer = new int[1024][2];
 		for(int i = 0; i < 1024; i++) {
@@ -57,6 +64,7 @@ public class gameCursor {
 		int mouseOverUnitType = mainThread.pc.mouseOverUnitType;
 		int mouseOverUnitTeam =  mainThread.pc.mouseOverUnitTeam;
 		boolean mouseOverUnitIsSelected = mainThread.pc.mouseOverUnitIsSelected;
+		boolean mouseOverUnitCanDeploy = mainThread.pc.mouseOverUnitCanDeploy;
 		boolean hasConVehicleSelected = mainThread.pc.hasConVehicleSelected;
 		boolean hasHarvesterSelected = mainThread.pc.hasHarvesterSelected;
 		boolean hasTroopsSelected = mainThread.pc.hasTroopsSelected;
@@ -80,7 +88,16 @@ public class gameCursor {
 			//draw arrow icons if the player is scrolling the screen with the mouse
 			int cursorX = 0;
 			int cursorY = 0;
-			if(camera.MOVE_DOWN && !camera.MOVE_LEFT && ! camera.MOVE_RIGHT) {
+			if(inputHandler.isDraggingCamera && inputHandler.rightMouseButtonHeld) {
+				//isDraggingCamera alone isn't reset until the next press starts (playerCommander needs
+				//it to stay true through the release frame to suppress the move/attack click), so also
+				//require the button to still be physically held before showing the drag cursor icon
+				//show which of the 8 scroll directions the current drag offset corresponds to,
+				//reusing the same edge-scroll arrow icons but centred on the cursor itself
+				int dragIconIndex = dragDirectionIcon(mouseX - inputHandler.rightDragAnchorX, mouseY - inputHandler.rightDragAnchorY);
+				if(dragIconIndex >= 0)
+					drawIcon(arrowIcons[dragIconIndex], mouseX-12, mouseY-12);
+			}else if(camera.MOVE_DOWN && !camera.MOVE_LEFT && ! camera.MOVE_RIGHT) {
 				drawIcon(arrowIcons[1], mouseX-12,screen_height - 23);
 			}else if(camera.MOVE_UP && !camera.MOVE_LEFT && ! camera.MOVE_RIGHT) {
 				drawIcon(arrowIcons[3], mouseX-12,0);
@@ -143,7 +160,9 @@ public class gameCursor {
 				
 				drawIcon(arrowIcons[5], cursorX, cursorY);
 			}else if(mouseOverSelectableUnit && !cursorIsInMiniMap && !cursorIsInSideBar){
-				if((hasTroopsSelected || hasTowerSelected) && mouseOverUnitTeam == 1) {
+				if(mouseOverUnitIsSelected && mouseOverUnitCanDeploy) {
+					drawDeployIcon(mouseX, mouseY);
+				}else if((hasTroopsSelected || hasTowerSelected) && mouseOverUnitTeam == 1) {
 					drawActionIcon(mouseX, mouseY, 1);
 				}else if(!hasHarvesterSelected && !hasTroopsSelected && !hasTowerSelected) {
 					if(!mouseOverUnitIsSelected)
@@ -400,7 +419,79 @@ public class gameCursor {
 		}
 		
 	}
-	
+
+	//construction-vehicle deploy cursor: like the move icon's 4 converging diagonal arrows, but
+	//mirrored - cardinal (up/down/left/right) arrows spreading outward from the cursor instead of
+	//diagonal arrows converging inward. Uses new thin cardinal arrow images (smallArrowCardinal, same
+	//20x20 slender style as the diagonal smallArrowIcons) rather than the bulkier edge-scroll icons.
+	public void drawDeployIcon(int xPos, int yPos) {
+		xPos -= 10;
+		yPos -= 10;
+
+		//radius grows outward over the cycle (the inverse of drawActionIcon's shrinking r), then snaps
+		//back, giving a "spreading away from the cursor" pulse instead of a "converging on it" one
+		int r = 9 + (mainThread.gameFrame%21)/2;
+
+		int arrowColor = 34 << 16 | 200 << 8 | 76;
+
+		drawSmallCardinalArrow(smallArrowCardinal[3], xPos, yPos - r, arrowColor); //up
+		drawSmallCardinalArrow(smallArrowCardinal[1], xPos, yPos + r, arrowColor); //down
+		drawSmallCardinalArrow(smallArrowCardinal[2], xPos - r, yPos, arrowColor); //left
+		drawSmallCardinalArrow(smallArrowCardinal[0], xPos + r, yPos, arrowColor); //right
+	}
+
+	private void drawSmallCardinalArrow(int[] icon, int xPos, int yPos, int arrowColor) {
+		int index = 0;
+		int color = 0;
+		int blue = 0;
+		int red = 0;
+		for(int i = 0; i < 20; i++) {
+			for(int j = 0; j < 20; j++) {
+				if(xPos + j < 0 || xPos + j >= screen_width || yPos + i < 0 || yPos + i >= screen_height)
+					continue;
+
+				index = xPos + j + (yPos + i)*screen_width;
+				color = icon[j+i*20];
+
+				blue = color&0xff;
+				red =  (color&0xff0000) >> 16;
+				if(red < 100 && blue > 100)
+					continue;
+
+				if(pixelInsideSideArea(index))
+					continue;
+
+				if(red > 200)
+					color = arrowColor;
+
+				iconOverWriteBuffer[iconOverWriteBufferIndex][0] = index;
+				iconOverWriteBuffer[iconOverWriteBufferIndex][1] = screen[index];
+				iconOverWriteBufferIndex++;
+				screen[index] = color;
+			}
+		}
+	}
+
+	//maps a right-click-drag offset to the matching 8-direction arrow icon index (arrowIcons[0..7]:
+	//right, down, left, up, up-right, down-right, down-left, up-left), same set used for edge scrolling
+	public int dragDirectionIcon(int offsetX, int offsetY){
+		int deadZone = 8;
+		boolean right = offsetX > deadZone;
+		boolean left = offsetX < -deadZone;
+		boolean down = offsetY > deadZone;
+		boolean up = offsetY < -deadZone;
+
+		if(right && up) return 4;
+		if(right && down) return 5;
+		if(left && down) return 6;
+		if(left && up) return 7;
+		if(right) return 0;
+		if(down) return 1;
+		if(left) return 2;
+		if(up) return 3;
+		return -1;
+	}
+
 	public boolean pixelInsideSideArea(int index){
 		int x = index%screen_width;
 		int y = index/screen_width;

@@ -10,13 +10,15 @@ import gui.textRenderer;
 import particles.explosion;
 import particles.helix;
 import particles.smokeParticle;
+import audio.SoundEngine;
+import audio.SoundEngine.Sfx;
 
 //this class handles all the post processing effect
 public class postProcessingThread implements Runnable{
 
 	public static int[] currentScreen;
 	public static int[] currentZbuffer;
-	public static int[][] currentSelectedUnitsInfo; 
+	public static int[][] currentAllUnitsInfo; 
 	public static int[][] unitInfoTable;
 	public static float[][] visionPolygonInfo;
 	public static float[][] explosionInfo;
@@ -47,6 +49,7 @@ public class postProcessingThread implements Runnable{
 	public static byte[] shadowBitmap;
 	public static byte[] smoothedShadowBitmap;
 	public static short[] displacementBuffer;
+	public static boolean hasWaterDistortion;
 	public static int[] offScreen;
 	
 	
@@ -268,7 +271,8 @@ public class postProcessingThread implements Runnable{
 			if(!explosions[i].isInAction){
 				if(j < explosionCount){
 					tempFloat = explosionInfo[j];
-					explosions[i].setActive(tempFloat[0], tempFloat[1], tempFloat[2], tempFloat[3], (int)tempFloat[4], (int)tempFloat[5], (int)tempFloat[6], tempFloat[7]);					
+					explosions[i].setActive(tempFloat[0], tempFloat[1], tempFloat[2], tempFloat[3], (int)tempFloat[4], (int)tempFloat[5], (int)tempFloat[6], tempFloat[7]);
+					SoundEngine.play(tempFloat[3] >= 2.5f ? Sfx.EXPLOSION_LARGE : Sfx.EXPLOSION_SMALL);
 					j++;
 				}else {
 					break;
@@ -303,21 +307,23 @@ public class postProcessingThread implements Runnable{
 		blendShadow();
 		
 		
-		//apply distortion map
+		//apply distortion map (only water polygons write non-31 values here, so skip both passes entirely when none are on screen)
 		int xMap;
 		int yMap;
 		int distortionIndex;
-		
-		for(int i = 0; i < screen_size; i++){
-			if(displacementBuffer[i] != 31){
-				xMap = ((displacementBuffer[i]&992) >> 5) - 16;
-				yMap = (displacementBuffer[i]&31) - 16;
-				distortionIndex = i + xMap + yMap*screen_width;
-				if(distortionIndex > 0 && distortionIndex < screen_size ){
-					if(currentZbuffer[i] - currentZbuffer[distortionIndex] > -1000000)
-						offScreen[i] = currentScreen[distortionIndex];
-					else
-						offScreen[i] = currentScreen[i];
+
+		if(hasWaterDistortion){
+			for(int i = 0; i < screen_size; i++){
+				if(displacementBuffer[i] != 31){
+					xMap = ((displacementBuffer[i]&992) >> 5) - 16;
+					yMap = (displacementBuffer[i]&31) - 16;
+					distortionIndex = i + xMap + yMap*screen_width;
+					if(distortionIndex > 0 && distortionIndex < screen_size ){
+						if(currentZbuffer[i] - currentZbuffer[distortionIndex] > -1000000)
+							offScreen[i] = currentScreen[distortionIndex];
+						else
+							offScreen[i] = currentScreen[i];
+					}
 				}
 			}
 		}
@@ -349,60 +355,61 @@ public class postProcessingThread implements Runnable{
 		int z = vector.Z_length;
 		
 		
-		for(int i = screen_width; i < screen_size-screen_width; i++){
-			if(displacementBuffer[i] != 31){
-				
-				r1 = (offScreen[i + 1]&0xff0000) >> 16;
-				r2 = (offScreen[i - w_]&0xff0000) >> 16;
-				r3 = (offScreen[i - screen_width]&0xff0000) >> 16;
-				r4 = (offScreen[i - 1]&0xff0000) >> 16;
-			
-			
-				g1 = (offScreen[i + 1]&0xff00) >> 8;
-				g2 = (offScreen[i - w_]&0xff00) >> 8;
-				g3 = (offScreen[i - screen_width]&0xff00) >> 8;
-				g4 = (offScreen[i]&0xff00) >> 8;
-			
-			
-				b1 = (offScreen[i + 1]&0xff);
-				b2 = (offScreen[i - w_]&0xff);
-				b3 = (offScreen[i - screen_width]&0xff);
-				b4 = (offScreen[i]&0xff);
-				
-			
-				
-				
-				currentScreen[i] = (((r1 + r2 + r3 + r4)>>3) << 16 | ((g1 + g2 + g3 + g4)>>3) << 8 | ((b1 + b2 + b3 + b4)>>3 )) + c;
-				
-				yMap = (displacementBuffer[i]&64512) >> 10;
-				
-				
-				if(yMap > 0){
-					eyeDirection.set(-i%screen_width+w_half, -h_half + i/screen_width, -z);
-					eyeDirection.unit();
-					float I = eyeDirection.dot(lightReflect);
-				
-					if(I > 0.985){
-						int I_ = (int)((I-0.985) *24000);
-						
-						yMap = yMap * I_ /90;
-						
-						SpriteValue = 0x010101*yMap;
-						
-						pixel=(SpriteValue&MASK7Bit)+(currentScreen[i]&MASK7Bit);
-						overflow=pixel&0x1010100;
-						overflow=overflow-(overflow>>8);
-						currentScreen[i] = overflow|pixel;
+		if(hasWaterDistortion){
+			for(int i = screen_width; i < screen_size-screen_width; i++){
+				if(displacementBuffer[i] != 31){
+
+					r1 = (offScreen[i + 1]&0xff0000) >> 16;
+					r2 = (offScreen[i - w_]&0xff0000) >> 16;
+					r3 = (offScreen[i - screen_width]&0xff0000) >> 16;
+					r4 = (offScreen[i - 1]&0xff0000) >> 16;
+
+
+					g1 = (offScreen[i + 1]&0xff00) >> 8;
+					g2 = (offScreen[i - w_]&0xff00) >> 8;
+					g3 = (offScreen[i - screen_width]&0xff00) >> 8;
+					g4 = (offScreen[i]&0xff00) >> 8;
+
+
+					b1 = (offScreen[i + 1]&0xff);
+					b2 = (offScreen[i - w_]&0xff);
+					b3 = (offScreen[i - screen_width]&0xff);
+					b4 = (offScreen[i]&0xff);
+
+
+
+					currentScreen[i] = (((r1 + r2 + r3 + r4)>>3) << 16 | ((g1 + g2 + g3 + g4)>>3) << 8 | ((b1 + b2 + b3 + b4)>>3 )) + c;
+
+					yMap = (displacementBuffer[i]&64512) >> 10;
+
+
+					if(yMap > 0){
+						eyeDirection.set(-i%screen_width+w_half, -h_half + i/screen_width, -z);
+						eyeDirection.unit();
+						float I = eyeDirection.dot(lightReflect);
+
+						if(I > 0.985){
+							int I_ = (int)((I-0.985) *24000);
+
+							yMap = yMap * I_ /90;
+
+							SpriteValue = 0x010101*yMap;
+
+							pixel=(SpriteValue&MASK7Bit)+(currentScreen[i]&MASK7Bit);
+							overflow=pixel&0x1010100;
+							overflow=overflow-(overflow>>8);
+							currentScreen[i] = overflow|pixel;
+						}
+
 					}
-					
+
+					displacementBuffer[i] = 31;
+				}else{
+
+
 				}
-				
-				displacementBuffer[i] = 31;
-			}else{
-				
-				
+
 			}
-			
 		}
 		
 		if(gameStarted) {
@@ -445,27 +452,36 @@ public class postProcessingThread implements Runnable{
 			
 			
 			
-			//draw health bar/Group info/unit level  for every selected unit 
-			for(int i = 0; i < 100; i++){
+			//draw health bar/Group info/unit level for every visible unit (shown by default now,
+			//not just when selected)
+			for(int i = 0; i < currentAllUnitsInfo.length; i++){
 				
-				if(currentSelectedUnitsInfo[i][0] != -1){
-					ObjectType = (currentSelectedUnitsInfo[i][0] & 0xff);
-					groupNo = ((currentSelectedUnitsInfo[i][0] & 0xff00) >> 8);
-					level =  ((currentSelectedUnitsInfo[i][0] & 0xff0000) >> 16);
+				if(currentAllUnitsInfo[i][0] != -1){
+					ObjectType = (currentAllUnitsInfo[i][0] & 0xff);
+					groupNo = ((currentAllUnitsInfo[i][0] & 0xff00) >> 8);
+					level =  ((currentAllUnitsInfo[i][0] & 0xff0000) >> 16);
+					boolean isSelected = (currentAllUnitsInfo[i][0] & (1<<24)) != 0;
 					maxHealth = unitInfoTable[ObjectType][0];
 					healthBarLength = unitInfoTable[ObjectType][1];
-					xPos = currentSelectedUnitsInfo[i][1] + unitInfoTable[ObjectType][2];
-					yPos = currentSelectedUnitsInfo[i][2] + unitInfoTable[ObjectType][3];
-					remainingHealth = healthBarLength * currentSelectedUnitsInfo[i][4] / maxHealth;
-					
+					xPos = currentAllUnitsInfo[i][1] + unitInfoTable[ObjectType][2];
+					yPos = currentAllUnitsInfo[i][2] + unitInfoTable[ObjectType][3];
+
+					//veterancy star shows on every visible unit regardless of selection, so ranked
+					//units are easy to spot at a glance - everything else below stays selection-only
+					if(level != 0){
+						theTextRenderer.drawStarCharacter(xPos + healthBarLength - 13, yPos + 5, level, currentScreen, 0xffff33, 0);
+					}
+
+					if(!isSelected)
+						continue;
+
+					remainingHealth = healthBarLength * currentAllUnitsInfo[i][4] / maxHealth;
+
 					//draw group info
 					if(groupNo != 255){
 						theTextRenderer.drawText_outline(xPos, yPos + 3, String.valueOf(groupNo+1), currentScreen, 0xffffff, 0);
 					}
-					if(level != 0){
-						theTextRenderer.drawStarCharacter(xPos + healthBarLength - 13, yPos + 5, level, currentScreen, 0xffff33, 0);
-					}
-					
+
 					if(remainingHealth <= 2 && remainingHealth != 0)
 						remainingHealth = 2;
 					
@@ -526,8 +542,8 @@ public class postProcessingThread implements Runnable{
 					}
 					
 					//draw progress bar if appliable
-					if(currentSelectedUnitsInfo[i][5] >=0){
-						int progress = healthBarLength * currentSelectedUnitsInfo[i][5] / 100;
+					if(currentAllUnitsInfo[i][5] >=0){
+						int progress = healthBarLength * currentAllUnitsInfo[i][5] / 100;
 						
 						if(yPos > 0 && yPos < screen_height){
 							if(xPos >= 0 && xPos < screen_width)
@@ -886,12 +902,18 @@ public class postProcessingThread implements Runnable{
 							smoothedShadowBitmap[index] = 32;
 						else
 							smoothedShadowBitmap[index]= (byte)(shadowBitmap[index] + 127);
-						
+
+					}else if(shadowBitmap[index] >= 32){
+						//this pixel is already fully lit - don't drag it down just because a
+						//shadowed neighbor (e.g. a building's own shadow right at its silhouette)
+						//happens to sit next to it in screen space; only soften pixels that are
+						//themselves at least partly shadowed, which is the blur's actual purpose
+						smoothedShadowBitmap[index] = shadowBitmap[index];
 					}else{
 						smoothedShadowBitmap[index] = (byte)((shadowBitmap[index] + shadowBitmap[index - 1] + shadowBitmap[index + screen_width] + shadowBitmap[index + w_]) >> 2);
 						//smoothedShadowBitmap[index] = (byte)((shadowBitmap[index+769] + shadowBitmap[index+767] + shadowBitmap[index-769] + shadowBitmap[index-767] + shadowBitmap[index-768] + shadowBitmap[index] + shadowBitmap[index - 1] + shadowBitmap[index + 768] + shadowBitmap[index + 1])>>3);
 
-						
+
 					}
 				}
 			}
@@ -911,10 +933,12 @@ public class postProcessingThread implements Runnable{
 							smoothedShadowBitmap[index] = 32;
 						else
 							smoothedShadowBitmap[index]= (byte)(shadowBitmap[index] + 127);
+					}else if(shadowBitmap[index] >= 32){
+						smoothedShadowBitmap[index] = shadowBitmap[index];
 					}else{
 						smoothedShadowBitmap[index] = (byte)((shadowBitmap[index] + shadowBitmap[index - 1] + shadowBitmap[index - screen_width] + shadowBitmap[index - screen_width - 1]) >> 2);
-					
-						
+
+
 					}
 				}
 			}
@@ -935,10 +959,12 @@ public class postProcessingThread implements Runnable{
 							smoothedShadowBitmap[index] = 32;
 						else
 							smoothedShadowBitmap[index]= (byte)(shadowBitmap[index] + 127);
+					}else if(shadowBitmap[index] >= 32){
+						smoothedShadowBitmap[index] = shadowBitmap[index];
 					}else{
 						smoothedShadowBitmap[index] = (byte)((shadowBitmap[index] + shadowBitmap[index + 1] + shadowBitmap[index - screen_width] + shadowBitmap[index - w_]) >> 2);
-					
-						
+
+
 					}
 				}
 			}
@@ -957,9 +983,11 @@ public class postProcessingThread implements Runnable{
 							smoothedShadowBitmap[index] = 32;
 						else
 							smoothedShadowBitmap[index]= (byte)(shadowBitmap[index] + 127);
+					}else if(shadowBitmap[index] >= 32){
+						smoothedShadowBitmap[index] = shadowBitmap[index];
 					}else{
 						smoothedShadowBitmap[index] = (byte)((shadowBitmap[index] + shadowBitmap[index + 1] + shadowBitmap[index + screen_width] + shadowBitmap[index + screen_width + 1]) >> 2);
-					
+
 					}
 				}
 			}
@@ -1011,8 +1039,9 @@ public class postProcessingThread implements Runnable{
 		currentScreen = mainThread.screen;
 		currentZbuffer = mainThread.zBuffer;
 		displacementBuffer = mainThread.displacementBuffer;
+		hasWaterDistortion = mainThread.hasWaterDistortion;
 		shadowBitmap = mainThread.shadowBitmap;
-		currentSelectedUnitsInfo = mainThread.theAssetManager.selectedUnitsInfo;
+		currentAllUnitsInfo = mainThread.theAssetManager.allUnitsInfo;
 		visionPolygonInfo = mainThread.theAssetManager.visionPolygonInfo;
 		visionPolygonCount = mainThread.theAssetManager.visionPolygonCount;
 		unitsForMiniMap = mainThread.theAssetManager.unitsForMiniMap;

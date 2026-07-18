@@ -2,10 +2,13 @@ package core;
 
 import java.awt.Rectangle;
 
+import entity.constructionVehicle;
 import entity.constructionYard;
 import entity.factory;
 import entity.solidObject;
 import gui.inputHandler;
+import audio.SoundEngine;
+import audio.SoundEngine.Sfx;
 
 //this class interprets  player's inputs and turns them into commands that can be issued to game  units 
 public class playerCommander {
@@ -14,7 +17,7 @@ public class playerCommander {
 	
 	public solidObject[][] groups;
 	
-	public boolean leftMouseButtonPressed, rightMouseButtonPressed, leftMouseButtonReleased, rightMouseButtonReleased, attackKeyPressed, toggleConyard, toggleFactory, holdKeyPressed, controlKeyPressed;
+	public boolean leftMouseButtonPressed, rightMouseButtonPressed, leftMouseButtonReleased, rightMouseButtonReleased, attackKeyPressed, toggleConyard, toggleFactory, holdKeyPressed, controlKeyPressed, deployKeyPressed;
 	
 	public int numberTyped;
 	
@@ -46,11 +49,24 @@ public class playerCommander {
 	public constructionYard selectedConstructionYard;
 	
 	public baseInfo theBaseInfo;
+
+	//tracks the previous frame's credit total so a change (from any of the many scattered
+	//currentCredit++/-- sites across buildings/units) can be detected in one place and turned into a
+	//classic RTS money-counter tick, throttled so a fast trickle (e.g. construction cost draining
+	//every frame) doesn't spam a sound 45 times a second. earn and spend use separate cooldowns
+	//(rather than one shared one) so an earn tick is never suppressed just because a spend tick
+	//happened to fire a moment earlier - earning always wins: spend is muted for the whole duration
+	//of an earn sound instead of just being throttled like it throttles itself
+	private int previousCredit = -1;
+	private int creditEarnCooldown;
+	private int creditSpendCooldown;
+	private int earnSoundBusyFrames;
 	
 	public boolean mouseOverSelectableUnit;
 	public int mouseOverUnitType;
 	public int mouseOverUnitTeam;
 	public boolean mouseOverUnitIsSelected;
+	public boolean mouseOverUnitCanDeploy;
 	public boolean hasConVehicleSelected;
 	public boolean hasHarvesterSelected;
 	public boolean hasTroopsSelected;
@@ -82,7 +98,31 @@ public class playerCommander {
 	
 	public void update(){
 		theBaseInfo.update();
-		
+
+		if(creditEarnCooldown > 0)
+			creditEarnCooldown--;
+		if(creditSpendCooldown > 0)
+			creditSpendCooldown--;
+		if(earnSoundBusyFrames > 0)
+			earnSoundBusyFrames--;
+
+		if(previousCredit == -1){
+			previousCredit = theBaseInfo.currentCredit;
+		}else if(theBaseInfo.currentCredit != previousCredit){
+			if(theBaseInfo.currentCredit > previousCredit){
+				if(creditEarnCooldown == 0){
+					SoundEngine.play(Sfx.CREDIT_EARN);
+					creditEarnCooldown = 3;
+					earnSoundBusyFrames = 38; //~820ms at 45fps, matches the earn clip's length so spend stays muted while it rings out
+				}
+			}else if(creditSpendCooldown == 0 && earnSoundBusyFrames == 0){
+				SoundEngine.play(Sfx.CREDIT_SPEND);
+				creditSpendCooldown = 3;
+			}
+			previousCredit = theBaseInfo.currentCredit;
+		}
+
+
 		if(isDeployingBuilding){
 			
 			if(leftMouseButtonPressed && !cursorIsInMiniMap() && !cursorIsInSideBar() && selectedConstructionYard.dg.canBeDeployed){
@@ -95,15 +135,16 @@ public class playerCommander {
 				leftMouseButtonPressed = false;
 			}
 			
-			if(rightMouseButtonPressed){
+			if(rightMouseButtonReleased && !inputHandler.isDraggingCamera){
 				isDeployingBuilding = false;
 				selectedConstructionYard.needToDrawDeploymentGrid = false;
 				selectedConstructionYard = null;
-				rightMouseButtonPressed = false;
+				rightMouseButtonReleased = false;
 			}else{
 				if(!cursorIsInMiniMap()){
 					theSideBarManager.update();
 					leftMouseButtonPressed = false;
+					rightMouseButtonReleased = false;
 					isMovingViewWindow = false;
 					return;
 				}
@@ -377,9 +418,9 @@ public class playerCommander {
 			
 		}
 		
-		if(rightMouseButtonPressed){
+		if(rightMouseButtonReleased && !inputHandler.isDraggingCamera){
 			attackKeyPressed = false;
-			
+
 			if(cursorIsInMiniMap()){
 				clickPoint.set(0.25f*(inputHandler.mouse_x-3), 0, 0.25f*(127-(inputHandler.mouse_y-(screen_height-131))));
 			}else{
@@ -475,7 +516,7 @@ public class playerCommander {
 				
 			if(selectedConyardID != -1) {	
 				for(int i = 0; i < factories.length; i++) {
-					if(factories[i].ID == selectedConyardID) {
+					if(factories[i] != null && factories[i].ID == selectedConyardID) {
 						factoryIndex = i;
 						break;
 					}
@@ -502,7 +543,41 @@ public class playerCommander {
 			
 			toggleFactory = false;
 		}
-		
+
+		if(deployKeyPressed) {
+			int numOfSelectedConstructionYard = 0;
+			constructionYard selectedConyard = null;
+			for(int i = 0; i < selectedUnits.length; i++) {
+				if(selectedUnits[i] != null && selectedUnits[i].teamNo == 0 && selectedUnits[i].currentHP > 0 && selectedUnits[i].type == 104) {
+					numOfSelectedConstructionYard++;
+					selectedConyard = (constructionYard)selectedUnits[i];
+				}
+			}
+
+			if(numOfSelectedConstructionYard == 1) {
+				constructionYard cy = selectedConyard;
+				if(cy.powerPlantProgress == 240 || cy.refineryProgress == 240 || cy.factoryProgress == 240
+						|| cy.communicationCenterProgress == 240 || cy.gunTurretProgress == 240
+						|| cy.missileTurretProgress == 240 || cy.techCenterProgress == 240) {
+					cy.needToDrawDeploymentGrid = true;
+					isDeployingBuilding = true;
+					selectedConstructionYard = cy;
+				}
+			}
+
+			//deploy any selected construction vehicle(s) that are ready to expand into a construction yard
+			for(int i = 0; i < selectedUnits.length; i++) {
+				if(selectedUnits[i] != null && selectedUnits[i].teamNo == 0 && selectedUnits[i].currentHP > 0 && selectedUnits[i].type == 3) {
+					constructionVehicle cv = (constructionVehicle)selectedUnits[i];
+					if(cv.canBeDeployed()) {
+						cv.expand();
+					}
+				}
+			}
+
+			deployKeyPressed = false;
+		}
+
 
 		//display health bar when mouse cursor hover over a unit
 		if(!isSelectingUnit){
@@ -535,7 +610,12 @@ public class playerCommander {
 				}else if(selectedUnits[i].type == 2) {
 					hasHarvesterSelected = true;
 				}else if(selectedUnits[i].type == 3) {
-					hasConVehicleSelected = true;
+					//don't show the move cursor for a construction vehicle that's already mid-deploy -
+					//it's no longer something you'd issue a move order to
+					constructionVehicle cv = (constructionVehicle)selectedUnits[i];
+					if(cv.jobStatus != cv.deploying){
+						hasConVehicleSelected = true;
+					}
 				}else if(selectedUnits[i].type == 200 || selectedUnits[i].type == 199) {
 					hasTowerSelected = true;
 				}
@@ -654,6 +734,7 @@ public class playerCommander {
 			theAssetManager.confirmationIconInfo[1] = x;
 			theAssetManager.confirmationIconInfo[2] = y;
 			theAssetManager.confirmationIconInfo[3] = 0xbb22;
+			SoundEngine.play(Sfx.MOVE);
 		}
 	}
 	
@@ -716,53 +797,52 @@ public class playerCommander {
 			theAssetManager.confirmationIconInfo[1] = x;
 			theAssetManager.confirmationIconInfo[2] = y;
 			theAssetManager.confirmationIconInfo[3] = 0xcc2222;
+			SoundEngine.play(Sfx.ATTACK);
 		}
 				
 	}
 	
 	public void addMouseHoverUnitToDisplayInfo(Rectangle unitArea, Rectangle unitAreaSmall){
 		solidObject theSelected = null;
+		int theSelectedIndex = -1;
 		mouseOverSelectableUnit = false;
 		mouseOverUnitIsSelected = false;
+		mouseOverUnitCanDeploy = false;
 		for(int i = 0; i < theAssetManager.visibleUnitCount; i++){
 			if(unitArea.contains(theAssetManager.visibleUnit[i].tempCentre.screenX,  theAssetManager.visibleUnit[i].tempCentre.screenY)){
 				if((theAssetManager.visibleUnit[i].type < 100 || theAssetManager.visibleUnit[i].type >= 199) && !unitAreaSmall.contains(theAssetManager.visibleUnit[i].tempCentre.screenX,  theAssetManager.visibleUnit[i].tempCentre.screenY))
 					continue;
-				
+
 				if(theAssetManager.visibleUnit[i].type < 100 || theAssetManager.visibleUnit[i].type >= 199){
 					theSelected = theAssetManager.visibleUnit[i];
+					theSelectedIndex = i;
 					break;
 				}
-				
-				theSelected = theAssetManager.visibleUnit[i];	
+
+				theSelected = theAssetManager.visibleUnit[i];
+				theSelectedIndex = i;
 			}
 		}
-		
+
 		if(theSelected != null  && theSelected.isSelectable && !cursorIsInMiniMap() && !cursorIsInSideBar()) {
 			mouseOverSelectableUnit = true;
 			mouseOverUnitType = theSelected.type;
 			mouseOverUnitTeam = theSelected.teamNo;
 			if(theSelected.isSelected) {
 				mouseOverUnitIsSelected = true;
+				if(theSelected.type == 3 && ((constructionVehicle)theSelected).canBeDeployed()){
+					mouseOverUnitCanDeploy = true;
+				}
 			}
-				
-		}
-		
-		if(theSelected != null && !theSelected.isSelected && theSelected.isSelectable && !cursorIsInMiniMap() && !cursorIsInSideBar()){
-			mainThread.theAssetManager.selectedUnitsInfo[99][0] =  theSelected.level << 16 | theSelected.groupNo << 8 | theSelected.type;
-			mainThread.theAssetManager.selectedUnitsInfo[99][1] = (int)theSelected.tempCentre.screenX;
-			mainThread.theAssetManager.selectedUnitsInfo[99][2] = (int)theSelected.tempCentre.screenY;
-			if(theSelected.type == 199){
-				mainThread.theAssetManager.selectedUnitsInfo[99][1] = (int)theSelected.screenX_gui;
-				mainThread.theAssetManager.selectedUnitsInfo[99][2] = (int)theSelected.screenY_gui;
+
+			//show the health bar/group/progress block for the hovered unit too, even if it isn't
+			//selected - reuses the same "treat as selected for display" bit the draw loop checks,
+			//restoring the original hover-preview behaviour within the new all-visible-units data flow
+			if(!theSelected.isSelected && theSelectedIndex >= 0 && theSelectedIndex < theAssetManager.allUnitsInfo.length){
+				theAssetManager.allUnitsInfo[theSelectedIndex][0] |= (1<<24);
 			}
-			
-			mainThread.theAssetManager.selectedUnitsInfo[99][3] = (int)theSelected.type;
-			mainThread.theAssetManager.selectedUnitsInfo[99][4] = theSelected.currentHP;
-			mainThread.theAssetManager.selectedUnitsInfo[99][5] = theSelected.progressStatus;
-		}else{
-			mainThread.theAssetManager.selectedUnitsInfo[99][0] = -1;
 		}
+
 	}
 	
 	public void selectUnit(Rectangle unitArea, Rectangle unitAreaSmall){
@@ -785,7 +865,14 @@ public class playerCommander {
 		}
 		
 		if(theSelected != null){
-			
+
+			//clicking your own already-selected, ready-to-deploy construction vehicle deploys it
+			//into a construction yard instead of just re-selecting it
+			if(theSelected.type == 3 && theSelected.isSelected && ((constructionVehicle)theSelected).canBeDeployed()){
+				((constructionVehicle)theSelected).expand();
+				return;
+			}
+
 			if(!controlKeyPressed)
 				deSelectAll();
 			
@@ -796,7 +883,8 @@ public class playerCommander {
 			
 			addToSelection(theSelected);
 			theSelected.isSelected = true;
-			
+			SoundEngine.play(Sfx.SELECT);
+
 			if(doubleClicked){
 				int type = theSelected.type;
 				for(int j = 0; j < theAssetManager.visibleUnitCount; j++){
@@ -831,8 +919,10 @@ public class playerCommander {
 				theAssetManager.visibleUnit[i].isSelected = true;
 			}
 		}
+		if(unitIsSelected)
+			SoundEngine.play(Sfx.SELECT);
 	}
-	
+
 	public void addToSelection(solidObject o){
 		//dont add gold mine to select units
 		//if(o.type == 103)
@@ -959,6 +1049,7 @@ public class playerCommander {
 			theAssetManager.confirmationIconInfo[1] = o.centre.x;
 			theAssetManager.confirmationIconInfo[2] = o.centre.z;
 			theAssetManager.confirmationIconInfo[3] = 0xcc2222;
+			SoundEngine.play(Sfx.ATTACK);
 		}
 		
 	}
@@ -972,7 +1063,7 @@ public class playerCommander {
 					theAssetManager.confirmationIconInfo[1] = o.centre.x;
 					theAssetManager.confirmationIconInfo[2] = o.centre.z;
 					theAssetManager.confirmationIconInfo[3] = 0xbbbb00;
-					
+					SoundEngine.play(Sfx.HARVEST);
 				}
 			}
 		}
@@ -987,6 +1078,7 @@ public class playerCommander {
 					theAssetManager.confirmationIconInfo[1] = o.centre.x;
 					theAssetManager.confirmationIconInfo[2] = o.centre.z;
 					theAssetManager.confirmationIconInfo[3] = 0xbbbb00;
+					SoundEngine.play(Sfx.HARVEST);
 				}
 			}
 		}

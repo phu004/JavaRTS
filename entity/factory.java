@@ -815,6 +815,7 @@ public class factory extends solidObject{
 	
 	//update the model 
 	public void update(){
+		updateActiveBlastLight();
 
 		//update tech tree info
 		canBuildLightTank = theBaseInfo.canBuildLightTank;

@@ -41,7 +41,7 @@ public class rasterizer {
 	public static int[] xLeft = new int[screen_height], xRight = new int[screen_height];
 	
 	//2 arrays that define the z depth across the polygon
-	public static int[] zLeft = new int[screen_height], zRight = new int[screen_height];
+	//public static int[] zLeft = new int[screen_height], zRight = new int[screen_height];
 	
 	//2 arrays that define the reflections across the polygon
 	public static vector[] RLeft = new vector[screen_height], RRight = new vector[screen_height];
@@ -184,6 +184,7 @@ public class rasterizer {
 		}else if(polygon.type == 6){
 			scanPolygon();
 			findVectorOUV();
+			mainThread.hasWaterDistortion = true;
 			renderWaterPolygon();
 		}else if(polygon.type == 7){
 			scanPolygon();
@@ -687,7 +688,7 @@ public class rasterizer {
 	//render basic polygon that can't  be shadowed (e.g polygon which back facing the light source)
 	public static void renderBasicPolygon(){
 		short[] texture = poly.myTexture.pixelData; 
-		diffuse_I = poly.diffuse_I&127;
+		diffuse_I = Math.min(poly.diffuse_I + poly.blastLightBoost, 127);
 		int[]colorTable = gameData.colorTable[diffuse_I];
 		int index;
 		
@@ -766,26 +767,26 @@ public class rasterizer {
 				cDotWInverse = 1/cDotW;
 				X1 = (int)(aDotW*cDotWInverse);
 				Y1 = (int)(bDotW*cDotWInverse);
-				dx = X1 - X;
-				dy = Y1 - Y;
-				
+				dx = ((X1 - X) << 8)/offset;
+				dy = ((Y1 - Y) << 8)/offset;
+
 				for( k = offset, d_x = 0, d_y = 0; k >0; k--, d_x+=dx, d_y+=dy, index++, z_left+=dz){
-					
+
 					if(zBuffer[index] < z_left){
 						zBuffer[index] = z_left;
-						textureIndex = (((d_x/offset) + X)&widthMask) + ((((d_y/offset) + Y)&heightMask)<<widthBits);
-					
+						textureIndex = (((d_x/256) + X)&widthMask) + ((((d_y/256) + Y)&heightMask)<<widthBits);
+
 						shadowBitmap[index]  = -127;
 					    screen[index] = colorTable[texture[textureIndex]];
-						
+
 					}
 				}
-				
+
 				break;
 			}
 		}
 	}
-	
+
 
 	//render polygon that below ground level
 	public static void renderUnderGroundPolygon(){
@@ -917,7 +918,7 @@ public class rasterizer {
 					for( k = 16, d_x = 0, d_y = 0; k >0; k--, d_x+=dx, d_y+=dy, index++, z_left+=dz){
 						
 						
-						if(zBuffer[index] < z_left){
+						if(zBuffer[index] < depth){
 							zBuffer[index] = depth + 20;
 							xPos = (d_x>>4) + X;
 							yPos = (d_y>>4) + Y;
@@ -955,15 +956,15 @@ public class rasterizer {
 				cDotWInverse = 1/cDotW;
 				X1 = (int)(aDotW*cDotWInverse);
 				Y1 = (int)(bDotW*cDotWInverse);
-				dx = X1 - X;
-				dy = Y1 - Y;
-				
+				dx = ((X1 - X) << 8)/offset;
+				dy = ((Y1 - Y) << 8)/offset;
+
 				for( k = offset, d_x = 0, d_y = 0; k >0; k--, d_x+=dx, d_y+=dy, index++, z_left+=dz){
-					
-					if(zBuffer[index] < z_left){
+
+					if(zBuffer[index] < depth){
 						zBuffer[index] = depth + 20;
-						xPos = (d_x/offset) + X;
-						yPos = (d_y/offset) + Y;
+						xPos = (d_x/256) + X;
+						yPos = (d_y/256) + Y;
 						textureIndex = (xPos&widthMask) + ((yPos&heightMask)<<widthBits);
 						z_lightspace = z_origin + xPos * dz_xdirection + yPos * dz_ydirection;
 						screenX_lightspace = (XY_origin_x + dXY_xdirection_x * xPos + dXY_ydirection_x* yPos) >> 16;
@@ -992,7 +993,7 @@ public class rasterizer {
 	//redner basic texture mapped polygon
 	public static void renderShadowedPolygon(){
 		short[] texture = poly.myTexture.pixelData; 
-		diffuse_I = poly.diffuse_I&127;
+		diffuse_I = Math.min(poly.diffuse_I + poly.blastLightBoost, 127);
 		int[] colorTable = gameData.colorTable[diffuse_I];
 		
 		int index, z_lightspace, screenX_lightspace, screenY_lightspace, xPos,  yPos;
@@ -1153,15 +1154,15 @@ public class rasterizer {
 				cDotWInverse = 1/cDotW;
 				X1 = (int)(aDotW*cDotWInverse);
 				Y1 = (int)(bDotW*cDotWInverse);
-				dx = X1 - X;
-				dy = Y1 - Y;
-				
+				dx = ((X1 - X) << 8)/offset;
+				dy = ((Y1 - Y) << 8)/offset;
+
 				for( k = offset, d_x = 0, d_y = 0; k >0; k--, d_x+=dx, d_y+=dy, index++, z_left+=dz){
-					
+
 					if(zBuffer[index] < z_left){
 						zBuffer[index] = z_left;
-						xPos = (d_x/offset) + X;
-						yPos = (d_y/offset) + Y;
+						xPos = (d_x/256) + X;
+						yPos = (d_y/256) + Y;
 						textureIndex = (xPos&widthMask) + ((yPos&heightMask)<<widthBits);
 						z_lightspace = z_origin + xPos * dz_xdirection + yPos * dz_ydirection;
 						screenX_lightspace = (XY_origin_x + dXY_xdirection_x * xPos + dXY_ydirection_x* yPos) >> 16;
@@ -1186,7 +1187,7 @@ public class rasterizer {
 	
 	public static void renderShadowedPolygon_Gouraud(){
 		short[] texture = poly.myTexture.pixelData; 
-		diffuse_I = poly.diffuse_I&127;
+		diffuse_I = Math.min(poly.diffuse_I + poly.blastLightBoost, 127);
 		int[] colorTable = gameData.colorTable[diffuse_I];
 		
 		int index, z_lightspace, screenX_lightspace, screenY_lightspace, xPos,  yPos;
@@ -1332,7 +1333,7 @@ public class rasterizer {
 						
 							if(z_lightspace - shadowBuffer[size] < shadowBias){
 								shadowBitmap[index]  = 32;
-								screen[index] = gameData.colorTable[diffuseStart >> 11][texture[textureIndex]];
+								screen[index] = gameData.colorTable[Math.min((diffuseStart >> 11) + poly.blastLightBoost, 127)][texture[textureIndex]];
 							}else{
 								shadowBitmap[index]  = shadowLevel;
 								screen[index] = colorTable[texture[textureIndex]];
@@ -1355,15 +1356,15 @@ public class rasterizer {
 				cDotWInverse = 1/cDotW;
 				X1 = (int)(aDotW*cDotWInverse);
 				Y1 = (int)(bDotW*cDotWInverse);
-				dx = X1 - X;
-				dy = Y1 - Y;
-				
+				dx = ((X1 - X) << 8)/offset;
+				dy = ((Y1 - Y) << 8)/offset;
+
 				for( k = offset, d_x = 0, d_y = 0; k >0; k--, d_x+=dx, d_y+=dy, index++, z_left+=dz, diffuseStart+=diffuseGradient){
-					
+
 					if(zBuffer[index] < z_left){
 						zBuffer[index] = z_left;
-						xPos = (d_x/offset) + X;
-						yPos = (d_y/offset) + Y;
+						xPos = (d_x/256) + X;
+						yPos = (d_y/256) + Y;
 						textureIndex = (xPos&widthMask) + ((yPos&heightMask)<<widthBits);
 						z_lightspace = z_origin + xPos * dz_xdirection + yPos * dz_ydirection;
 						screenX_lightspace = (XY_origin_x + dXY_xdirection_x * xPos + dXY_ydirection_x* yPos) >> 16;
@@ -1373,17 +1374,17 @@ public class rasterizer {
 						
 						if(z_lightspace - shadowBuffer[size] < shadowBias){
 							shadowBitmap[index]  = 32;
-							screen[index] = gameData.colorTable[diffuseStart >> 11][texture[textureIndex]];
-							
+							screen[index] = gameData.colorTable[Math.min((diffuseStart >> 11) + poly.blastLightBoost, 127)][texture[textureIndex]];
+
 						}else{
 							shadowBitmap[index]  = shadowLevel;
 							screen[index] = colorTable[texture[textureIndex]];
 						}
-						
-						
+
+
 					}
 				}
-				
+
 				break;
 			}
 		}
@@ -1391,7 +1392,7 @@ public class rasterizer {
 	
 	public static void renderShadowedPolygon_smooth(){
 		short[] texture = poly.myTexture.pixelData; 
-		diffuse_I = poly.diffuse_I&127;
+		diffuse_I = Math.min(poly.diffuse_I + poly.blastLightBoost, 127);
 		int[] colorTable = gameData.colorTable[diffuse_I];
 		
 		int index, z_lightspace, screenX_lightspace, screenY_lightspace, xPos,  yPos;
@@ -1536,6 +1537,7 @@ public class rasterizer {
 								int lit = (int)(I_left + I_difference * (xPos%textureScaledWidth));
 								if(lit < 0)
 									lit = 0;
+								lit = Math.min(lit + poly.blastLightBoost, 127);
 								screen[index] = gameData.colorTable[lit][texture[textureIndex]];
 							}else{
 								shadowBitmap[index]  = shadowLevel;
@@ -1559,15 +1561,15 @@ public class rasterizer {
 				cDotWInverse = 1/cDotW;
 				X1 = (int)(aDotW*cDotWInverse);
 				Y1 = (int)(bDotW*cDotWInverse);
-				dx = X1 - X;
-				dy = Y1 - Y;
-				
+				dx = ((X1 - X) << 8)/offset;
+				dy = ((Y1 - Y) << 8)/offset;
+
 				for( k = offset, d_x = 0, d_y = 0; k >0; k--, d_x+=dx, d_y+=dy, index++, z_left+=dz){
-					
+
 					if(zBuffer[index] < z_left){
 						zBuffer[index] = z_left;
-						xPos = (d_x/offset) + X;
-						yPos = (d_y/offset) + Y;
+						xPos = (d_x/256) + X;
+						yPos = (d_y/256) + Y;
 						textureIndex = (xPos&widthMask) + ((yPos&heightMask)<<widthBits);
 						z_lightspace = z_origin + xPos * dz_xdirection + yPos * dz_ydirection;
 						screenX_lightspace = (XY_origin_x + dXY_xdirection_x * xPos + dXY_ydirection_x* yPos) >> 16;
@@ -1581,6 +1583,7 @@ public class rasterizer {
 							int lit = (int)(I_left + I_difference * (xPos%textureScaledWidth));
 							if(lit < 0)
 								lit = 0;
+							lit = Math.min(lit + poly.blastLightBoost, 127);
 							screen[index] = gameData.colorTable[lit][texture[textureIndex]];
 						}else{
 							shadowBitmap[index]  = shadowLevel;
@@ -2093,7 +2096,7 @@ public class rasterizer {
 	public static void renderCloakedPolygon(){
 		
 		short[] texture = poly.myTexture.pixelData; 
-		diffuse_I = poly.diffuse_I&127;
+		diffuse_I = Math.min(poly.diffuse_I + poly.blastLightBoost, 127);
 		int[] colorTable = gameData.colorTable[diffuse_I];
 		
 		int index, z_lightspace, screenX_lightspace, screenY_lightspace, xPos,  yPos;
@@ -2265,9 +2268,9 @@ public class rasterizer {
 				cDotWInverse = 1/cDotW;
 				X1 = (int)(aDotW*cDotWInverse);
 				Y1 = (int)(bDotW*cDotWInverse);
-				dx = X1 - X;
-				dy = Y1 - Y;
-				
+				dx = ((X1 - X) << 8)/offset;
+				dy = ((Y1 - Y) << 8)/offset;
+
 				for( k = 0, d_x = 0, d_y = 0; k < offset; k++, d_x+=dx, d_y+=dy, index++, z_left+=dz){
 					
 					if(zBuffer[index] < z_left){
@@ -2284,30 +2287,30 @@ public class rasterizer {
 						}
 						
 						zBuffer[index] = z_left;
-						xPos = (d_x/offset) + X;
-						yPos = (d_y/offset) + Y;
+						xPos = (d_x/256) + X;
+						yPos = (d_y/256) + Y;
 						textureIndex = (xPos&widthMask) + ((yPos&heightMask)<<widthBits);
 						z_lightspace = z_origin + xPos * dz_xdirection + yPos * dz_ydirection;
 						screenX_lightspace = (XY_origin_x + dXY_xdirection_x * xPos + dXY_ydirection_x* yPos) >> 16;
 						screenY_lightspace = (XY_origin_y + dXY_xdirection_y * xPos + dXY_ydirection_y * yPos) >> 16;
-						
+
 						int size = (screenX_lightspace + (screenY_lightspace << shadowmap_width_bit)) & shadowmap_size_;
-						
+
 						if(z_lightspace - shadowBuffer[size] < shadowBias){
 							shadowBitmap[index]  = 32;
 						}else{
 							shadowBitmap[index]  = shadowLevel;
 						}
 						screen[index] = colorTable[texture[textureIndex]];
-						
+
 					}
 				}
-				
+
 				break;
 			}
 		}
 	}
-	
+
 	public static void calculateDepthRangeAtGround() {
 		vector v = mainThread.my2Dto3DFactory.get3DLocation(poly, screen_width/2, 0);
 		v.subtract(camera.position);

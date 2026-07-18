@@ -24,6 +24,11 @@ For non-windows users, you will need to have Java installed. Download the same g
    other units in safe distance (hard difficulty).
 
 
+### Online leaderboard: ###
+
+Finish a match and submit your time to a global online leaderboard, ranked separately per difficulty. Scores are stored and served through Firebase.
+
+
 ### Demo playthrough video: ###
 
 https://www.youtube.com/watch?v=hUJWMpyWdVo
